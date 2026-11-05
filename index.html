@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>오늘 뭐 입지</title>
+<style>
+:root{--ink:#141414;--sub:#5a5a5a;--line:#e3e3e3;--acc:#1F5C58;--bg:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
+main{max-width:680px;margin:0 auto;padding:22px 18px 64px}
+a{color:var(--acc)}
+header h1{font-size:22px;margin:0;letter-spacing:-0.3px}
+header p{margin:2px 0 0;color:var(--sub);font-size:13px}
+section{border-top:1px solid var(--line);padding:18px 0}
+h2{font-size:13px;font-weight:700;color:var(--sub);margin:0 0 10px}
+select,input,button{font:inherit;color:inherit}
+select,input[type=text]{border:1px solid #cfcfcf;border-radius:3px;padding:6px 8px;background:#fff}
+.field{display:flex;align-items:center;gap:8px 10px;margin:9px 0;flex-wrap:wrap}
+.lb{width:58px;color:var(--sub);font-size:13px;flex:none}
+.seg{display:inline-flex;border:1px solid #cfcfcf;border-radius:3px;overflow:hidden}
+.seg button{border:0;border-right:1px solid #cfcfcf;background:#fff;padding:6px 12px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.plain{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:6px 12px;cursor:pointer}
+.plain:hover,.seg button:hover,.moods button:hover{border-color:#888}
+#search{display:none;width:100%}
+#search.on{display:block}
+#search .field{margin:6px 0 0 68px}
+#results{list-style:none;margin:6px 0 0 68px;padding:0}
+#results li button{border:0;background:none;padding:4px 0;cursor:pointer;text-align:left;color:var(--acc);text-decoration:underline}
+.moods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.moods button{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:8px 8px 7px;text-align:left;cursor:pointer}
+.moods b{display:block;font-size:14px}
+.moods span{display:block;font-size:11.5px;color:var(--sub);line-height:1.35}
+.moods button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.moods button[aria-pressed=true] span{color:#d4d4d4}
+.place{margin:0;font-size:14px}
+.upd{color:var(--sub);font-size:12px;margin-left:6px}
+.big{font-size:30px;font-weight:700;margin:4px 0 0;letter-spacing:-0.5px}
+.big em{font-style:normal;color:var(--acc)}
+.big small{font-size:14px;font-weight:400;color:var(--sub);margin-left:6px;letter-spacing:0}
+.wxsub{margin:2px 0 0;color:var(--sub);font-size:13.5px}
+.band{margin:8px 0 0;font-size:13.5px}
+.scroll{overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch}
+table.hours{border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+table.hours th,table.hours td{padding:4px 9px;text-align:center;border-bottom:1px solid var(--line)}
+table.hours th{color:var(--sub);font-weight:400;text-align:left;padding-left:0}
+table.hours td.mk{font-weight:700}
+.msg{color:var(--sub)}
+.p1{font-size:17px;margin:0}
+.p1 b{display:block;font-size:19px}
+.rest{margin:10px 0 0;padding-left:20px;font-size:14px}
+.rest li{margin:3px 0}
+.rest b{font-weight:700}
+.row{display:grid;grid-template-columns:58px 1fr;gap:0 10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.slot{color:var(--sub);font-size:13px;padding-top:2px}
+.item{font-size:16px;font-weight:700;margin:0}
+.tag{font-size:11.5px;font-weight:400;margin-left:6px;white-space:nowrap}
+.why,.fit,.alt{margin:3px 0 0;font-size:13.5px}
+.fit{color:var(--sub)}
+.alt{color:var(--sub);font-size:12.5px}
+.shop{font-size:12.5px}
+.pal{display:flex;gap:16px;flex-wrap:wrap;margin-top:2px}
+.sw{display:flex;align-items:center;gap:6px;font-size:13px}
+.sw i{width:22px;height:22px;border:1px solid #cfcfcf;display:inline-block}
+.acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+table.size{border-collapse:collapse;width:100%;font-size:13.5px}
+table.size th,table.size td{border-bottom:1px solid var(--line);padding:7px 6px 7px 0;text-align:left;vertical-align:top}
+table.size th{color:var(--sub);font-weight:400;font-size:12.5px}
+ul.tips{margin:12px 0 0;padding-left:18px;font-size:14px}
+ul.tips li{margin:4px 0}
+ol.src{margin:0;padding-left:20px;font-size:13.5px}
+ol.src li{margin:0 0 10px}
+ol.src .meta{color:var(--sub);font-size:12.5px}
+.note{color:var(--sub);font-size:12.5px;margin:8px 0 0}
+footer{color:var(--sub);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+footer p{margin:4px 0}
+@media (max-width:480px){
+  .moods{grid-template-columns:repeat(2,1fr)}
+  .big{font-size:26px}
+  #search .field,#results{margin-left:0}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>오늘 뭐 입지</h1>
+  <p>날씨는 열 때마다, 그리고 30분마다 새로 불러온다</p>
+</header>
+
+<section class="controls" aria-label="설정">
+  <div class="field">
+    <span class="lb">지역</span>
+    <select id="city" aria-label="지역"></select>
+    <button class="plain" id="geo" type="button">현재 위치</button>
+  </div>
+  <div id="search">
+    <div class="field">
+      <input type="text" id="q" placeholder="시 이름 (예: 천안, 성남, Tokyo)" aria-label="지역 검색">
+      <button class="plain" id="qgo" type="button">검색</button>
+    </div>
+    <ul id="results"></ul>
+  </div>
+  <div class="field">
+    <span class="lb">날짜</span>
+    <div class="seg" id="day">
+      <button type="button" data-v="0">오늘</button><button type="button" data-v="1">내일</button>
+    </div>
+  </div>
+  <div class="field">
+    <span class="lb">외출</span>
+    <select id="start" aria-label="나가는 시간"></select> 부터
+    <select id="end" aria-label="들어오는 시간"></select> 까지
+  </div>
+  <div class="field">
+    <span class="lb">체질</span>
+    <div class="seg" id="sens">
+      <button type="button" data-v="-3">추위 탐</button><button type="button" data-v="0">보통</button><button type="button" data-v="3">더위 탐</button>
+    </div>
+  </div>
+  <div class="field" style="align-items:flex-start">
+    <span class="lb" style="padding-top:8px">무드</span>
+    <div class="moods" id="moods" style="flex:1"></div>
+  </div>
+</section>
+
+<section id="wx" aria-live="polite"><p class="msg">날씨 불러오는 중…</p></section>
+<section id="point" hidden></section>
+<section id="outfit" hidden></section>
+
+<section id="size">
+  <h2>사이즈와 비율</h2>
+  <table class="size">
+    <tr><th>구분</th><th>흔히 맞는 치수</th><th>살 때 확인할 실측</th></tr>
+    <tr><td>상의 정핏</td><td>M (95)</td><td>어깨너비, 총장</td></tr>
+    <tr><td>상의 여유핏</td><td>L (100). 오버핏으로 나온 옷은 M</td><td>총장이 엉덩이 중간을 넘지 않는지</td></tr>
+    <tr><td>바지</td><td>허리 30~31</td><td>허리단면, 총장, 밑단단면</td></tr>
+    <tr><td>코트</td><td>M</td><td>무릎 위에서 끝나는 총장인지</td></tr>
+  </table>
+  <p class="note">흔히 맞는 범위일 뿐, 브랜드마다 한 치수씩 차이 난다. 제일 잘 맞는 옷을 바닥에 펴서 잰 숫자를 상세페이지 실측표와 비교하는 게 가장 정확하다.</p>
+  <ul class="tips">
+    <li>겉옷은 엉덩이 위에서 끝나는 숏 기장이나 무릎 위 코트. 발목까지 오는 롱코트는 키가 묻힌다.</li>
+    <li>상의가 엉덩이를 다 덮으면 앞만 살짝 바지에 넣는다. 다리 시작점이 올라가 보인다.</li>
+    <li>바지와 신발 색을 맞추면 다리 선이 끊기지 않는다.</li>
+    <li>와이드·배럴 팬츠가 바닥에 끌리면 수선한다. 신발 앞코를 살짝 덮는 데서 멈추는 게 좋다.</li>
+    <li>굽 있는 청키 스니커즈나 부츠는 키를 조금 보태 준다.</li>
+  </ul>
+</section>
+
+<section id="trend">
+  <h2>2026 가을·겨울 흐름 (2026년 11월 6일 조사)</h2>
+  <ol class="src" id="srcs"></ol>
+  <p class="note">트렌드는 위 기사들을 읽고 정리한 것이라 실시간으로 바뀌지 않는다. 날씨만 실시간이다. 코디에 붙은 '2026 흐름' 표시를 누르면 근거 기사로 간다. 스니커즈는 얼루어(2025.12)가 얇은 밑창을, GQ(2026.07)가 청키 밑창을 꼽아 서로 다른데, 더 최근인 GQ를 따랐다.</p>
+</section>
+
+<footer>
+  <p>날씨: Open-Meteo 예보(시간별 기온·체감온도·강수확률·바람·자외선). 예보 모델 값이라 기상청 앱 숫자와 조금 다를 수 있다.</p>
+  <p>체감온도는 기온에 바람·습도·햇빛을 반영한 값이다. 겉옷은 외출 시간 중 가장 추울 때, 상의는 가장 따뜻할 때, 하의·신발은 평균 체감온도로 고른다. 체질 설정은 체감온도에 ±3°를 더한다.</p>
+  <p>기온 구간 이름은 흔히 쓰는 '기온별 옷차림' 8단계(28° 이상 ~ 4° 이하)를 따랐다.</p>
+  <p>'무신사에서 보기'는 상품 검색 결과로 연결된다. 특정 상품을 광고하지 않는다.</p>
+</footer>
+</main>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- 근거 기사 ---------- */
+const SRC = {
+  T1:{o:'무신사', d:'2026.10.04', t:'평범한 가을룩을 바꿔줄 3가지 트렌드', u:'https://www.musinsa.com/content/1555072392815808559',
+      s:'드레이퍼리 악센트(머플러·니트를 느슨하게 걸치기), 패러독스 드레싱(타이 맨 셔츠 위에 후드 집업이나 패딩), 다크 로맨티시즘(소재 대비를 준 올블랙).'},
+  T2:{o:'무신사', d:'2026.10.16', t:'트렌드한 필수 아이템으로 떠오른 경량 패딩', u:'https://www.musinsa.com/content/1560213476964122173',
+      s:'10월 15일 기준 주간 검색어 1위가 경량 패딩. 충전재가 비칠 만큼 얇은 시어 소재가 관심을 끌었고, 어두운 색과 함께 스톤 화이트 같은 밝은 색이 눈에 띈다고 정리.'},
+  T3:{o:'무신사', d:'2026.01.05', t:'무신사 에디터 픽, 2026 인기 트렌드', u:'https://www.musinsa.com/content/1452877813830509855',
+      s:'그래놀라 코어(브라운·그린·베이지, 코위찬 니트, 플리스), 쿼터집(셔츠·타이 위에 겹쳐 입기), 밤비 코어(브라운·화이트 퍼).'},
+  T4:{o:'무신사', d:'2026.03.12', t:'2026년 트렌드, 지금 입어야 할 데님', u:'https://www.musinsa.com/content/1481467079225531565',
+      s:'배럴 진, 디스트로이드 진, 그리고 와이드 핏 다음 흐름으로 스트레이트 진을 꼽았다. 바지 핏을 살리려면 상의는 단순하게.'},
+  T5:{o:'GQ Korea', d:'2026.07.23', t:'2026년 하반기 스니커즈 트렌드 도착! 다시 기묘해진다?', u:'https://www.gqkorea.co.kr/2026/07/23/2026%eb%85%84-%ed%95%98%eb%b0%98%ea%b8%b0-%ec%8a%a4%eb%8b%88%ec%bb%a4%ec%a6%88-%ed%8a%b8%eb%a0%8c%eb%93%9c-%eb%8f%84%ec%b0%a9-%eb%8b%a4%ec%8b%9c-%ea%b8%b0%eb%ac%98%ed%95%b4%ec%a7%84%eb%8b%a4/',
+      s:'큰 갑피와 두꺼운 중창의 청키 스니커즈가 색은 절제한 채 돌아왔다. 방수 갑피·거친 밑창의 스니커 부츠, 어프로치 슈즈도 꼽았다.'},
+  T6:{o:'Numéro', d:'2026.02.06', t:'11 trends spotted at the fall-winter 2026-2027 men’s fashion week', u:'https://numero.com/en/fashion/fashion-week-en/11-trends-spotted-at-the-fall-winter-2026-2027-mens-fashion-week/',
+      s:'밀라노·파리 남성 컬렉션 정리. 클래식·슬림 실루엣 복귀, 트랙수트, 가죽, 레드, 타탄 체크, 스키니 타이, 넥 게이터.'},
+  T7:{o:'스포츠경향', d:'2026.01.12', t:'이상기온이 바꾼 2026년 겨울 아우터 공식', u:'https://sports.khan.co.kr/article/202601122345003',
+      s:'일교차가 커지면서 무거운 아우터 대신 가볍고 유연한 숏패딩·경량 아우터를 찾는다는 기사. 브랜드 제품 소개가 많아 흐름만 참고했다.'}
+};
+
+/* ---------- 핏 메모 ---------- */
+const FIT = {
+  short:'엉덩이 위에서 끝나는 기장이 다리가 길어 보인다. M 기준.',
+  coat:'무릎 위에서 끝나는 기장으로. 발목까지 내려오면 키가 묻혀 보인다.',
+  longpad:'롱패딩은 길이를 못 줄이니 바지·신발을 같은 어두운 색으로 맞춰 세로 선을 잇는다.',
+  blazer:'어깨 봉제선이 내 어깨 끝에 오는 M. 총장은 엉덩이 절반을 덮는 정도.',
+  knit:'정핏 M(95), 여유 있게 L(100). 소매가 손등을 덮으면 한 번 접는다.',
+  shirt:'정핏 M. 넣어 입을 땐 그대로, 빼 입을 땐 엉덩이 절반 정도 덮는 기장.',
+  top:'M(95). 총장이 엉덩이 중간을 넘으면 앞만 살짝 바지에 넣는다.',
+  over:'어깨는 커도 되지만 총장이 엉덩이를 다 덮으면 다리가 짧아 보인다. 오버핏으로 나온 옷은 M.',
+  wide:'허리 30~31. 밑단이 신발 앞코를 살짝 덮는 정도, 바닥에 끌리면 수선.',
+  straight:'허리 30~31. 밑단이 복숭아뼈 아래에서 한 번 접히는 정도.',
+  slacks:'허리 30~31. 밑단이 구두 등에 살짝 닿는 기장.',
+  shorts:'무릎 바로 위에서 끝나는 기장. 무릎을 덮으면 다리가 짧아 보인다.',
+  chunky:'굽 있는 청키 스니커즈는 키를 보태 준다. 바지 밑단을 신발 위에 살짝 얹는다.',
+  boots:'바지 밑단으로 부츠 목을 덮어 신으면 다리 선이 안 끊긴다.'
+};
+
+/* I(이름, 최저, 최고, 검색어, 옵션) — 최저~최고: 이 체감온도에서 입기 알맞음
+   옵션 w: 비에 강함(신발), r: 비에 약함(스웨이드·캔버스), t: 근거 기사, f: 핏 메모 */
+const I = (n, lo, hi, kw, o = {}) => Object.assign({n, lo, hi, kw: kw || n}, o);
+
+const MOODS = {
+minimal:{name:'미니멀', desc:'무채색, 로고 없는 옷',
+  key:['어깨선','무채색 옷은 색으로 가릴 게 없어서 핏이 그대로 보인다. 상의 어깨 봉제선이 내 어깨 끝에 오는지부터 본다.'],
+  pal:[[['블랙','#1C1C1C'],['화이트','#F4F4F2'],['차콜','#4A4A4A']],[['네이비','#1F2A44'],['그레이','#9A9A9A'],['화이트','#F4F4F2']],[['클라우드 댄서','#EFEDE8'],['블랙','#1C1C1C'],['그레이','#9A9A9A']]],
+  outer:[I('블랙 무광 숏패딩',-15,3,'무광 숏패딩',{f:'short'}),I('경량 패딩 + 차콜 울 코트 레이어드',-8,3,'울 코트',{f:'coat',t:'T7'}),I('차콜 발마칸 코트',0,9,'발마칸 코트',{f:'coat'}),I('블랙 싱글 울 코트',-3,8,'싱글 울 코트',{f:'coat'}),I('스톤 화이트 시어 경량 패딩',5,13,'시어 경량 패딩',{f:'short',t:'T2'}),I('블랙 MA-1 블루종',5,13,'MA-1 자켓',{f:'short'}),I('블랙 트렌치코트',9,15,'트렌치코트',{f:'coat'}),I('그레이 블레이저',12,19,'블레이저',{f:'blazer'}),I('차콜 니트 집업 카디건',14,21,'니트 집업 카디건',{f:'knit'}),I('화이트 오버셔츠',18,23,'오버셔츠',{f:'shirt'}),I('블랙 린넨 셔츠(걸치기)',21,26,'린넨 셔츠',{f:'shirt'})],
+  top:[I('블랙 하이넥 니트',-20,9,'하이넥 니트',{f:'knit'}),I('그레이 크루넥 울 니트',3,15,'크루넥 울 니트',{f:'knit'}),I('화이트 옥스퍼드 셔츠',12,22,'옥스퍼드 셔츠',{f:'shirt'}),I('차콜 무지 맨투맨',9,18,'무지 맨투맨',{f:'top'}),I('화이트 헤비 코튼 긴팔티',16,23,'헤비 코튼 긴팔 티셔츠',{f:'top'}),I('블랙 반팔 니트',22,28,'반팔 니트',{f:'knit'}),I('화이트 무지 반팔티',23,40,'무지 반팔 티셔츠',{f:'top'})],
+  bottom:[I('블랙 기모 슬랙스',-25,4,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-5,14,'울 슬랙스',{f:'slacks'}),I('블랙 스트레이트 데님',0,22,'블랙 스트레이트 데님',{f:'straight',t:'T4'}),I('그레이 와이드 슬랙스',5,22,'와이드 슬랙스',{f:'wide'}),I('베이지 치노 팬츠',14,27,'치노 팬츠',{f:'straight'}),I('블랙 버뮤다 팬츠',25,40,'버뮤다 팬츠',{f:'shorts'})],
+  shoes:[I('블랙 더비슈즈',-10,26,'더비슈즈',{w:1}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1}),I('블랙 첼시부츠',-20,12,'첼시부츠',{w:1,f:'boots'}),I('블랙 페니 로퍼',8,28,'페니 로퍼',{w:1}),I('블랙 레더 샌들',26,40,'레더 샌들')],
+  extra:[I('실버 메탈 시계',-40,45,'메탈 시계',{y:'무채색 코디에선 금속 하나가 밋밋함을 덜어 준다.'}),I('블랙 레더 토트백',-40,45,'레더 토트백',{y:'노트북이 들어가는 크기로. 옷에 로고가 없으니 가방 소재가 눈에 띈다.'}),I('그레이 캐시미어 머플러(묶지 말고 늘어뜨리기)',-30,7,'캐시미어 머플러',{t:'T1'}),I('블랙 레더 장갑',-30,3,'레더 장갑')]},
+
+casual:{name:'캐주얼', desc:'맨투맨·데님 데일리',
+  key:['상의 기장','맨투맨·후드가 엉덩이를 다 덮으면 다리가 짧아 보인다. 엉덩이 중간 위에서 끝나는 기장을 고른다.'],
+  pal:[[['인디고','#3B4F7A'],['그레이','#A7A7A7'],['화이트','#F4F4F2']],[['네이비','#1F2A44'],['베이지','#D8C7A8'],['화이트','#F4F4F2']],[['버건디','#6E2633'],['연청','#8FA9C9'],['크림','#F1EBDD']]],
+  outer:[I('네이비 숏패딩',-15,3,'숏패딩',{f:'short'}),I('블랙 롱패딩',-30,-3,'롱패딩',{f:'longpad'}),I('스톤 화이트 경량 패딩',5,13,'경량 패딩',{f:'short',t:'T2'}),I('네이비 더플코트',-5,7,'더플코트',{f:'coat'}),I('그레이 플리스 자켓',5,13,'플리스 자켓',{f:'short',t:'T3'}),I('바시티 자켓',6,14,'바시티 자켓',{f:'short'}),I('카키 필드 자켓',7,15,'필드 자켓',{f:'short'}),I('데님 트러커 자켓',12,20,'데님 트러커 자켓',{f:'short'}),I('그레이 후드 집업',12,20,'후드 집업',{f:'short'}),I('체크 셔츠(걸치기)',18,25,'체크 셔츠',{f:'shirt'})],
+  top:[I('기모 맨투맨',-15,9,'기모 맨투맨',{f:'top'}),I('쿼터집 스웻셔츠',5,16,'쿼터집 스웻셔츠',{f:'top',t:'T3'}),I('그레이 맨투맨',9,18,'그레이 맨투맨',{f:'top'}),I('후드티',7,17,'후드티',{f:'top'}),I('크림 케이블 니트',-5,12,'케이블 니트',{f:'knit'}),I('스트라이프 긴팔티',15,23,'스트라이프 긴팔 티셔츠',{f:'top'}),I('피케 카라 반팔티',22,32,'피케 카라티',{f:'top'}),I('로고 반팔티',23,40,'로고 반팔 티셔츠',{f:'top'})],
+  bottom:[I('기모 청바지',-25,4,'기모 청바지',{f:'straight'}),I('연청 스트레이트 데님',5,25,'연청 스트레이트 데님',{f:'straight',t:'T4'}),I('중청 배럴 진',3,22,'배럴 진',{f:'wide',t:'T4'}),I('브라운 코듀로이 팬츠',-8,12,'코듀로이 팬츠',{f:'straight'}),I('베이지 치노 팬츠',12,27,'치노 팬츠',{f:'straight'}),I('데님 반바지',26,40,'데님 반바지',{f:'shorts'}),I('카고 반바지',25,40,'카고 반바지',{f:'shorts'})],
+  shoes:[I('그레이 청키 러닝화',-5,33,'청키 러닝화',{f:'chunky',t:'T5'}),I('화이트 캔버스 스니커즈',8,33,'캔버스 스니커즈',{r:1}),I('레더 하이탑 스니커즈',-15,15,'레더 하이탑',{w:1}),I('슬립온',16,32,'슬립온',{r:1}),I('스포츠 샌들',26,40,'스포츠 샌들',{w:1})],
+  extra:[I('백팩',-40,45,'백팩',{y:'매일 들기엔 백팩이 편하다. 겉옷과 같은 계열 색이면 덜 튄다.'}),I('캔버스 에코백',-40,45,'에코백',{y:'짐이 적은 날엔 에코백 하나면 된다.'}),I('그레이 비니',-30,8,'비니'),I('네이비 볼캡',10,40,'볼캡',{cap:1,y:'머리 손질 못 한 날 제일 빠른 해결책.'})]},
+
+soft:{name:'꾸안꾸', desc:'베이지·크림 톤온톤',
+  key:['톤 맞추기','베이지·크림·브라운 안에서 밝기만 다르게 겹친다. 색이 세 가지를 넘으면 꾸민 티가 난다.'],
+  pal:[[['크림','#F1EBDD'],['오트밀','#D9CDB8'],['브라운','#6B4E3D']],[['베이지','#D8C7A8'],['화이트','#F4F4F2'],['연청','#8FA9C9']],[['카멜','#B08354'],['아이보리','#EEE9DF'],['차콜','#4A4A4A']]],
+  outer:[I('크림 숏패딩',-15,3,'크림 숏패딩',{f:'short'}),I('브라운 무스탕',-10,4,'무스탕',{f:'short'}),I('카멜 핸드메이드 코트',-3,9,'핸드메이드 코트',{f:'coat'}),I('브라운 스웨이드 자켓',8,15,'스웨이드 자켓',{f:'short',r:1}),I('베이지 트렌치코트',9,16,'트렌치코트',{f:'coat'}),I('오트밀 니트 카디건',13,21,'니트 카디건',{f:'knit'}),I('베이지 오버셔츠',16,23,'오버셔츠',{f:'shirt'}),I('화이트 린넨 셔츠(걸치기)',21,27,'린넨 셔츠',{f:'shirt'})],
+  top:[I('오트밀 터틀넥 니트',-15,9,'터틀넥 니트',{f:'knit'}),I('크림 케이블 니트',-5,13,'케이블 니트',{f:'knit'}),I('아이보리 브이넥 니트 + 화이트 티',9,18,'브이넥 니트',{f:'knit'}),I('연청 스트라이프 셔츠',14,23,'스트라이프 셔츠',{f:'shirt'}),I('화이트 루즈핏 긴팔티',16,23,'루즈핏 긴팔 티셔츠',{f:'top'}),I('베이지 반팔 니트',21,28,'반팔 니트',{f:'knit'}),I('화이트 헤비 코튼 반팔티',23,40,'헤비 코튼 반팔',{f:'top'}),I('반팔 린넨 셔츠',25,40,'반팔 린넨 셔츠',{f:'shirt'})],
+  bottom:[I('기모 와이드 데님',-25,4,'기모 와이드 데님',{f:'wide'}),I('브라운 코듀로이 팬츠',-8,12,'코듀로이 팬츠',{f:'straight'}),I('베이지 와이드 슬랙스',3,20,'와이드 슬랙스',{f:'wide'}),I('연청 와이드 데님',5,25,'연청 와이드 데님',{f:'wide'}),I('아이보리 코튼 팬츠',12,27,'코튼 팬츠',{f:'straight'}),I('린넨 반바지',25,40,'린넨 반바지',{f:'shorts'})],
+  shoes:[I('브라운 스웨이드 앵클부츠',-10,12,'스웨이드 부츠',{r:1,f:'boots'}),I('베이지 스웨이드 스니커즈',3,22,'스웨이드 스니커즈',{r:1}),I('브라운 로퍼',8,28,'브라운 로퍼',{w:1}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1}),I('브라운 레더 샌들',26,40,'레더 샌들')],
+  extra:[I('오트밀 울 머플러(묶지 말고 늘어뜨리기)',-30,8,'울 머플러',{t:'T1'}),I('얇은 니트를 어깨에 두르기',17,23,'얇은 니트',{t:'T1'}),I('캔버스 토트백',-40,45,'캔버스 토트백',{y:'아이보리 캔버스 가방은 베이지 톤을 깨지 않는다.'}),I('동그란 뿔테 안경',-40,45,'뿔테 안경',{y:'얼굴 쪽에 브라운 톤이 하나 더 생겨 위아래 톤이 이어진다.'})]},
+
+street:{name:'스트릿', desc:'오버핏·그래픽',
+  key:['볼륨 대비','상의를 크게 입으면 하의는 일자로, 하의가 넓으면 상의는 짧게. 위아래가 다 크면 옷에 묻힌다.'],
+  pal:[[['블랙','#1C1C1C'],['그레이','#9A9A9A'],['화이트','#F4F4F2']],[['카키','#5C5E3D'],['블랙','#1C1C1C'],['오렌지','#D9692B']],[['네이비','#1F2A44'],['레드','#B23A3A'],['그레이','#A7A7A7']]],
+  outer:[I('블랙 오버핏 숏패딩',-20,4,'오버핏 숏패딩',{f:'short'}),I('레드 숏패딩',-15,3,'레드 숏패딩',{f:'short',t:'T6'}),I('블랙 MA-1 블루종',3,13,'MA-1 자켓',{f:'short'}),I('바시티 자켓',6,15,'바시티 자켓',{f:'short'}),I('블랙 워크 자켓',9,17,'워크 자켓',{f:'short'}),I('트랙 자켓',13,21,'트랙 자켓',{f:'short',t:'T6'}),I('오버핏 후드 집업',12,20,'오버핏 후드 집업',{f:'short'}),I('오버핏 체크 셔츠(걸치기)',19,25,'오버핏 체크 셔츠',{f:'shirt'})],
+  top:[I('기모 오버핏 후드티',-15,10,'기모 후드티',{f:'over'}),I('그래픽 맨투맨',8,18,'그래픽 맨투맨',{f:'over'}),I('그래픽 롱슬리브',15,23,'그래픽 롱슬리브',{f:'over'}),I('축구 저지 반팔',22,32,'축구 저지',{f:'over'}),I('그래픽 오버핏 반팔티',23,40,'그래픽 반팔 티셔츠',{f:'over'})],
+  bottom:[I('기모 조거 팬츠',-20,5,'기모 조거 팬츠',{f:'straight'}),I('흑청 와이드 데님',0,22,'흑청 와이드 데님',{f:'wide'}),I('블랙 카고 팬츠',3,24,'카고 팬츠',{f:'wide'}),I('디스트로이드 진',8,24,'디스트로이드 진',{f:'straight',t:'T4'}),I('트랙 팬츠',10,24,'트랙 팬츠',{f:'straight',t:'T6'}),I('카고 반바지',25,40,'카고 반바지',{f:'shorts'})],
+  shoes:[I('블랙 청키 스니커즈',-5,30,'청키 스니커즈',{f:'chunky',t:'T5'}),I('레더 하이탑 스니커즈',-10,20,'레더 하이탑',{w:1}),I('스케이트화',8,32,'스케이트화',{r:1}),I('블랙 워커 부츠',-20,12,'워커 부츠',{w:1,f:'boots'}),I('슬라이드 + 화이트 양말',26,40,'슬라이드')],
+  extra:[I('블랙 비니',-30,10,'비니'),I('볼캡',10,40,'볼캡',{cap:1,y:'상의 볼륨이 큰 만큼 머리 쪽에도 무게를 얹어 균형을 맞춘다.'}),I('나일론 크로스백',-40,45,'나일론 크로스백',{y:'오버핏 상의 위로 메면 끈이 몸통 선을 잡아 준다.'}),I('실버 체인 목걸이',-40,45,'체인 목걸이',{y:'그래픽 티 위에 하나만. 두 개부터는 과하다.'})]},
+
+formal:{name:'단정', desc:'발표·면접날',
+  key:['구김','앞에 서면 셔츠 깃과 소매 구김이 제일 먼저 보인다. 전날 다려서 걸어 둔다.'],
+  pal:[[['네이비','#1F2A44'],['화이트','#F4F4F2'],['그레이','#9A9A9A']],[['차콜','#4A4A4A'],['연하늘','#C9D8EA'],['블랙','#1C1C1C']],[['베이지','#D8C7A8'],['화이트','#F4F4F2'],['네이비','#1F2A44']]],
+  outer:[I('경량 패딩 + 차콜 울 코트 레이어드',-15,2,'울 코트',{f:'coat',t:'T7'}),I('차콜 싱글 코트',-5,8,'싱글 코트',{f:'coat'}),I('네이비 체스터필드 코트',-3,9,'체스터필드 코트',{f:'coat'}),I('베이지 트렌치코트',8,16,'트렌치코트',{f:'coat'}),I('네이비 블레이저',11,20,'네이비 블레이저',{f:'blazer'}),I('그레이 블레이저',12,21,'그레이 블레이저',{f:'blazer'}),I('네이비 니트 카디건',16,22,'니트 카디건',{f:'knit'}),I('블레이저(이동 중엔 손에 들기)',21,27,'썸머 블레이저',{f:'blazer'})],
+  top:[I('네이비 터틀넥 니트',-15,9,'터틀넥 니트',{f:'knit'}),I('화이트 셔츠 + 네이비 브이넥 니트',-5,12,'브이넥 니트',{f:'shirt'}),I('셔츠 + 니트 베스트',8,17,'니트 베스트',{f:'shirt'}),I('화이트 드레스 셔츠',10,26,'드레스 셔츠',{f:'shirt'}),I('연하늘 옥스퍼드 셔츠',10,26,'옥스퍼드 셔츠',{f:'shirt'}),I('화이트 반팔 셔츠',26,40,'반팔 셔츠',{f:'shirt'})],
+  bottom:[I('차콜 기모 슬랙스',-25,3,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-10,15,'울 슬랙스',{f:'slacks'}),I('네이비 슬랙스',5,24,'네이비 슬랙스',{f:'slacks'}),I('베이지 치노 슬랙스',12,28,'치노 슬랙스',{f:'slacks'}),I('그레이 린넨 슬랙스',24,40,'린넨 슬랙스',{f:'slacks'})],
+  shoes:[I('블랙 더비슈즈',-15,30,'더비슈즈',{w:1}),I('블랙 페니 로퍼',5,30,'페니 로퍼',{w:1}),I('브라운 로퍼',8,30,'브라운 로퍼',{w:1}),I('블랙 첼시부츠',-20,10,'첼시부츠',{w:1,f:'boots'})],
+  extra:[I('가죽 시계',-40,45,'가죽 시계',{y:'발표할 때 손이 생각보다 많이 보인다. 메탈보다 가죽 줄이 차분하다.'}),I('서류 가방',-40,45,'서류가방',{y:'백팩 끈은 블레이저·코트 어깨를 구긴다. 손에 드는 가방으로.'}),I('차콜 머플러',-30,5,'머플러'),I('가죽 장갑',-30,2,'가죽 장갑')]},
+
+amekaji:{name:'아메카지', desc:'워크웨어·빈티지',
+  key:['소재감','데님·덕 캔버스·코듀로이처럼 결이 보이는 소재를 두 가지 이상 겹친다. 색은 브라운·올리브·인디고 안에서.'],
+  pal:[[['올리브','#5C5E3D'],['브라운','#6B4E3D'],['크림','#F1EBDD']],[['인디고','#2E3B5C'],['머스타드','#B88A2E'],['아이보리','#EEE9DF']],[['버건디','#6E2633'],['카키','#7C7A55'],['데님','#5A7BA6']]],
+  outer:[I('N-3B 파카',-20,3,'N-3B',{f:'short'}),I('카멜 더플코트',-5,7,'더플코트',{f:'coat'}),I('브라운 보아 플리스 자켓',4,10,'보아 플리스',{f:'short',t:'T3'}),I('M-65 필드 자켓',6,15,'M-65',{f:'short'}),I('올리브 헌팅 자켓',7,15,'헌팅 자켓',{f:'short'}),I('브라운 덕 캔버스 초어 자켓',8,17,'초어 자켓',{f:'short'}),I('숄칼라 카디건',10,18,'숄칼라 카디건',{f:'knit'}),I('데님 트러커 자켓',12,20,'데님 트러커 자켓',{f:'short'}),I('샴브레이 셔츠(걸치기)',18,25,'샴브레이 셔츠',{f:'shirt'})],
+  top:[I('코위찬 패턴 니트',-10,10,'코위찬 니트',{f:'knit',t:'T3'}),I('크림 피셔맨 니트',-10,12,'피셔맨 니트',{f:'knit'}),I('빈티지 로고 기모 스웻셔츠',-10,12,'빈티지 스웻셔츠',{f:'top'}),I('플란넬 체크 셔츠',8,19,'플란넬 셔츠',{f:'shirt'}),I('웨스턴 데님 셔츠',12,22,'웨스턴 셔츠',{f:'shirt'}),I('헨리넥 와플 티',14,22,'헨리넥 티셔츠',{f:'top'}),I('빈티지 프린팅 반팔티',23,40,'빈티지 반팔 티셔츠',{f:'top'}),I('알로하 셔츠',26,40,'알로하 셔츠',{f:'shirt'})],
+  bottom:[I('기모 데님',-25,3,'기모 데님',{f:'straight'}),I('셀비지 생지 데님',-5,22,'셀비지 데님',{f:'straight'}),I('브라운 코듀로이 팬츠',-10,12,'코듀로이 팬츠',{f:'straight'}),I('올리브 퍼티그 팬츠',5,25,'퍼티그 팬츠',{f:'wide'}),I('화이트 페인터 팬츠',14,28,'페인터 팬츠',{f:'wide'}),I('치노 반바지',25,40,'치노 반바지',{f:'shorts'})],
+  shoes:[I('브라운 워크부츠',-20,15,'워크부츠',{w:1,f:'boots'}),I('스웨이드 데저트부츠',0,18,'데저트부츠',{r:1}),I('브라운 로퍼',8,28,'브라운 로퍼',{w:1}),I('캔버스 하이탑',8,30,'캔버스 하이탑',{r:1}),I('보트슈즈',18,32,'보트슈즈',{w:1}),I('레더 샌들',26,40,'레더 샌들')],
+  extra:[I('머스타드 비니',-30,8,'비니'),I('브라운 가죽 벨트',-40,45,'가죽 벨트',{y:'셔츠를 넣어 입으면 벨트가 보인다. 신발 색과 맞춘다.'}),I('아이보리 캔버스 토트백',-40,45,'캔버스 토트백',{y:'덕 캔버스·데님과 같은 거친 결이라 잘 붙는다.'}),I('워싱 볼캡',10,40,'워싱 볼캡',{cap:1,y:'물 빠진 색이 빈티지 옷과 결이 맞는다.'}),I('반다나',15,40,'반다나',{y:'목에 짧게 묶거나 뒷주머니에. 무늬는 한 곳에만.'})]},
+
+gorp:{name:'고프코어', desc:'아웃도어 기능성',
+  key:['강한 색은 한 곳만','블랙·올리브 바탕에 오렌지나 라임 같은 색을 신발이나 모자 한 곳에만 둔다.'],
+  pal:[[['블랙','#1C1C1C'],['올리브','#5C5E3D'],['오렌지','#D9692B']],[['그레이','#8E8E8E'],['네이비','#1F2A44'],['라임','#9CB33B']],[['카키','#7C7A55'],['베이지','#D8C7A8'],['블랙','#1C1C1C']]],
+  outer:[I('구스 다운 파카',-30,2,'구스 다운 파카',{f:'short'}),I('립스탑 나일론 숏패딩',-15,4,'립스탑 숏패딩',{f:'short',t:'T7'}),I('플리스 자켓',5,13,'플리스 자켓',{f:'short',t:'T3'}),I('경량 패딩',4,12,'경량 패딩',{f:'short',t:'T2'}),I('방수 셸 자켓',5,16,'방수 셸 자켓',{f:'short'}),I('소프트셸 자켓',8,17,'소프트셸 자켓',{f:'short'}),I('바람막이',12,21,'바람막이',{f:'short'}),I('아노락',13,21,'아노락',{f:'short'}),I('패커블 바람막이(가방에)',19,26,'패커블 바람막이',{f:'short'})],
+  top:[I('베이스레이어 + 기모 맨투맨',-20,8,'기모 맨투맨',{f:'top'}),I('플리스 하프집업',-5,12,'플리스 하프집업',{f:'top',t:'T3'}),I('메리노 울 긴팔',5,16,'메리노 울 긴팔',{f:'top'}),I('그리드 플리스 크루넥',8,17,'그리드 플리스',{f:'top'}),I('드라이 긴팔티',15,23,'드라이 긴팔',{f:'top'}),I('아웃도어 그래픽 반팔티',21,30,'아웃도어 반팔 티셔츠',{f:'top'}),I('쿨링 반팔티',24,40,'쿨링 반팔',{f:'top'})],
+  bottom:[I('기모 트레킹 팬츠',-20,8,'기모 트레킹 팬츠',{f:'straight'}),I('소프트셸 팬츠',-5,14,'소프트셸 팬츠',{f:'straight'}),I('나일론 카고 팬츠',8,26,'나일론 카고 팬츠',{f:'wide'}),I('립스탑 조거 팬츠',10,25,'립스탑 조거',{f:'straight'}),I('나일론 반바지',24,40,'나일론 반바지',{f:'shorts'})],
+  shoes:[I('방한 패딩 부츠',-30,2,'패딩 부츠',{w:1,f:'boots'}),I('방수 하이킹 스니커 부츠',-20,16,'하이킹 부츠',{w:1,t:'T5',f:'boots'}),I('어프로치 슈즈',0,22,'어프로치 슈즈',{t:'T5'}),I('트레일 러닝화',0,32,'트레일 러닝화',{f:'chunky'}),I('스트랩 스포츠 샌들',24,40,'스포츠 샌들',{w:1})],
+  extra:[I('넥 게이터',-30,5,'넥워머',{t:'T6'}),I('플리스 장갑',-30,3,'플리스 장갑'),I('나일론 크로스백',-40,45,'나일론 크로스백',{y:'겉옷과 같은 나일론이라 따로 놀지 않는다. 강한 색을 여기 둬도 된다.'}),I('캠프캡',10,40,'캠프캡',{cap:1,y:'챙이 납작한 캠프캡이 볼캡보다 아웃도어 느낌이 난다.'}),I('버킷햇',15,40,'버킷햇',{cap:1,y:'챙이 사방으로 있어 햇빛을 넓게 가린다.'})]},
+
+preppy:{name:'프레피 믹스', desc:'타이 셔츠 + 캐주얼 겉옷', t:'T1',
+  key:['단정함과 캐주얼의 대비','안쪽은 셔츠·타이로 단정하게, 겉옷은 후드 집업·패딩·바시티처럼 캐주얼하게. 바지까지 슬랙스·치노로 단정하게 둬야 일부러 섞은 걸로 보인다.'],
+  pal:[[['네이비','#1F2A44'],['화이트','#F4F4F2'],['버건디','#6E2633']],[['그레이','#9A9A9A'],['연하늘','#C9D8EA'],['네이비','#1F2A44']],[['브라운','#6B4E3D'],['크림','#F1EBDD'],['그린','#2F4A3A']]],
+  outer:[I('네이비 숏패딩',-15,4,'숏패딩',{f:'short',t:'T1'}),I('더플코트',-5,7,'더플코트',{f:'coat'}),I('경량 패딩',4,12,'경량 패딩',{f:'short',t:'T2'}),I('네이비 바시티 자켓',6,14,'바시티 자켓',{f:'short'}),I('그레이 후드 집업',10,19,'후드 집업',{f:'short',t:'T1'}),I('코듀로이 트러커 자켓',10,18,'코듀로이 자켓',{f:'short'}),I('브이넥 크리켓 카디건',15,22,'크리켓 카디건',{f:'knit'}),I('네이비 나일론 코치 자켓',15,23,'코치 자켓',{f:'short'})],
+  top:[I('옥스퍼드 셔츠 + 스키니 타이 + 크루넥 니트',-5,12,'크루넥 니트',{f:'shirt',t:'T6'}),I('셔츠 + 타이 + 쿼터집 니트',5,15,'쿼터집 니트',{f:'shirt',t:'T3'}),I('셔츠 + 타이 + 케이블 니트 베스트',10,18,'니트 베스트',{f:'shirt'}),I('스트라이프 셔츠 + 니트 타이',12,22,'니트 타이',{f:'shirt',t:'T1'}),I('럭비 셔츠',12,20,'럭비 셔츠',{f:'top'}),I('피케 카라 반팔티',22,32,'피케 카라티',{f:'top'}),I('반팔 옥스퍼드 셔츠',25,40,'반팔 옥스퍼드 셔츠',{f:'shirt'})],
+  bottom:[I('차콜 기모 슬랙스',-25,3,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-10,15,'울 슬랙스',{f:'slacks'}),I('그레이 플란넬 슬랙스',-5,14,'플란넬 슬랙스',{f:'slacks'}),I('네이비 치노 팬츠',5,24,'네이비 치노 팬츠',{f:'straight'}),I('베이지 치노 팬츠',10,27,'치노 팬츠',{f:'straight'}),I('치노 반바지',25,40,'치노 반바지',{f:'shorts'})],
+  shoes:[I('브라운 페니 로퍼 + 화이트 양말',5,30,'페니 로퍼',{w:1}),I('레더 첼시부츠',-20,10,'첼시부츠',{w:1,t:'T1',f:'boots'}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1,t:'T1'}),I('더비슈즈',-10,28,'더비슈즈',{w:1})],
+  extra:[I('타탄 체크 머플러',-30,8,'체크 머플러',{t:'T6'}),I('레더 숄더백',-40,45,'레더 숄더백',{y:'겉옷이 캐주얼한 만큼 가방은 가죽으로 단정한 쪽에 무게를 둔다.'}),I('뿔테 안경',-40,45,'뿔테 안경',{y:'셔츠·타이 차림에 안경이 더해지면 프레피 인상이 분명해진다.'}),I('화이트 크루 양말',-40,45,'크루 양말',{y:'로퍼와 바지 밑단 사이로 흰 양말이 살짝 보이게.'})]},
+
+dark:{name:'올블랙', desc:'소재로 차이 내는 블랙', t:'T1',
+  key:['소재 대비','전부 블랙이면 소재로 차이를 낸다. 가죽·유광 나일론·실키 셔츠처럼 빛나는 것 하나에 매트한 울·면을 섞는다.'],
+  pal:[[['블랙','#111111'],['차콜','#3A3A3A'],['실버','#B8B8B8']],[['블랙','#111111'],['다크 브라운','#3B2A22'],['차콜','#3A3A3A']],[['블랙','#111111'],['다크 버건디','#4A1F27'],['그레이','#8E8E8E']]],
+  outer:[I('블랙 유광 숏패딩',-15,4,'유광 숏패딩',{f:'short'}),I('블랙 롱 울 코트',-5,9,'블랙 롱코트',{f:'coat',t:'T1'}),I('블랙 레더 블루종',5,14,'레더 블루종',{f:'short',t:'T6'}),I('블랙 광택 레더 자켓',6,15,'레더 자켓',{f:'short',t:'T1'}),I('블랙 블레이저',12,20,'블랙 블레이저',{f:'blazer'}),I('블랙 니트 카디건',15,22,'블랙 카디건',{f:'knit'}),I('블랙 오버셔츠',18,24,'블랙 오버셔츠',{f:'shirt'})],
+  top:[I('블랙 매트 터틀넥 니트',-15,10,'블랙 터틀넥',{f:'knit'}),I('블랙 모헤어 니트',-5,12,'모헤어 니트',{f:'knit'}),I('블랙 실키 셔츠',12,24,'블랙 셔츠',{f:'shirt',t:'T1'}),I('블랙 헤비 긴팔티',15,23,'블랙 긴팔 티셔츠',{f:'top'}),I('블랙 반팔 니트',22,30,'블랙 반팔 니트',{f:'knit'}),I('블랙 무지 반팔티',23,40,'블랙 무지 반팔',{f:'top'})],
+  bottom:[I('블랙 기모 슬랙스',-25,4,'블랙 기모 슬랙스',{f:'slacks'}),I('블랙 매트 울 슬랙스',-8,18,'블랙 울 슬랙스',{f:'slacks',t:'T1'}),I('블랙 스트레이트 데님',0,22,'블랙 스트레이트 데님',{f:'straight',t:'T6'}),I('블랙 와이드 슬랙스',8,26,'블랙 와이드 슬랙스',{f:'wide'}),I('블랙 버뮤다 팬츠',25,40,'블랙 버뮤다 팬츠',{f:'shorts'})],
+  shoes:[I('블랙 레더 첼시부츠',-20,15,'첼시부츠',{w:1,f:'boots'}),I('블랙 더비슈즈',-10,28,'더비슈즈',{w:1}),I('블랙 레더 스니커즈',5,32,'블랙 레더 스니커즈',{w:1}),I('블랙 레더 샌들',26,40,'레더 샌들')],
+  extra:[I('실버 반지',-40,45,'실버 반지',{y:'올블랙에선 은색 하나가 유일한 밝은 점이 된다.'}),I('블랙 머플러(묶지 말고 늘어뜨리기)',-30,8,'블랙 머플러',{t:'T1'}),I('블랙 레더 장갑',-30,3,'레더 장갑'),I('블랙 레더 크로스백',-40,45,'레더 크로스백',{y:'광택 있는 가죽 가방이 매트한 옷과 대비를 만든다.'})]}
+};
+
+const RAIN_SHOES = [I('방수 스니커즈',-5,27,'방수 스니커즈',{w:1}),I('숏 레인부츠',3,23,'숏 레인부츠',{w:1,f:'boots'}),I('방수 방한 부츠',-30,5,'방수 부츠',{w:1,f:'boots'}),I('스트랩 스포츠 샌들(장마용)',24,40,'스포츠 샌들',{w:1})];
+const SNOW_SHOES = [I('미끄럼 방지 밑창 방한 부츠',-30,5,'방한 부츠',{w:1,f:'boots'})];
+
+const CITIES = [['서울',37.566,126.9784],['인천',37.4565,126.7052],['수원',37.2782,127.0316],['춘천',37.883,127.7289],['강릉',37.7527,128.8724],['대전',36.3502,127.3848],['세종',36.5925,127.2922],['청주',36.6372,127.4897],['전주',35.8248,127.148],['광주',35.1547,126.9156],['대구',35.871,128.6012],['울산',35.5392,129.3124],['부산',35.1017,129.03],['제주',33.5097,126.5219]];
+
+const WMO = {0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',45:'안개',48:'안개',51:'약한 이슬비',53:'이슬비',55:'강한 이슬비',56:'어는 이슬비',57:'어는 이슬비',61:'약한 비',63:'비',65:'강한 비',66:'어는 비',67:'어는 비',71:'약한 눈',73:'눈',75:'강한 눈',77:'싸락눈',80:'약한 소나기',81:'소나기',82:'강한 소나기',85:'소낙눈',86:'강한 소낙눈',95:'뇌우',96:'우박·뇌우',99:'우박·뇌우'};
+const isRainCode = c => (c>=51&&c<=67)||(c>=80&&c<=82)||c>=95;
+const isSnowCode = c => (c>=71&&c<=77)||c===85||c===86;
+const sev = c => isSnowCode(c)?5: c>=95?6: isRainCode(c)?4: c>=45&&c<=48?2: c===3?1:0;
+
+function band(t){
+  t = Math.round(t);
+  if (t>=28) return '반팔·린넨';
+  if (t>=23) return '반팔·얇은 셔츠';
+  if (t>=20) return '얇은 긴팔·가디건';
+  if (t>=17) return '맨투맨·얇은 니트';
+  if (t>=12) return '자켓·가디건';
+  if (t>=9) return '트렌치코트·야상';
+  if (t>=5) return '코트·발열 내의';
+  return '패딩·목도리';
+}
+
+/* ---------- 상태 ---------- */
+const KEY = 'outfit-guide-v1';
+const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } })();
+const S0 = {city:'서울', lat:37.566, lon:126.9784, day:0, start:9, end:18, sens:0, mood:'minimal'};
+const st = Object.assign({}, S0, saved);
+if (!MOODS[st.mood]) st.mood = 'minimal';
+st.shuffle = 0;
+let wx = null, lastFetch = 0, fetching = false;
+const save = () => { const {shuffle, ...rest} = st; try { localStorage.setItem(KEY, JSON.stringify(rest)); } catch(e){} };
+
+/* ---------- 컨트롤 ---------- */
+function buildCity(){
+  const sel = $('#city');
+  let html = '';
+  const inList = CITIES.some(c => c[0] === st.city);
+  if (!inList) html += `<option value="__cur">${esc(st.city)}</option>`;
+  html += CITIES.map(c => `<option value="${esc(c[0])}">${esc(c[0])}</option>`).join('');
+  html += '<option value="__search">다른 지역 검색…</option>';
+  sel.innerHTML = html;
+  sel.value = inList ? st.city : '__cur';
+}
+function buildHours(){
+  const s = $('#start'), e = $('#end');
+  s.innerHTML = Array.from({length:19},(_,i)=>i+5).map(h=>`<option value="${h}">${h}시</option>`).join('');
+  e.innerHTML = Array.from({length:19},(_,i)=>i+5).map(h=>`<option value="${h}">${h}시</option>`).join('');
+  s.value = st.start; e.value = st.end;
+}
+function buildMoods(){
+  $('#moods').innerHTML = Object.entries(MOODS).map(([k,m]) =>
+    `<button type="button" data-k="${k}" aria-pressed="${k===st.mood}"><b>${esc(m.name)}</b><span>${esc(m.desc)}</span></button>`).join('');
+}
+function syncSeg(id, v){ document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === Number(v)))); }
+
+$('#city').addEventListener('change', e => {
+  const v = e.target.value;
+  if (v === '__search') { $('#search').classList.add('on'); $('#q').focus(); return; }
+  $('#search').classList.remove('on');
+  if (v === '__cur') return;
+  const c = CITIES.find(x => x[0] === v);
+  Object.assign(st, {city:c[0], lat:c[1], lon:c[2]}); save(); buildCity(); load(true);
+});
+$('#geo').addEventListener('click', () => {
+  if (!navigator.geolocation) { alert('이 브라우저는 위치 기능을 지원하지 않는다.'); return; }
+  $('#geo').textContent = '찾는 중…';
+  navigator.geolocation.getCurrentPosition(p => {
+    $('#geo').textContent = '현재 위치';
+    Object.assign(st, {city:'현재 위치', lat:+p.coords.latitude.toFixed(4), lon:+p.coords.longitude.toFixed(4)});
+    save(); buildCity(); load(true);
+  }, err => {
+    $('#geo').textContent = '현재 위치';
+    alert('위치를 못 가져왔다. 브라우저 위치 권한을 확인하거나 목록에서 지역을 골라 줘. (' + err.message + ')');
+  }, {timeout:10000, maximumAge:600000});
+});
+async function search(){
+  const q = $('#q').value.trim();
+  const ul = $('#results');
+  if (!q) return;
+  ul.innerHTML = '<li class="msg">찾는 중…</li>';
+  try {
+    // 한글 지명은 '천안'보다 '천안시'로 등록된 경우가 많아서 시·광역시·특별시를 붙여 같이 찾는다
+    const variants = [q];
+    if (/[가-힣]$/.test(q) && !/(시|군|도)$/.test(q)) variants.push(q + '시', q + '광역시', q + '특별시');
+    const all = await Promise.all(variants.map(v =>
+      fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=10&language=ko&format=json`)
+        .then(r => r.ok ? r.json() : {}).catch(() => ({}))));
+    const seen = new Set(); let res = [];
+    all.forEach(j => (j.results || []).forEach(x => { if (!seen.has(x.id)) { seen.add(x.id); res.push(x); } }));
+    const krFirst = /[가-힣]/.test(q);  // 한글로 찾으면 국내 지명을 위로, 영어로 찾으면 인구순만
+    res = res.filter(x => /^PPL/.test(x.feature_code || 'PPL'))
+      .sort((a,b) => (krFirst ? (b.country_code === 'KR') - (a.country_code === 'KR') : 0) || (b.population||0) - (a.population||0))
+      .slice(0,8);
+    if (!res.length) { ul.innerHTML = '<li class="msg">결과가 없다. 구 단위(강남구 등)는 이 검색에 없어서, 가까운 시 이름이나 영어 이름(예: Cheonan)으로 찾아봐.</li>'; return; }
+    ul.innerHTML = res.map((x,i) => `<li><button type="button" data-i="${i}">${esc(x.name)} · ${esc([x.admin1, x.country].filter(Boolean).join(', '))}</button></li>`).join('');
+    ul.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      const x = res[+b.dataset.i];
+      Object.assign(st, {city:x.name, lat:+x.latitude.toFixed(4), lon:+x.longitude.toFixed(4)});
+      save(); $('#search').classList.remove('on'); ul.innerHTML=''; buildCity(); load(true);
+    }));
+  } catch(e) { ul.innerHTML = '<li class="msg">검색에 실패했다. 인터넷 연결을 확인해 줘.</li>'; }
+}
+$('#qgo').addEventListener('click', search);
+$('#q').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+$('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; st.shuffle = 0; save(); syncSeg('day', st.day); render(); });
+$('#sens').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.sens = +b.dataset.v; save(); syncSeg('sens', st.sens); render(); });
+$('#start').addEventListener('change', e => { st.start = +e.target.value; if (st.end < st.start) { st.end = st.start; $('#end').value = st.end; } save(); render(); });
+$('#end').addEventListener('change', e => { st.end = +e.target.value; if (st.end < st.start) { st.start = st.end; $('#start').value = st.start; } save(); render(); });
+$('#moods').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  st.mood = b.dataset.k; st.shuffle = 0; save();
+  document.querySelectorAll('#moods button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  render();
+});
+
+/* ---------- 날씨 ---------- */
+async function load(force){
+  if (fetching) return;
+  if (!force && wx && Date.now() - lastFetch < 30*60*1000) return;
+  fetching = true;
+  if (!wx) $('#wx').innerHTML = '<p class="msg">날씨 불러오는 중…</p>';
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${st.lat}&longitude=${st.lon}`
+    + '&current=temperature_2m,apparent_temperature,weather_code'
+    + '&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,relative_humidity_2m'
+    + '&daily=uv_index_max&wind_speed_unit=ms&timezone=auto&forecast_days=3';
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    wx = await r.json();
+    lastFetch = Date.now();
+    render();
+  } catch(e) {
+    $('#wx').innerHTML = `<p class="msg">날씨를 못 불러왔다 (${esc(e.message)}). 인터넷 연결을 확인하고 <button class="plain" type="button" id="retry">다시 시도</button></p>`;
+    $('#retry').addEventListener('click', () => load(true));
+    $('#point').hidden = true; $('#outfit').hidden = true;
+  } finally { fetching = false; }
+}
+setInterval(() => { if (document.visibilityState === 'visible') load(false); }, 60*1000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') load(false); });
+
+/* ---------- 계산 ---------- */
+const DOW = ['일','월','화','수','목','금','토'];
+const r0 = x => Math.round(x);
+const deg = x => `${r0(x)}°`;
+// 체질 보정이 켜져 있으면 표에 나온 실제 체감과 보정값을 같이 보여 준다
+const fx = adj => st.sens ? `${deg(adj - st.sens)}(체질 보정 ${deg(adj)})` : deg(adj);
+function hashStr(s){ let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+const dist = (i,t) => t < i.lo ? i.lo - t : t > i.hi ? t - i.hi : 0;
+function pick(list, t, seed, filt, preferSeasonal, strict){
+  let pool = filt ? list.filter(filt) : list.slice();
+  let fit = pool.filter(i => t >= i.lo && t <= i.hi);
+  if (!fit.length) {
+    // 딱 맞는 게 없으면 4° 안쪽으로 벗어난 것만 빌려 온다. strict면 그것도 없을 때 비워서 대체 목록으로 넘긴다.
+    const near = pool.slice().sort((a,b) => dist(a,t) - dist(b,t));
+    fit = near.filter(i => dist(i,t) <= 4).slice(0,2);
+    if (!fit.length && !strict) fit = near.slice(0,1);
+  }
+  if (!fit.length) return {main:null, alts:[]};
+  // 소품: 머플러·장갑·볼캡처럼 그날 날씨에만 맞는 것을 사계절용(시계·가방)보다 먼저
+  const seasonal = preferSeasonal ? fit.filter(i => i.hi - i.lo < 60) : [];
+  const from = seasonal.length ? seasonal : fit;
+  const main = from[(seed + st.shuffle) % from.length];
+  const alts = fit.filter(x => x !== main).slice(0,2);
+  return {main, alts};
+}
+
+function analyse(){
+  const H = wx.hourly, today = wx.current.time.slice(0,10);
+  const dates = [...new Set(H.time.map(t => t.slice(0,10)))];
+  const date = dates[dates.indexOf(today) + st.day] || today;
+  const nowH = +wx.current.time.slice(11,13);
+  let s = st.start, e = st.end;
+  let fromNow = false;
+  if (st.day === 0 && nowH > s) { s = nowH; fromNow = true; }
+  if (s > e) return {date, past:true};
+  const idx = [];
+  H.time.forEach((t,i) => { if (t.slice(0,10) === date) { const h = +t.slice(11,13); if (h >= s && h <= e) idx.push(i); } });
+  if (!idx.length) return {date, past:true};
+  const g = k => idx.map(i => H[k][i]);
+  const hours = idx.map(i => +H.time[i].slice(11,13));
+  const feels = g('apparent_temperature'), temps = g('temperature_2m'), prob = g('precipitation_probability').map(x => x ?? 0),
+        prec = g('precipitation').map(x => x ?? 0), codes = g('weather_code'), wind = g('wind_speed_10m'), hum = g('relative_humidity_2m');
+  const iMin = feels.indexOf(Math.min(...feels)), iMax = feels.indexOf(Math.max(...feels));
+  const pMax = Math.max(...prob), iP = prob.indexOf(pMax);
+  const precSum = prec.reduce((a,b) => a+b, 0);
+  const di = wx.daily.time.indexOf(date);
+  const uv = di >= 0 ? wx.daily.uv_index_max[di] : null;
+  const worst = codes.reduce((a,c) => sev(c) > sev(a) ? c : a, codes[0]);
+  const adj = st.sens;
+  return {
+    date, s, e, fromNow, hours, feels, temps, prob, prec, codes,
+    tOuter: feels[iMin] + adj, hOuter: hours[iMin],
+    tTop: feels[iMax] + adj, hTop: hours[iMax],
+    tMid: feels.reduce((a,b) => a+b, 0) / feels.length + adj,
+    tMinRaw: Math.min(...temps), tMaxRaw: Math.max(...temps),
+    feelMinRaw: feels[iMin], feelMaxRaw: feels[iMax],
+    diurnal: Math.max(...temps) - Math.min(...temps),
+    pMax, hP: hours[iP], precSum,
+    rainy: codes.some(isRainCode) || precSum >= 0.5 || pMax >= 60,
+    maybeRain: pMax >= 30,
+    snowy: codes.some(isSnowCode),
+    hSnow: hours[Math.max(0, codes.findIndex(isSnowCode))],
+    windMax: Math.max(...wind), humAvg: hum.reduce((a,b) => a+b, 0) / hum.length,
+    uv, worst
+  };
+}
+
+/* ---------- 그리기 ---------- */
+function render(){
+  if (!wx) return;
+  const A = analyse();
+  const d = new Date(A.date + 'T12:00:00');
+  const dLabel = `${d.getMonth()+1}월 ${d.getDate()}일(${DOW[d.getDay()]})`;
+  const upd = wx.current.time.slice(11,16);
+  const place = st.city === '현재 위치' ? `현재 위치 (${st.lat}, ${st.lon})` : st.city;
+
+  if (A.past) {
+    $('#wx').innerHTML = `<p class="place">${esc(place)} · ${dLabel}</p><p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
+    $('#toTmr').addEventListener('click', () => { st.day = 1; save(); syncSeg('day', 1); render(); });
+    $('#point').hidden = true; $('#outfit').hidden = true;
+    return;
+  }
+
+  const win = A.fromNow ? `지금(${A.s}시)~${A.e}시` : `${A.s}~${A.e}시`;
+  const sensNote = st.sens ? ` · 체질 보정 ${st.sens > 0 ? '+' : ''}${st.sens}° 적용` : '';
+  const cur = wx.current;
+  const curLine = st.day === 0 ? ` · 지금 ${deg(cur.temperature_2m)}(체감 ${deg(cur.apparent_temperature)})` : '';
+  const rainTxt = A.pMax > 0 ? `강수확률 최대 ${A.pMax}%(${A.hP}시)` : '강수확률 0%';
+  const precTxt = A.precSum >= 0.1 ? ` · 예상 강수량 ${A.precSum.toFixed(1)}mm` : '';
+  const sameBand = band(A.tOuter) === band(A.tTop);
+  const ends = [{h:A.hOuter, t:A.tOuter}, {h:A.hTop, t:A.tTop}].sort((a,b) => a.h - b.h);
+  const bandTxt = sameBand
+    ? `외출 시간 내내 '${band(A.tOuter)}' 구간`
+    : `${ends[0].h}시 '${band(ends[0].t)}' 구간 → ${ends[1].h}시 '${band(ends[1].t)}' 구간`;
+
+  let hoursTbl = '<div class="scroll"><table class="hours"><tr><th>시각</th>' + A.hours.map(h => `<td>${h}시</td>`).join('') + '</tr>'
+    + '<tr><th>날씨</th>' + A.codes.map(c => `<td>${esc(WMO[c] ?? '-')}</td>`).join('') + '</tr>'
+    + '<tr><th>기온</th>' + A.temps.map(t => `<td>${deg(t)}</td>`).join('') + '</tr>'
+    + '<tr><th>체감</th>' + A.feels.map((t,i) => `<td class="${A.hours[i]===A.hOuter||A.hours[i]===A.hTop?'mk':''}">${deg(t)}</td>`).join('') + '</tr>'
+    + '<tr><th>강수</th>' + A.prob.map(p => `<td>${p}%</td>`).join('') + '</tr></table></div>';
+
+  $('#wx').innerHTML = `
+    <p class="place">${esc(place)} · ${dLabel} ${win}<span class="upd">${upd} 업데이트</span></p>
+    <p class="big">체감 <em>${deg(A.feelMinRaw)}~${deg(A.feelMaxRaw)}</em><small>기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)}</small></p>
+    <p class="wxsub">${esc(WMO[A.worst] ?? '')} · ${rainTxt}${precTxt} · 바람 최대 ${A.windMax.toFixed(1)}m/s${A.uv != null ? ` · 자외선 ${A.uv.toFixed(0)}` : ''}${curLine}</p>
+    <p class="band">${esc(bandTxt)}${sensNote}</p>
+    ${hoursTbl}`;
+
+  /* ----- 코디 고르기 ----- */
+  const M = MOODS[st.mood];
+  const seed = hashStr(A.date + st.mood);
+
+  // 겉옷
+  let outer, outerWhy;
+  const outerT = A.diurnal >= 10 && A.tOuter > -2 ? A.tOuter + 2 : A.tOuter;
+  if (A.tOuter >= 24) {
+    outer = {main:null, alts:[]};
+    outerWhy = `가장 선선한 ${A.hOuter}시에도 체감 ${fx(A.tOuter)}라 겉옷은 짐이다.`;
+  } else {
+    let list = A.tOuter >= 20 ? M.outer.filter(i => i.hi >= 21) : M.outer;
+    // 비·센 바람엔 바람이 통하고 물을 먹는 니트 겉옷과 스웨이드를 뺀다
+    const outerF = (A.rainy || A.windMax >= 8) ? (i => !i.r && i.f !== 'knit') : null;
+    outer = pick(list, outerT, seed, outerF, false, !!outerF);
+    if (!outer.main) outer = pick(list, outerT, seed);
+    outerWhy = A.tOuter >= 20
+      ? `아침저녁 체감 ${fx(A.tOuter)} 안팎이라 가볍게 걸칠 것 하나면 된다. 낮엔 벗어서 들고 다닐 두께.`
+      : `${A.hOuter}시 체감 ${fx(A.tOuter)}가 이 시간대에서 가장 춥다('${band(A.tOuter)}' 구간).`
+        + (outerT !== A.tOuter ? ` 다만 낮에는 ${fx(A.tTop)}까지 올라가서 한 단계 가벼운 겉옷으로 골랐다. 아침엔 목도리로 보충.` : '');
+  }
+  // 상의
+  const top = pick(M.top, A.tTop, seed + 1);
+  const topWhy = A.tOuter >= 24
+    ? `한낮 ${A.hTop}시 체감 ${fx(A.tTop)} 기준.`
+    : A.tTop < 12
+      ? `가장 따뜻한 ${A.hTop}시도 체감 ${fx(A.tTop)}라 밖에선 겉옷을 못 벗는다. 실내에서 겉옷을 벗었을 때 이것만 입어도 괜찮은 두께로 골랐다.`
+      : `가장 따뜻한 ${A.hTop}시 체감 ${fx(A.tTop)}. 이때는 겉옷을 벗고 이것만 입어도 지낼 만하다.`;
+  // 하의
+  const bottom = pick(M.bottom, A.tMid, seed + 2);
+  let bottomWhy = `외출 시간 평균 체감 ${fx(A.tMid)} 기준.`;
+  if (top.main && top.main.f === 'over' && bottom.main && bottom.main.f === 'wide') bottomWhy += ' 상의가 오버핏이라 위아래가 다 크면 옷에 묻힌다. 상의 앞자락을 살짝 넣어 허리선을 보여 준다.';
+  if (A.rainy && bottom.main && bottom.main.f === 'wide') bottomWhy += ' 비 예보가 있으니 밑단을 한 번 접어 바닥에 안 닿게.';
+  // 신발
+  let shoes;
+  let shoesWhy = `평균 체감 ${fx(A.tMid)} 기준.`;
+  if (A.snowy) {
+    shoes = pick(M.shoes.filter(i => i.w && i.lo <= 0 && A.tMid >= i.lo && A.tMid <= i.hi), A.tMid, seed + 3, null, false, true);
+    if (!shoes.main) shoes = pick(SNOW_SHOES, A.tMid, 0);
+    shoesWhy = '눈 예보라 물에 강한 신발로 골랐다. 같은 신발이라도 가죽 밑창은 눈길에 미끄러우니 밑창이 고무인지 먼저 확인한다.';
+  } else if (A.rainy && A.precSum >= 5) {
+    shoes = pick(RAIN_SHOES, A.tMid, seed + 3);
+    shoesWhy = `외출 시간 예상 강수량이 ${A.precSum.toFixed(1)}mm라 가죽 신발도 속까지 젖는다. 오늘은 무드보다 방수가 먼저다.`;
+  } else if (A.rainy) {
+    // 비 오는 날은 무드 신발 중 물에 강하고 온도까지 딱 맞는 것만. 없으면 방수 신발 목록으로.
+    shoes = pick(M.shoes.filter(i => i.w && A.tMid >= i.lo && A.tMid <= i.hi), A.tMid, seed + 3, null, false, true);
+    if (!shoes.main) shoes = pick(RAIN_SHOES, A.tMid, 0);
+    shoesWhy = `강수확률 최대 ${A.pMax}%라 가죽이나 고무 밑창처럼 물에 강한 신발로 골랐다. 스웨이드·캔버스는 젖으면 얼룩이 남는다.`;
+  } else {
+    shoes = pick(M.shoes, A.tMid, seed + 3);
+  }
+  // 소품
+  const ex = pick(M.extra, A.tOuter, seed + 4, null, true);
+
+  /* ----- 챙길 것 / 포인트 ----- */
+  const pts = [];
+  if (A.snowy) pts.push(['눈길 신발', `${A.hSnow}시부터 눈 예보가 있다. 고무 밑창에 홈이 깊은 신발을 신고, 바지 밑단은 부츠 위로 덮는다. 우산도 챙긴다.`]);
+  else if (A.rainy) pts.push(['비 대비 신발', `${A.hP}시 강수확률 ${A.pMax}%${A.precSum >= 0.1 ? `, 예상 강수량 ${A.precSum.toFixed(1)}mm` : ''}. ${A.pMax >= 70 || A.precSum >= 5 ? '장우산' : '접이식 우산'}을 챙기고 스웨이드·캔버스 신발은 피한다.`]);
+  else if (A.maybeRain) pts.push(['접이식 우산', `${A.hP}시 강수확률 ${A.pMax}%. 올 수도 안 올 수도 있는 정도라 가방에 하나 넣어 둔다.`]);
+  if (A.tTop >= 31) pts.push(['더위', `한낮 ${A.hTop}시 체감 ${fx(A.tTop)}. 몸에 붙지 않는 핏과 땀이 덜 비치는 두께감 있는 면·린넨이 낫다. 물도 챙긴다.`]);
+  if (A.tOuter <= -5) pts.push(['목·손 보온', `체감 ${fx(A.tOuter)}까지 내려간다. 머플러와 장갑이 없으면 겉옷이 두꺼워도 춥다. 안에는 발열 내의.`]);
+  else if (A.tOuter <= 4) pts.push(['발열 내의', `체감 ${fx(A.tOuter)}까지 내려간다. 겉옷을 두껍게 하는 것보다 안에 발열 내의 한 겹이 활동하기 편하다.`]);
+  if (A.diurnal >= 10) pts.push([`일교차 ${r0(A.diurnal)}°`, `기온이 ${deg(A.tMinRaw)}에서 ${deg(A.tMaxRaw)}까지 오르내린다. 벗어서 들고 다니기 쉬운 겉옷을 고르고, 안에는 얇은 옷을 겹쳐 입는다.`]);
+  else if (A.diurnal >= 7) pts.push([`일교차 ${r0(A.diurnal)}°`, `아침과 낮 기온 차가 ${r0(A.diurnal)}°다. 낮에 겉옷을 벗었을 때 상의만으로 괜찮은지가 중요하다.`]);
+  if (A.windMax >= 8) pts.push(['바람', `바람이 최대 초속 ${A.windMax.toFixed(1)}m로 분다. 니트 카디건처럼 바람이 통하는 겉옷보다 나일론·가죽 겉옷이 낫다.`]);
+  if (A.uv != null && A.uv >= 6) pts.push(['자외선', `자외선 지수 ${A.uv.toFixed(0)}(높음 이상). 볼캡이나 선글라스, 선크림.`]);
+  if (A.tTop >= 28 && A.humAvg >= 70) pts.push(['습도', `평균 습도 ${r0(A.humAvg)}%. 린넨이나 시어서커처럼 몸에 안 붙는 소재가 낫다.`]);
+  if (A.tTop >= 28) pts.push(['실내 냉방', '에어컨 센 실내를 대비해 얇은 셔츠 하나를 가방에.']);
+  const styleKey = M.key;
+  const first = pts.length ? pts[0] : styleKey;
+  const rest = pts.length ? pts.slice(1).concat([styleKey]) : [];
+
+  const ptHtml = `<h2>오늘 제일 중요한 것</h2>
+    <p class="p1"><b>${esc(first[0])}</b>${esc(first[1])}</p>
+    ${rest.length ? `<ol class="rest" start="2">${rest.map((p,i) => `<li><b>${esc(p[0])}</b>${i === rest.length-1 ? ' (스타일)' : ''} · ${esc(p[1])}</li>`).join('')}</ol>` : ''}`;
+  $('#point').innerHTML = ptHtml; $('#point').hidden = false;
+
+  /* ----- 코디 표 ----- */
+  const shopUrl = kw => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(kw)}&gf=M`;
+  const tag = t => t && SRC[t] ? `<a class="tag" href="${SRC[t].u}" target="_blank" rel="noopener">2026 흐름 · ${esc(SRC[t].o)} ${SRC[t].d.slice(5)}</a>` : '';
+  const row = (label, p, why) => {
+    if (!p.main) return `<div class="row"><div class="slot">${label}</div><div><p class="item">필요 없음</p><p class="why">${esc(why)}</p></div></div>`;
+    const it = p.main;
+    return `<div class="row"><div class="slot">${label}</div><div>
+      <p class="item">${esc(it.n)}${tag(it.t)}</p>
+      <p class="why">${esc(why)}</p>
+      ${it.f && FIT[it.f] ? `<p class="fit">핏 · ${esc(FIT[it.f])}</p>` : ''}
+      ${p.alts.length ? `<p class="alt">다른 후보: ${p.alts.map(a => esc(a.n)).join(' · ')}</p>` : ''}
+      <a class="shop" href="${shopUrl(it.kw)}" target="_blank" rel="noopener">무신사에서 '${esc(it.kw)}' 보기 ↗</a>
+    </div></div>`;
+  };
+  let extraWhy = '';
+  const e = ex.main;
+  if (e) {
+    const cold = e.hi <= 10;
+    if (cold && e.t === 'T1') extraWhy = `체감 ${fx(A.tOuter)}까지 내려가서 목을 덮을 게 필요하다. 묶지 말고 흘러내리게 두는 게 올가을 무신사가 꼽은 방식이다.`;
+    else if (cold) extraWhy = `체감 ${fx(A.tOuter)}까지 내려가서 목·손·머리를 덮을 것이 필요하다.`;
+    else if (e.t === 'T1') extraWhy = '니트를 묶지 않고 어깨에 흘러내리게 두는 방식이 올가을 무신사가 꼽은 포인트다.';
+    else if (e.cap && A.uv != null && A.uv >= 6) extraWhy = `자외선 지수 ${A.uv.toFixed(0)}라 챙 있는 모자가 쓸모 있다.`;
+    else extraWhy = e.y || '';
+  }
+  const pal = M.pal[(seed + st.shuffle) % M.pal.length];
+  const moodTag = M.t ? tag(M.t) : '';
+
+  $('#outfit').innerHTML = `<h2>오늘 코디 · ${esc(M.name)}${moodTag}</h2>
+    ${row('겉옷', outer, outerWhy)}
+    ${row('상의', top, topWhy)}
+    ${row('하의', bottom, bottomWhy)}
+    ${row('신발', shoes, shoesWhy)}
+    ${row('소품', ex, extraWhy)}
+    <div class="row"><div class="slot">색 조합</div><div>
+      <div class="pal">${pal.map(c => `<span class="sw"><i style="background:${c[1]}"></i>${esc(c[0])}</span>`).join('')}</div>
+      <p class="fit">이 세 색 안에서 고르면 위 아이템 색이 조금 달라도 어긋나지 않는다.</p>
+    </div></div>
+    <div class="acts"><button class="plain" type="button" id="shuf">다른 조합 보기</button><button class="plain" type="button" id="copy">코디 텍스트 복사</button></div>`;
+  $('#outfit').hidden = false;
+
+  $('#shuf').addEventListener('click', () => { st.shuffle++; render(); });
+  $('#copy').addEventListener('click', () => {
+    const line = (l,p) => `${l}: ${p.main ? p.main.n : '필요 없음'}`;
+    const txt = `${place} ${dLabel} ${win} 체감 ${deg(A.feelMinRaw)}~${deg(A.feelMaxRaw)}\n[${M.name}]\n`
+      + [line('겉옷',outer),line('상의',top),line('하의',bottom),line('신발',shoes),line('소품',ex)].join('\n')
+      + `\n제일 중요한 것: ${first[0]}`;
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(
+      () => { $('#copy').textContent = '복사했다'; setTimeout(() => { const b = $('#copy'); if (b) b.textContent = '코디 텍스트 복사'; }, 1500); },
+      () => { prompt('아래 내용을 복사해 줘', txt); });
+  });
+}
+
+/* ---------- 출처 목록 ---------- */
+$('#srcs').innerHTML = Object.values(SRC).map(x =>
+  `<li><a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a><br><span class="meta">${esc(x.o)} · ${x.d}</span><br>${esc(x.s)}</li>`).join('');
+
+/* ---------- 시작 ---------- */
+buildCity(); buildHours(); buildMoods(); syncSeg('day', st.day); syncSeg('sens', st.sens);
+load(true);
+})();
+</script>
+</body>
+</html>
