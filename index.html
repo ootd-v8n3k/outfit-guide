@@ -7,163 +7,112 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>오늘 뭐 입지</title>
 <style>
-:root{--ink:#141414;--sub:#5a5a5a;--line:#e3e3e3;--acc:#1F5C58;--bg:#fff}
+:root{--ink:#141414;--sub:#6a6a6a;--line:#e6e6e6;--acc:#1F5C58}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
-main{max-width:680px;margin:0 auto;padding:22px 18px 64px}
+html,body{margin:0;background:#fff;color:var(--ink);font-family:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:640px;margin:0 auto;padding:16px 16px 32px}
 a{color:var(--acc)}
-header h1{font-size:22px;margin:0;letter-spacing:-0.3px}
-header p{margin:2px 0 0;color:var(--sub);font-size:13px}
-section{border-top:1px solid var(--line);padding:18px 0}
-h2{font-size:13px;font-weight:700;color:var(--sub);margin:0 0 10px}
-select,input,button{font:inherit;color:inherit}
-select,input[type=text]{border:1px solid #cfcfcf;border-radius:3px;padding:6px 8px;background:#fff}
-.field{display:flex;align-items:center;gap:8px 10px;margin:9px 0;flex-wrap:wrap}
-.lb{width:58px;color:var(--sub);font-size:13px;flex:none}
+button,select,input{font:inherit;color:inherit}
+header{display:flex;align-items:center;justify-content:space-between}
+h1{font-size:19px;margin:0;letter-spacing:-.3px}
+.plain{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:5px 11px;cursor:pointer}
+.plain[aria-expanded=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bar{display:flex;align-items:center;gap:6px 12px;margin-top:12px;flex-wrap:wrap}
 .seg{display:inline-flex;border:1px solid #cfcfcf;border-radius:3px;overflow:hidden}
-.seg button{border:0;border-right:1px solid #cfcfcf;background:#fff;padding:6px 12px;cursor:pointer}
+.seg button{border:0;border-right:1px solid #cfcfcf;background:#fff;padding:5px 12px;cursor:pointer}
 .seg button:last-child{border-right:0}
-.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
-.plain{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:6px 12px;cursor:pointer}
-.plain:hover,.seg button:hover,.moods button:hover{border-color:#888}
-#search{display:none;width:100%}
+.seg button[aria-pressed=true],.chips button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+#where{font-size:13.5px;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:4px 10px;cursor:pointer;font-size:14px}
+#set{margin-top:12px;border-top:1px solid var(--line)}
+.field{display:flex;align-items:center;gap:6px 8px;margin:9px 0;flex-wrap:wrap}
+.lb{width:40px;color:var(--sub);font-size:13px;flex:none}
+select,input[type=text]{border:1px solid #cfcfcf;border-radius:3px;padding:5px 7px;background:#fff}
+#search{display:none}
 #search.on{display:block}
-#search .field{margin:6px 0 0 68px}
-#results{list-style:none;margin:6px 0 0 68px;padding:0}
-#results li button{border:0;background:none;padding:4px 0;cursor:pointer;text-align:left;color:var(--acc);text-decoration:underline}
-.moods{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
-.moods button{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:8px 8px 7px;text-align:left;cursor:pointer}
-.moods b{display:block;font-size:14px}
-.moods span{display:block;font-size:11.5px;color:var(--sub);line-height:1.35}
-.moods button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
-.moods button[aria-pressed=true] span{color:#d4d4d4}
-.place{margin:0;font-size:14px}
-.upd{color:var(--sub);font-size:12px;margin-left:6px}
-.big{font-size:30px;font-weight:700;margin:4px 0 0;letter-spacing:-0.5px}
+#results{list-style:none;margin:0 0 6px;padding:0}
+#results button{border:0;background:none;padding:4px 0;cursor:pointer;color:var(--acc);text-decoration:underline;text-align:left}
+section{border-top:1px solid var(--line);padding:14px 0}
+#wx{margin-top:14px}
+.msg{color:var(--sub);margin:0}
+.now{display:flex;align-items:center;gap:10px}
+.now svg{width:34px;height:34px;flex:none}
+.big{font-size:28px;font-weight:700;margin:0;letter-spacing:-.5px;line-height:1.2}
 .big em{font-style:normal;color:var(--acc)}
-.big small{font-size:14px;font-weight:400;color:var(--sub);margin-left:6px;letter-spacing:0}
-.wxsub{margin:2px 0 0;color:var(--sub);font-size:13.5px}
-.band{margin:8px 0 0;font-size:13.5px}
-.scroll{overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch}
-table.hours{border-collapse:collapse;font-size:12.5px;white-space:nowrap}
-table.hours th,table.hours td{padding:4px 9px;text-align:center;border-bottom:1px solid var(--line)}
-table.hours th{color:var(--sub);font-weight:400;text-align:left;padding-left:0}
-table.hours td.mk{font-weight:700}
-.msg{color:var(--sub)}
-.p1{font-size:17px;margin:0}
-.p1 b{display:block;font-size:19px}
-.rest{margin:10px 0 0;padding-left:20px;font-size:14px}
-.rest li{margin:3px 0}
-.rest b{font-weight:700}
-.row{display:grid;grid-template-columns:58px 1fr;gap:0 10px;padding:12px 0;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:0}
-.slot{color:var(--sub);font-size:13px;padding-top:2px}
-.item{font-size:16px;font-weight:700;margin:0}
-.tag{font-size:11.5px;font-weight:400;margin-left:6px;white-space:nowrap}
-.why,.fit,.alt{margin:3px 0 0;font-size:13.5px}
-.fit{color:var(--sub)}
-.alt{color:var(--sub);font-size:12.5px}
-.shop{font-size:12.5px}
-.pal{display:flex;gap:16px;flex-wrap:wrap;margin-top:2px}
-.sw{display:flex;align-items:center;gap:6px;font-size:13px}
-.sw i{width:22px;height:22px;border:1px solid #cfcfcf;display:inline-block}
-.acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-table.size{border-collapse:collapse;width:100%;font-size:13.5px}
-table.size th,table.size td{border-bottom:1px solid var(--line);padding:7px 6px 7px 0;text-align:left;vertical-align:top}
-table.size th{color:var(--sub);font-weight:400;font-size:12.5px}
-ul.tips{margin:12px 0 0;padding-left:18px;font-size:14px}
-ul.tips li{margin:4px 0}
-ol.src{margin:0;padding-left:20px;font-size:13.5px}
-ol.src li{margin:0 0 10px}
-ol.src .meta{color:var(--sub);font-size:12.5px}
-.note{color:var(--sub);font-size:12.5px;margin:8px 0 0}
-footer{color:var(--sub);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
-footer p{margin:4px 0}
-@media (max-width:480px){
-  .moods{grid-template-columns:repeat(2,1fr)}
-  .big{font-size:26px}
-  #search .field,#results{margin-left:0}
-}
+.sub{margin:4px 0 0;color:var(--sub);font-size:13.5px}
+.hrs{display:flex;overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.h{flex:0 0 46px;padding:6px 0 4px;font-size:12px;color:var(--sub);display:flex;flex-direction:column;align-items:center;gap:2px}
+.h svg{width:20px;height:20px}
+.h b{font-size:14px;color:var(--ink)}
+.h b.lo{color:var(--acc)}
+.h i{font-style:normal;font-size:11px;min-height:16px}
+.k{font-size:12.5px;color:var(--sub);margin:0}
+.p1{font-size:17px;margin:2px 0 0}
+.p1 b{font-size:19px;margin-right:8px}
+ul.more{list-style:none;margin:6px 0 0;padding:0;font-size:13.5px;color:var(--sub)}
+ul.more li{margin:2px 0}
+ul.more b{color:var(--ink);font-weight:700;margin-right:6px}
+.look{display:block}
+.fig{max-width:260px;margin:0 auto 6px}
+.fig svg{width:100%;height:auto;display:block}
+@media (min-width:600px){.look{display:grid;grid-template-columns:270px minmax(0,1fr);gap:0 20px;align-items:start}.fig{margin:0}}
+ol.items{list-style:none;margin:0;padding:0}
+ol.items li{display:grid;grid-template-columns:22px minmax(0,1fr) 66px;gap:0 8px;padding:8px 0;border-bottom:1px solid var(--line);align-items:start}
+.th svg{display:block;width:66px;height:88px;border:1px solid var(--line);background:#fff}
+ol.items li:last-child{border-bottom:0}
+.n{width:19px;height:19px;border:1.4px solid var(--ink);border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.n.x{border-color:transparent}
+.sl{display:block;font-size:12px;color:var(--sub)}
+.nm{font-weight:700;font-size:14.5px;line-height:1.35}
+.cn{font-size:12px;color:var(--sub)}
+.how{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
+.pd{display:block;font-size:13px;line-height:1.45;margin-top:3px}
+.pd b{font-weight:700}
+.pd .sz{color:var(--acc);font-weight:700}
+.pd .warn{color:#8a3b12}
+.pd + .pd{margin-top:6px;padding-top:6px;border-top:1px dotted #ddd}
+details.more2{margin-top:4px;font-size:12.5px;color:var(--sub)}
+details.more2 summary{cursor:pointer;color:var(--acc);list-style:none;display:inline}
+details.more2 summary::-webkit-details-marker{display:none}
+details.more2 summary::before{content:'+ '}
+details.more2[open] summary::before{content:'− '}
+details.more2 p{margin:5px 0 0;color:#333}
+details.more2 p .lbl{display:inline-block;min-width:44px;margin-right:6px;color:var(--sub)}
+.note{font-size:12px;color:var(--sub);margin:0 0 8px}
+input[type=number]{width:74px;border:1px solid #cfcfcf;border-radius:3px;padding:5px 7px;background:#fff}
+.hint{font-size:12px;color:var(--sub)}
+.acts{margin-top:12px}
+footer{font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:400px){.big{font-size:24px}.look{gap:0 8px}.nm{font-size:14px}}
 </style>
 </head>
 <body>
 <main>
 <header>
   <h1>오늘 뭐 입지</h1>
-  <p>날씨는 열 때마다, 그리고 30분마다 새로 불러온다</p>
+  <button class="plain" id="setBtn" type="button" aria-expanded="false" aria-controls="set">설정</button>
 </header>
-
-<section class="controls" aria-label="설정">
-  <div class="field">
-    <span class="lb">지역</span>
-    <select id="city" aria-label="지역"></select>
-    <button class="plain" id="geo" type="button">현재 위치</button>
-  </div>
+<div class="bar">
+  <div class="seg" id="day"><button type="button" data-v="0">오늘</button><button type="button" data-v="1">내일</button></div>
+  <span id="where"></span>
+</div>
+<div class="chips" id="lv" aria-label="꾸밈 정도"></div>
+<div id="set" hidden>
+  <div class="field"><span class="lb">지역</span><select id="city" aria-label="지역"></select><button class="plain" id="geo" type="button">현재 위치</button></div>
   <div id="search">
-    <div class="field">
-      <input type="text" id="q" placeholder="시 이름 (예: 천안, 성남, Tokyo)" aria-label="지역 검색">
-      <button class="plain" id="qgo" type="button">검색</button>
-    </div>
+    <div class="field"><input type="text" id="q" placeholder="시 이름 (예: 천안, 성남, Tokyo)" aria-label="지역 검색"><button class="plain" id="qgo" type="button">검색</button></div>
     <ul id="results"></ul>
   </div>
-  <div class="field">
-    <span class="lb">날짜</span>
-    <div class="seg" id="day">
-      <button type="button" data-v="0">오늘</button><button type="button" data-v="1">내일</button>
-    </div>
-  </div>
-  <div class="field">
-    <span class="lb">외출</span>
-    <select id="start" aria-label="나가는 시간"></select> 부터
-    <select id="end" aria-label="들어오는 시간"></select> 까지
-  </div>
-  <div class="field">
-    <span class="lb">체질</span>
-    <div class="seg" id="sens">
-      <button type="button" data-v="-3">추위 탐</button><button type="button" data-v="0">보통</button><button type="button" data-v="3">더위 탐</button>
-    </div>
-  </div>
-  <div class="field" style="align-items:flex-start">
-    <span class="lb" style="padding-top:8px">무드</span>
-    <div class="moods" id="moods" style="flex:1"></div>
-  </div>
-</section>
-
+  <div class="field"><span class="lb">외출</span><select id="start" aria-label="나가는 시간"></select> 부터 <select id="end" aria-label="들어오는 시간"></select> 까지</div>
+  <div class="field"><span class="lb">체질</span><div class="seg" id="sens"><button type="button" data-v="-3">추위 탐</button><button type="button" data-v="0">보통</button><button type="button" data-v="3">더위 탐</button></div></div>
+  <div class="field"><span class="lb">몸</span><input type="number" id="bh" inputmode="numeric" min="140" max="210" placeholder="키" aria-label="키 cm">cm <input type="number" id="bw" inputmode="numeric" min="35" max="150" placeholder="몸무게" aria-label="몸무게 kg">kg</div>
+  <div class="field"><span class="lb">발</span><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="5" placeholder="발 길이" aria-label="발 길이 mm">mm <span class="hint">이 폰에만 저장되고 사이트에는 안 올라감</span></div>
+</div>
 <section id="wx" aria-live="polite"><p class="msg">날씨 불러오는 중…</p></section>
 <section id="point" hidden></section>
 <section id="outfit" hidden></section>
-
-<section id="size">
-  <h2>사이즈와 비율</h2>
-  <table class="size">
-    <tr><th>구분</th><th>흔히 맞는 치수</th><th>살 때 확인할 실측</th></tr>
-    <tr><td>상의 정핏</td><td>M (95)</td><td>어깨너비, 총장</td></tr>
-    <tr><td>상의 여유핏</td><td>L (100). 오버핏으로 나온 옷은 M</td><td>총장이 엉덩이 중간을 넘지 않는지</td></tr>
-    <tr><td>바지</td><td>허리 30~31</td><td>허리단면, 총장, 밑단단면</td></tr>
-    <tr><td>코트</td><td>M</td><td>무릎 위에서 끝나는 총장인지</td></tr>
-  </table>
-  <p class="note">흔히 맞는 범위일 뿐, 브랜드마다 한 치수씩 차이 난다. 제일 잘 맞는 옷을 바닥에 펴서 잰 숫자를 상세페이지 실측표와 비교하는 게 가장 정확하다.</p>
-  <ul class="tips">
-    <li>겉옷은 엉덩이 위에서 끝나는 숏 기장이나 무릎 위 코트. 발목까지 오는 롱코트는 키가 묻힌다.</li>
-    <li>상의가 엉덩이를 다 덮으면 앞만 살짝 바지에 넣는다. 다리 시작점이 올라가 보인다.</li>
-    <li>바지와 신발 색을 맞추면 다리 선이 끊기지 않는다.</li>
-    <li>와이드·배럴 팬츠가 바닥에 끌리면 수선한다. 신발 앞코를 살짝 덮는 데서 멈추는 게 좋다.</li>
-    <li>굽 있는 청키 스니커즈나 부츠는 키를 조금 보태 준다.</li>
-  </ul>
-</section>
-
-<section id="trend">
-  <h2>2026 가을·겨울 흐름 (2026년 11월 6일 조사)</h2>
-  <ol class="src" id="srcs"></ol>
-  <p class="note">트렌드는 위 기사들을 읽고 정리한 것이라 실시간으로 바뀌지 않는다. 날씨만 실시간이다. 코디에 붙은 '2026 흐름' 표시를 누르면 근거 기사로 간다. 스니커즈는 얼루어(2025.12)가 얇은 밑창을, GQ(2026.07)가 청키 밑창을 꼽아 서로 다른데, 더 최근인 GQ를 따랐다.</p>
-</section>
-
-<footer>
-  <p>날씨: Open-Meteo 예보(시간별 기온·체감온도·강수확률·바람·자외선). 예보 모델 값이라 기상청 앱 숫자와 조금 다를 수 있다.</p>
-  <p>체감온도는 기온에 바람·습도·햇빛을 반영한 값이다. 겉옷은 외출 시간 중 가장 추울 때, 상의는 가장 따뜻할 때, 하의·신발은 평균 체감온도로 고른다. 체질 설정은 체감온도에 ±3°를 더한다.</p>
-  <p>기온 구간 이름은 흔히 쓰는 '기온별 옷차림' 8단계(28° 이상 ~ 4° 이하)를 따랐다.</p>
-  <p>'무신사에서 보기'는 상품 검색 결과로 연결된다. 특정 상품을 광고하지 않는다.</p>
-</footer>
+<footer>날씨 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></footer>
 </main>
 
 <script>
@@ -171,157 +120,758 @@ footer p{margin:4px 0}
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-/* ---------- 근거 기사 ---------- */
-const SRC = {
-  T1:{o:'무신사', d:'2026.10.04', t:'평범한 가을룩을 바꿔줄 3가지 트렌드', u:'https://www.musinsa.com/content/1555072392815808559',
-      s:'드레이퍼리 악센트(머플러·니트를 느슨하게 걸치기), 패러독스 드레싱(타이 맨 셔츠 위에 후드 집업이나 패딩), 다크 로맨티시즘(소재 대비를 준 올블랙).'},
-  T2:{o:'무신사', d:'2026.10.16', t:'트렌드한 필수 아이템으로 떠오른 경량 패딩', u:'https://www.musinsa.com/content/1560213476964122173',
-      s:'10월 15일 기준 주간 검색어 1위가 경량 패딩. 충전재가 비칠 만큼 얇은 시어 소재가 관심을 끌었고, 어두운 색과 함께 스톤 화이트 같은 밝은 색이 눈에 띈다고 정리.'},
-  T3:{o:'무신사', d:'2026.01.05', t:'무신사 에디터 픽, 2026 인기 트렌드', u:'https://www.musinsa.com/content/1452877813830509855',
-      s:'그래놀라 코어(브라운·그린·베이지, 코위찬 니트, 플리스), 쿼터집(셔츠·타이 위에 겹쳐 입기), 밤비 코어(브라운·화이트 퍼).'},
-  T4:{o:'무신사', d:'2026.03.12', t:'2026년 트렌드, 지금 입어야 할 데님', u:'https://www.musinsa.com/content/1481467079225531565',
-      s:'배럴 진, 디스트로이드 진, 그리고 와이드 핏 다음 흐름으로 스트레이트 진을 꼽았다. 바지 핏을 살리려면 상의는 단순하게.'},
-  T5:{o:'GQ Korea', d:'2026.07.23', t:'2026년 하반기 스니커즈 트렌드 도착! 다시 기묘해진다?', u:'https://www.gqkorea.co.kr/2026/07/23/2026%eb%85%84-%ed%95%98%eb%b0%98%ea%b8%b0-%ec%8a%a4%eb%8b%88%ec%bb%a4%ec%a6%88-%ed%8a%b8%eb%a0%8c%eb%93%9c-%eb%8f%84%ec%b0%a9-%eb%8b%a4%ec%8b%9c-%ea%b8%b0%eb%ac%98%ed%95%b4%ec%a7%84%eb%8b%a4/',
-      s:'큰 갑피와 두꺼운 중창의 청키 스니커즈가 색은 절제한 채 돌아왔다. 방수 갑피·거친 밑창의 스니커 부츠, 어프로치 슈즈도 꼽았다.'},
-  T6:{o:'Numéro', d:'2026.02.06', t:'11 trends spotted at the fall-winter 2026-2027 men’s fashion week', u:'https://numero.com/en/fashion/fashion-week-en/11-trends-spotted-at-the-fall-winter-2026-2027-mens-fashion-week/',
-      s:'밀라노·파리 남성 컬렉션 정리. 클래식·슬림 실루엣 복귀, 트랙수트, 가죽, 레드, 타탄 체크, 스키니 타이, 넥 게이터.'},
-  T7:{o:'스포츠경향', d:'2026.01.12', t:'이상기온이 바꾼 2026년 겨울 아우터 공식', u:'https://sports.khan.co.kr/article/202601122345003',
-      s:'일교차가 커지면서 무거운 아우터 대신 가볍고 유연한 숏패딩·경량 아우터를 찾는다는 기사. 브랜드 제품 소개가 많아 흐름만 참고했다.'}
+/* 무신사 제품 (2026-11-06 확인). 빌드 때 products.jsonl에서 들어옴 */
+const PRODUCTS = [
+{"spec":"L2.o1","role":"main","checked":"2026-11-06","id":"3378514","name":"무신사 스탠다드 데일리 푸퍼 숏 패딩 재킷 [블랙]","price":75890,"sold":"8만 개 이상","reviewCount":10952,"fitPct":"정사이즈 81%","mat":"겉감 폴리에스터 100%, 안감 나일론 100%, 충전재 폴리에스터 100%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[61,51.5,61,60.5],[64,53.5,63.5,62.5],[66,55,66,63.5],[68,56.5,68.5,64.5],[70,58,71,65.5]]},"rv":"167,60,M,0;185,90,2XL,1;181,72,XL,0;170,67,L,0;170,80,S,0;173,56,L,-1;179,70,S,0;174,78,XL,0;172,79,XL,0;168,68,M,0;168,69,M,0;171,61,M,0;170,61,M,0;168,70,L,1;168,68,L,1;173,63,M,0;172,68,L,0"},
+{"spec":"L2.o1","role":"alt","checked":"2026-11-06","id":"3440439","name":"커스텀어클락 커브드 투웨이 항공 패딩 점퍼 (BLACK) COOSJP045","price":89600,"sold":"1.9만 개 이상","reviewCount":2761,"fitPct":"정사이즈 69%","mat":"겉감 나일론 100%","sizes":["XS","S","M","L"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[56,42,62,63],[67,54,69.5,64],[69,56,72,65],[71,58,74.5,66]]},"rv":"171,60,S,0;170,67,M,0;175,71,M,0;175,71,M,0;177,65,M,1;167,56,XS,0;170,61,S,0;170,68,S,0"},
+{"spec":"L2.o2","role":"main","checked":"2026-11-06","id":"1601468","name":"무신사 스탠다드 오버사이즈 MA-1 보머 재킷 [블랙]","price":99900,"sold":"2만 개 이상","reviewCount":8845,"fitPct":"정사이즈 62%","mat":"겉감 나일론 100%, 안감 나일론 100%, 충전재 폴리에스터 100%","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[65,62.4,65,63.5],[67,64,67.5,65],[69,65.6,70,66.5],[71,67.2,72.5,68]]},"rv":"185,75,2XL,2;189,90,XL,1;180,80,XL,1;180,80,XL,0;173,70,M,1;183,105,2XL,0;183,105,2XL,0;180,73,XL,0;180,80,XL,0"},
+{"spec":"L2.o2","role":"alt","checked":"2026-11-06","id":"1291017","name":"제멋 리치 오버 MA-1 자켓 블랙 YHJK2269","price":69800,"sold":"8만 개 이상","reviewCount":17370,"fitPct":"정사이즈 73%","mat":"나일론 100% (2oz 충전)","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[66,50,70,66],[68,52,72,67],[70,54,74,68],[72,56,76,69]]},"rv":"175,65,M,0;164,59,M,0;180,80,XL,1;172,67,L,0;180,85,2XL,0;180,85,2XL,0;175,65,M,0;172,85,XL,1;172,85,XL,1;168,71,XL,1"},
+{"spec":"L2.t1","role":"main","checked":"2026-11-06","id":"4419402","name":"이코르 메리노 울100 베이직 크루넥 니트 (아이보리)","color":"아이보리","price":43450,"sold":"7.3천 개 이상","reviewCount":985,"fitPct":"정사이즈 93%","mat":"메리노 울 100%","sizes":["XS","1(M)","2(L)","3(XL)"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[58,42,50,58],[67,48,55,60],[69,50,57,62],[71,52,59,64]]},"rv":"180,85,3(XL),0;178,60,2(L),0;178,60,2(L),0;187,91,3(XL),0;175,90,3(XL),0;168,67,1(M),0;171,73,1(M),0;168,65,1(M),0;181,76,2(L),0"},
+{"spec":"L2.t1","role":"alt","checked":"2026-11-06","id":"1736037","name":"테이크이지 램스울 크루넥 오버 니트 (아이보리)","color":"아이보리","price":24500,"sold":"6만 개 이상(연차콜 기준)","reviewCount":13419,"fitPct":"정사이즈 59%","mat":"울 50%, 아크릴 50% (이름은 램스울)","sizes":["S","M","L"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[69,62,64,53],[71,64,66,54],[73,66,68,55]]},"rv":"174,68,M,0;174,70,M,2;173,80,S,0;173,80,S,0;175,73,S,0;172,81,M,0;171,69,S,0"},
+{"spec":"L2.t2","role":"main","checked":"2026-11-06","id":"2139132","name":"드로우핏 모크넥 니트 티셔츠 (BLACK)","color":"BLACK","price":24000,"sold":"4만 개 이상","reviewCount":12660,"fitPct":"정사이즈 81%","mat":"폴리에스터 67%, 레이온 30%, 폴리우레탄 3% (울 없음)","sizes":["M","L","XL","XXL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[68,47.5,52,59.5],[69,49,54.5,60.5],[70.5,50.5,57,61.5],[72,52,58.5,62.5]]},"rv":"169,66,M,0;173,64,L,0;173,78,L,0;170,65,XL,0;171,68,M,0;176,74,XL,0;180,75,XL,0"},
+{"spec":"L2.t2","role":"alt","checked":"2026-11-06","id":"645611","name":"이에스엔 하프 폴라 니트 티셔츠 블랙","color":"블랙","price":25350,"sold":"5만 개 이상","reviewCount":14493,"fitPct":"정사이즈 90%","mat":"폴리에스터 64% 외(상세 페이지 확인)","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[68,46,53,60],[70,48,56,61],[72,50,59,62]]},"rv":"175,70,M,0;178,78,L,0;175,60,M,0;175,81,L,0;178,74,L,0;173,72,M,0;175,70,L,0;176,63,M,0"},
+{"spec":"L2.t3","role":"main","checked":"2026-11-06","id":"1642888","name":"무신사 스탠다드 헤비웨이트 오버사이즈 스웨트셔츠 [미디엄 그레이]","color":"미디엄 그레이","price":38490,"sold":"1.2만 개 이상","reviewCount":3588,"fitPct":"정사이즈 69%","mat":"겉감 면 100% (배색 면 95%, 폴리우레탄 5%)","sizes":["S","M","L","XL","2XL","3XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[67,58.5,57.5,56],[69,60.5,60,58],[70.5,62,62.5,59],[72,63.5,65,60],[73.5,65,67.5,61],[73.5,66.5,70,61]]},"rv":"168,66,M,0;185,84,2XL,0;180,90,2XL,0;175,97,XL,0;168,58,L,0;177,59,M,0;177,71,L,0;177,80,XL,0;186,110,3XL,1"},
+{"spec":"L2.t3","role":"alt","checked":"2026-11-06","id":"1155975","name":"소버먼트 950G 솔리드 맨투맨 8% 멜란지 그레이 [오버핏]","price":48000,"sold":"6.7천 개 이상","reviewCount":2305,"fitPct":"정사이즈 57%","mat":"상품고시엔 '상세페이지 참조'만 있음(텍스트로 혼용률 확인 못 함)","sizes":["S","M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[68,61,62,56],[70,62,64,57],[72,63,66,58],[74,64,68,59]]},"rv":"172,65,S,1;172,80,L,0;172,80,XL,2;188,84,XL,0;171,67,L,0;172,80,M,-1;183,90,XL,1;173,74,M,1"},
+{"spec":"L2.b1","role":"main","checked":"2026-11-06","id":"1738189","name":"브랜디드 1820 BLACK STANDARD4 JEANS [CROP STRAIGHT]","price":88200,"sold":"1.5만 개 이상","reviewCount":5491,"fitPct":"정사이즈 86%","mat":"Cotton 98%, Elastine 2%","sizes":["28","30","32","34"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[95,37.5,47.5,28,25,18],[96,39.5,49.5,29,26,18.5],[97,41.5,51.5,30,27,19],[98,43.5,53.5,31,28,19.5]]},"rv":"167,67,30,0;173,72,32,0;170,68,30,0;164,66,32,-1;171,47,28,0;178,80,34,0;175,78,34,-1;184,84,32,0;176,75,32,-1"},
+{"spec":"L2.b1","role":"alt","checked":"2026-11-06","id":"3051700","name":"무신사 스탠다드 루즈 스트레이트 데님 팬츠 [워시드 블랙]","price":47390,"sold":"7.1천 개 이상","reviewCount":1818,"fitPct":"정사이즈 85%","mat":"코튼 100%","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[105,35,46.5,30.3,29,22],[105,36.3,47.8,30.9,29,22.3],[106,37.5,49,31.5,29.5,22.6],[106,38.8,50.3,32.1,29.5,23],[107,40,51.5,32.8,30,23.3],[107,41.3,52.8,33.4,30,23.7],[107,42.5,54,34,30.5,24],[107,43.8,55.3,34.6,31,24.4],[108,45,56.5,35.3,31.5,24.7],[108,47.5,59,36.5,32,25.4],[109,50,61.5,37.8,33.5,26.1],[109,52.5,64,39,34.5,26.8],[110,55,66.5,40.3,35.5,27.5]]},"rv":"175,50,27,0;178,76,32,0;171,70,30,0;170,62,34,0"},
+{"spec":"L2.b2","role":"main","checked":"2026-11-06","id":"2116456","name":"무신사 스탠다드 울 플란넬 와이드 슬랙스 [미디엄 그레이]","price":94890,"sold":"1.8천 개 이상","reviewCount":572,"fitPct":"정사이즈 81%","mat":"겉감 모 92% 나일론 6% 폴리우레탄 2%, 안감 비스코스레이온 55% 나일론 45%","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[103,35.2,46.5,30.3,27,22.5],[103,36.5,47.7,30.9,27,22.8],[104,37.7,49,31.5,27.5,23],[104,39,50.3,32.3,27.5,23.3],[105,40.2,51.5,32.8,28,23.5],[105,41.5,52.8,33.4,28,23.8],[105,42.7,54,34,28.5,24],[105,44,55.3,34.6,29,24.3],[106,45.2,56.5,35.3,29.5,24.5],[106,47.7,59,36.5,30.5,25],[107,50.2,61.5,37.8,31.5,25.5],[107,52.75,64,39,32.5,26],[108,55.25,66.5,40.25,33.5,26.5]]},"rv":"170,64,31,-2;179,75,32,-1;181,77,33,0;180,80,34,0;174,78,32,0;177,84,33,0;181,70,30,0;172,63,31,0;178,76,34,0"},
+{"spec":"L2.b2","role":"alt","checked":"2026-11-06","id":"4293708","name":"수아레 울 블렌드 원 턱 슬랙스","color":"블랙","price":49900,"sold":"8천 개 이상","reviewCount":641,"fitPct":"정사이즈 84%","mat":"WOOL 30% POLYESTER 70%","sizes":["M","L","XL"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[105,40.5,54.5,33.25,29.5,24],[106,43,57,34.5,30.5,25],[107,45.5,59.5,35.75,31.5,26]]},"rv":"171,71,L,1;170,65,M,1;181,88,XL,0;179,78,L,0;180,70,M,0"},
+{"spec":"L2.s1","role":"main","checked":"2026-11-06","id":"1900410","name":"이피티 COURT (OFF WHITE)","price":143040,"sold":"1.9만 개 이상","reviewCount":5793,"fitPct":"정사이즈 88%, 발볼 적당 88%","mat":"UPPER : FG Leather(Cow), Natural Suede Cowhide / SOLE : Ortholite, Rubber","shoe":true,"stock":"220 225 230 235 240 245 250 255 260 265 270 275 280 285 290x 300","rvShoe":"255,정사이즈,적당함;240,정사이즈,적당함;260,조금 작음,조금 넓음;235,정사이즈,적당함;255,정사이즈,적당함;230,정사이즈,적당함;285,정사이즈,적당함;230,조금 작음,적당함;240,정사이즈,적당함;235,정사이즈,적당함"},
+{"spec":"L2.s1","role":"alt","checked":"2026-11-06","id":"3976350","name":"나이키 에어 포스 1 07 M 화이트 CW2288-111","price":149000,"sold":"8만 개 이상","reviewCount":11124,"fitPct":"정사이즈 89%, 발볼 적당 86%","mat":"상품고시에 소재 표기 없음","shoe":true,"stock":"240x 245x 250x 255 260 265 270 275 280 285 290 295 300 305 310x","rvShoe":"270,조금 큼,조금 넓음;270,정사이즈,적당함;275,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,조금 넓음;255,정사이즈,적당함;280,정사이즈,적당함;280,정사이즈,적당함;270,조금 큼,적당함;270,조금 큼,적당함"},
+{"spec":"L2.s2","role":"main","checked":"2026-11-06","id":"4452600","name":"아식스 젤-1130 스모크 그레이:자바 1203A708-020","price":129000,"sold":"6.1천 개 이상","reviewCount":893,"fitPct":"정사이즈 86%, 발볼 적당 83%","mat":"갑피 : 천연섬유 , 인조가죽","shoe":true,"stock":"230 235 240 245 250 255 260 265 270 275 280 285 290","rvShoe":"240,정사이즈,적당함;270,정사이즈,적당함;235,정사이즈,적당함;245,정사이즈,조금 넓음;290,정사이즈,적당함;245,정사이즈,조금 넓음;245,정사이즈,적당함;280,정사이즈,적당함;280,조금 큼,조금 넓음;245,정사이즈,적당함"},
+{"spec":"L2.s2","role":"alt","checked":"2026-11-06","id":"4700747","name":"나이키 줌 보메로 5 M 쿨 그레이:울프 그레이:화이트 HF1553-003","price":189000,"sold":"800개 이상","reviewCount":160,"fitPct":"","mat":"상품고시에 소재 표기 없음","shoe":true,"stock":"240 245 250 255 260 265 270 275 280 285 290 295 300(3개) 305x 310x","rvShoe":"270,정사이즈,조금 넓음;265,정사이즈,적당함;260,정사이즈,조금 넓음;270,정사이즈,적당함;285,정사이즈,조금 좁음;285,정사이즈,조금 넓음"},
+{"spec":"L2.e1","role":"main","checked":"2026-11-06","id":"3752991","name":"유니온블루 SUPER FINE MERINO SHORT MUFFLER [DARK GRAY]","price":54400,"sold":"4.2천 개 이상","reviewCount":1377,"mat":"SUPER FINE MERINO WOOL (혼용률 % 표기 없음)","sizes":["OS"],"chart":{"cols":["길이","폭"],"rows":[[170,12]]}},
+{"spec":"L2.e1","role":"alt","checked":"2026-11-06","id":"4574352","name":"사르토르 리사르투스 메리노 울 캐시미어 머플러 Short","color":"차콜","price":62000,"sold":"6천 개 이상","reviewCount":680,"mat":"캐시미어10%/메리노울90%(내몽골산)","sizes":["OS"],"chart":{"cols":["폭","길이"],"rows":[[12,170]]}},
+{"spec":"L2.e2","role":"main","checked":"2026-11-06","id":"1215265","name":"무신사 스탠다드 니트 워치 캡 [블랙]","price":14790,"sold":"3만 개 이상","reviewCount":8275,"mat":"겉감 면 58%, 아크릴 36%, 폴리에스터 5%, 폴리우레탄 1%","sizes":["FREE"],"chart":{"cols":["머리둘레","깊이"],"rows":[[43,16]]}},
+{"spec":"L2.e2","role":"alt","checked":"2026-11-06","id":"488862","name":"로스코 5464 미군 아크릴 왓치캡","color":"BLACK","price":19900,"sold":"3.1천 개 이상","reviewCount":809,"mat":"상품고시엔 '상세페이지 참조'. 상품명에 '아크릴' 표기","sizes":["FREE"]},
+{"spec":"L2.e3","role":"main","checked":"2026-11-06","id":"1842449","name":"메종미네드 BUCKLE STRAP HOBO BAG","color":"BLACK","price":79200,"sold":"3만 개 이상","reviewCount":8901,"mat":"겉감 : 나일론 100% / 안감 : 폴리 100%","sizes":["S","M","L"],"chart":{"cols":["높이","너비","폭"],"rows":[[22,28,5],[29,44,6],[34,51,6]]},"pick":"M"},
+{"spec":"L2.e3","role":"alt","checked":"2026-11-06","id":"3489623","name":"드로우핏 호보 레더 크로스백 [BLACK]","price":65600,"sold":"1.3만 개 이상","reviewCount":3127,"mat":"상품고시엔 '상세페이지 참조'(소재 텍스트 확인 못 함)","sizes":["FREE"],"chart":{"cols":["높이","너비","폭","끈길이"],"rows":[[27,52,10,55]]}},
+{"spec":"L1.o1","role":"main","checked":"2026-11-06","id":"3075962","name":"무신사 스탠다드 스포츠 유러피안 덕 스포츠 롱 다운자켓 (블랙)","price":79900,"sold":"900개 이상","reviewCount":153,"fitPct":"","mat":"상품고시엔 '상세페이지 참고'. 상품명에 '유러피안 덕 다운'","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[100.5,45,55.5,61],[103.5,49,60.5,63],[105,51,63,64],[106.5,53,65.5,65],[108,55,68,66]]},"rv":"180,75,M,?;163,58,M,?;168,73,L,?;175,70,L,?;175,70,S,?"},
+{"spec":"L1.o1","role":"alt","checked":"2026-11-06","id":"4492140","name":"커스텀어클락 후드 피쉬테일 롱 패딩 블랙 COOSJP050BLACK","price":79000,"sold":"300개 이상","reviewCount":43,"fitPct":"정사이즈 53%","mat":"겉감 NYLON 100%, 안감 POLYESTER 100%, 충전재 POLYESTER 100%","sizes":["S","M","L"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[98,61,71,62],[100,63,73.5,63],[102,65,79,64]]},"rv":"172,65,M,0;175,83,M,0;181,99,L,0;175,85,M,0;175,85,L,0;170,66,M,0;175,70,L,0"},
+{"spec":"L1.o2","role":"main","checked":"2026-11-06","id":"4297600","name":"무신사 스탠다드 데일리 푸퍼 후디드 숏 패딩 재킷 [블랙]","price":94890,"sold":"4.7천 개 이상","reviewCount":696,"fitPct":"정사이즈 76%","mat":"겉감 폴리에스터 100%, 안감 나일론 100%, 충전재 폴리에스터 100%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[61,51.5,61,61],[64,53.5,63.5,63],[66,55,66,64],[68,56.5,68.5,65],[70,58,71,66]]},"rv":"175,63,L,-1;175,82,XL,1;180,78,XL,0;170,50,L,-1;173,84,XL,0;173,85,XL,0;173,90,M,?"},
+{"spec":"L1.o2","role":"alt","checked":"2026-11-06","id":"5438737","name":"트릴리온 라이트 후디 패딩 자켓 블랙","price":49990,"sold":"1.1만 개 이상","reviewCount":922,"fitPct":"정사이즈 67%","mat":"겉감 Poly 100%, 충전재 Poly 100% (마이크로충전재)","sizes":["M","L","XL"],"chart":{"cols":["총장","가슴단면","전체소매길이"],"rows":[[62,57,76],[66,65,79],[68,67,81],[70,69,83]],"rowNames":["S","M","L","XL"]},"rv":"173,52,M,?;176,70,M,?;175,78,M,?;174,60,M,?;169,63,M,?"},
+{"spec":"L1.o3","role":"main","checked":"2026-11-06","id":"2794753","name":"후아유 Dumble Fleece Jacket(U) WHJJG4T21U","color":"(36)Light Beige","price":72140,"sold":"1.2만 개 이상","reviewCount":3132,"fitPct":"조금 커요 52%","mat":"SHELL POLYESTER 100%, LINING POLYESTER 100%","sizes":["S","M","L","XL"],"chart":{"cols":["총장","가슴단면","소매길이"],"rows":[[66.5,56,85.3],[68.5,58.5,87.4],[70.5,61,89.5],[72.5,63.5,91.6]]},"rv":"167,70,M,0;171,89,XL,0;176,65,L,1;175,65,M,0;187,78,XL,?;175,73,L,0;170,57,S,1"},
+{"spec":"L1.o3","role":"alt","checked":"2026-11-06","id":"1180666","name":"무신사 스탠다드 샤기 플리스 집업 재킷 [크림]","price":19990,"sold":"9.5천 개 이상","reviewCount":1899,"fitPct":"정사이즈 81%","mat":"겉감 폴리에스터 100%","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[66,46.4,56.5,61.5],[68,48,59,63],[70,49.6,61.5,64.5],[71,51.2,64,65.2]]},"rv":"173,85,XL,0;180,82,XL,0;182,79,2XL,0;175,64,XL,0;173,62,L,0;171,60,M,0;183,50,L,0"},
+{"spec":"L1.t1","role":"main","checked":"2026-11-06","id":"2144052","name":"페플 오리지널무지[기모] 루즈핏 후드 그레이 OGHD1934","price":36900,"sold":"9.5천 개 이상","reviewCount":1457,"fitPct":"정사이즈 65%","mat":"Cotton 72% + Polyester 28%","sizes":["M","L","XL","2XL","3XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70,54,56,60],[73,58,60,62],[76,62,65,65],[80,67,69,67],[83,71,72,68]]},"rv":"169,60,M,0;165,60,M,0;174,65,L,1;180,68,XL,0;178,78,XL,0;176,65,L,0;172,62,L,0"},
+{"spec":"L1.t1","role":"alt","checked":"2026-11-06","id":"3734214","name":"라이크더모스트 헤비기모 무지 오버후디","color":"멜란지","price":29960,"sold":"1.9천 개 이상","reviewCount":214,"fitPct":"정사이즈 87%","mat":"550g/㎡, 면 60% / 폴리 40%","sizes":["S","M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[68,57,57,54],[70,59,59,56],[72,61,61,58],[74,63,63,60]]},"rv":"178,76,L,0;174,70,M,-1;173,64,L,0;174,69,L,0"},
+{"spec":"L1.t2","role":"main","checked":"2026-11-06","id":"1336836","name":"브렌슨 (Renew Ver.) 루즈핏 스웨트 셔츠 (기모선택)","color":"★블랙(기모)★","price":27900,"priceNote":"판매가 25,900원 + 기모 옵션 2,000원","sold":"7만 개 이상","reviewCount":11791,"fitPct":"정사이즈 80%","mat":"COTTON 50% POLYESTER 50%","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70,58,60,56.5],[71.5,60,62,57.5],[73,62,64,58.5]]},"rv":"170,70,M,0;173,72,L,0;177,72,L,0;175,68,L,0;183,76,XL,0;177,66,L,0;175,83,L,0"},
+{"spec":"L1.t2","role":"alt","checked":"2026-11-06","id":"3734226","name":"라이크더모스트 헤비기모 무지 오버 스웨트셔츠","color":"블랙","price":29960,"sold":"200개 이상","reviewCount":44,"fitPct":"","mat":"550g/㎡, 면 60% / 폴리 40%","sizes":["S","M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70,57,57,54],[72,59,59,56],[74,61,61,58],[76,63,63,60]]},"rv":"170,60,M,0;175,70,M,?;179,80,XL,?;178,83,L,?;171,70,XL,?"},
+{"spec":"L1.b1","role":"main","checked":"2026-11-06","id":"2112061","name":"가까이 유니언즈 원턱 와이드 스웨트팬츠 블랙 (원단 선택)","option":"[기모]","price":28600,"priceNote":"타임특가(확인 시점 D-2). 기모 옵션 추가금 없음","sold":"32만 개 이상","reviewCount":43501,"fitPct":"정사이즈 81%","mat":"Cotton 65%, Polyester 35%","sizes":["XS","S","M","L","XL","2XL"],"chart":{"cols":["총장","허리단면","허벅지단면","밑위","밑단단면"],"rows":[[97.5,31,30.5,29,23.5],[99,32,31,30,24],[101,34,32,31,25],[103,36,33,32,26],[105,38,34,33,27],[107.5,39,35,34,28]]},"rv":"155,42,S,0;179,85,L,1;173,85,L,0;173,66,M,0;180,85,XL,0;161,47,S,0"},
+{"spec":"L1.b1","role":"alt","checked":"2026-11-06","id":"1844582","name":"브렌슨 (Renew Ver.) 원턱 와이드 스웨트 팬츠 (기모선택)","color":"블랙(기모)","price":34900,"priceNote":"판매가 32,900원 + 기모 옵션 2,000원","sold":"39만 개 이상","reviewCount":46056,"fitPct":"정사이즈 77%","mat":"2025.03 이후 생산품 COTTON 50% POLYESTER 50% (이전 생산품 75/25, 랜덤발송)","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[104,31.5,62,38,32.5,25],[106,33,64,39,33.5,26],[108,34.5,66,40,34.5,27],[110,36,68,41,35.5,28]]},"rv":"182,76,L,1;184,83,XL,0;178,65,M,0;181,78,XL,0;172,65,L,0;171,65,M,0;180,75,L,0;186,85,XL,0"},
+{"spec":"L1.b2","role":"main","checked":"2026-11-06","id":"3460271","name":"무신사 스탠다드 속기모 와이드 데님 팬츠 [딥 인디고]","price":53090,"sold":"2.2천 개 이상","reviewCount":348,"fitPct":"정사이즈 80%","mat":"겉감 면 66%, 폴리에스터 22%, 레이온 12%","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[105,35.5,47.5,31.25,30,24.5],[105,36.75,48.75,31.875,30,24.75],[106,38,50,32.5,30.5,25],[106,39.25,51.25,33.125,30.5,25.25],[107,40.5,52.5,33.75,31,25.5],[107,41.75,53.75,34.375,31,25.75],[107,43,55,35,31.5,26],[107,44.25,56.25,35.625,32,26.25],[108,45.5,57.5,36.25,32.5,26.5],[108,48,60,37.5,33.5,27],[109,50.5,62.5,38.75,34.5,27.5],[109,53,65,40,35.5,28],[110,55.5,67.5,41.25,36.5,28.5]]},"rv":"183,68,30,0;186,89,34,1;180,77,30,0;179,72,32,0;180,60,31,0;170,90,34,0;170,80,33,0;174,83,34,0"},
+{"spec":"L1.b2","role":"alt","checked":"2026-11-06","id":"4506373","name":"아크시 루즈 워시드 벌룬핏 와이드 데님 팬츠 (기모상품추가)","color":"MJUF754 (기모)","price":39920,"priceNote":"기모 옵션 추가금 없음","sold":"2만 개 이상","reviewCount":2204,"fitPct":"정사이즈 72%","mat":"상품고시엔 '상세페이지 참조'(혼용률 텍스트 확인 못 함)","sizes":["XS","S","M","L","XL","XXL"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[102,34,49.5,32,30,23],[104,36.5,52,33,31,24],[105,39,54.5,34,32,25],[106,41.5,57,35.5,33,26],[107,44,59.5,37,34,27],[108,46.5,62,38,35,28]]},"rv":"181,95,XXL,0;175,71,M,0;173,76,M,0;178,95,XXL,0;176,86,M,0;177,84,XL,0;177,92,XL,0;179,82,XL,0"},
+{"spec":"L1.e2","role":"main","checked":"2026-11-06","id":"1528287","name":"잔스포츠 슈퍼브레이크 BLACK","price":53100,"sold":"10만 개 이상","reviewCount":14782,"mat":"600 Denier Polyester 100%","sizes":["ONESIZE"],"chart":{"cols":["높이","너비","폭"],"rows":[[42,33,14]]}},
+{"spec":"L1.e2","role":"alt","checked":"2026-11-06","id":"937525","name":"무신사 스탠다드 코듀라 백팩 [블랙]","price":34990,"sold":"2만 개 이상","reviewCount":8200,"mat":"겉감 폴리에스터 100%, 안감 폴리에스터 100%","sizes":["FREE"],"chart":{"cols":["높이","너비","폭"],"rows":[[45,30,14]]}},
+{"spec":"L1.e3","role":"main","checked":"2026-11-06","id":"3275109","name":"무신사 스탠다드 스포츠 웜 플리스 넥 워머","color":"블랙","price":17900,"sold":"5.3천 개 이상","reviewCount":618,"mat":"폴리에스터100%","sizes":["FREE"],"chart":{"cols":["길이","폭"],"rows":[[28,30]]}},
+{"spec":"L1.e3","role":"alt","checked":"2026-11-06","id":"3457140","name":"무신사 스탠다드 스포츠 [힛탠다드] 웜 스누드 넥 워머","price":16900,"sold":"3.7천 개 이상","reviewCount":615,"mat":"폴리에스터 100%","sizes":["FREE"],"chart":{"cols":["길이","폭"],"rows":[[26,26]]}},
+{"spec":"L3.o1","role":"main","checked":"2026-11-06","id":"4407148","name":"리메인세컨드 울 블렌드 오버핏 싱글 코트","color":"BLACK","price":52800,"sold":"2.2천 개 이상","reviewCount":391,"fitPct":"정사이즈 45%","mat":"겉감 POLYESTER 70%, WOOL 30%, 안감 POLYESTER 100%, 충전재 POLYESTER 100%","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[109,51,61,61],[111,52,63,62],[113,53,65,63]]},"rv":"179,85,XL,0;182,71,L,?;185,69,XL,?;185,73,XL,1;170,70,M,0;177,88,XL,1;177,77,L,1"},
+{"spec":"L3.o1","role":"alt","checked":"2026-11-06","id":"3671003","name":"그레이블러밧 피엠 발마칸 코트(BLACK)","price":89900,"sold":"3.6천 개 이상","reviewCount":366,"fitPct":"정사이즈 59%","mat":"울20%, 폴리에스터 80%","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[111,53,63,61],[113,55,67,62],[115,57,71,63]]},"rv":"170,63,M,1;172,78,M,0;176,71,XL,0;171,67,L,1;178,71,L,0;185,80,XL,1;183,98,XL,1;170,57,M,0;178,72,XL,2"},
+{"spec":"L4.o1","role":"main","checked":"2026-11-06","id":"4407566","name":"리메인세컨드 울 블렌드 오버핏 발마칸 코트 [블랙]","price":69800,"sold":"2.6천 개 이상","reviewCount":476,"fitPct":"정사이즈 50%","mat":"겉감 POLYESTER 80%, WOOL 20%, 안감 POLYESTER 100%, 충전재 없음","sizes":["M","L","XL"],"chart":{"cols":["총장","가슴단면","소매길이"],"rows":[[111,63,79],[114,65,80],[117,67,81]]},"rv":"183,100,XL,0;178,95,XL,1;176,58,M,0;170,55,M,?;182,78,XL,?;165,78,M,?;180,63,XL,1"},
+{"spec":"L4.o1","role":"alt","checked":"2026-11-06","id":"3671003","name":"그레이블러밧 피엠 발마칸 코트(BLACK)","price":89900,"sold":"3.6천 개 이상","reviewCount":366,"fitPct":"정사이즈 59%","mat":"울20%, 폴리에스터 80%","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[111,53,63,61],[113,55,67,62],[115,57,71,63]]},"rv":"170,63,M,1;172,78,M,0;176,71,XL,0;171,67,L,1;178,71,L,0;185,80,XL,1;183,98,XL,1;170,57,M,0;178,72,XL,2"},
+{"spec":"L3.o2","role":"main","checked":"2026-11-06","id":"5706927","name":"데이(THEY) 스웨이드 레더 무스탕 자켓_BROWN","color":"BROWN","price":82300,"sold":"8.6천 개 이상","reviewCount":710,"fitPct":"정사이즈 78%","mat":"상세페이지 참조 (텍스트로 된 소재 표기 없음)","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[63,53.5,61.5,59],[65,56,64,61],[67,58.5,66.5,63]]},"rv":"171,70,M,0;179,78,L,0;183,82,L,0;183,77,XL,0;174,58,M,0;172,72,L,0"},
+{"spec":"L3.o2","role":"alt","checked":"2026-11-06","id":"3731126","name":"언더오프(UNDEROFF) 에비에이터 스웨이드 무스탕 점퍼 자켓 블랙","color":"블랙","price":76540,"sold":"2.5천 개 이상","reviewCount":248,"fitPct":"정사이즈 78%","mat":"겉감 폴리에스터 96% 스판덱스 4%, 안감 폴리에스터 100%, 충전재 폴리에스터 100%","sizes":["L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[66,55,64,59],[67,57,66,60],[68,59,68,61]]},"rv":"180,70,XL,0;172,80,XL,0;180,80,XL,0;180,90,2XL,-1;177,70,L,?;177,74,XL,-1;178,79,XL,-1"},
+{"spec":"L3.o3","role":"main","checked":"2026-11-06","id":"918039","name":"꼼파뇨(CPGN STUDIO) 헤비오버핏 램스울 가디건 챠콜","color":"챠콜","price":69500,"sold":"4만 개 이상","reviewCount":12484,"fitPct":"조금 커요 40%","mat":"WOOL 50% / OTHER 50%","sizes":["S","M","L"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70,62,66,44],[72,69,75,47],[75,75,81,51]]},"rv":"182,77,L,0;181,85,L,1;184,80,L,2;173,89,L,1;176,77,M,0;173,68,M,0"},
+{"spec":"L3.o3","role":"alt","checked":"2026-11-06","id":"1635350","name":"무신사 스탠다드(MUSINSA STANDARD) 램스울 오버사이즈 가디건 [차콜 그레이]","color":"차콜 그레이","price":83900,"sold":"1.9천 개 이상","reviewCount":512,"fitPct":"평가 표시 없음","mat":"울(Wool) 80%, 나일론 20%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70.5,54.5,59,54.5],[72.5,56.5,61.5,56.5],[74,58,64,57.5],[75.5,59.5,66.5,58.5],[77,61,69,59.5]]},"rv":"171,68,XL,0;190,95,XL,0;181,90,XL,0;175,70,M,1;185,83,2XL,?;169,60,S,?;179,82,2XL,?"},
+{"spec":"L3.t1","role":"main","checked":"2026-11-06","id":"854339","name":"무신사 스탠다드(MUSINSA STANDARD) 릴렉스 핏 옥스포드 셔츠 [블루]","color":"블루(스카이 블루)","price":33890,"sold":"2만 개 이상","reviewCount":7982,"fitPct":"정사이즈 84%","mat":"면 100%","sizes":["S","M","L","XL","2XL","3XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[75,48.8,56,59.5],[76.5,50.4,58.5,60.5],[78,52,61,61.5],[79.5,53.6,63.5,62.5],[80.5,55.2,66,63.5],[81.5,56.8,68.5,64]]},"rv":"174,68,M,1;178,74,L,1;163,59,S,0;177,78,XL,0;174,76,L,1;170,57,M,0;170,65,M,0;177,68,L,0"},
+{"spec":"L3.t1","role":"alt","checked":"2026-11-06","id":"1336398","name":"테이크이지(TAKEASY) 솔리드 옥스포드 오버셔츠(스카이블루)","color":"스카이블루","price":33500,"sold":"7만 개 이상","reviewCount":22056,"fitPct":"정사이즈 50%","mat":"코튼(Cotton) 100%","sizes":["S","M","L"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[76,60,68,55],[78,62,70,56],[80,64,72,57]]},"rv":"180,80,M,2;173,62,S,1;181,78,M,0;170,70,S,0;176,70,L,1;177,75,M,0"},
+{"spec":"L3.t2","role":"main","checked":"2026-11-06","id":"2778674","name":"무신사 스탠다드(MUSINSA STANDARD) 메리노 울 블렌드 하이게이지 터틀 넥 니트 [블랙]","color":"블랙","price":39790,"sold":"2만 개 이상","reviewCount":3393,"fitPct":"정사이즈 88%","mat":"폴리에스터 40% 모 20% 나일론 20% 아크릴 20%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[64.5,42.5,49.5,59],[66.5,44.5,52,61],[68,46,54.5,62],[69.5,47.5,57,63],[71,49,59.5,64]]},"rv":"177,72,L,0;167,64,M,0;178,75,XL,0;175,72,L,0;180,90,2XL,0;180,84,2XL,0;183,90,2XL,0;179,72,XL,0;173,68,L,0"},
+{"spec":"L3.t2","role":"alt","checked":"2026-11-06","id":"843276","name":"이에스엔(ESN) 퍼펙트 터틀넥 니트 티셔츠 블랙","color":"블랙","price":23400,"sold":"4만 개 이상","reviewCount":5952,"fitPct":"정사이즈 88%","mat":"상세페이지 참조 (텍스트로 된 소재 표기 없음)","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[68,46,53,60],[70,48,56,61],[72,50,59,62]]},"rv":"178,75,L,0;172,57,M,0;173,55,M,0;177,70,L,0;182,89,XL,0;188,93,XL,1;177,76,XL,0;173,54,M,0"},
+{"spec":"L3.b1","role":"main","checked":"2026-11-06","id":"2398627","name":"무신사 스탠다드(MUSINSA STANDARD) 울 블렌드 세미 와이드 히든 밴딩 슬랙스 [블랙]","color":"블랙","price":70990,"sold":"3.9천 개 이상","reviewCount":620,"fitPct":"정사이즈 90%","mat":"겉감 모 50% 폴리에스터 47% 폴리우레탄 3%, 안감 비스코스레이온 55% 나일론 45%","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[102,35,44.5,29.25,26,20],[102,36.25,45.75,29.875,26,20.25],[103,37.5,47,30.5,26.5,20.5],[103,38.75,48.25,31.125,26.5,20.75],[104,40,49.5,31.75,27,21],[104,41.25,50.75,32.375,27,21.25],[104,42.5,52,33,27.5,21.5],[104,43.75,53.25,33.625,28,21.75],[105,45,54.5,34.25,28.5,22],[105,47.5,57,35.5,29.5,22.5],[106,50,59.5,36.75,30.5,23],[106,52.5,62,38,31.5,23.5],[107,55,64.5,39.25,32.5,24]]},"rv":"180,75,32,0;182,71,32,0;178,79,33,0;170,62,29,-1;170,63,29,0;177,81,34,0;173,75,32,0"},
+{"spec":"L3.b1","role":"alt","checked":"2026-11-06","id":"1638592","name":"노이어(NOIRER) 울 원 턱 릴렉스 슬랙스 (블랙)","color":"블랙","price":71000,"sold":"5.7천 개 이상","reviewCount":1966,"fitPct":"평가 표시 없음","mat":"WOOL 50% POLYESTER 50%","sizes":["48","50","52"],"priceNote":"Short ver. 옵션 따로 있음","chart":null,"rv":"175,70,Short ver. 50,0;181,65,50,?;182,84,52,?;170,65,Short ver. 50,0;172,70,50,?;170,65,48,?;167,68,48,?;184,85,Short ver. 52,?"},
+{"spec":"L3.s1","role":"main","checked":"2026-11-06","id":"1128656","name":"커스텀에이드(CUSTOMADE) 루틴 소가죽 코만도 첼시부츠 4.5cm (CR0011BK)","color":"블랙","price":95200,"sold":"7만 개 이상","reviewCount":26114,"fitPct":"정사이즈 82%, 발볼 적당 80%","mat":"외피/내피: 소가죽+코팅가죽 / 합성피혁","shoe":true,"stock":"230 240 250 260 270 280 290","rvShoe":"290,정사이즈,조금 좁음;260,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,조금 좁음;280,정사이즈,조금 좁음;270,정사이즈,적당함;260,정사이즈,적당함;290,정사이즈,적당함;280,정사이즈,적당함"},
+{"spec":"L3.s1","role":"alt","checked":"2026-11-06","id":"2098793","name":"위더로드(WETHEROAD) WTRD5205 제롬 스퀘어토 첼시부츠 블랙 [250~290MM]","color":"블랙","price":64500,"sold":"8.8천 개 이상","reviewCount":2359,"fitPct":"정사이즈 61%, 발볼 적당 71%","mat":"겉감 인조가죽 / 안감 인조가죽+합성섬유 / 굽 합성고무","shoe":true,"stock":"230 235x 240 245 250 255 260 265 270 275 280 285 290","rvShoe":"265,정사이즈,적당함;265,정사이즈,적당함;260,조금 큼,적당함;260,조금 큼,적당함;260,조금 큼,적당함;265,정사이즈,적당함;250,정사이즈,적당함;255,조금 큼,매우 넓음;270,정사이즈,적당함"},
+{"spec":"L3.s2","role":"main","checked":"2026-11-06","id":"595039","name":"닥터마틴(DR.MARTENS) 1461 3홀 블랙 스무스 / 11838002","color":"블랙","price":229000,"sold":"3만 개 이상","reviewCount":9085,"fitPct":"정사이즈 76%, 발볼 적당 84%","mat":"천연가죽(소가죽)","shoe":true,"stock":"220 230 240 250 260 270 280 290 300","rvShoe":"250,정사이즈,조금 좁음;260,조금 큼,조금 넓음;250,정사이즈,조금 좁음;270,조금 큼,적당함;270,정사이즈,적당함;270,정사이즈,적당함;230,조금 큼,적당함;240,정사이즈,조금 좁음;270,정사이즈,적당함;260,정사이즈,적당함"},
+{"spec":"L3.s2","role":"alt","checked":"2026-11-06","id":"2101924","name":"무신사 스탠다드(MUSINSA STANDARD) 플레인 더비 슈즈 [블랙]","color":"블랙","price":89890,"sold":"3만 개 이상","reviewCount":5454,"fitPct":"정사이즈 65%, 발볼 적당 83%","mat":"갑피 천연가죽(소가죽), 내피 천연가죽(돈피), 창 고무","shoe":true,"stock":"230 235 240 245 250 255 260 265 270 275 280 285 290x","rvShoe":"260,정사이즈,적당함;275,정사이즈,적당함;275,정사이즈,적당함;265,조금 큼,적당함;260,조금 큼,적당함;260,정사이즈,적당함;280,정사이즈,적당함;255,정사이즈,적당함;260,조금 큼,조금 좁음;260,정사이즈,적당함"},
+{"spec":"L3.e2","role":"main","checked":"2026-11-06","id":"284269","name":"사르토르 리사르투스(SARTOR RESARTUS) 신슐레이트 풀터치 삼선 가죽장갑 Black","color":"Black","price":67500,"sold":"4.1천 개 이상","reviewCount":1002,"fitPct":"착용감 매우 편해요 51%","mat":"램스킨/폴리프로필렌","sizes":["S/M","M/L","L/XL"],"priceNote":"카라비너 포함 옵션은 +8,900원","glove":true,"stock":"S/M M/L L/XL","chart":null,"rv":""},
+{"spec":"L3.e2","role":"alt","checked":"2026-11-06","id":"3352487","name":"무신사 스탠다드(MUSINSA STANDARD) 램스킨 터치 글러브 [블랙]","color":"블랙","price":36890,"sold":"5.1천 개 이상","reviewCount":913,"fitPct":"착용감 보통이에요 38%","mat":"겉감 천연가죽(양), 안감 폴리에스터 100%","sizes":["M","L"],"glove":true,"chart":{"cols":["길이","손목 단면"],"rows":[[23,10],[23.5,10.5]]},"rv":""},
+{"spec":"L3.e3","role":"main","checked":"2026-11-06","id":"1576725","name":"도프제이슨(DOFFJASON) 카우하이드 토트백","color":"블랙","price":137000,"sold":"1.6만 개 이상","reviewCount":6561,"fitPct":"수납 적당히 들어가요 61%, 무게감 적당해요 71%","mat":"Laminated Leather (상품명은 카우하이드)","sizes":["FREE"],"bag":true,"chart":{"cols":["높이","너비","폭"],"rows":[[37,36,5]]},"rv":""},
+{"spec":"L3.e3","role":"alt","checked":"2026-11-06","id":"2149958","name":"무신사 스탠다드(MUSINSA STANDARD) 신세틱 레더 스퀘어 토트 백","color":"블랙","price":66390,"sold":"1.2만 개 이상","reviewCount":3738,"fitPct":"수납 적당히 들어가요 54%, 무게감 적당해요 71%","mat":"합성가죽","sizes":["FREE"],"bag":true,"chart":{"cols":["높이","너비","폭"],"rows":[[36.5,34,8.5]]},"rv":""},
+{"spec":"L4.o2","role":"main","checked":"2026-11-06","id":"2254808","name":"무신사 스탠다드(MUSINSA STANDARD) 릴렉스드 베이식 울 블레이저 [차콜 그레이]","color":"차콜 그레이","price":53490,"sold":"1.5천 개 이상","reviewCount":518,"fitPct":"정사이즈 79%","mat":"겉감 울 96%, 폴리우레탄 4%, 안감 폴리에스터 100%","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[71,45.4,53,60],[73,47,55.5,61.5],[75,48.6,58,63],[77,50.2,60.5,64.5]]},"rv":"176,76,XL,0;178,85,2XL,0;173,73,XL,1;171,61,M,0;181,73,XL,1;172,60,M,1;184,93,2XL,0;167,54,M,0"},
+{"spec":"L4.o2","role":"alt","checked":"2026-11-06","id":"727847","name":"시그니처(SIGNATURE) [기모선택] 세미오버핏 싱글 블레이저 자켓[검정]","color":"검정","price":89900,"sold":"3만 개 이상","reviewCount":12487,"fitPct":"정사이즈 94%","mat":"일반원단 poly 77% rayon 18% span 5% / 겨울원단 poly 72% rayon 25% span 3%, 안감 poly 100%","sizes":["M","L","XL"],"priceNote":"일반·여름원단·겨울원단 옵션, 추가금 없음. 겨울엔 '겨울원단' 고르기","chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[70,45,54,63],[72,47,57,64],[74,51,60,65]]},"rv":"172,65,M,0;177,78,XL,0;178,80,XL,0;184,84,XL,0;183,76,XL,0;180,71,XL,0;177,71,XL,0"},
+{"spec":"L4.t1","role":"main","checked":"2026-11-06","id":"983339","name":"무신사 스탠다드(MUSINSA STANDARD) 베이식 드레스 셔츠 [화이트]","color":"화이트","price":35890,"sold":"10만 개 이상","reviewCount":19117,"fitPct":"정사이즈 90%","mat":"코튼 60%, 폴리에스터 35%, 폴리우레탄 5%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[74,43.8,50,61.5],[75.5,45.4,52.5,62.5],[77,47,55,63],[78.5,48.6,57.5,64],[80,50.2,60,64.5]]},"rv":"171,61,M,0;167,72,L,0;183,82,L,0;177,74,L,0;175,75,XL,-2;184,80,XL,0;176,75,XL,0"},
+{"spec":"L4.t1","role":"alt","checked":"2026-11-06","id":"3889891","name":"마인드브릿지(MINDBRIDGE) [이지케어]드레스 셔츠 - 8color","color":"선택1.화이트(솔리드)","price":29900,"sold":"1.8만 개 이상","reviewCount":1339,"fitPct":"정사이즈 87%","mat":"옵션별로 다름(폴리에스터 77% 레이온 20% 폴리우레탄 3% / 폴리에스터 56% 면 44% 등). 화이트 솔리드가 어느 쪽인지 텍스트로 확인 못 함","sizes":["095","100","105","110","115"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[74.5,45.4,50.5,62],[76,47,53,63.5],[77.5,48.6,60,65],[78.5,51.6,62,66.5],[79.5,52.6,62,66.5]]},"rv":"178,77,115,0;184,90,115,0;173,73,105,0;173,73,105,0;173,70,100,0;184,78,105,0;184,78,105,0;178,64,095,0;173,66,100,0;173,66,100,0"},
+{"spec":"L4.t1b","role":"main","checked":"2026-11-06","id":"2100452","name":"무신사 스탠다드(MUSINSA STANDARD) 램스울 브이 넥 니트 베스트 [블랙]","color":"블랙","price":49900,"sold":"7.1천 개 이상","reviewCount":1876,"fitPct":"정사이즈 51%","mat":"울 80%, 나일론 20%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면"],"rows":[[65.5,46.5,53.5],[67.5,48.5,56],[69,50,58.5],[70.5,51.5,61],[72,53,63.5]]},"rv":"171,95,XL,1;174,87,M,0;171,58,S,0;180,78,L,0;183,83,L,0"},
+{"spec":"L4.t1b","role":"alt","checked":"2026-11-06","id":"1305385","name":"드로우핏(DRAW FIT) 오버핏 울 니트 베스트 [BLACK]","color":"BLACK","price":47200,"sold":"1만 개 이상","reviewCount":2423,"fitPct":"평가 표시 없음","mat":"WOOL 10% RAYON 10% ACRYLIC 25% NYLON 20% POLYESTER 35%","sizes":["M","L","XL"],"chart":{"cols":["총장","어깨너비","가슴단면"],"rows":[[69,46,57],[71,47.5,59],[73,49,61]]},"rv":"173,76,L,0;175,76,L,0;181,63,L,?;181,63,M,?;173,75,L,?;175,65,M,?;172,60,M,?"},
+{"spec":"L4.b2","role":"main","checked":"2026-11-06","id":"1670232","name":"무신사 스탠다드(MUSINSA STANDARD) 헤비웨이트 속기모 와이드 히든 밴딩 슬랙스 [블랙]","color":"블랙","price":50890,"sold":"2만 개 이상","reviewCount":6259,"fitPct":"정사이즈 89%","mat":"겉감 폴리에스터 68% 레이온 29% 폴리우레탄 3% (속기모)","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[103,35,46.5,30.3,27,23],[103,36.3,47.8,30.9,27,23.3],[104,37.5,49,31.5,27.5,23.5],[104,38.8,50.3,32.1,27.5,23.8],[105,40,51.5,32.8,28,24],[105,41.3,52.8,33.4,28,24.3],[105,42.5,54,34,28.5,24.5],[105,43.8,55.3,34.6,29,24.8],[106,45,56.5,35.3,29.5,25],[106,47.5,59,36.5,30.5,25.5],[107,50,61.5,37.8,31.5,26],[107,52.5,64,39,32.5,26.5],[108,55,66.5,40.3,33.5,27]]},"rv":"176,80,32,0;174,73,31,0;183,73,32,0;178,62,29,0;179,79,32,0;175,75,33,0;178,95,36,0;174,89,38,0"},
+{"spec":"L4.b2","role":"alt","checked":"2026-11-06","id":"880827","name":"시그니처(SIGNATURE) [기모선택] 와이드핏 슬랙스 [블랙]","color":"블랙","price":44900,"sold":"1.6만 개 이상","reviewCount":5355,"fitPct":"정사이즈 71%","mat":"겨울원단 Poly 72%, rayon 25%, span 3%","sizes":["S","M","L","XL"],"priceNote":"'겨울원단' 옵션 기준(기본 39,900 + 5,000원). 일반원단 M은 품절, 겨울원단 S~XL은 있음","chart":{"cols":["총장","허리단면","허벅지단면","밑위","밑단단면"],"rows":[[106,38,30,27,23],[107,41,31,28,24],[108,44,32,29,25.5],[109,46,33,30,26]]},"rv":"177,77,L,0;173,73,M,1;178,83,L,0;172,68,M,1;187,79,XL,0;177,78,M,0;179,76,L,0"},
+{"spec":"L4.s1","role":"main","checked":"2026-11-06","id":"636821","name":"하루타(HARUTA) 남성용 소가죽 페니로퍼 HS-906_BLACK","color":"BLACK","price":203150,"sold":"1.2만 개 이상","reviewCount":3838,"fitPct":"정사이즈 45%, 발볼 적당 70%","mat":"COW LEATHER","shoe":true,"stock":"245 250 255 260 265 270 275 280 285 290 300","rvShoe":"275,정사이즈,조금 넓음;300,조금 큼,조금 넓음;300,조금 큼,조금 넓음;265,조금 큼,적당함;250,조금 큼,조금 넓음;260,정사이즈,적당함;270,조금 큼,적당함;260,정사이즈,적당함;280,정사이즈,적당함;250,조금 큼,적당함"},
+{"spec":"L4.s1","role":"alt","checked":"2026-11-06","id":"1803515","name":"커스텀에이드(CUSTOMADE) 포든 소가죽 이지라이트 페니로퍼 4cm (CR0038BK)","color":"블랙","price":88940,"sold":"5.6천 개 이상","reviewCount":1462,"fitPct":"정사이즈 77%, 발볼 적당 85%","mat":"외피/내피: 소가죽+코팅가죽 / 돈피","shoe":true,"stock":"240 250 260 270 280 290","rvShoe":"260,매우 작음,매우 넓음;270,조금 큼,적당함;240,조금 큼,적당함;260,정사이즈,적당함;260,정사이즈,적당함;290,조금 큼,적당함;270,정사이즈,적당함;260,조금 큼,적당함;260,정사이즈,조금 좁음;260,정사이즈,적당함"},
+{"spec":"L4.e3","role":"main","checked":"2026-11-06","id":"2410459","name":"카시오(CASIO) MTP-1183A-7ADF","color":"실버/화이트 다이얼","price":55440,"sold":"700개 이상","reviewCount":158,"fitPct":"","mat":"상세페이지 참조 (텍스트 없음). 상품 사진상 은색 메탈 밴드·흰 다이얼 아날로그","sizes":["FREE"],"watch":true,"chart":null,"rv":""},
+{"spec":"L4.e3","role":"alt","checked":"2026-11-06","id":"1880626","name":"카시오(CASIO) A-158WA-1UWDF","color":"실버","price":38810,"sold":"2만 개 이상","reviewCount":4937,"fitPct":"디자인 매우 만족해요 59%","mat":"상세페이지 참조 (텍스트 없음). 상품 사진상 은색 메탈 밴드 디지털","sizes":["FREE"],"watch":true,"chart":null,"rv":""},
+{"spec":"S.snow","role":"main","checked":"2026-11-06","id":"5645576","name":"컬럼비아 공용 스노우피아 처카 옴니테크","color":"블랙","price":71200,"sold":"50개 이상","reviewCount":7,"fitPct":"후기가 적어 사이즈 집계 없음","mat":"겉감1 나일론 100%, 겉감2 인조가죽, 안감 폴리에스터 100%, 창 합성고무","claim":"상품설명: 옴니테크 방투습 멤브레인으로 비에 젖지 않게, 쉘은 PU 가죽, 안감 플리스로 보온","shoe":true,"stock":"230 240 250 260 270 280 290x","rvShoe":"260,정사이즈,조금 넓음;260,정사이즈,조금 넓음;290,정사이즈,매우 넓음;250,정사이즈,조금 넓음;260,조금 큼,적당함;270,정사이즈,적당함;270,정사이즈,적당함","priceNote":"최저가 도전가"},
+{"spec":"S.snow","role":"alt","checked":"2026-11-06","id":"4949149","name":"무신사 스탠다드 시프트 첼시 레인 부츠 [블랙]","color":"블랙","price":75890,"sold":"2.6천 개 이상","reviewCount":241,"fitPct":"정사이즈 70%, 발볼 적당 81%","mat":"갑피 고무, 창 고무","claim":"보온 안감·보온 문구는 없음","shoe":true,"stock":"230 240 250 260 270 280","rvShoe":"260,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;280,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;230,정사이즈,적당함","warn":"보온 안감이 없어서 영하에 눈 오는 날엔 두꺼운 양말을 같이 신기"},
+{"spec":"S.rain","role":"main","checked":"2026-11-06","id":"4949149","name":"무신사 스탠다드 시프트 첼시 레인 부츠 [블랙]","color":"블랙","price":75890,"sold":"2.6천 개 이상","reviewCount":241,"fitPct":"정사이즈 70%, 발볼 적당 81%","mat":"갑피 고무, 창 고무","shoe":true,"stock":"230 240 250 260 270 280","rvShoe":"260,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;280,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;230,정사이즈,적당함"},
+{"spec":"S.rain","role":"alt","checked":"2026-11-06","id":"3694945","name":"로맨틱무브 포 시즌 첼시 레인부츠 R23M501 (블랙)","color":"블랙","price":95000,"sold":"3.8천 개 이상","reviewCount":737,"fitPct":"정사이즈 65%, 발볼 적당 71%","mat":"합성피혁(상품고시)","claim":"방수 문구는 페이지 글자로는 확인 못 함. 상품명만 레인부츠","shoe":true,"stock":"250x 260x 270 280x","optNote":"옵션 표기가 '270(270~275)'처럼 5mm 구간","rvShoe":"270,조금 큼,조금 넓음;260,조금 큼,적당함;270,조금 큼,조금 넓음;270,조금 큼,조금 넓음;260,정사이즈,적당함;260,정사이즈,적당함;260,조금 큼,적당함;250,조금 큼,적당함;260,정사이즈,적당함;280,조금 큼,조금 넓음"}
+];
+
+/* I(그림용 이름, 최저, 최고, 옵션) — 최저~최고: 이 체감온도에서 입기 알맞음. sp: 제품 칸, sp2: 겹쳐 입는 두 번째 제품, f: 핏, r: 비에 약함 */
+const I = (n, lo, hi, o = {}) => Object.assign({n, lo, hi}, o);
+const ALL = [-40, 45];
+const LEVELS = {
+L1:{name:'편하게', mood:'', key:['상의 기장','후드·맨투맨은 엉덩이 중간 위에서 끝나는 게 다리가 덜 짧아 보임'],
+  pal:[[['블랙','#1C1C1C'],['그레이','#9A9A9A'],['화이트','#F4F4F2']]],
+  outer:[I('블랙 롱패딩',-25,-3,{f:'longpad',sp:'L1.o1'}),I('블랙 후드 숏패딩',-12,4,{f:'short',sp:'L1.o2'}),I('라이트 베이지 플리스 집업',3,12,{f:'short',sp:'L1.o3'})],
+  top:[I('그레이 기모 후드티',-5,12,{f:'top',sp:'L1.t1'}),I('블랙 기모 맨투맨',-3,12,{f:'top',sp:'L1.t2'})],
+  bottom:[I('블랙 기모 와이드 스웨트팬츠',-15,8,{f:'wide',sp:'L1.b1'}),I('인디고 기모 와이드 데님',-12,6,{f:'wide',sp:'L1.b2'})],
+  shoes:[I('그레이 러닝화',-5,30,{f:'chunky',sp:'L2.s2'})],
+  extra:[I('블랙 넥워머',-30,0,{sp:'L1.e3'}),I('블랙 비니',-30,8,{sp:'L2.e2'}),I('블랙 백팩',...ALL,{sp:'L1.e2'})]},
+L2:{name:'꾸안꾸', mood:'', key:['색 수','한 벌에 색은 세 가지까지'],
+  pal:[[['블랙','#1C1C1C'],['아이보리','#EEE9DF'],['그레이','#9A9A9A']]],
+  outer:[I('블랙 무광 숏패딩',-15,3,{f:'short',sp:'L2.o1'}),I('블랙 MA-1 블루종',4,12,{f:'short',sp:'L2.o2'})],
+  top:[I('아이보리 크루넥 울 니트',0,13,{f:'knit',sp:'L2.t1'}),I('블랙 하이넥 니트',-15,8,{f:'knit',sp:'L2.t2'}),I('그레이 헤비 맨투맨',3,15,{f:'top',sp:'L2.t3'})],
+  bottom:[I('블랙 스트레이트 데님',-3,22,{f:'straight',sp:'L2.b1'}),I('그레이 울 와이드 슬랙스',-8,12,{f:'wide',sp:'L2.b2'})],
+  shoes:[I('화이트 레더 스니커즈',-3,30,{sp:'L2.s1'}),I('그레이 러닝화',-5,30,{f:'chunky',sp:'L2.s2'})],
+  extra:[I('다크 그레이 울 머플러',-30,7,{sp:'L2.e1'}),I('블랙 비니',-30,8,{sp:'L2.e2'}),I('블랙 숄더백',...ALL,{sp:'L2.e3'})]},
+L3:{name:'적당히 꾸민', mood:'', key:['구김','코트·슬랙스는 전날 옷걸이에 걸어 두기'],
+  pal:[[['블랙','#1C1C1C'],['차콜','#4A4A4A'],['아이보리','#EEE9DF']]],
+  outer:[I('블랙 싱글 울 코트',-3,9,{f:'coat',sp:'L3.o1'}),I('브라운 스웨이드 무스탕',-8,5,{f:'short',r:1,sp:'L3.o2'}),I('차콜 니트 카디건',6,14,{f:'knit',sp:'L3.o3'})],
+  top:[I('스카이 블루 옥스퍼드 셔츠 + 아이보리 크루넥 울 니트',-3,12,{f:'knit',sp:'L3.t1',sp2:'L2.t1'}),I('블랙 터틀넥 니트',-15,8,{f:'knit',sp:'L3.t2'}),I('스카이 블루 옥스퍼드 셔츠',10,22,{f:'shirt',sp:'L3.t1'})],
+  bottom:[I('블랙 울 슬랙스',-5,14,{f:'slacks',sp:'L3.b1'}),I('블랙 스트레이트 데님',-3,22,{f:'straight',sp:'L2.b1'})],
+  shoes:[I('블랙 첼시부츠',-15,12,{f:'boots',sp:'L3.s1'}),I('블랙 더비슈즈',-10,28,{sp:'L3.s2'})],
+  extra:[I('다크 그레이 울 머플러',-30,7,{sp:'L2.e1'}),I('블랙 가죽 장갑',-30,3,{sp:'L3.e2'}),I('블랙 가죽 토트백',...ALL,{sp:'L3.e3'})]},
+L4:{name:'꾸꾸꾸', mood:'formal', key:['셔츠','깃·소매는 전날 다리고, 셔츠는 바지에 넣어 입기'],
+  pal:[[['블랙','#1C1C1C'],['화이트','#F4F4F2'],['차콜','#4A4A4A']]],
+  outer:[I('블랙 발마칸 울 코트',-5,8,{f:'coat',sp:'L4.o1'}),I('차콜 울 블레이저',8,18,{f:'blazer',sp:'L4.o2'})],
+  top:[I('화이트 드레스 셔츠 + 블랙 니트 베스트',-5,16,{f:'shirt',sp:'L4.t1',sp2:'L4.t1b'}),I('블랙 터틀넥 니트',-15,8,{f:'knit',sp:'L3.t2'}),I('화이트 드레스 셔츠',14,24,{f:'shirt',sp:'L4.t1'})],
+  bottom:[I('블랙 울 슬랙스',-5,14,{f:'slacks',sp:'L3.b1'}),I('블랙 기모 와이드 슬랙스',-15,4,{f:'wide',sp:'L4.b2'})],
+  shoes:[I('블랙 페니 로퍼',-5,28,{sp:'L4.s1'}),I('블랙 첼시부츠',-15,12,{f:'boots',sp:'L3.s1'}),I('블랙 더비슈즈',-10,28,{sp:'L3.s2'})],
+  extra:[I('실버 메탈 시계',...ALL,{sp:'L4.e3'}),I('블랙 가죽 장갑',-30,3,{sp:'L3.e2'}),I('블랙 가죽 토트백',...ALL,{sp:'L3.e3'})]}
+};
+const RAIN_SHOE = I('블랙 레인부츠',-15,30,{f:'boots',sp:'S.rain'});
+const SNOW_SHOE = I('블랙 방수 처카 부츠',-30,8,{f:'boots',sp:'S.snow'});
+
+/* 대표·대체 둘 다 못 살 때 볼 것: [핏, 소재, 느낌]. 숫자는 제품 페이지에 적힌 것만 */
+const FB = {
+'L1.o1':['무릎을 덮는 롱 기장','덕다운이나 폴리에스터 충전재','블랙 무지'],
+'L1.o2':['엉덩이 위에서 끝나는 숏 기장, 후드 달린 것','겉감·충전재 폴리에스터','블랙 무지'],
+'L1.o3':['엉덩이 위에서 끝나는 집업','폴리에스터 100% 뽀글이(덤블·샤기) 플리스','라이트 베이지나 크림'],
+'L1.t1':['루즈핏 후드티','안쪽 기모, 면 60% 이상','그레이 무지'],
+'L1.t2':['루즈핏 맨투맨','안쪽 기모, 면 50% 이상','블랙 무지'],
+'L1.b1':['원턱 와이드, 허리 밴딩','면·폴리 혼방 기모','블랙'],
+'L1.b2':['통이 넓은 와이드','안쪽에 기모가 붙은 데님','진한 인디고~중청'],
+'L1.e2':['기본형 데이팩','두꺼운 폴리에스터(600D·코듀라)','블랙'],
+'L1.e3':['머리로 뒤집어 쓰는 통형','폴리에스터 플리스','블랙'],
+'L2.o1':['엉덩이 위에서 끝나는 숏 기장','겉감 폴리에스터나 나일론. 충전재가 다운이 아니어도 됨(대표 제품도 폴리에스터 충전)','광택 적은 블랙 무지'],
+'L2.o2':['허리 밴드에서 끝나는 짧은 기장, 품이 넉넉한 오버핏','겉감 나일론, 얇은 솜 충전','블랙, 패치·자수 없는 기본형'],
+'L2.t1':['몸에 붙지 않는 레귤러 핏','울 50% 이상(대표 제품 메리노 울 100%, 대체품 울 50%)','아이보리나 크림 같은 밝은 무지'],
+'L2.t2':['몸에 붙지 않는 레귤러 핏, 목이 반쯤 올라오는 모크넥','대표 제품은 울 없는 폴리·레이온이라 얇고 매끈함. 더 따뜻한 게 필요하면 울 섞인 것','블랙 무지'],
+'L2.t3':['오버사이즈, 소매·밑단 시보리','면 100% 두꺼운 헤비웨이트 원단','그레이 무지, 로고 없음'],
+'L2.b1':['허벅지부터 밑단까지 곧게 떨어지는 스트레이트','면 98% 이상(스판 2% 이하)','블랙이나 흑청, 찢어짐·과한 워싱 없음'],
+'L2.b2':['와이드, 밑단이 신발 앞코를 살짝 덮는 기장','울 30% 이상(대표 제품 모 92%, 대체품 울 30%), 안감 있는 것','그레이나 블랙 단색'],
+'L2.s1':['앞코가 둥근 로우탑 코트화','갑피 가죽','흰색이나 오프화이트, 다른 색 배색 없는 것'],
+'L2.s2':['밑창 쿠션이 두툼한 러닝화','메쉬 + 인조가죽 덧댐','그레이·실버 계열'],
+'L2.e1':['폭이 좁은 짧은 머플러(대표 제품 폭 12cm)','메리노 울','다크 그레이나 차콜 단색'],
+'L2.e2':['한 번 접어 쓰는 워치캡, 귀 덮는 깊이','면·아크릴 니트','블랙 무지'],
+'L2.e3':['어깨에 메는 반달 모양 호보백','나일론이나 가죽','블랙'],
+'L3.o1':['단추 한 줄 싱글, 품이 넉넉한 오버핏','울 20~30% 혼방(두 제품 다 울 20~30%, 나머지 폴리에스터)','블랙'],
+'L3.o2':['엉덩이 위 숏 기장, 칼라와 안쪽이 보아','스웨이드(인조 포함) 겉감 + 보아 안감','브라운이나 블랙. 눈·비 오는 날엔 안 입기'],
+'L3.o3':['오버핏, 두께 있는 헤비 니트','램스울 50% 이상','차콜'],
+'L3.t1':['품이 약간 넉넉한 릴렉스 핏','면 100% 옥스퍼드 원단','스카이 블루 무지'],
+'L3.t2':['몸에 맞는 슬림한 터틀넥','얇고 촘촘한 하이게이지 니트(대표 제품은 모 20% 혼방)','블랙 무지'],
+'L3.b1':['세미 와이드, 밑단이 신발 등에 살짝 닿는 기장','울 50% 혼방(두 제품 다)','블랙'],
+'L3.s1':['발목까지 오는 첼시부츠, 굽 4cm 안팎','소가죽이나 인조가죽, 고무창','블랙'],
+'L3.s2':['끈 묶는 플레인 더비, 둥근 앞코','소가죽, 고무창','블랙'],
+'L3.e2':['손목까지 오는 짧은 장갑, 스마트폰 터치 되는 것','양가죽(램스킨)','블랙'],
+'L3.e3':['각진 토트백','가죽이나 합성가죽','블랙'],
+'L4.o1':['발마칸(라글란 소매, 작은 칼라), 품이 넉넉한 오버핏','울 20% 이상 혼방','블랙'],
+'L4.o2':['단추 한 줄 싱글, 엉덩이 절반을 덮는 기장','울 혼방(대표 제품 울 96%)','차콜 그레이나 블랙'],
+'L4.t1':['바지에 넣어 입는 기본 드레스 셔츠','면·폴리에스터 혼방','화이트 무지'],
+'L4.t1b':['브이넥 베스트, 셔츠 칼라가 보이는 깊이','울 함량 높은 것(대표 제품 램스울 80%)','블랙'],
+'L4.b2':['와이드, 허리 히든 밴딩','폴리·레이온 겉감 + 안쪽 기모','블랙, 정장 바지처럼 매끈한 겉면'],
+'L4.s1':['페니 로퍼, 둥근 앞코','소가죽','블랙'],
+'L4.e3':['메탈 밴드 손목시계','은색 금속 밴드(두 제품 다 사진 기준)','실버, 다이얼 작은 것'],
+'S.snow':['발목을 덮는 높이','방수 멤브레인 + 보온 안감, 고무창','블랙, 밑창 홈이 깊은 것'],
+'S.rain':['발목 높이 첼시형, 바지 밑단에 덮이는 높이','통고무(갑피·창 고무)','블랙']
 };
 
-/* ---------- 핏 메모 ---------- */
-const FIT = {
-  short:'엉덩이 위에서 끝나는 기장이 다리가 길어 보인다. M 기준.',
-  coat:'무릎 위에서 끝나는 기장으로. 발목까지 내려오면 키가 묻혀 보인다.',
-  longpad:'롱패딩은 길이를 못 줄이니 바지·신발을 같은 어두운 색으로 맞춰 세로 선을 잇는다.',
-  blazer:'어깨 봉제선이 내 어깨 끝에 오는 M. 총장은 엉덩이 절반을 덮는 정도.',
-  knit:'정핏 M(95), 여유 있게 L(100). 소매가 손등을 덮으면 한 번 접는다.',
-  shirt:'정핏 M. 넣어 입을 땐 그대로, 빼 입을 땐 엉덩이 절반 정도 덮는 기장.',
-  top:'M(95). 총장이 엉덩이 중간을 넘으면 앞만 살짝 바지에 넣는다.',
-  over:'어깨는 커도 되지만 총장이 엉덩이를 다 덮으면 다리가 짧아 보인다. 오버핏으로 나온 옷은 M.',
-  wide:'허리 30~31. 밑단이 신발 앞코를 살짝 덮는 정도, 바닥에 끌리면 수선.',
-  straight:'허리 30~31. 밑단이 복숭아뼈 아래에서 한 번 접히는 정도.',
-  slacks:'허리 30~31. 밑단이 구두 등에 살짝 닿는 기장.',
-  shorts:'무릎 바로 위에서 끝나는 기장. 무릎을 덮으면 다리가 짧아 보인다.',
-  chunky:'굽 있는 청키 스니커즈는 키를 보태 준다. 바지 밑단을 신발 위에 살짝 얹는다.',
-  boots:'바지 밑단으로 부츠 목을 덮어 신으면 다리 선이 안 끊긴다.'
+const HOW = {
+  short:'엉덩이 위 기장', coat:'어깨 봉제선이 어깨 끝에 오는지 보기', longpad:'바지·신발을 같은 어두운 색으로', blazer:'엉덩이 절반을 덮는 기장',
+  knit:'소매가 길면 한 번 접기', shirt:'넣어 입거나 엉덩이 절반까지', top:'길면 앞만 살짝 넣기', over:'길면 앞만 살짝 넣기',
+  wide:'밑단이 신발 앞코를 살짝 덮게', straight:'밑단이 복숭아뼈 아래서 한 번 꺾이게', slacks:'밑단이 신발 등에 살짝 닿게',
+  shorts:'무릎 바로 위 기장', chunky:'바지 밑단을 신발 위에 살짝 얹기', boots:'바지 밑단으로 부츠 목 덮기'
 };
-
-/* I(이름, 최저, 최고, 검색어, 옵션) — 최저~최고: 이 체감온도에서 입기 알맞음
-   옵션 w: 비에 강함(신발), r: 비에 약함(스웨이드·캔버스), t: 근거 기사, f: 핏 메모 */
-const I = (n, lo, hi, kw, o = {}) => Object.assign({n, lo, hi, kw: kw || n}, o);
-
-const MOODS = {
-minimal:{name:'미니멀', desc:'무채색, 로고 없는 옷',
-  key:['어깨선','무채색 옷은 색으로 가릴 게 없어서 핏이 그대로 보인다. 상의 어깨 봉제선이 내 어깨 끝에 오는지부터 본다.'],
-  pal:[[['블랙','#1C1C1C'],['화이트','#F4F4F2'],['차콜','#4A4A4A']],[['네이비','#1F2A44'],['그레이','#9A9A9A'],['화이트','#F4F4F2']],[['클라우드 댄서','#EFEDE8'],['블랙','#1C1C1C'],['그레이','#9A9A9A']]],
-  outer:[I('블랙 무광 숏패딩',-15,3,'무광 숏패딩',{f:'short'}),I('경량 패딩 + 차콜 울 코트 레이어드',-8,3,'울 코트',{f:'coat',t:'T7'}),I('차콜 발마칸 코트',0,9,'발마칸 코트',{f:'coat'}),I('블랙 싱글 울 코트',-3,8,'싱글 울 코트',{f:'coat'}),I('스톤 화이트 시어 경량 패딩',5,13,'시어 경량 패딩',{f:'short',t:'T2'}),I('블랙 MA-1 블루종',5,13,'MA-1 자켓',{f:'short'}),I('블랙 트렌치코트',9,15,'트렌치코트',{f:'coat'}),I('그레이 블레이저',12,19,'블레이저',{f:'blazer'}),I('차콜 니트 집업 카디건',14,21,'니트 집업 카디건',{f:'knit'}),I('화이트 오버셔츠',18,23,'오버셔츠',{f:'shirt'}),I('블랙 린넨 셔츠(걸치기)',21,26,'린넨 셔츠',{f:'shirt'})],
-  top:[I('블랙 하이넥 니트',-20,9,'하이넥 니트',{f:'knit'}),I('그레이 크루넥 울 니트',3,15,'크루넥 울 니트',{f:'knit'}),I('화이트 옥스퍼드 셔츠',12,22,'옥스퍼드 셔츠',{f:'shirt'}),I('차콜 무지 맨투맨',9,18,'무지 맨투맨',{f:'top'}),I('화이트 헤비 코튼 긴팔티',16,23,'헤비 코튼 긴팔 티셔츠',{f:'top'}),I('블랙 반팔 니트',22,28,'반팔 니트',{f:'knit'}),I('화이트 무지 반팔티',23,40,'무지 반팔 티셔츠',{f:'top'})],
-  bottom:[I('블랙 기모 슬랙스',-25,4,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-5,14,'울 슬랙스',{f:'slacks'}),I('블랙 스트레이트 데님',0,22,'블랙 스트레이트 데님',{f:'straight',t:'T4'}),I('그레이 와이드 슬랙스',5,22,'와이드 슬랙스',{f:'wide'}),I('베이지 치노 팬츠',14,27,'치노 팬츠',{f:'straight'}),I('블랙 버뮤다 팬츠',25,40,'버뮤다 팬츠',{f:'shorts'})],
-  shoes:[I('블랙 더비슈즈',-10,26,'더비슈즈',{w:1}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1}),I('블랙 첼시부츠',-20,12,'첼시부츠',{w:1,f:'boots'}),I('블랙 페니 로퍼',8,28,'페니 로퍼',{w:1}),I('블랙 레더 샌들',26,40,'레더 샌들')],
-  extra:[I('실버 메탈 시계',-40,45,'메탈 시계',{y:'무채색 코디에선 금속 하나가 밋밋함을 덜어 준다.'}),I('블랙 레더 토트백',-40,45,'레더 토트백',{y:'노트북이 들어가는 크기로. 옷에 로고가 없으니 가방 소재가 눈에 띈다.'}),I('그레이 캐시미어 머플러(묶지 말고 늘어뜨리기)',-30,7,'캐시미어 머플러',{t:'T1'}),I('블랙 레더 장갑',-30,3,'레더 장갑')]},
-
-casual:{name:'캐주얼', desc:'맨투맨·데님 데일리',
-  key:['상의 기장','맨투맨·후드가 엉덩이를 다 덮으면 다리가 짧아 보인다. 엉덩이 중간 위에서 끝나는 기장을 고른다.'],
-  pal:[[['인디고','#3B4F7A'],['그레이','#A7A7A7'],['화이트','#F4F4F2']],[['네이비','#1F2A44'],['베이지','#D8C7A8'],['화이트','#F4F4F2']],[['버건디','#6E2633'],['연청','#8FA9C9'],['크림','#F1EBDD']]],
-  outer:[I('네이비 숏패딩',-15,3,'숏패딩',{f:'short'}),I('블랙 롱패딩',-30,-3,'롱패딩',{f:'longpad'}),I('스톤 화이트 경량 패딩',5,13,'경량 패딩',{f:'short',t:'T2'}),I('네이비 더플코트',-5,7,'더플코트',{f:'coat'}),I('그레이 플리스 자켓',5,13,'플리스 자켓',{f:'short',t:'T3'}),I('바시티 자켓',6,14,'바시티 자켓',{f:'short'}),I('카키 필드 자켓',7,15,'필드 자켓',{f:'short'}),I('데님 트러커 자켓',12,20,'데님 트러커 자켓',{f:'short'}),I('그레이 후드 집업',12,20,'후드 집업',{f:'short'}),I('체크 셔츠(걸치기)',18,25,'체크 셔츠',{f:'shirt'})],
-  top:[I('기모 맨투맨',-15,9,'기모 맨투맨',{f:'top'}),I('쿼터집 스웻셔츠',5,16,'쿼터집 스웻셔츠',{f:'top',t:'T3'}),I('그레이 맨투맨',9,18,'그레이 맨투맨',{f:'top'}),I('후드티',7,17,'후드티',{f:'top'}),I('크림 케이블 니트',-5,12,'케이블 니트',{f:'knit'}),I('스트라이프 긴팔티',15,23,'스트라이프 긴팔 티셔츠',{f:'top'}),I('피케 카라 반팔티',22,32,'피케 카라티',{f:'top'}),I('로고 반팔티',23,40,'로고 반팔 티셔츠',{f:'top'})],
-  bottom:[I('기모 청바지',-25,4,'기모 청바지',{f:'straight'}),I('연청 스트레이트 데님',5,25,'연청 스트레이트 데님',{f:'straight',t:'T4'}),I('중청 배럴 진',3,22,'배럴 진',{f:'wide',t:'T4'}),I('브라운 코듀로이 팬츠',-8,12,'코듀로이 팬츠',{f:'straight'}),I('베이지 치노 팬츠',12,27,'치노 팬츠',{f:'straight'}),I('데님 반바지',26,40,'데님 반바지',{f:'shorts'}),I('카고 반바지',25,40,'카고 반바지',{f:'shorts'})],
-  shoes:[I('그레이 청키 러닝화',-5,33,'청키 러닝화',{f:'chunky',t:'T5'}),I('화이트 캔버스 스니커즈',8,33,'캔버스 스니커즈',{r:1}),I('레더 하이탑 스니커즈',-15,15,'레더 하이탑',{w:1}),I('슬립온',16,32,'슬립온',{r:1}),I('스포츠 샌들',26,40,'스포츠 샌들',{w:1})],
-  extra:[I('백팩',-40,45,'백팩',{y:'매일 들기엔 백팩이 편하다. 겉옷과 같은 계열 색이면 덜 튄다.'}),I('캔버스 에코백',-40,45,'에코백',{y:'짐이 적은 날엔 에코백 하나면 된다.'}),I('그레이 비니',-30,8,'비니'),I('네이비 볼캡',10,40,'볼캡',{cap:1,y:'머리 손질 못 한 날 제일 빠른 해결책.'})]},
-
-soft:{name:'꾸안꾸', desc:'베이지·크림 톤온톤',
-  key:['톤 맞추기','베이지·크림·브라운 안에서 밝기만 다르게 겹친다. 색이 세 가지를 넘으면 꾸민 티가 난다.'],
-  pal:[[['크림','#F1EBDD'],['오트밀','#D9CDB8'],['브라운','#6B4E3D']],[['베이지','#D8C7A8'],['화이트','#F4F4F2'],['연청','#8FA9C9']],[['카멜','#B08354'],['아이보리','#EEE9DF'],['차콜','#4A4A4A']]],
-  outer:[I('크림 숏패딩',-15,3,'크림 숏패딩',{f:'short'}),I('브라운 무스탕',-10,4,'무스탕',{f:'short'}),I('카멜 핸드메이드 코트',-3,9,'핸드메이드 코트',{f:'coat'}),I('브라운 스웨이드 자켓',8,15,'스웨이드 자켓',{f:'short',r:1}),I('베이지 트렌치코트',9,16,'트렌치코트',{f:'coat'}),I('오트밀 니트 카디건',13,21,'니트 카디건',{f:'knit'}),I('베이지 오버셔츠',16,23,'오버셔츠',{f:'shirt'}),I('화이트 린넨 셔츠(걸치기)',21,27,'린넨 셔츠',{f:'shirt'})],
-  top:[I('오트밀 터틀넥 니트',-15,9,'터틀넥 니트',{f:'knit'}),I('크림 케이블 니트',-5,13,'케이블 니트',{f:'knit'}),I('아이보리 브이넥 니트 + 화이트 티',9,18,'브이넥 니트',{f:'knit'}),I('연청 스트라이프 셔츠',14,23,'스트라이프 셔츠',{f:'shirt'}),I('화이트 루즈핏 긴팔티',16,23,'루즈핏 긴팔 티셔츠',{f:'top'}),I('베이지 반팔 니트',21,28,'반팔 니트',{f:'knit'}),I('화이트 헤비 코튼 반팔티',23,40,'헤비 코튼 반팔',{f:'top'}),I('반팔 린넨 셔츠',25,40,'반팔 린넨 셔츠',{f:'shirt'})],
-  bottom:[I('기모 와이드 데님',-25,4,'기모 와이드 데님',{f:'wide'}),I('브라운 코듀로이 팬츠',-8,12,'코듀로이 팬츠',{f:'straight'}),I('베이지 와이드 슬랙스',3,20,'와이드 슬랙스',{f:'wide'}),I('연청 와이드 데님',5,25,'연청 와이드 데님',{f:'wide'}),I('아이보리 코튼 팬츠',12,27,'코튼 팬츠',{f:'straight'}),I('린넨 반바지',25,40,'린넨 반바지',{f:'shorts'})],
-  shoes:[I('브라운 스웨이드 앵클부츠',-10,12,'스웨이드 부츠',{r:1,f:'boots'}),I('베이지 스웨이드 스니커즈',3,22,'스웨이드 스니커즈',{r:1}),I('브라운 로퍼',8,28,'브라운 로퍼',{w:1}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1}),I('브라운 레더 샌들',26,40,'레더 샌들')],
-  extra:[I('오트밀 울 머플러(묶지 말고 늘어뜨리기)',-30,8,'울 머플러',{t:'T1'}),I('얇은 니트를 어깨에 두르기',17,23,'얇은 니트',{t:'T1'}),I('캔버스 토트백',-40,45,'캔버스 토트백',{y:'아이보리 캔버스 가방은 베이지 톤을 깨지 않는다.'}),I('동그란 뿔테 안경',-40,45,'뿔테 안경',{y:'얼굴 쪽에 브라운 톤이 하나 더 생겨 위아래 톤이 이어진다.'})]},
-
-street:{name:'스트릿', desc:'오버핏·그래픽',
-  key:['볼륨 대비','상의를 크게 입으면 하의는 일자로, 하의가 넓으면 상의는 짧게. 위아래가 다 크면 옷에 묻힌다.'],
-  pal:[[['블랙','#1C1C1C'],['그레이','#9A9A9A'],['화이트','#F4F4F2']],[['카키','#5C5E3D'],['블랙','#1C1C1C'],['오렌지','#D9692B']],[['네이비','#1F2A44'],['레드','#B23A3A'],['그레이','#A7A7A7']]],
-  outer:[I('블랙 오버핏 숏패딩',-20,4,'오버핏 숏패딩',{f:'short'}),I('레드 숏패딩',-15,3,'레드 숏패딩',{f:'short',t:'T6'}),I('블랙 MA-1 블루종',3,13,'MA-1 자켓',{f:'short'}),I('바시티 자켓',6,15,'바시티 자켓',{f:'short'}),I('블랙 워크 자켓',9,17,'워크 자켓',{f:'short'}),I('트랙 자켓',13,21,'트랙 자켓',{f:'short',t:'T6'}),I('오버핏 후드 집업',12,20,'오버핏 후드 집업',{f:'short'}),I('오버핏 체크 셔츠(걸치기)',19,25,'오버핏 체크 셔츠',{f:'shirt'})],
-  top:[I('기모 오버핏 후드티',-15,10,'기모 후드티',{f:'over'}),I('그래픽 맨투맨',8,18,'그래픽 맨투맨',{f:'over'}),I('그래픽 롱슬리브',15,23,'그래픽 롱슬리브',{f:'over'}),I('축구 저지 반팔',22,32,'축구 저지',{f:'over'}),I('그래픽 오버핏 반팔티',23,40,'그래픽 반팔 티셔츠',{f:'over'})],
-  bottom:[I('기모 조거 팬츠',-20,5,'기모 조거 팬츠',{f:'straight'}),I('흑청 와이드 데님',0,22,'흑청 와이드 데님',{f:'wide'}),I('블랙 카고 팬츠',3,24,'카고 팬츠',{f:'wide'}),I('디스트로이드 진',8,24,'디스트로이드 진',{f:'straight',t:'T4'}),I('트랙 팬츠',10,24,'트랙 팬츠',{f:'straight',t:'T6'}),I('카고 반바지',25,40,'카고 반바지',{f:'shorts'})],
-  shoes:[I('블랙 청키 스니커즈',-5,30,'청키 스니커즈',{f:'chunky',t:'T5'}),I('레더 하이탑 스니커즈',-10,20,'레더 하이탑',{w:1}),I('스케이트화',8,32,'스케이트화',{r:1}),I('블랙 워커 부츠',-20,12,'워커 부츠',{w:1,f:'boots'}),I('슬라이드 + 화이트 양말',26,40,'슬라이드')],
-  extra:[I('블랙 비니',-30,10,'비니'),I('볼캡',10,40,'볼캡',{cap:1,y:'상의 볼륨이 큰 만큼 머리 쪽에도 무게를 얹어 균형을 맞춘다.'}),I('나일론 크로스백',-40,45,'나일론 크로스백',{y:'오버핏 상의 위로 메면 끈이 몸통 선을 잡아 준다.'}),I('실버 체인 목걸이',-40,45,'체인 목걸이',{y:'그래픽 티 위에 하나만. 두 개부터는 과하다.'})]},
-
-formal:{name:'단정', desc:'발표·면접날',
-  key:['구김','앞에 서면 셔츠 깃과 소매 구김이 제일 먼저 보인다. 전날 다려서 걸어 둔다.'],
-  pal:[[['네이비','#1F2A44'],['화이트','#F4F4F2'],['그레이','#9A9A9A']],[['차콜','#4A4A4A'],['연하늘','#C9D8EA'],['블랙','#1C1C1C']],[['베이지','#D8C7A8'],['화이트','#F4F4F2'],['네이비','#1F2A44']]],
-  outer:[I('경량 패딩 + 차콜 울 코트 레이어드',-15,2,'울 코트',{f:'coat',t:'T7'}),I('차콜 싱글 코트',-5,8,'싱글 코트',{f:'coat'}),I('네이비 체스터필드 코트',-3,9,'체스터필드 코트',{f:'coat'}),I('베이지 트렌치코트',8,16,'트렌치코트',{f:'coat'}),I('네이비 블레이저',11,20,'네이비 블레이저',{f:'blazer'}),I('그레이 블레이저',12,21,'그레이 블레이저',{f:'blazer'}),I('네이비 니트 카디건',16,22,'니트 카디건',{f:'knit'}),I('블레이저(이동 중엔 손에 들기)',21,27,'썸머 블레이저',{f:'blazer'})],
-  top:[I('네이비 터틀넥 니트',-15,9,'터틀넥 니트',{f:'knit'}),I('화이트 셔츠 + 네이비 브이넥 니트',-5,12,'브이넥 니트',{f:'shirt'}),I('셔츠 + 니트 베스트',8,17,'니트 베스트',{f:'shirt'}),I('화이트 드레스 셔츠',10,26,'드레스 셔츠',{f:'shirt'}),I('연하늘 옥스퍼드 셔츠',10,26,'옥스퍼드 셔츠',{f:'shirt'}),I('화이트 반팔 셔츠',26,40,'반팔 셔츠',{f:'shirt'})],
-  bottom:[I('차콜 기모 슬랙스',-25,3,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-10,15,'울 슬랙스',{f:'slacks'}),I('네이비 슬랙스',5,24,'네이비 슬랙스',{f:'slacks'}),I('베이지 치노 슬랙스',12,28,'치노 슬랙스',{f:'slacks'}),I('그레이 린넨 슬랙스',24,40,'린넨 슬랙스',{f:'slacks'})],
-  shoes:[I('블랙 더비슈즈',-15,30,'더비슈즈',{w:1}),I('블랙 페니 로퍼',5,30,'페니 로퍼',{w:1}),I('브라운 로퍼',8,30,'브라운 로퍼',{w:1}),I('블랙 첼시부츠',-20,10,'첼시부츠',{w:1,f:'boots'})],
-  extra:[I('가죽 시계',-40,45,'가죽 시계',{y:'발표할 때 손이 생각보다 많이 보인다. 메탈보다 가죽 줄이 차분하다.'}),I('서류 가방',-40,45,'서류가방',{y:'백팩 끈은 블레이저·코트 어깨를 구긴다. 손에 드는 가방으로.'}),I('차콜 머플러',-30,5,'머플러'),I('가죽 장갑',-30,2,'가죽 장갑')]},
-
-amekaji:{name:'아메카지', desc:'워크웨어·빈티지',
-  key:['소재감','데님·덕 캔버스·코듀로이처럼 결이 보이는 소재를 두 가지 이상 겹친다. 색은 브라운·올리브·인디고 안에서.'],
-  pal:[[['올리브','#5C5E3D'],['브라운','#6B4E3D'],['크림','#F1EBDD']],[['인디고','#2E3B5C'],['머스타드','#B88A2E'],['아이보리','#EEE9DF']],[['버건디','#6E2633'],['카키','#7C7A55'],['데님','#5A7BA6']]],
-  outer:[I('N-3B 파카',-20,3,'N-3B',{f:'short'}),I('카멜 더플코트',-5,7,'더플코트',{f:'coat'}),I('브라운 보아 플리스 자켓',4,10,'보아 플리스',{f:'short',t:'T3'}),I('M-65 필드 자켓',6,15,'M-65',{f:'short'}),I('올리브 헌팅 자켓',7,15,'헌팅 자켓',{f:'short'}),I('브라운 덕 캔버스 초어 자켓',8,17,'초어 자켓',{f:'short'}),I('숄칼라 카디건',10,18,'숄칼라 카디건',{f:'knit'}),I('데님 트러커 자켓',12,20,'데님 트러커 자켓',{f:'short'}),I('샴브레이 셔츠(걸치기)',18,25,'샴브레이 셔츠',{f:'shirt'})],
-  top:[I('코위찬 패턴 니트',-10,10,'코위찬 니트',{f:'knit',t:'T3'}),I('크림 피셔맨 니트',-10,12,'피셔맨 니트',{f:'knit'}),I('빈티지 로고 기모 스웻셔츠',-10,12,'빈티지 스웻셔츠',{f:'top'}),I('플란넬 체크 셔츠',8,19,'플란넬 셔츠',{f:'shirt'}),I('웨스턴 데님 셔츠',12,22,'웨스턴 셔츠',{f:'shirt'}),I('헨리넥 와플 티',14,22,'헨리넥 티셔츠',{f:'top'}),I('빈티지 프린팅 반팔티',23,40,'빈티지 반팔 티셔츠',{f:'top'}),I('알로하 셔츠',26,40,'알로하 셔츠',{f:'shirt'})],
-  bottom:[I('기모 데님',-25,3,'기모 데님',{f:'straight'}),I('셀비지 생지 데님',-5,22,'셀비지 데님',{f:'straight'}),I('브라운 코듀로이 팬츠',-10,12,'코듀로이 팬츠',{f:'straight'}),I('올리브 퍼티그 팬츠',5,25,'퍼티그 팬츠',{f:'wide'}),I('화이트 페인터 팬츠',14,28,'페인터 팬츠',{f:'wide'}),I('치노 반바지',25,40,'치노 반바지',{f:'shorts'})],
-  shoes:[I('브라운 워크부츠',-20,15,'워크부츠',{w:1,f:'boots'}),I('스웨이드 데저트부츠',0,18,'데저트부츠',{r:1}),I('브라운 로퍼',8,28,'브라운 로퍼',{w:1}),I('캔버스 하이탑',8,30,'캔버스 하이탑',{r:1}),I('보트슈즈',18,32,'보트슈즈',{w:1}),I('레더 샌들',26,40,'레더 샌들')],
-  extra:[I('머스타드 비니',-30,8,'비니'),I('브라운 가죽 벨트',-40,45,'가죽 벨트',{y:'셔츠를 넣어 입으면 벨트가 보인다. 신발 색과 맞춘다.'}),I('아이보리 캔버스 토트백',-40,45,'캔버스 토트백',{y:'덕 캔버스·데님과 같은 거친 결이라 잘 붙는다.'}),I('워싱 볼캡',10,40,'워싱 볼캡',{cap:1,y:'물 빠진 색이 빈티지 옷과 결이 맞는다.'}),I('반다나',15,40,'반다나',{y:'목에 짧게 묶거나 뒷주머니에. 무늬는 한 곳에만.'})]},
-
-gorp:{name:'고프코어', desc:'아웃도어 기능성',
-  key:['강한 색은 한 곳만','블랙·올리브 바탕에 오렌지나 라임 같은 색을 신발이나 모자 한 곳에만 둔다.'],
-  pal:[[['블랙','#1C1C1C'],['올리브','#5C5E3D'],['오렌지','#D9692B']],[['그레이','#8E8E8E'],['네이비','#1F2A44'],['라임','#9CB33B']],[['카키','#7C7A55'],['베이지','#D8C7A8'],['블랙','#1C1C1C']]],
-  outer:[I('구스 다운 파카',-30,2,'구스 다운 파카',{f:'short'}),I('립스탑 나일론 숏패딩',-15,4,'립스탑 숏패딩',{f:'short',t:'T7'}),I('플리스 자켓',5,13,'플리스 자켓',{f:'short',t:'T3'}),I('경량 패딩',4,12,'경량 패딩',{f:'short',t:'T2'}),I('방수 셸 자켓',5,16,'방수 셸 자켓',{f:'short'}),I('소프트셸 자켓',8,17,'소프트셸 자켓',{f:'short'}),I('바람막이',12,21,'바람막이',{f:'short'}),I('아노락',13,21,'아노락',{f:'short'}),I('패커블 바람막이(가방에)',19,26,'패커블 바람막이',{f:'short'})],
-  top:[I('베이스레이어 + 기모 맨투맨',-20,8,'기모 맨투맨',{f:'top'}),I('플리스 하프집업',-5,12,'플리스 하프집업',{f:'top',t:'T3'}),I('메리노 울 긴팔',5,16,'메리노 울 긴팔',{f:'top'}),I('그리드 플리스 크루넥',8,17,'그리드 플리스',{f:'top'}),I('드라이 긴팔티',15,23,'드라이 긴팔',{f:'top'}),I('아웃도어 그래픽 반팔티',21,30,'아웃도어 반팔 티셔츠',{f:'top'}),I('쿨링 반팔티',24,40,'쿨링 반팔',{f:'top'})],
-  bottom:[I('기모 트레킹 팬츠',-20,8,'기모 트레킹 팬츠',{f:'straight'}),I('소프트셸 팬츠',-5,14,'소프트셸 팬츠',{f:'straight'}),I('나일론 카고 팬츠',8,26,'나일론 카고 팬츠',{f:'wide'}),I('립스탑 조거 팬츠',10,25,'립스탑 조거',{f:'straight'}),I('나일론 반바지',24,40,'나일론 반바지',{f:'shorts'})],
-  shoes:[I('방한 패딩 부츠',-30,2,'패딩 부츠',{w:1,f:'boots'}),I('방수 하이킹 스니커 부츠',-20,16,'하이킹 부츠',{w:1,t:'T5',f:'boots'}),I('어프로치 슈즈',0,22,'어프로치 슈즈',{t:'T5'}),I('트레일 러닝화',0,32,'트레일 러닝화',{f:'chunky'}),I('스트랩 스포츠 샌들',24,40,'스포츠 샌들',{w:1})],
-  extra:[I('넥 게이터',-30,5,'넥워머',{t:'T6'}),I('플리스 장갑',-30,3,'플리스 장갑'),I('나일론 크로스백',-40,45,'나일론 크로스백',{y:'겉옷과 같은 나일론이라 따로 놀지 않는다. 강한 색을 여기 둬도 된다.'}),I('캠프캡',10,40,'캠프캡',{cap:1,y:'챙이 납작한 캠프캡이 볼캡보다 아웃도어 느낌이 난다.'}),I('버킷햇',15,40,'버킷햇',{cap:1,y:'챙이 사방으로 있어 햇빛을 넓게 가린다.'})]},
-
-preppy:{name:'프레피 믹스', desc:'타이 셔츠 + 캐주얼 겉옷', t:'T1',
-  key:['단정함과 캐주얼의 대비','안쪽은 셔츠·타이로 단정하게, 겉옷은 후드 집업·패딩·바시티처럼 캐주얼하게. 바지까지 슬랙스·치노로 단정하게 둬야 일부러 섞은 걸로 보인다.'],
-  pal:[[['네이비','#1F2A44'],['화이트','#F4F4F2'],['버건디','#6E2633']],[['그레이','#9A9A9A'],['연하늘','#C9D8EA'],['네이비','#1F2A44']],[['브라운','#6B4E3D'],['크림','#F1EBDD'],['그린','#2F4A3A']]],
-  outer:[I('네이비 숏패딩',-15,4,'숏패딩',{f:'short',t:'T1'}),I('더플코트',-5,7,'더플코트',{f:'coat'}),I('경량 패딩',4,12,'경량 패딩',{f:'short',t:'T2'}),I('네이비 바시티 자켓',6,14,'바시티 자켓',{f:'short'}),I('그레이 후드 집업',10,19,'후드 집업',{f:'short',t:'T1'}),I('코듀로이 트러커 자켓',10,18,'코듀로이 자켓',{f:'short'}),I('브이넥 크리켓 카디건',15,22,'크리켓 카디건',{f:'knit'}),I('네이비 나일론 코치 자켓',15,23,'코치 자켓',{f:'short'})],
-  top:[I('옥스퍼드 셔츠 + 스키니 타이 + 크루넥 니트',-5,12,'크루넥 니트',{f:'shirt',t:'T6'}),I('셔츠 + 타이 + 쿼터집 니트',5,15,'쿼터집 니트',{f:'shirt',t:'T3'}),I('셔츠 + 타이 + 케이블 니트 베스트',10,18,'니트 베스트',{f:'shirt'}),I('스트라이프 셔츠 + 니트 타이',12,22,'니트 타이',{f:'shirt',t:'T1'}),I('럭비 셔츠',12,20,'럭비 셔츠',{f:'top'}),I('피케 카라 반팔티',22,32,'피케 카라티',{f:'top'}),I('반팔 옥스퍼드 셔츠',25,40,'반팔 옥스퍼드 셔츠',{f:'shirt'})],
-  bottom:[I('차콜 기모 슬랙스',-25,3,'기모 슬랙스',{f:'slacks'}),I('차콜 울 슬랙스',-10,15,'울 슬랙스',{f:'slacks'}),I('그레이 플란넬 슬랙스',-5,14,'플란넬 슬랙스',{f:'slacks'}),I('네이비 치노 팬츠',5,24,'네이비 치노 팬츠',{f:'straight'}),I('베이지 치노 팬츠',10,27,'치노 팬츠',{f:'straight'}),I('치노 반바지',25,40,'치노 반바지',{f:'shorts'})],
-  shoes:[I('브라운 페니 로퍼 + 화이트 양말',5,30,'페니 로퍼',{w:1}),I('레더 첼시부츠',-20,10,'첼시부츠',{w:1,t:'T1',f:'boots'}),I('화이트 레더 스니커즈',5,33,'레더 스니커즈',{w:1,t:'T1'}),I('더비슈즈',-10,28,'더비슈즈',{w:1})],
-  extra:[I('타탄 체크 머플러',-30,8,'체크 머플러',{t:'T6'}),I('레더 숄더백',-40,45,'레더 숄더백',{y:'겉옷이 캐주얼한 만큼 가방은 가죽으로 단정한 쪽에 무게를 둔다.'}),I('뿔테 안경',-40,45,'뿔테 안경',{y:'셔츠·타이 차림에 안경이 더해지면 프레피 인상이 분명해진다.'}),I('화이트 크루 양말',-40,45,'크루 양말',{y:'로퍼와 바지 밑단 사이로 흰 양말이 살짝 보이게.'})]},
-
-dark:{name:'올블랙', desc:'소재로 차이 내는 블랙', t:'T1',
-  key:['소재 대비','전부 블랙이면 소재로 차이를 낸다. 가죽·유광 나일론·실키 셔츠처럼 빛나는 것 하나에 매트한 울·면을 섞는다.'],
-  pal:[[['블랙','#111111'],['차콜','#3A3A3A'],['실버','#B8B8B8']],[['블랙','#111111'],['다크 브라운','#3B2A22'],['차콜','#3A3A3A']],[['블랙','#111111'],['다크 버건디','#4A1F27'],['그레이','#8E8E8E']]],
-  outer:[I('블랙 유광 숏패딩',-15,4,'유광 숏패딩',{f:'short'}),I('블랙 롱 울 코트',-5,9,'블랙 롱코트',{f:'coat',t:'T1'}),I('블랙 레더 블루종',5,14,'레더 블루종',{f:'short',t:'T6'}),I('블랙 광택 레더 자켓',6,15,'레더 자켓',{f:'short',t:'T1'}),I('블랙 블레이저',12,20,'블랙 블레이저',{f:'blazer'}),I('블랙 니트 카디건',15,22,'블랙 카디건',{f:'knit'}),I('블랙 오버셔츠',18,24,'블랙 오버셔츠',{f:'shirt'})],
-  top:[I('블랙 매트 터틀넥 니트',-15,10,'블랙 터틀넥',{f:'knit'}),I('블랙 모헤어 니트',-5,12,'모헤어 니트',{f:'knit'}),I('블랙 실키 셔츠',12,24,'블랙 셔츠',{f:'shirt',t:'T1'}),I('블랙 헤비 긴팔티',15,23,'블랙 긴팔 티셔츠',{f:'top'}),I('블랙 반팔 니트',22,30,'블랙 반팔 니트',{f:'knit'}),I('블랙 무지 반팔티',23,40,'블랙 무지 반팔',{f:'top'})],
-  bottom:[I('블랙 기모 슬랙스',-25,4,'블랙 기모 슬랙스',{f:'slacks'}),I('블랙 매트 울 슬랙스',-8,18,'블랙 울 슬랙스',{f:'slacks',t:'T1'}),I('블랙 스트레이트 데님',0,22,'블랙 스트레이트 데님',{f:'straight',t:'T6'}),I('블랙 와이드 슬랙스',8,26,'블랙 와이드 슬랙스',{f:'wide'}),I('블랙 버뮤다 팬츠',25,40,'블랙 버뮤다 팬츠',{f:'shorts'})],
-  shoes:[I('블랙 레더 첼시부츠',-20,15,'첼시부츠',{w:1,f:'boots'}),I('블랙 더비슈즈',-10,28,'더비슈즈',{w:1}),I('블랙 레더 스니커즈',5,32,'블랙 레더 스니커즈',{w:1}),I('블랙 레더 샌들',26,40,'레더 샌들')],
-  extra:[I('실버 반지',-40,45,'실버 반지',{y:'올블랙에선 은색 하나가 유일한 밝은 점이 된다.'}),I('블랙 머플러(묶지 말고 늘어뜨리기)',-30,8,'블랙 머플러',{t:'T1'}),I('블랙 레더 장갑',-30,3,'레더 장갑'),I('블랙 레더 크로스백',-40,45,'레더 크로스백',{y:'광택 있는 가죽 가방이 매트한 옷과 대비를 만든다.'})]}
-};
-
-const RAIN_SHOES = [I('방수 스니커즈',-5,27,'방수 스니커즈',{w:1}),I('숏 레인부츠',3,23,'숏 레인부츠',{w:1,f:'boots'}),I('방수 방한 부츠',-30,5,'방수 부츠',{w:1,f:'boots'}),I('스트랩 스포츠 샌들(장마용)',24,40,'스포츠 샌들',{w:1})];
-const SNOW_SHOES = [I('미끄럼 방지 밑창 방한 부츠',-30,5,'방한 부츠',{w:1,f:'boots'})];
+const EXH = {socks:'밑단 아래로 살짝 보이게', bandana:'목에 짧게 묶기', necklace:'하나만', belt:'신발 색과 맞추기'};
 
 const CITIES = [['서울',37.566,126.9784],['인천',37.4565,126.7052],['수원',37.2782,127.0316],['춘천',37.883,127.7289],['강릉',37.7527,128.8724],['대전',36.3502,127.3848],['세종',36.5925,127.2922],['청주',36.6372,127.4897],['전주',35.8248,127.148],['광주',35.1547,126.9156],['대구',35.871,128.6012],['울산',35.5392,129.3124],['부산',35.1017,129.03],['제주',33.5097,126.5219]];
-
 const WMO = {0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',45:'안개',48:'안개',51:'약한 이슬비',53:'이슬비',55:'강한 이슬비',56:'어는 이슬비',57:'어는 이슬비',61:'약한 비',63:'비',65:'강한 비',66:'어는 비',67:'어는 비',71:'약한 눈',73:'눈',75:'강한 눈',77:'싸락눈',80:'약한 소나기',81:'소나기',82:'강한 소나기',85:'소낙눈',86:'강한 소낙눈',95:'뇌우',96:'우박·뇌우',99:'우박·뇌우'};
 const isRainCode = c => (c>=51&&c<=67)||(c>=80&&c<=82)||c>=95;
 const isSnowCode = c => (c>=71&&c<=77)||c===85||c===86;
 const sev = c => isSnowCode(c)?5: c>=95?6: isRainCode(c)?4: c>=45&&c<=48?2: c===3?1:0;
 
-function band(t){
-  t = Math.round(t);
-  if (t>=28) return '반팔·린넨';
-  if (t>=23) return '반팔·얇은 셔츠';
-  if (t>=20) return '얇은 긴팔·가디건';
-  if (t>=17) return '맨투맨·얇은 니트';
-  if (t>=12) return '자켓·가디건';
-  if (t>=9) return '트렌치코트·야상';
-  if (t>=5) return '코트·발열 내의';
-  return '패딩·목도리';
+/* ---------- 날씨 아이콘 ---------- */
+const CLOUD = 'M7,17h10.5a3.8,3.8 0 0 0 .3-7.6a5.4,5.4 0 0 0-10.3-1.1A4.4,4.4 0 0 0 7,17z';
+function icon(code, night){
+  const sun = '<circle cx="12" cy="12" r="4.2"/><path d="M12,2.5v2.4M12,19.1v2.4M2.5,12h2.4M19.1,12h2.4M5.3,5.3l1.7,1.7M17,17l1.7,1.7M5.3,18.7l1.7-1.7M17,7l1.7-1.7"/>';
+  const moon = '<path d="M15,4.2a8,8 0 1 0 4.8,13.6a6.4,6.4 0 0 1-4.8-13.6z"/>';
+  const cl = (dy = 0) => `<path transform="translate(0,${dy})" d="${CLOUD}" fill="#fff"/>`;
+  let b;
+  if (code <= 1) b = night ? moon : sun;
+  else if (code === 2) b = (night ? '<path d="M9.5,3.5a5,5 0 1 0 4.4,7.8a4,4 0 0 1-4.4-7.8z"/>' : '<circle cx="8.5" cy="8" r="3"/><path d="M8.5,2.5v1.4M3,8h1.4M4.6,4.1l1,1M12.4,4.1l-1,1"/>') + cl(2);
+  else if (code === 3) b = cl(0);
+  else if (code === 45 || code === 48) b = '<path d="M4,8.5h16M3,12.5h18M5,16.5h14"/>';
+  else if (code >= 95) b = cl(-2) + '<path d="M13,15.5l-2,3.5h3l-2,3.5"/>';
+  else if (isSnowCode(code)) b = cl(-2) + '<circle cx="8.5" cy="19.5" r=".9" fill="#333"/><circle cx="12.5" cy="21" r=".9" fill="#333"/><circle cx="16.5" cy="19.5" r=".9" fill="#333"/>';
+  else if (isRainCode(code)) b = cl(-2) + '<path d="M9,18l-1,3M13,18l-1,3M17,18l-1,3"/>';
+  else b = cl(0);
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
+}
+
+/* ---------- 색 ---------- */
+const COL = [['스카이 블루','#BFD3EA'],['다크 그레이','#56585C'],['스톤 화이트','#E6E2D8'],['클라우드 댄서','#EFEDE8'],['다크 브라운','#3B2A22'],['다크 버건디','#4A1F27'],['연하늘','#C9D8EA'],['연청','#8FA9C9'],['중청','#5A7BA6'],['흑청','#2B2F38'],['블랙','#1C1C1C'],['화이트','#F4F4F2'],['차콜','#4A4A4A'],['그레이','#9A9A9A'],['네이비','#1F2A44'],['베이지','#D8C7A8'],['크림','#F1EBDD'],['오트밀','#D9CDB8'],['브라운','#6B4E3D'],['카멜','#B08354'],['카키','#7C7A55'],['올리브','#5C5E3D'],['인디고','#2E3B5C'],['버건디','#6E2633'],['레드','#B23A3A'],['머스타드','#B88A2E'],['아이보리','#EEE9DF'],['실버','#B8B8B8'],['오렌지','#D9692B'],['라임','#9CB33B'],['그린','#2F4A3A']];
+// 이름에 색이 없을 때 소재로 정해지는 색
+const MAT = [[/생지/,['생지','#22304D']],[/샴브레이/,['연청','#8FA9C9']],[/코듀로이/,['브라운','#6B4E3D']],[/청바지|데님|\s진$/,['중청','#5A7BA6']],[/치노/,['베이지','#D8C7A8']],[/퍼티그|M-65|헌팅|N-3B/,['올리브','#5C5E3D']],[/스웨이드|데저트/,['샌드','#C8A77E']],[/캔버스|에코백/,['아이보리','#EEE9DF']],[/로퍼|보트슈즈|워크부츠|가죽 벨트|가죽 시계|레더 샌들|뿔테/,['브라운','#6B4E3D']],[/양말/,['화이트','#F4F4F2']],[/메탈|반지|목걸이/,['실버','#B8B8B8']],[/반다나/,['레드','#9E2B2B']],[/플리스|보아/,['크림','#EEE6D6']],[/알로하/,['그린','#2F4A3A']],[/더비|레인부츠|방한|방수|하이킹|첼시|서류/,['블랙','#1C1C1C']]];
+const lum = h => { const v = [1,3,5].map(i => parseInt(h.substr(i,2),16)/255).map(c => c <= .03928 ? c/12.92 : Math.pow((c+.055)/1.055, 2.4)); return .2126*v[0] + .7152*v[1] + .0722*v[2]; };
+function colorIn(s){ let best = null, bi = 1e9; for (const c of COL) { const i = s.indexOf(c[0]); if (i >= 0 && (i < bi || (i === bi && c[0].length > best[0].length))) { best = c; bi = i; } } return best; }
+const matColor = s => { for (const [re, v] of MAT) if (re.test(s)) return v; return null; };
+const known = s => colorIn(s) || matColor(s);
+function far(pal, avoid){ if (!avoid.length) return pal[0]; let best = pal[0], bd = -1; for (const c of pal) { const d = Math.min(...avoid.map(h => Math.abs(lum(c[1]) - lum(h)))); if (d > bd) { bd = d; best = c; } } return best; }
+const nameParts = n => { const m = n.match(/\(([^)]*)\)/); return {base: n.replace(/\s*\([^)]*\)/, '').trim(), paren: m ? m[1] : ''}; };
+
+/* ---------- 착장 그림 ---------- */
+const OL = '#2b2b2b', SK = '#E9E2DA', SO = '#b8ada1';
+const MX = p => p.map(([x,y]) => [200-x, y]);
+const D = p => 'M' + p.map(q => q[0] + ',' + q[1]).join('L') + 'Z';
+// 검정·네이비처럼 아주 어두운 옷은 검은 윤곽선이 묻혀서 회색 선으로 그린다
+const edge = f => f[0] === '#' && lum(f) < .07 ? '#8a8a8a' : OL;
+const sh = (p, f) => `<path d="${D(p)}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`;
+const sh2 = (p, f) => sh(p, f) + sh(MX(p), f);
+const tx = (p, ids) => [].concat(ids || []).filter(Boolean).map(id => `<path d="${D(p)}" fill="url(#${id})"/>`).join('');
+const tx2 = (p, ids) => tx(p, ids) + tx(MX(p), ids);
+const ln = (d, c, w = 1) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const mirD = d => d.replace(/(-?[\d.]+),(-?[\d.]+)/g, (m, x, y) => +(200 - +x).toFixed(1) + ',' + y);
+const ln2 = (d, c, w) => ln(d, c, w) + ln(mirD(d), c, w);
+const det = h => lum(h) < .2 ? 'rgba(255,255,255,.4)' : 'rgba(0,0,0,.3)';
+// 주름·접힘처럼 봉제선보다 옅게 보여야 하는 선
+const fold = h => lum(h) < .2 ? 'rgba(255,255,255,.2)' : 'rgba(0,0,0,.17)';
+const T = (h, id) => id + (lum(h) < .2 ? 'L' : 'D');
+const dot = (x, y, r, f) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${f}"/>`;
+// 명암: 왼쪽 조각은 바깥(왼쪽)이, 오른쪽 조각은 바깥(오른쪽)이 어둡고 가운데 몸판은 양옆이 어둡다
+const vs = (p, id) => `<path d="${D(p)}" fill="url(#${id})"/>`;
+const vsh = (p, f, t) => sh(p, f) + tx(p, t) + vs(p, 'vc');
+const vsh2 = (p, f, t) => sh(p, f) + tx(p, t) + vs(p, 'vl') + sh(MX(p), f) + tx(MX(p), t) + vs(MX(p), 'vr');
+// 박음질(점선)
+const seam = (d, c, w = .7) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="1.6 1.2" stroke-linecap="round"/>`;
+const seam2 = (d, c, w) => seam(d, c, w) + seam(mirD(d), c, w);
+// 곡선이 들어간 모양(path 문자열)을 좌우로 그린다
+const shp2 = (d, f) => [d, mirD(d)].map(q => `<path d="${q}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`).join('');
+
+function defs(){
+  const pat = (id, w, h, b) => `<pattern id="${id}" width="${w}" height="${h}" patternUnits="userSpaceOnUse">${b}</pattern>`;
+  const grad = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops.map(([o, c, a]) => `<stop offset="${o}" stop-color="${c}" stop-opacity="${a}"/>`).join('')}</linearGradient>`;
+  let s = grad('vl', [[0,'#000',.2],[.4,'#000',0],[.62,'#fff',.08],[.85,'#fff',0],[1,'#000',.07]])
+    + grad('vr', [[0,'#000',.07],[.15,'#fff',0],[.38,'#fff',.08],[.6,'#000',0],[1,'#000',.2]])
+    + grad('vc', [[0,'#000',.17],[.2,'#000',.02],[.5,'#fff',.06],[.8,'#000',.02],[1,'#000',.17]])
+    + grad('gl', [[0,'#fff',0],[.45,'#fff',.35],[.55,'#fff',.35],[1,'#fff',0]]);
+  for (const [k, c] of [['D','rgba(0,0,0,.2)'],['L','rgba(255,255,255,.26)']]) {
+    s += pat('qt'+k, 40, 13, `<path d="M0,12.5H40" stroke="${c}"/>`)
+      + pat('st'+k, 8, 6, `<path d="M0,5H8" stroke="${c}" stroke-width="1.6"/>`)
+      + pat('ch'+k, 12, 12, `<path d="M0,3H12M0,9H12M3,0V12M9,0V12" stroke="${c}" stroke-width="1.3"/>`)
+      + pat('rb'+k, 3, 10, `<path d="M1.5,0V10" stroke="${c}" stroke-width=".6"/>`)
+      + pat('cb'+k, 10, 12, `<path d="M5,0Q8.5,3 5,6Q1.5,9 5,12" fill="none" stroke="${c}" stroke-width="1.2"/>`)
+      + pat('rg'+k, 40, 20, `<rect y="10" width="40" height="10" fill="${c}"/>`)
+      + pat('dt'+k, 5, 5, `<circle cx="2.5" cy="2.5" r=".8" fill="${c}"/>`);
+  }
+  return `<defs>${s}</defs>`;
+}
+
+function skin(){
+  const sk = p => `<path d="${D(p)}" fill="${SK}" stroke="${SO}" stroke-width="1" stroke-linejoin="round"/>`;
+  const arm = [[64,76],[72,80],[74,108],[61,212],[47,210]];
+  const leg = [[74,212],[100,212],[100,232],[97,300],[96,404],[82,404],[77,300],[73,214]];
+  // 손: 손바닥 + 엄지
+  const hand = x => `<path d="M${x-5},209Q${x-6.5},224 ${x-3.5},231Q${x},234 ${x+3.5},231Q${x+6.5},224 ${x+5},209Z" fill="${SK}" stroke="${SO}"/>`
+    + `<path d="M${x + (x < 100 ? 4.6 : -4.6)},217Q${x + (x < 100 ? 8 : -8)},221 ${x + (x < 100 ? 5.4 : -5.4)},226" fill="none" stroke="${SO}"/>`;
+  return sk(arm) + sk(MX(arm)) + sk(leg) + sk(MX(leg))
+    + ln2('M80,300Q87,303 94,300', 'rgba(0,0,0,.08)', 1)
+    + hand(54) + hand(146)
+    + sk([[92,48],[108,48],[109,70],[91,70]])
+    + '<path d="M92,51Q100,58 108,51L108.4,57Q100,63 91.6,57Z" fill="rgba(0,0,0,.09)"/>'
+    + `<ellipse cx="84.4" cy="35.5" rx="2.6" ry="4.6" fill="${SK}" stroke="${SO}"/><ellipse cx="115.6" cy="35.5" rx="2.6" ry="4.6" fill="${SK}" stroke="${SO}"/>`
+    + `<ellipse cx="100" cy="33" rx="16" ry="20" fill="${SK}" stroke="${SO}"/>`
+    + '<path d="M84.2,33Q82,11 101,10.5Q118.5,11.5 116.4,31Q114.5,19.5 105,17.5Q97,23.5 87,22Q85.4,26.5 84.2,33Z" fill="#2c2826"/>';
+}
+
+// 상의 한 벌: 몸판 + 소매
+function body(col, o){
+  const w = o.wide, hem = o.hem;
+  const sx = w ? 59 : 64, sy = w ? 80 : 76, ax = w ? 70 : 73;
+  let L = [[90,66],[sx,sy],[ax,110],[w ? 74 : 76,196]];
+  if (o.tuck === 'full') L = L.concat([[77,201],[100,201]]);
+  else if (o.tuck === 'front') L = L.concat([[w ? 71 : 73,hem],[86,hem-1],[95,203],[100,201]]);
+  else L = L.concat([[w ? 71 : 73,hem],[100,hem]]);
+  const NK = {crew:[[106,71],[100,73],[94,71]], v:[[100,94]], deep:[[100,112]], shirt:[[100,79]], flat:[]}[o.neck || 'crew'];
+  const poly = L.concat(MX(L).reverse(), NK);
+  const dc = det(col), fc = fold(col);
+  let s = '';
+  if (o.sleeve !== 'none') {
+    const sl = o.sleeve === 'short'
+      ? (w ? [[sx,sy],[52,130],[71,133],[ax,110]] : [[sx,sy],[57,121],[71,124],[ax,108]])
+      : (w ? [[sx,sy],[43,212],[63,215],[ax,112],[ax+2,90]] : [[sx,sy],[46,210],[61,213],[ax,108],[ax+1,88]]);
+    s += vsh2(sl, col, o.tex);
+    if (o.sleeve === 'long') {
+      // 소매 끝(커프스·시보리)과 팔꿈치 안쪽 주름
+      const cuff = w ? [[43.9,205],[63.5,208],[63,215],[43,212]] : [[46.9,203],[61.8,206],[61,213],[46,210]];
+      if (o.rib) s += tx2(cuff, T(col,'rb'));
+      s += ln2(w ? 'M43.9,205L63.5,208' : 'M46.9,203L61.8,206', dc, .8)
+        + ln2(w ? 'M60,150Q64,153 66.6,149M59,158Q62,160.5 65.8,157' : 'M62.5,148Q66,151 68.2,147M61.5,156Q64.5,158.5 67.3,155', fc, .9);
+    } else s += seam2(w ? 'M52.6,126L70.8,129' : 'M57.6,117L71.6,120', dc);
+  }
+  s += vsh(poly, col, o.tex);
+  // 진동(어깨~겨드랑이) 봉제선
+  if (o.sleeve !== 'none') s += ln2(w ? `M${sx},${sy}Q${ax-3},92 ${ax},112` : `M${sx},${sy}Q${ax-1},88 ${ax},108`, dc, .7);
+  if (o.tuck === 'front') s += ln2('M84,189Q90,193 93.5,201', fc, .9);
+  else if (o.tuck === 'full') s += ln2('M80,190Q86,195 92,198', fc, .9);
+  else {
+    const x0 = w ? 71 : 73;
+    if (o.rib) { const rb = [[x0 + .8, hem - 7],[100, hem - 7],[100, hem],[x0, hem]]; s += tx2(rb, T(col,'rb')) + ln2(`M${x0 + .8},${hem - 7}L100,${hem - 7}`, dc, .8); }
+    else s += seam2(`M${x0 + .4},${hem - 3}L100,${hem - 3}`, dc);
+    s += ln2(`M${x0 + 4},${hem - 26}Q${x0 + 9},${hem - 29} ${x0 + 13},${hem - 24}`, fc, .9);
+  }
+  return s;
+}
+const COLLAR = [[90,62],[100,78],[92,86],[85,70]];
+function tieBlade(t){
+  const c = t.col[1];
+  const p = t.kind === 'skinny' ? [[98.5,84],[101.5,84],[103.5,150],[100,155],[96.5,150]]
+    : t.kind === 'knit' ? [[98,84],[102,84],[103,150],[97,150]]
+    : [[97.5,84],[102.5,84],[105,152],[100,158],[95,152]];
+  return sh(p, c) + (t.kind === 'knit' ? tx(p, T(c,'rb')) : '');
+}
+const tieKnot = t => sh([[97.5,77],[102.5,77],[101.5,84],[98.5,84]], t.col[1]);
+
+function drawTop(P){
+  const c = P.col[1], dc = det(c);
+  let s = '';
+  if (P.shirt) {
+    s += body(P.shirt.col[1], {hem: P.hem + 7, tuck: P.shirtTuck ? 'full' : '', sleeve:'long', neck:'shirt', tex: P.shirt.tex});
+    if (P.tie) s += tieBlade(P.tie);
+  }
+  if (P.tee) s += body(P.tee.col[1], {hem: P.hem + 5, sleeve: P.short ? 'short' : 'long', neck:'crew'});
+  const neck = {turtle:'flat', qzip:'flat', hood:'flat', vknit:'v', vest:'deep', shirt:'shirt', polo:'shirt', rugby:'shirt'}[P.kind] || 'crew';
+  s += body(c, {wide: P.wide, hem: P.hem, tuck: P.tuck, sleeve: P.kind === 'vest' ? 'none' : P.short ? 'short' : 'long', neck, tex: P.tex, rib: P.rib});
+  if (P.band) {
+    const bc = lum(c) < .45 ? '#EEE9DF' : '#5C5E3D';
+    let z = 'M74,120'; for (let x = 78; x <= 126; x += 4) z += `L${x},${x % 8 === 2 ? 115 : 125}`;
+    s += sh([[73.6,112],[126.4,112],[126.2,128],[73.8,128]], bc) + ln(z, c, 1.4);
+  }
+  if (P.graphic === 'big') s += sh([[89,98],[111,98],[111,124],[89,124]], lum(c) < .45 ? '#EEE9DF' : '#2b2b2b') + dot(100, 111, 6, c);
+  else if (P.graphic === 'small') s += sh([[92,96],[108,96],[108,108],[92,108]], lum(c) < .45 ? '#EEE9DF' : '#2b2b2b');
+  switch (P.kind) {
+    case 'crew': case 'vknit': s += P.kind === 'crew' ? ln('M93,70Q100,77 107,70', dc) : ln('M91,67L100,93L109,67', dc); break;
+    case 'vest': s += ln('M91,67L100,111L109,67', dc); break;
+    case 'turtle': { const t = [[90,47],[110,47],[111,70],[89,70]]; s += sh(t, c) + tx(t, P.tex) + ln('M90,57L110,57', dc); break; }
+    case 'qzip': s += sh([[89,56],[111,56],[112,70],[88,70]], c) + ln('M100,57L100,104', dc, 1.2) + sh([[99,74],[101,74],[101,81],[99,81]], dc); break;
+    case 'henley': s += ln('M97.5,73L97.5,103M102.5,73L102.5,103', dc) + dot(100,80,1.2,dc) + dot(100,89,1.2,dc) + dot(100,98,1.2,dc); break;
+    case 'hood': s += sh([[84,70],[86,57],[94,53],[106,53],[114,57],[116,70],[108,75],[100,77],[92,75]], c) + ln('M90,66Q100,73 110,66', dc)
+      + ln('M95,75L94,106', dc, 1.2) + ln('M105,75L106,106', dc, 1.2) + ln('M79,194L83,166L117,166L121,194', dc); break;
+    case 'polo': case 'rugby': {
+      const cc = P.kind === 'rugby' ? '#F4F4F2' : c;
+      s += sh2([[90,63],[99,74],[93,79],[85,70]], cc) + ln('M100,75L100,96', dc) + dot(100,83,1.2,dc) + dot(100,91,1.2,dc); break;
+    }
+    case 'shirt': {
+      // 앞여밈(플라켓) 두 줄 + 단추, 소매 커프스 단추
+      const pe = P.tuck === 'full' ? 200 : P.hem - 2;
+      s += ln(`M98.6,80L98.6,${pe}`, dc, .8) + ln(`M104.4,80L104.4,${pe}`, dc, .8) + [98,122,146,169].map(y => dot(101.5, y, 1.2, dc)).join('')
+        + (P.short ? '' : dot(50.4, 207.6, .9, dc) + dot(149.6, 207.6, .9, dc));
+      if (P.tie) s += tieBlade(P.tie);
+      s += sh2(COLLAR, c) + tx2(COLLAR, P.tex);
+      if (P.tie) s += tieKnot(P.tie);
+      break;
+    }
+  }
+  if (P.shirt) { s += sh2(COLLAR, P.shirt.col[1]); if (P.tie) s += tieKnot(P.tie); }
+  return s;
+}
+
+const OCFG = {
+  coat:{hem:296, lapel:1, btn:[150,186,222]}, trench:{hem:296, lapel:1, belt:1}, duffle:{hem:286, toggle:1, hood:1},
+  blazer:{hem:240, lapel:1, btn:[200]}, puffer:{hem:214, quilt:1, stand:1, zip:1}, light:{hem:212, quilt:1, stand:1, zip:1},
+  longpad:{hem:360, quilt:1, stand:1, zip:1, hood:1}, parka:{hem:232, fur:1, hood:1, zip:1, pocket:2}, mustang:{hem:216, furLapel:1},
+  cardigan:{hem:226, vopen:1, btn:[130,158,186,212], rib:1}, zipup:{hem:222, hood:1, zip:1, rib:1}, overshirt:{hem:232, collar:1, pocket:1, btn:[100,128,156,184,212]},
+  trucker:{hem:212, collar:1, pocket:1, band:1, btn:[100,128,156,184]}, field:{hem:228, collar:1, pocket:2}, anorak:{hem:228, hood:1, closed:1, kanga:1}, varsity:{hem:214, rib:1, varsity:1},
+  leather:{hem:212, collar:1, zip:1, shine:1}, fleece:{hem:216, stand:1, zip:1, tex:'dt'}, jacket:{hem:214, stand:1, zip:1, rib:1}
+};
+function outerKind(n){
+  const K = [[/아노락/,'anorak'],[/롱패딩/,'longpad'],[/경량 패딩/,'light'],[/파카|N-3B/,'parka'],[/패딩/,'puffer'],[/무스탕/,'mustang'],[/트렌치/,'trench'],[/더플/,'duffle'],[/코트/,'coat'],[/블레이저/,'blazer'],[/카디건/,'cardigan'],[/후드 집업/,'zipup'],[/셔츠|초어/,'overshirt'],[/트러커|워크 자켓/,'trucker'],[/필드|M-65|헌팅/,'field'],[/바시티/,'varsity'],[/레더|가죽/,'leather'],[/플리스|보아/,'fleece']];
+  for (const [re, k] of K) if (re.test(n)) return k;
+  return 'jacket';
+}
+function drawOuter(O){
+  const k = O.cfg, c = O.col[1], hem = k.hem, dc = det(c);
+  let s = '', back = '';
+  const side = hem > 214 ? [[72,196],[70,214],[+(70 - (hem - 214) * .075).toFixed(1), hem]] : [[72, Math.min(196, hem - 4)],[71, hem]];
+  const lap = k.lapel || k.furLapel;
+  const inner = lap ? [[96,hem],[96,118]] : k.vopen ? [[96,hem],[95,122]] : [[95,hem],[94,68]];
+  const panel = [[89,63],[61,74],[69,110]].concat(side, inner);
+  const sleeve = [[61,74],[42,214],[63,217],[70,112],[68,90]];
+  const slc = k.varsity ? (lum(c) < .3 ? '#EEE9DF' : '#1F2A44') : c;
+  const tex = (k.quilt || /다운/.test(O.name)) ? T(c,'qt') : k.tex ? T(c,k.tex) : /코듀로이/.test(O.name) ? T(c,'rb') : null;
+  if (k.hood) back += sh([[77,76],[78,54],[88,45],[112,45],[122,54],[123,76]], c);
+  const fc = fold(c);
+  s += vsh2(sleeve, slc, tex) + vsh2(panel, c, tex)
+    + ln2('M61,74Q66.5,92 69.6,111', det(slc), .7)
+    + ln2('M61.5,150Q65.5,153.5 68.3,148.5M60.5,158Q64,161 67.6,157', fold(slc), .9);
+  // 소매 끝단: 시보리가 없는 겉옷은 커프스 선, 블레이저·코트는 소매 단추
+  if (!k.rib && !k.band && !k.furLapel) s += ln2('M43.5,203L63.7,206', det(slc), .8);
+  if (k.lapel) s += [194, 198.5].map(y => dot(46.8, y, .9, det(slc)) + dot(153.2, y, .9, det(slc))).join('');
+  // 주머니는 옷 종류마다 기본으로 달린 모양만 그린다
+  if (O.kind === 'blazer') s += sh2([[74.5,207],[91,206],[91,212],[74.8,213]], c) + ln('M110,128L123,126.5', dc, 1.2);
+  else if (k.toggle) s += ln2('M74.5,200L90,200L90,224L75,224', dc, .9) + seam2('M74.8,203L87.5,203', dc);
+  else if (k.lapel) s += ln2(`M76.5,${Math.min(198, hem - 30)}L80.5,${Math.min(220, hem - 8)}`, dc, 1.1);
+  else if (k.quilt) s += ln2(`M74,${hem - 40}L79,${hem - 16}`, dc, 1);
+  if (k.belt) s += [146, 172].map(y => dot(90, y, 1.8, dc) + dot(110, y, 1.8, dc)).join('') + sh2([[63,76],[84,67],[85.5,71],[65,80.5]], c);
+  if (k.furLapel) s += sh2([[89,63],[80,72],[86,86],[96,118],[93,72]], '#E7DCC8') + sh2([[43.3,206],[62.6,209.5],[63,217],[42,214]], '#E7DCC8');
+  else if (lap) s += ln2('M89,63L82,74L87,81L84,85L96,118', edge(c), .9);
+  if (k.stand) s += sh2([[85,55],[93,57],[94,70],[88,67]], c);
+  if (k.collar) s += sh2([[89,62],[95,72],[86,86],[80,70]], c);
+  if (k.fur) s += `<path d="M80,72Q80,60 92,58L108,58Q120,60 120,72Q110,80 100,80Q90,80 80,72Z" fill="#E7DCC8" stroke="${OL}" stroke-width="1"/>`;
+  if (k.zip) s += ln2(`M94.2,70L95,${hem}`, dc, 1.1);
+  if (k.btn) s += k.btn.filter(y => y < hem - 6).map(y => dot(93, y, 1.8, dc)).join('');
+  if (k.toggle) [112,142,172].forEach(y => { s += sh([[88,y],[95,y],[95,y+3],[88,y+3]], '#CDBB98'); });
+  if (k.belt) {
+    const b = [[71.6,188],[96,188],[96,196],[71.8,196]];
+    s += sh2(b, c) + sh([[93,193],[97,193],[96,236],[92,236]], c) + sh([[104,193],[108,193],[110,228],[106,228]], c);
+  }
+  if (k.rib || k.band) {
+    const hb = [[71.4,hem-8],[95,hem-8],[95,hem],[71,hem]], cb = [[43.3,206],[62.6,209.5],[63,217],[42,214]];
+    s += sh2(hb, c) + sh2(cb, k.varsity ? c : slc);
+    if (k.rib) s += tx2(hb, T(c,'rb')) + tx2(cb, T(c,'rb'));
+    if (k.varsity) s += ln2(`M71.3,${hem-4}L95,${hem-4}`, slc, 1.4);
+  }
+  if (k.pocket) s += ln2('M76,112L88,112L88,126L76,126Z', dc) + ln2('M76,116.5L88,116.5', dc, .8) + dot(82, 118.6, 1, dc) + dot(118, 118.6, 1, dc)
+    + (k.pocket > 1 && hem > 192 ? ln2('M74,166L90,166L90,188L74,188Z', dc) + ln2('M74,171L90,171', dc, .8) : '');
+  // 아노락은 머리로 뒤집어써서 입는 옷이라 앞이 막혀 있고 지퍼는 가슴까지만, 배에 큰 주머니
+  if (k.closed) s += vsh([[94,68],[106,68],[105,hem],[95,hem]], c) + ln('M100,70L100,124', dc, 1.1) + ln('M100,70L100,124', 'rgba(127,127,127,.5)', .5);
+  if (k.kanga) s += ln('M82,150L118,150L123,196L77,196Z', dc, .9);
+  if (k.shine) s += ln2('M66,124Q71,150 69,182', 'rgba(255,255,255,.35)', 2) + ln2('M57,100L49,180', 'rgba(255,255,255,.3)', 1.6);
+  if (/트랙/.test(O.name)) s += ln2('M63,78L45,211', lum(c) < .45 ? '#F4F4F2' : '#1C1C1C', 2);
+  return {s, back};
+}
+
+function drawBottom(B){
+  const c = B.col[1], dc = det(c), H = B.hem;
+  const L = {
+    wide:[[76,194],[100,194],[100,238],[99,H+2],[69,H+2],[72,214]],
+    slacks:[[76,194],[100,194],[100,236],[96.5,H],[80,H],[73,214]],
+    jogger:[[76,194],[100,194],[100,236],[96,H-9],[83,H-9],[74,214]],
+    shorts:[[76,194],[100,194],[100,236],[98.5,H],[71,H],[73,214]],
+    straight:[[76,194],[100,194],[100,236],[97,H],[79,H],[73,214]]
+  }[B.kind] || [];
+  const fc = fold(c), stc = B.jean ? '#C49149' : dc;
+  let s = vsh2(L, c, B.tex) + ln('M76,201L124,201', dc, .8);
+  // 허리 고리·지퍼 덮개·앞주머니: 조거는 고무줄 허리라 끈, 나머지는 벨트 고리
+  if (B.kind === 'jogger') s += ln('M98,201Q97,212 95,216M102,201Q103,212 105,216', dc, .9);
+  else s += sh2([[80,194],[82.4,194],[82.4,203.5],[80,203.5]], c) + sh2([[91.5,194],[93.9,194],[93.9,203.5],[91.5,203.5]], c);
+  s += ln('M100,202L100,230', dc, .8) + (B.jean ? seam('M96,202L96,223Q96,229 100,231', stc, .8) : ln('M96,202L96,224Q96,228 100,230', dc, .7));
+  if (B.jean) s += ln2('M74.6,213Q83,212 86,201.5', dc, .9) + seam2('M75,216.5Q85.5,215.5 88.8,201.6', stc, .8) + dot(86.2, 203.5, .9, '#B5B5B0') + dot(113.8, 203.5, .9, '#B5B5B0');
+  else s += ln2('M74,219L81.5,201.5', dc, .9);
+  // 주름: 무릎, 밑단(일자는 한 번 꺾임, 슬랙스는 살짝, 와이드는 세로로 떨어지는 주름)
+  if (B.kind === 'straight') s += ln2(`M79.4,${H - 7}Q88,${H - 3} 96.9,${H - 7}`, fc, 1.1) + ln2(`M81,${H - 13}Q86,${H - 11} 90,${H - 13}`, fc, .8);
+  else if (B.kind === 'slacks') s += ln2(`M81,${H - 4}Q88,${H - 2.4} 96,${H - 4}`, fc, .9);
+  else if (B.kind === 'wide') s += ln2(`M84,252L80.5,${H + 1}`, fc, .9) + ln2(`M93.5,266L94.5,${H + 1}`, fc, .9);
+  else if (B.kind === 'jogger') s += ln2(`M84,${H - 17}Q89,${H - 13} 95.6,${H - 17}`, fc, .9) + ln2(`M85,${H - 24}Q90,${H - 21} 95,${H - 25}`, fc, .8);
+  if (B.jean || B.kind === 'shorts') s += seam2(B.kind === 'shorts' ? `M71.2,${H - 3.5}L98.6,${H - 3.5}` : B.kind === 'wide' ? `M69.2,${H - 1}L99,${H - 1}` : `M79.2,${H - 3}L96.8,${H - 3}`, stc, .8);
+  if (B.kind === 'jogger') { const cf = [[83,H-9],[96,H-9],[95.5,H],[83.5,H]]; s += sh2(cf, c) + tx2(cf, T(c,'rb')); }
+  if (B.kind === 'slacks') s += ln2(`M88,214L88.3,${H}`, dc, .8);
+  if (B.cargo) { const y = B.kind === 'shorts' ? 238 : 262; s += ln2(`M72,${y}L84,${y}L84.5,${y+28}L72.5,${y+28}Z`, dc) + ln2(`M72,${y+6}L84,${y+6}`, dc); }
+  if (B.track) s += ln2(`M73.6,216L${B.kind === 'jogger' ? '83.5,' + (H-9) : '79.5,' + H}`, lum(c) < .45 ? '#F4F4F2' : '#1C1C1C', 2.2);
+  if (B.destroyed) s += ln2('M84,296L93,296M85,301L92,301M84,306L91,306', 'rgba(255,255,255,.75)', 1.3);
+  return s;
+}
+
+function shoeKind(n){
+  const K = [[/슬라이드/,'slide'],[/샌들/,'sandal'],[/레인부츠/,'rainboot'],[/패딩 부츠|방한 부츠/,'padboot'],[/부츠/,'boot'],[/하이탑/,'hightop'],[/청키|러닝화/,'chunky'],[/로퍼|더비|보트슈즈/,'dress']];
+  for (const [re, k] of K) if (re.test(n)) return k;
+  return 'sneaker';
+}
+function drawShoes(S){
+  const c = S.col[1], dc = det(c), dark = '#2b2b2b', ws = lum(c) > .75 ? '#DADAD5' : '#F2F2EF';
+  let s = '';
+  if (S.socks) s += S.short ? sh2([[81,360],[97,360],[96.5,404],[81.5,404]], S.socks[1]) : sh2([[81,386],[97,386],[97,404],[81,404]], S.socks[1]);
+  const laces = ln2('M81,404L92,404M80,407.5L93,407.5', dc);
+  switch (S.kind) {
+    case 'chunky': s += sh2([[72,414],[72,406],[77,398],[96,398],[101,406],[101,414]], c) + sh2([[70,412],[103,412],[103,422],[70,422]], ws) + ln2('M81,402L92,402M80,406L93,406', dc); break;
+    case 'hightop': s += sh2([[73,418],[73,386],[97,386],[100,408],[100,418]], c) + sh2([[72,414],[101,414],[101,421],[72,421]], ws) + ln2('M81,392L91,392M81,397L92,397M81,402L93,402', dc); break;
+    // 부츠는 앞에서 보면 발목은 좁고 앞코가 둥글게 퍼진다
+    case 'boot': s += shp2('M74.5,418Q73,410 74.5,404L75,384Q75,382 77,382L95,382Q97,382 97,384L97.5,402Q101,407 100.5,418Z', c) + sh2([[73,416],[101,416],[101,421],[73,421]], dark)
+      + ln2('M79.5,412Q87,407.5 95,412', 'rgba(255,255,255,.18)', 1.2) + (/첼시/.test(S.name) ? sh2([[75.5,384],[79.5,384],[79.5,402],[75.5,402]], dc) : ln2('M82,388L92,388M82,394L93,394', dc)); break;
+    case 'padboot': { const p = 'M73.5,418Q71.5,408 72.5,396L72.5,381Q72.5,378 75.5,378L96.5,378Q99.5,378 99.5,381L99.5,402Q101.5,408 100.5,418Z';
+      s += shp2(p, c) + `<path d="${p}" fill="url(#${T(c,'qt')})"/><path d="${mirD(p)}" fill="url(#${T(c,'qt')})"/>` + sh2([[72,416],[101,416],[101,422],[72,422]], dark); break; }
+    case 'rainboot': s += shp2('M74.5,418Q73,410 74.5,404L74.5,378Q74.5,376 76.5,376L96,376Q98,376 98,378L98.5,402Q101,407 100.5,418Z', c) + sh2([[73,416],[101,416],[101,421],[73,421]], dark) + ln2('M78,380L78,410', 'rgba(255,255,255,.35)', 1.5); break;
+    case 'dress': s += sh2([[73,419],[73,411],[78,404],[95,404],[100,411],[100,419]], c) + sh2([[73,417],[100,417],[100,421],[73,421]], dark) + (/로퍼/.test(S.name) ? ln2('M77,409L96,409', dc, 1.2) : ln2('M83,407L90,407', dc)); break;
+    case 'sandal': s += sh2([[75,419],[75,402],[98,402],[99,419]], SK) + sh2([[74,405],[99,405],[99,409],[74,409]], c) + sh2([[74,412],[99,412],[99,416],[74,416]], c) + sh2([[73,418],[101,418],[101,422],[73,422]], c); break;
+    case 'slide': s += sh2([[75,419],[75,394],[97,394],[99,419]], '#F2F2EF') + sh2([[73,404],[100,404],[100,413],[73,413]], c) + sh2([[73,418],[101,418],[101,422],[73,422]], c); break;
+    default: s += sh2([[73,418],[73,409],[77,401],[96,401],[100,409],[100,418]], c) + sh2([[72,415],[101,415],[101,421],[72,421]], ws)
+      + (/슬립온/.test(S.name) ? '' : laces) + ln2('M74,413Q86.5,409.5 99,413', dc, .7);
+  }
+  return s;
+}
+
+// 신발 옆모습(목록 확대 그림용). 왼쪽이 뒤꿈치, 오른쪽이 앞코, 바닥선 y=58
+function shoeSide(S){
+  const c = S.col[1], dc = det(c), ws = lum(c) > .75 ? '#DADAD5' : '#F2F2EF', dark = '#2b2b2b', n = S.name;
+  const P = d => `<path d="${d}" fill="none" stroke="${dc}" stroke-width=".8" stroke-linecap="round"/>`;
+  const F = (d, f) => `<path d="${d}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`;
+  const sk = S.socks ? S.socks[1] : SK;
+  const ankle = (top, x1, x2) => F(`M${x1},${top}L${x2},${top}L${x2 + 1},34L${x1 + 1},30Z`, sk);
+  const eyelets = (x1, y1, x2, y2, k) => { let s = ''; for (let i = 0; i < k; i++) { const t = i / (k - 1); s += dot(+(x1 + (x2 - x1) * t).toFixed(1), +(y1 + (y2 - y1) * t).toFixed(1), .9, dc); } return s; };
+  const lowSole = (f, h) => F(`M5,${58 - h}L112,${58 - h}Q117,${59 - h} 116,${54}Q115,58 110,58L10,58Q4,58 4.5,${55 - h / 3}Z`, f);
+  let s = '';
+  switch (S.kind) {
+    case 'hightop':
+      s += lowSole(ws, 8) + F('M8,50L8,8Q8,4 13,4L30,4Q34,4 35,8L38,14L74,35Q96,37 107,42Q113,45 112,50Z', c)
+        + P('M90,50Q91,41 104,40.5') + P('M8,40L30,42') + eyelets(37, 12, 71, 33, 7) + P('M37,12L71,33');
+      if (S.socks) s = ankle(0, 12, 32) + s;
+      break;
+    case 'chunky':
+      s += F('M3,45L114,45Q119,47 118,53Q117,60 111,60L9,60Q2,60 2.5,53Z', ws) + P('M3.5,52L117.5,52')
+        + F('M8,45L8,24Q8,19 13,19L21,20Q28,26 34,25L38,16Q42,13 46,16L72,31Q96,33 106,38Q113,42 112,45Z', c)
+        + P('M24,45Q34,32 54,35L72,45') + P('M88,45Q90,38 102,37') + eyelets(43, 18, 69, 31, 5) + P('M43,18L69,31');
+      if (S.socks) s = ankle(2, 12, 33) + s;
+      break;
+    case 'dress': {
+      s += F('M8,50L112,50Q117,51 115,54.5L31,55L30,58L10,58Q7,58 7.5,55Z', dark)
+        + F('M10,50L10,33Q11,28 17,29L32,32Q48,34 60,31Q72,30 84,34Q104,39 111,45Q114,48 112,50Z', c)
+        + `<path d="M64,33Q88,35 104,42" fill="none" stroke="url(#gl)" stroke-width="2"/>` + P('M11,50L111,50');
+      if (/로퍼/.test(n)) s += P('M52,33Q60,41 74,39.5Q82,38.5 86,35') + P('M63,37.6L72,36.8') + P('M60,31.5Q76,28 92,37');
+      else if (/보트/.test(n)) s += seam('M62,31Q82,28 100,41', dc, .8) + P('M12,31Q36,38 58,31.5') + eyelets(44, 33, 58, 31.4, 3);
+      else s += P('M44,33Q47,44 40,50') + P('M44,33L62,31') + eyelets(46, 33, 60, 31.4, 4);
+      if (S.socks) s = ankle(4, 13, 33) + s;
+      break;
+    }
+    case 'boot': {
+      // 첼시·데저트·앵클은 굽이 따로 보이는 얇은 밑창, 워크·워커·하이킹은 두꺼운 밑창
+      const top = /데저트|앵클/.test(n) ? 16 : 6, chel = /첼시/.test(n), thin = chel || /데저트|앵클/.test(n);
+      s += thin ? F('M9,50L112,50Q116,51 114.5,54L31,55L30,58.5L11,58.5Q9,58.5 9,56Z', /데저트/.test(n) ? '#D9CBB2' : dark)
+        : F('M7,49L113,49Q117,50 116,55L115,59L10,59Q6,59 6.5,55Z', dark) + seam('M9,50.8L113,50.8', '#9a9a9a', .8);
+      s += F(`M14,${thin ? 50 : 49}Q8,44 10,34L11.5,${top + 2}Q11.5,${top} 14,${top}L37,${top}Q39.5,${top} 39.5,${top + 2.5}L41,24Q43,30.5 53,32.5L86,37Q104,40 110,45Q113,48 111,${thin ? 50 : 49}Z`, c)
+        + P(`M11,40Q20,38 25,${thin ? 50 : 49}`);
+      if (chel) s += F(`M19,${top}L25,27L31,${top}Z`, lum(c) < .2 ? '#3a3a3a' : dc) + F(`M12.5,${top}Q12,${top - 5} 16.5,${top - 5}L17.5,${top}Z`, c);
+      else s += eyelets(38.5, top + 4, 50, 31.4, /데저트/.test(n) ? 2 : 5) + P(`M38.5,${top + 4}L50,31.4`) + (thin ? '' : P('M88,49Q89,39 101,39.5'));
+      break;
+    }
+    case 'rainboot': {
+      const top = /숏/.test(n) ? 18 : 4;
+      s += F('M8,52L113,52Q117,53 116,56L115,59L10,59Q7,59 7.5,56Z', dark)
+        + F(`M14,52Q9,46 11,36L12,${top + 2}Q12,${top} 14,${top}L38,${top}Q40,${top} 40,${top + 2}L42,30Q46,34 60,35Q100,38 109,45Q113,48 111,52Z`, c) + ln(`M18,${top + 5}L18,44`, 'rgba(255,255,255,.4)', 2);
+      break;
+    }
+    case 'padboot':
+      s += F('M7,52L113,52Q117,53 116,57L115,60L10,60Q6,60 6.5,57Z', dark) + [14, 30, 46, 62, 78, 94].map(x => F(`M${x},60L${x + 8},60L${x + 7},62.5L${x + 1},62.5Z`, dark)).join('')
+        + F('M14,52Q8,46 9.5,36L9,8Q9,4 14,4L40,4Q44,4 44,8L45,28Q48,34 62,35Q104,39 110,46Q113,49 111,52Z', c) + P('M9.2,16L44.3,16M9.4,28L44.8,28M10,40L64,40');
+      break;
+    case 'sandal': {
+      s += F('M8,52L112,52Q117,53 115,57L10,58Q6,58 7,55Z', lum(c) < .2 ? dark : c)
+        + F('M14,52L14,22Q14,14 22,14L32,14Q36,18 38,27Q70,34 100,40Q112,43 112,52Z', SK)
+        + F('M76,34.5L86,36.5L90,52L80,52Z', c) + F('M44,27L56,29.4L60,52L48,52Z', c) + F('M14,34L46,28L47,34L14,40Z', c);
+      break;
+    }
+    case 'slide':
+      s += F('M7,50L113,50Q118,51 116,57L10,58Q5,58 6,54Z', c) + F('M14,50L14,24Q14,16 22,16L32,16Q36,20 38,28Q70,35 100,41Q112,44 112,50Z', sk)
+        + F('M42,26L76,32.6L84,50L38,50Z', c);
+      break;
+    default:
+      s += lowSole(ws, 8) + F('M8,50L8,26Q8,21 13,21L20,22Q27,28 34,27L38,18Q42,15 46,18L74,35Q96,37 107,42Q113,45 112,50Z', c)
+        + P('M90,50Q91,41 104,40.5') + P('M20,22Q22,37 30,50') + eyelets(44, 20.5, 71, 33.5, 5) + P('M44,20.5L71,33.5');
+      if (/슬립온/.test(n)) s = lowSole(ws, 8) + F('M8,50L8,26Q8,21 13,21L20,22Q27,28 34,27L40,24Q44,22 48,24L74,35Q96,37 107,42Q113,45 112,50Z', c) + P('M90,50Q91,41 104,40.5') + F('M38,25L48,23L52,30L42,32Z', lum(c) < .2 ? '#3a3a3a' : dc);
+      if (S.socks) s = ankle(2, 12, 33) + s;
+  }
+  return s;
+}
+
+function extraKind(n){
+  const K = [[/머플러/,'scarf'],[/넥 게이터|넥워머/,'gaiter'],[/반다나/,'bandana'],[/비니/,'beanie'],[/버킷햇/,'bucket'],[/캡/,'cap'],[/장갑/,'gloves'],[/시계/,'watch'],[/백팩/,'backpack'],[/크로스백/,'cross'],[/서류/,'brief'],[/숄더백/,'shoulder'],[/토트백|에코백/,'tote'],[/안경/,'glasses'],[/반지/,'ring'],[/목걸이/,'necklace'],[/벨트/,'belt'],[/양말/,'socks'],[/두르기/,'drape']];
+  for (const [re, k] of K) if (re.test(n)) return k;
+  return null;
+}
+const EXA = {scarf:[107,112], gaiter:[106,60], bandana:[104,74], beanie:[107,18], bucket:[107,17], cap:[107,18], gloves:[146,224], watch:[146,216], backpack:[122,112], cross:[138,206], brief:[156,248], shoulder:[146,208], tote:[150,262], glasses:[107,35], ring:[148,229], necklace:[106,83], belt:[114,198], socks:[112,395], drape:[122,80]};
+function drawExtra(E){
+  const c = E.col[1], dc = det(c);
+  switch (E.kind) {
+    case 'scarf': { const a = [[85,57],[115,57],[117,74],[83,74]], b = [[87,72],[97,72],[98,169],[88,168]], d = [[103,72],[113,72],[112,148],[102,150]];
+      const t = /체크|타탄/.test(E.name) ? T(c,'ch') : T(c,'rb');
+      return sh(b, c) + tx(b, t) + sh(d, c) + tx(d, t) + sh(a, c) + tx(a, t) + ln('M90,169L90,175M93,169.5L93,175.5M96,169.5L96,175.5', c, 1.2); }
+    case 'gaiter': { const g = [[88,46],[112,46],[114,72],[86,72]]; return sh(g, c) + tx(g, T(c,'rb')); }
+    case 'bandana': return sh([[88,64],[112,64],[100,88]], c) + tx([[88,64],[112,64],[100,88]], T(c,'dt')) + dot(100, 66, 2.6, c);
+    case 'beanie': { const b = [[83,31],[83,20],[90,12],[110,12],[117,20],[117,31]], f = [[82.5,24],[117.5,24],[117.5,32],[82.5,32]]; return sh(b, c) + sh(f, c) + tx(f, T(c,'rb')); }
+    case 'cap': return sh([[85,27],[86,17],[93,11],[107,11],[114,17],[115,27]], c) + `<ellipse cx="100" cy="27.5" rx="18" ry="3.6" fill="${c}" stroke="${edge(c)}"/>`;
+    case 'bucket': return sh([[87,24],[89,12],[111,12],[113,24]], c) + sh([[81,31],[87,23],[113,23],[119,31]], c);
+    case 'gloves': {
+      // 손 모양 그대로 감싸는 장갑(엄지 포함)
+      const g = x => { const d = x < 100 ? 1 : -1; return `<path d="M${x-6},207Q${x-7.5},224 ${x-4},232.5Q${x},236 ${x+4},232.5Q${x+7.5},224 ${x+6},207Z" fill="${c}" stroke="${edge(c)}"/>`
+        + `<path d="M${x + 5 * d},214Q${x + 10 * d},220 ${x + 6 * d},228Z" fill="${c}" stroke="${edge(c)}"/>` + ln(`M${x-6},212L${x+6},212`, dc, .8); };
+      return g(54) + g(146) + (/플리스/.test(E.name) ? tx([[48,207],[60,207],[61,233],[47,233]], T(c,'dt')) : ''); }
+    case 'watch': return sh([[140,214],[152,214],[152,219.5],[140,219.5]], /메탈|실버/.test(E.name) ? '#B8B8B8' : c) + `<circle cx="146" cy="216.8" r="3.3" fill="#ececec" stroke="${OL}"/>`;
+    case 'ring': return `<circle cx="148" cy="229" r="1.8" fill="none" stroke="#9a9a9a" stroke-width="1.3"/>`;
+    case 'necklace': return ln('M91,68Q100,94 109,68', '#B8B8B8', 1.4);
+    case 'glasses': return `<circle cx="93" cy="35" r="5" fill="rgba(255,255,255,.2)" stroke="${c}" stroke-width="1.6"/><circle cx="107" cy="35" r="5" fill="rgba(255,255,255,.2)" stroke="${c}" stroke-width="1.6"/>` + ln('M98,35L102,35', c, 1.4);
+    case 'belt': return sh([[76,195],[124,195],[124,202],[76,202]], c) + `<rect x="96" y="194" width="8" height="9" fill="none" stroke="#9a9a9a" stroke-width="1.4"/>`;
+    case 'drape': { const b = [[64,72],[90,62],[110,62],[136,72],[134,86],[110,76],[90,76],[66,86]], h = [[80,78],[89,77],[103,109],[96,114]];
+      return sh2(h, c) + tx2(h, T(c,'rb')) + sh(b, c) + tx(b, T(c,'rb')) + dot(100, 111, 4.5, c); }
+    case 'tote': return ln('M135,236Q137,214 146,215Q155,214 157,236', c, 2.2) + sh([[131,236],[161,236],[164,288],[128,288]], c);
+    case 'brief': return ln('M140,234Q140,222 146,222Q152,222 152,234', OL, 2) + sh([[127,234],[165,234],[165,264],[127,264]], c) + ln('M127,244L165,244', dc);
+    case 'cross': return ln('M68,80L128,198', OL, 3.6) + ln('M68,80L128,198', c, 2.2) + sh([[120,194],[148,194],[148,218],[120,218]], c) + ln('M120,203L148,203', dc);
+    case 'shoulder': return ln('M131,76L138,192', OL, 3.6) + ln('M131,76L138,192', c, 2.2) + sh([[126,190],[156,190],[158,226],[124,226]], c);
+    case 'backpack': { const p = [[70,73],[79,71],[80,150],[73,153]]; return sh2(p, c) + sh2([[72,128],[80,128],[80,133],[72,133]], dc); }
+  }
+  return '';
+}
+
+// 사람 + 옷 전체. bare면 겉옷·소품·우산을 빼고 안에 입은 옷만 그린다
+function scene(R, umb, bare){
+  let back = '', mid = '', top = '';
+  const oi = !bare && R.Oin ? drawOuter(R.Oin) : null, oo = !bare && R.O ? drawOuter(R.O) : null;
+  if (oi) back += oi.back;
+  if (oo) back += oo.back;
+  const E = !bare && R.E && R.E.draw ? R.E : null;
+  const exS = E ? drawExtra(E) : '';
+  if (E && (E.kind === 'belt' || E.kind === 'necklace')) mid = exS; else top = exS;
+  let u = '';
+  if (umb === 'long') u = sh([[50,246],[58,246],[55,352],[53,352]], '#2E3440') + ln('M54,246L54,226Q54,214 60,216', '#3a3a3a', 2.2);
+  else if (umb) u = sh([[49,236],[59,236],[58,270],[50,270]], '#2E3440') + ln('M54,232L54,236', '#3a3a3a', 1.6);
+  return back + skin() + drawShoes(R.S) + drawBottom(R.B) + drawTop(R.P) + mid + (oi ? oi.s : '') + (oo ? oo.s : '') + top + u;
+}
+
+// 목록 칸마다 붙는 확대 그림
+const EXB = {scarf:'72 48 56 132', gaiter:'78 28 44 54', bandana:'80 50 40 44', beanie:'74 2 52 44', cap:'74 2 52 44', bucket:'72 2 56 44', glasses:'78 14 44 40', necklace:'80 54 40 52',
+  gloves:'124 196 44 48', watch:'128 198 36 40', ring:'132 208 30 32', belt:'70 180 60 40', drape:'56 52 88 72', tote:'118 206 52 90', brief:'116 212 58 60', cross:'58 66 104 160', shoulder:'112 64 54 168', socks:'62 340 76 86'};
+function thumbs(R, umb){
+  const box = (vb, b) => `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${b}</svg>`;
+  const t = {};
+  if (R.O) { const ps = [R.Oin, R.O].filter(Boolean).map(drawOuter); t['겉옷'] = box(`36 40 128 ${R.O.cfg.hem - 30}`, ps.map(p => p.back).join('') + ps.map(p => p.s).join('')); }
+  const bare = scene(R, null, true);
+  t['상의'] = box(`38 40 124 ${(R.P.shirt ? R.P.hem + 7 : R.P.hem) - 30}`, bare);
+  t['하의'] = box('60 184 80 240', bare);
+  t['신발'] = box('0 -2 120 66', shoeSide(R.S));
+  if (R.E && R.E.draw) {
+    if (R.E.kind === 'backpack') { const c = R.E.col[1], dc = det(c);
+      t['소품'] = box('0 0 64 84', ln('M26,11Q32,3 38,11', c, 2.4) + vsh([[12,12],[52,12],[55,78],[9,78]], c) + sh([[16,48],[48,48],[49,74],[15,74]], c) + ln('M13,22Q32,14 51,22', dc, .9) + ln('M16,54L48,54', dc, .8)); }
+    else if (EXB[R.E.kind]) t['소품'] = box(EXB[R.E.kind], scene(R, umb));
+  }
+  return t;
+}
+
+function figure(R, umb){
+  const svgBody = scene(R, umb);
+  const E = R.E && R.E.draw ? R.E : null;
+  // 번호 표시
+  const A = [];
+  const num = slot => (R.rows.find(r => r.slot === slot) || {}).num;
+  if (R.O && num('겉옷')) A.push({n: num('겉옷'), x: 124, y: R.O.cfg.hem > 300 ? 200 : 160});
+  // 상의는 겉옷·머플러에 가리지 않고 보이는 곳을 가리킨다
+  if (num('상의')) A.push(!R.O ? {n: num('상의'), x: 112, y: 140}
+    : R.O.cfg.hem <= 216 ? {n: num('상의'), x: 112, y: 219}
+    : {n: num('상의'), x: 100, y: E && E.kind === 'scarf' ? 186 : 124});
+  if (num('하의')) { const oh = R.O ? R.O.cfg.hem : 0; A.push({n: num('하의'), x: 113, y: R.B.kind === 'shorts' ? 258 : oh > 280 ? Math.min(oh + 22, R.B.hem - 10) : 300}); }
+  if (num('신발')) A.push({n: num('신발'), x: 113, y: 410});
+  if (E && num('소품')) A.push({n: num('소품'), x: EXA[E.kind][0], y: EXA[E.kind][1]});
+  A.sort((a, b) => a.y - b.y);
+  let last = -1e9;
+  A.forEach(m => { m.my = Math.max(m.y, last + 24, 16); last = m.my; });
+  for (let i = A.length - 1; i >= 0; i--) A[i].my = Math.min(A[i].my, i === A.length - 1 ? 416 : A[i+1].my - 24);
+  const mk = A.map(m => ln(`M${m.x},${m.y}L206,${m.my}`, '#8a8a8a', .8) + `<circle cx="${m.x}" cy="${m.y}" r="2.2" fill="#141414" stroke="#fff" stroke-width="1"/>`
+    + `<circle cx="216" cy="${m.my}" r="9.5" fill="#fff" stroke="#141414" stroke-width="1.4"/><text x="216" y="${m.my + 4}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#141414" font-family="Malgun Gothic, sans-serif">${m.n}</text>`).join('');
+  return `<svg viewBox="28 6 202 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="오늘 코디 착장 예시 그림">${defs()}${svgBody}${mk}</svg>`;
+}
+
+/* 고른 옷 → 그림·목록에 쓸 모양과 색 */
+function topKind(n){
+  const K = [[/터틀넥|하이넥/,'turtle'],[/후드티/,'hood'],[/쿼터집|하프집업/,'qzip'],[/헨리넥/,'henley'],[/럭비/,'rugby'],[/피케|카라/,'polo'],[/베스트/,'vest'],[/브이넥/,'vknit']];
+  for (const [re, k] of K) if (re.test(n)) return k;
+  if (/셔츠/.test(n) && !/스웻|맨투맨/.test(n)) return 'shirt';
+  return 'crew';
+}
+function resolve(sel, pal, mood){
+  const on = sel.outer ? nameParts(sel.outer.n) : null, tn = nameParts(sel.top.n), bn = nameParts(sel.bottom.n), sn = nameParts(sel.shoes.n), en = sel.extra ? nameParts(sel.extra.n) : null;
+  // 상의가 '셔츠 + 타이 + 니트'처럼 겹쳐 입는 조합이면 나눠서 그린다
+  const parts = tn.base.split(/\s*\+\s*/).filter(p => !/베이스레이어/.test(p));
+  const multi = parts.length > 1;
+  const shirtP = multi ? parts.find(p => /셔츠/.test(p) && !/스웻/.test(p)) : null;
+  const tieP = parts.find(p => /타이$/.test(p)) || null;
+  const teeP = multi ? parts.find(p => /티$/.test(p)) : null;
+  const mainP = parts.find(p => p !== shirtP && p !== tieP && p !== teeP) || shirtP || parts[0];
+  const shirtUnder = !!shirtP && mainP !== shirtP;
+  let outerP = on ? on.base : null, innerP = null;
+  if (on && /\+/.test(on.base)) { const op = on.base.split(/\s*\+\s*/); innerP = op[0]; outerP = op[1].replace(/\s*레이어드$/, ''); }
+  const sp = sn.base.split(/\s*\+\s*/), shoeP = sp[0], sockP = sp[1] || null;
+
+  const K = {outer: outerP && known(outerP), top: known(mainP), bottom: known(bn.base), shoes: known(shoeP), extra: en && known(en.base)};
+  // 이름에 색이 없는 옷은 무드 색 조합의 기본색 두 개(pal[0], pal[1]) 안에서, 소품·타이는 세 번째 포인트 색(pal[2])으로 칠한다
+  const base = pal.slice(0, 2), accent = pal[2];
+  const byDark = base.slice().sort((a, b) => lum(a[1]) - lum(b[1]));
+  const shirtC = shirtUnder ? (known(shirtP) || ['화이트','#F4F4F2']) : null;
+  const teeC = teeP ? (known(teeP) || ['화이트','#F4F4F2']) : null;
+  const near = [K.outer, K.bottom].filter(Boolean).map(c => c[1]);
+  const topC = K.top || (shirtC ? far(base, [shirtC[1]]) : near.length ? far(base, near) : base[1]);
+  const outerC = outerP ? (K.outer || far(base, [topC[1]])) : null;
+  // 롱패딩은 '바지·신발을 같은 어두운 색으로'가 핏 설명이라, 색이 안 정해진 바지·신발은 블랙으로 맞춘다
+  const lp = sel.outer && sel.outer.f === 'longpad', BLK = ['블랙','#1C1C1C'];
+  const bottomC = colorIn(bn.base) ? K.bottom : lp ? BLK : K.bottom || (byDark[0][1] === topC[1] ? byDark[1] : byDark[0]);
+  const shoesC = colorIn(shoeP) ? K.shoes : lp ? BLK : K.shoes || byDark[0];
+  const pointC = avoid => avoid.includes(accent[1]) ? far(pal, avoid) : accent;
+  const extraC = en ? (K.extra || pointC([(outerC || topC)[1], bottomC[1]])) : null;
+  const tieC = tieP ? (known(tieP) || pointC([topC[1], (shirtC || topC)[1]])) : null;
+
+  // 상의
+  const tk = topKind(mainP), f = sel.top.f;
+  const ek = en ? extraKind(en.base) : null;
+  const tuckable = ['shirt','polo','henley','crew','rugby'].includes(tk) && !shirtUnder && !/니트|맨투맨|스웻|플리스|울/.test(mainP);
+  const tex = [];
+  if (/케이블|피셔맨/.test(mainP)) tex.push(T(topC[1],'cb')); else if (/니트|울|모헤어|코위찬|베스트/.test(mainP)) tex.push(T(topC[1],'rb'));
+  if (/스트라이프/.test(mainP)) tex.push(T(topC[1],'st'));
+  if (/체크|플란넬/.test(mainP)) tex.push(T(topC[1],'ch'));
+  if (tk === 'rugby') tex.push(T(topC[1],'rg'));
+  if (/플리스|와플/.test(mainP)) tex.push(T(topC[1],'dt'));
+  const P = {kind: tk, col: topC, short: /반팔|저지|알로하/.test(mainP), wide: f === 'over', hem: tk === 'shirt' ? 228 : 222, tex,
+    tuck: (ek === 'belt' && tuckable) || (tk === 'shirt' && (mood === 'formal' || mood === 'preppy')) ? 'full'
+      : (f === 'top' || f === 'over') && ['crew','henley','polo'].includes(tk) ? 'front' : '',
+    shirtTuck: mood === 'formal' || mood === 'preppy',
+    shirt: shirtUnder ? {col: shirtC, tex: /스트라이프/.test(shirtP) ? T(shirtC[1],'st') : /체크|플란넬/.test(shirtP) ? T(shirtC[1],'ch') : null} : null,
+    tie: tieP ? {col: tieC, kind: /스키니/.test(tieP) ? 'skinny' : /니트/.test(tieP) ? 'knit' : 'std'} : null,
+    tee: teeC ? {col: teeC} : null,
+    graphic: /그래픽/.test(mainP) ? 'big' : /로고|프린팅|저지/.test(mainP) ? 'small' : null,
+    band: /코위찬/.test(mainP), rib: /니트|맨투맨|스웻|후드티/.test(mainP)};
+  // 겉옷: '가방에', '손에 들기'는 입지 않은 상태라 그림에서 뺀다
+  const carry = on && /가방|손에/.test(on.paren);
+  // 기장은 목록에 적힌 핏 설명(엉덩이 위·무릎 위 등)과 같게 그린다
+  const OH = {short:214, coat:296, blazer:240, longpad:360};
+  const ok = outerP ? outerKind(outerP) : null;
+  const O = on && !carry ? {cfg: Object.assign({}, OCFG[ok], OH[sel.outer.f] ? {hem: OH[sel.outer.f]} : {}), col: outerC, name: outerP, kind: ok} : null;
+  const Oin = O && innerP ? {cfg: OCFG.light, col: known(innerP) || byDark[0], name: innerP, kind: 'light'} : null;
+  // 하의·신발
+  const socks = sockP ? (known(sockP) || ['화이트','#F4F4F2']) : ek === 'socks' ? extraC : null;
+  const bk = /조거|트랙 팬츠/.test(bn.base) ? 'jogger' : (sel.bottom.f || 'straight');
+  const B = {kind: bk, col: bottomC, hem: bk === 'shorts' ? (/버뮤다/.test(bn.base) ? 292 : 284) : socks ? 390 : 398,
+    tex: /코듀로이/.test(bn.base) ? T(bottomC[1],'rb') : null, cargo: /카고/.test(bn.base), track: /트랙/.test(bn.base), destroyed: /디스트로이드/.test(bn.base),
+    jean: /데님|청바지|진$/.test(bn.base)};
+  const S = {kind: shoeKind(shoeP), col: shoesC, name: shoeP, socks, short: bk === 'shorts'};
+  const E = en ? {kind: ek, col: extraC, name: en.base, draw: !!ek && (ek !== 'belt' || P.tuck === 'full')} : null;
+
+  // 목록. 이름에 색이 없어서 그림에 정해 넣은 색은 괄호로 밝힌다
+  // 이름에 색 단어가 없는데 그림에 색을 정해 넣었으면(소재로 짐작한 색 포함) 괄호로 밝힌다
+  const nt = (s, c) => !colorIn(s) && c && !s.includes(c[0]) ? `(${c[0]})` : '';
+  // 겹쳐 입는 상의는 제일 넓게 보이는 옷의 색만 적어 목록을 짧게 둔다
+  const tnotes = [];
+  if (!colorIn(mainP)) tnotes.push(multi ? `${mainP.split(' ').pop()} ${topC[0]}` : topC[0]);
+  const rows = [];
+  rows.push(sel.outer
+    ? {slot:'겉옷', name: on.base, note: O ? nt(outerP, outerC) : '', how: on.paren || HOW[sel.outer.f] || '', kw: sel.outer.kw, drawn: !!O}
+    : {slot:'겉옷', name:'없이', note:'', how:'', kw:'', drawn:false});
+  rows.push({slot:'상의', name: tn.base, note: tnotes.length ? `(${tnotes.join(' · ')})` : '', how: HOW[f] || '', kw: sel.top.kw, drawn:true});
+  rows.push({slot:'하의', name: bn.base, note: nt(bn.base, bottomC), how: bk === 'jogger' ? '' : HOW[sel.bottom.f] || '', kw: sel.bottom.kw, drawn:true});
+  rows.push({slot:'신발', name: sn.base, note: nt(shoeP, shoesC), how: sn.paren || (bk === 'shorts' ? '' : HOW[sel.shoes.f]) || '', kw: sel.shoes.kw, drawn:true});
+  if (en) rows.push({slot:'소품', name: en.base, note: E.draw ? nt(en.base, extraC) : '', how: en.paren || EXH[ek] || '', kw: sel.extra.kw, drawn: E.draw});
+  let n = 0; rows.forEach(r => { if (r.drawn) r.num = ++n; });
+  return {O, Oin, P, B, S, E, rows};
 }
 
 /* ---------- 상태 ---------- */
 const KEY = 'outfit-guide-v1';
 const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } })();
-const S0 = {city:'서울', lat:37.566, lon:126.9784, day:0, start:9, end:18, sens:0, mood:'minimal'};
+const S0 = {city:'서울', lat:37.566, lon:126.9784, day:0, start:9, end:18, sens:0, level:'L2', bh:null, bw:null, bf:null};
 const st = Object.assign({}, S0, saved);
-if (!MOODS[st.mood]) st.mood = 'minimal';
+delete st.mood;
+if (!LEVELS[st.level]) st.level = 'L2';
 st.shuffle = 0;
 let wx = null, lastFetch = 0, fetching = false;
 const save = () => { const {shuffle, ...rest} = st; try { localStorage.setItem(KEY, JSON.stringify(rest)); } catch(e){} };
@@ -338,17 +888,20 @@ function buildCity(){
   sel.value = inList ? st.city : '__cur';
 }
 function buildHours(){
-  const s = $('#start'), e = $('#end');
-  s.innerHTML = Array.from({length:19},(_,i)=>i+5).map(h=>`<option value="${h}">${h}시</option>`).join('');
-  e.innerHTML = Array.from({length:19},(_,i)=>i+5).map(h=>`<option value="${h}">${h}시</option>`).join('');
-  s.value = st.start; e.value = st.end;
+  const opts = Array.from({length:19},(_,i)=>i+5).map(h=>`<option value="${h}">${h}시</option>`).join('');
+  $('#start').innerHTML = opts; $('#end').innerHTML = opts;
+  $('#start').value = st.start; $('#end').value = st.end;
 }
-function buildMoods(){
-  $('#moods').innerHTML = Object.entries(MOODS).map(([k,m]) =>
-    `<button type="button" data-k="${k}" aria-pressed="${k===st.mood}"><b>${esc(m.name)}</b><span>${esc(m.desc)}</span></button>`).join('');
+function buildLevels(){
+  $('#lv').innerHTML = Object.entries(LEVELS).map(([k,m]) =>
+    `<button type="button" data-k="${k}" aria-pressed="${k===st.level}">${esc(m.name)}</button>`).join('');
+}
+function buildBody(){
+  [['bh','#bh'],['bw','#bw'],['bf','#bf']].forEach(([k, s]) => { $(s).value = st[k] == null ? '' : st[k]; });
 }
 function syncSeg(id, v){ document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === Number(v)))); }
 
+$('#setBtn').addEventListener('click', e => { const open = $('#set').hidden; $('#set').hidden = !open; e.currentTarget.setAttribute('aria-expanded', String(open)); });
 $('#city').addEventListener('change', e => {
   const v = e.target.value;
   if (v === '__search') { $('#search').classList.add('on'); $('#q').focus(); return; }
@@ -383,11 +936,11 @@ async function search(){
         .then(r => r.ok ? r.json() : {}).catch(() => ({}))));
     const seen = new Set(); let res = [];
     all.forEach(j => (j.results || []).forEach(x => { if (!seen.has(x.id)) { seen.add(x.id); res.push(x); } }));
-    const krFirst = /[가-힣]/.test(q);  // 한글로 찾으면 국내 지명을 위로, 영어로 찾으면 인구순만
+    const krFirst = /[가-힣]/.test(q);
     res = res.filter(x => /^PPL/.test(x.feature_code || 'PPL'))
       .sort((a,b) => (krFirst ? (b.country_code === 'KR') - (a.country_code === 'KR') : 0) || (b.population||0) - (a.population||0))
       .slice(0,8);
-    if (!res.length) { ul.innerHTML = '<li class="msg">결과가 없다. 구 단위(강남구 등)는 이 검색에 없어서, 가까운 시 이름이나 영어 이름(예: Cheonan)으로 찾아봐.</li>'; return; }
+    if (!res.length) { ul.innerHTML = '<li class="msg">결과가 없다. 가까운 시 이름이나 영어 이름(예: Cheonan)으로 찾아봐.</li>'; return; }
     ul.innerHTML = res.map((x,i) => `<li><button type="button" data-i="${i}">${esc(x.name)} · ${esc([x.admin1, x.country].filter(Boolean).join(', '))}</button></li>`).join('');
     ul.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
       const x = res[+b.dataset.i];
@@ -402,12 +955,20 @@ $('#day').addEventListener('click', e => { const b = e.target.closest('button');
 $('#sens').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.sens = +b.dataset.v; save(); syncSeg('sens', st.sens); render(); });
 $('#start').addEventListener('change', e => { st.start = +e.target.value; if (st.end < st.start) { st.end = st.start; $('#end').value = st.end; } save(); render(); });
 $('#end').addEventListener('change', e => { st.end = +e.target.value; if (st.end < st.start) { st.start = st.end; $('#start').value = st.start; } save(); render(); });
-$('#moods').addEventListener('click', e => {
+$('#lv').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  st.mood = b.dataset.k; st.shuffle = 0; save();
-  document.querySelectorAll('#moods button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  st.level = b.dataset.k; st.shuffle = 0; save();
+  document.querySelectorAll('#lv button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   render();
 });
+// 키·몸무게·발 길이: 이 기기 localStorage에만 저장. 범위 밖 값은 비운다
+const BODY = {bh:[140,210], bw:[35,150], bf:[220,320]};
+Object.keys(BODY).forEach(k => $('#' + k).addEventListener('change', e => {
+  const v = parseFloat(e.target.value), [lo, hi] = BODY[k];
+  st[k] = isFinite(v) && v >= lo && v <= hi ? v : null;
+  if (st[k] == null) e.target.value = '';
+  save(); render();
+}));
 
 /* ---------- 날씨 ---------- */
 async function load(force){
@@ -418,7 +979,7 @@ async function load(force){
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${st.lat}&longitude=${st.lon}`
     + '&current=temperature_2m,apparent_temperature,weather_code'
     + '&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,relative_humidity_2m'
-    + '&daily=uv_index_max&wind_speed_unit=ms&timezone=auto&forecast_days=3';
+    + '&daily=uv_index_max,sunrise,sunset&wind_speed_unit=ms&timezone=auto&forecast_days=3';
   try {
     const r = await fetch(url);
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -426,7 +987,7 @@ async function load(force){
     lastFetch = Date.now();
     render();
   } catch(e) {
-    $('#wx').innerHTML = `<p class="msg">날씨를 못 불러왔다 (${esc(e.message)}). 인터넷 연결을 확인하고 <button class="plain" type="button" id="retry">다시 시도</button></p>`;
+    $('#wx').innerHTML = `<p class="msg">날씨를 못 불러왔다 (${esc(e.message)}). <button class="plain" type="button" id="retry">다시 시도</button></p>`;
     $('#retry').addEventListener('click', () => load(true));
     $('#point').hidden = true; $('#outfit').hidden = true;
   } finally { fetching = false; }
@@ -438,8 +999,6 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 const DOW = ['일','월','화','수','목','금','토'];
 const r0 = x => Math.round(x);
 const deg = x => `${r0(x)}°`;
-// 체질 보정이 켜져 있으면 표에 나온 실제 체감과 보정값을 같이 보여 준다
-const fx = adj => st.sens ? `${deg(adj - st.sens)}(체질 보정 ${deg(adj)})` : deg(adj);
 function hashStr(s){ let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
 const dist = (i,t) => t < i.lo ? i.lo - t : t > i.hi ? t - i.hi : 0;
 function pick(list, t, seed, filt, preferSeasonal, strict){
@@ -451,13 +1010,11 @@ function pick(list, t, seed, filt, preferSeasonal, strict){
     fit = near.filter(i => dist(i,t) <= 4).slice(0,2);
     if (!fit.length && !strict) fit = near.slice(0,1);
   }
-  if (!fit.length) return {main:null, alts:[]};
+  if (!fit.length) return {main:null};
   // 소품: 머플러·장갑·볼캡처럼 그날 날씨에만 맞는 것을 사계절용(시계·가방)보다 먼저
   const seasonal = preferSeasonal ? fit.filter(i => i.hi - i.lo < 60) : [];
   const from = seasonal.length ? seasonal : fit;
-  const main = from[(seed + st.shuffle) % from.length];
-  const alts = fit.filter(x => x !== main).slice(0,2);
-  return {main, alts};
+  return {main: from[(seed + st.shuffle) % from.length]};
 }
 
 function analyse(){
@@ -481,10 +1038,13 @@ function analyse(){
   const precSum = prec.reduce((a,b) => a+b, 0);
   const di = wx.daily.time.indexOf(date);
   const uv = di >= 0 ? wx.daily.uv_index_max[di] : null;
+  const mins = t => t ? +t.slice(11,13) * 60 + +t.slice(14,16) : null;
+  const sr = di >= 0 ? mins(wx.daily.sunrise[di]) : null, ss = di >= 0 ? mins(wx.daily.sunset[di]) : null;
   const worst = codes.reduce((a,c) => sev(c) > sev(a) ? c : a, codes[0]);
   const adj = st.sens;
   return {
     date, s, e, fromNow, hours, feels, temps, prob, prec, codes,
+    night: h => sr != null && ss != null && (h * 60 < sr || h * 60 >= ss),
     tOuter: feels[iMin] + adj, hOuter: hours[iMin],
     tTop: feels[iMax] + adj, hTop: hours[iMax],
     tMid: feels.reduce((a,b) => a+b, 0) / feels.length + adj,
@@ -508,175 +1068,196 @@ function render(){
   const d = new Date(A.date + 'T12:00:00');
   const dLabel = `${d.getMonth()+1}월 ${d.getDate()}일(${DOW[d.getDay()]})`;
   const upd = wx.current.time.slice(11,16);
-  const place = st.city === '현재 위치' ? `현재 위치 (${st.lat}, ${st.lon})` : st.city;
 
   if (A.past) {
-    $('#wx').innerHTML = `<p class="place">${esc(place)} · ${dLabel}</p><p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
+    $('#where').textContent = `${st.city} · ${dLabel}`;
+    $('#wx').innerHTML = `<p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
     $('#toTmr').addEventListener('click', () => { st.day = 1; save(); syncSeg('day', 1); render(); });
     $('#point').hidden = true; $('#outfit').hidden = true;
     return;
   }
+  const win = A.fromNow ? `지금~${A.e}시` : `${A.s}~${A.e}시`;
+  $('#where').textContent = `${st.city} · ${dLabel} ${win}`;
 
-  const win = A.fromNow ? `지금(${A.s}시)~${A.e}시` : `${A.s}~${A.e}시`;
-  const sensNote = st.sens ? ` · 체질 보정 ${st.sens > 0 ? '+' : ''}${st.sens}° 적용` : '';
-  const cur = wx.current;
-  const curLine = st.day === 0 ? ` · 지금 ${deg(cur.temperature_2m)}(체감 ${deg(cur.apparent_temperature)})` : '';
-  const rainTxt = A.pMax > 0 ? `강수확률 최대 ${A.pMax}%(${A.hP}시)` : '강수확률 0%';
-  const precTxt = A.precSum >= 0.1 ? ` · 예상 강수량 ${A.precSum.toFixed(1)}mm` : '';
-  const sameBand = band(A.tOuter) === band(A.tTop);
-  const ends = [{h:A.hOuter, t:A.tOuter}, {h:A.hTop, t:A.tTop}].sort((a,b) => a.h - b.h);
-  const bandTxt = sameBand
-    ? `외출 시간 내내 '${band(A.tOuter)}' 구간`
-    : `${ends[0].h}시 '${band(ends[0].t)}' 구간 → ${ends[1].h}시 '${band(ends[1].t)}' 구간`;
-
-  let hoursTbl = '<div class="scroll"><table class="hours"><tr><th>시각</th>' + A.hours.map(h => `<td>${h}시</td>`).join('') + '</tr>'
-    + '<tr><th>날씨</th>' + A.codes.map(c => `<td>${esc(WMO[c] ?? '-')}</td>`).join('') + '</tr>'
-    + '<tr><th>기온</th>' + A.temps.map(t => `<td>${deg(t)}</td>`).join('') + '</tr>'
-    + '<tr><th>체감</th>' + A.feels.map((t,i) => `<td class="${A.hours[i]===A.hOuter||A.hours[i]===A.hTop?'mk':''}">${deg(t)}</td>`).join('') + '</tr>'
-    + '<tr><th>강수</th>' + A.prob.map(p => `<td>${p}%</td>`).join('') + '</tr></table></div>';
-
-  $('#wx').innerHTML = `
-    <p class="place">${esc(place)} · ${dLabel} ${win}<span class="upd">${upd} 업데이트</span></p>
-    <p class="big">체감 <em>${deg(A.feelMinRaw)}~${deg(A.feelMaxRaw)}</em><small>기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)}</small></p>
-    <p class="wxsub">${esc(WMO[A.worst] ?? '')} · ${rainTxt}${precTxt} · 바람 최대 ${A.windMax.toFixed(1)}m/s${A.uv != null ? ` · 자외선 ${A.uv.toFixed(0)}` : ''}${curLine}</p>
-    <p class="band">${esc(bandTxt)}${sensNote}</p>
-    ${hoursTbl}`;
+  const lo = r0(A.feelMinRaw), hi = r0(A.feelMaxRaw);
+  const hrs = A.hours.map((h,i) => `<div class="h"><span>${h}시</span>${icon(A.codes[i], A.night(h))}<b${h === A.hOuter ? ' class="lo"' : ''}>${deg(A.feels[i])}</b><i>${A.prob[i] ? A.prob[i] + '%' : ''}</i></div>`).join('');
+  $('#wx').innerHTML = `<div class="now">${icon(A.worst, false)}<p class="big">체감 <em>${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em></p></div>
+    <p class="sub">기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · ${esc(WMO[A.worst] ?? '')} · 강수 ${A.pMax}% · 바람 ${A.windMax.toFixed(1)}m/s${st.sens ? ` · 체질 ${st.sens > 0 ? '+' : ''}${st.sens}° 반영` : ''} · ${upd} 기준</p>
+    <div class="hrs" aria-label="시간별 체감온도와 강수확률">${hrs}</div>`;
 
   /* ----- 코디 고르기 ----- */
-  const M = MOODS[st.mood];
-  const seed = hashStr(A.date + st.mood);
-
-  // 겉옷
-  let outer, outerWhy;
+  const M = LEVELS[st.level];
+  const seed = hashStr(A.date + st.level);
+  let outer;
   const outerT = A.diurnal >= 10 && A.tOuter > -2 ? A.tOuter + 2 : A.tOuter;
-  if (A.tOuter >= 24) {
-    outer = {main:null, alts:[]};
-    outerWhy = `가장 선선한 ${A.hOuter}시에도 체감 ${fx(A.tOuter)}라 겉옷은 짐이다.`;
-  } else {
-    let list = A.tOuter >= 20 ? M.outer.filter(i => i.hi >= 21) : M.outer;
-    // 비·센 바람엔 바람이 통하고 물을 먹는 니트 겉옷과 스웨이드를 뺀다
-    const outerF = (A.rainy || A.windMax >= 8) ? (i => !i.r && i.f !== 'knit') : null;
+  if (A.tOuter >= 24) outer = {main:null};
+  else {
+    const list = A.tOuter >= 20 ? M.outer.filter(i => i.hi >= 21) : M.outer;
+    // 비·눈·센 바람엔 바람이 통하고 물을 먹는 니트 겉옷과 스웨이드를 뺀다
+    const outerF = (A.rainy || A.snowy || A.windMax >= 8) ? (i => !i.r && i.f !== 'knit') : null;
     outer = pick(list, outerT, seed, outerF, false, !!outerF);
     if (!outer.main) outer = pick(list, outerT, seed);
-    outerWhy = A.tOuter >= 20
-      ? `아침저녁 체감 ${fx(A.tOuter)} 안팎이라 가볍게 걸칠 것 하나면 된다. 낮엔 벗어서 들고 다닐 두께.`
-      : `${A.hOuter}시 체감 ${fx(A.tOuter)}가 이 시간대에서 가장 춥다('${band(A.tOuter)}' 구간).`
-        + (outerT !== A.tOuter ? ` 다만 낮에는 ${fx(A.tTop)}까지 올라가서 한 단계 가벼운 겉옷으로 골랐다. 아침엔 목도리로 보충.` : '');
   }
-  // 상의
   const top = pick(M.top, A.tTop, seed + 1);
-  const topWhy = A.tOuter >= 24
-    ? `한낮 ${A.hTop}시 체감 ${fx(A.tTop)} 기준.`
-    : A.tTop < 12
-      ? `가장 따뜻한 ${A.hTop}시도 체감 ${fx(A.tTop)}라 밖에선 겉옷을 못 벗는다. 실내에서 겉옷을 벗었을 때 이것만 입어도 괜찮은 두께로 골랐다.`
-      : `가장 따뜻한 ${A.hTop}시 체감 ${fx(A.tTop)}. 이때는 겉옷을 벗고 이것만 입어도 지낼 만하다.`;
-  // 하의
   const bottom = pick(M.bottom, A.tMid, seed + 2);
-  let bottomWhy = `외출 시간 평균 체감 ${fx(A.tMid)} 기준.`;
-  if (top.main && top.main.f === 'over' && bottom.main && bottom.main.f === 'wide') bottomWhy += ' 상의가 오버핏이라 위아래가 다 크면 옷에 묻힌다. 상의 앞자락을 살짝 넣어 허리선을 보여 준다.';
-  if (A.rainy && bottom.main && bottom.main.f === 'wide') bottomWhy += ' 비 예보가 있으니 밑단을 한 번 접어 바닥에 안 닿게.';
-  // 신발
-  let shoes;
-  let shoesWhy = `평균 체감 ${fx(A.tMid)} 기준.`;
-  if (A.snowy) {
-    shoes = pick(M.shoes.filter(i => i.w && i.lo <= 0 && A.tMid >= i.lo && A.tMid <= i.hi), A.tMid, seed + 3, null, false, true);
-    if (!shoes.main) shoes = pick(SNOW_SHOES, A.tMid, 0);
-    shoesWhy = '눈 예보라 물에 강한 신발로 골랐다. 같은 신발이라도 가죽 밑창은 눈길에 미끄러우니 밑창이 고무인지 먼저 확인한다.';
-  } else if (A.rainy && A.precSum >= 5) {
-    shoes = pick(RAIN_SHOES, A.tMid, seed + 3);
-    shoesWhy = `외출 시간 예상 강수량이 ${A.precSum.toFixed(1)}mm라 가죽 신발도 속까지 젖는다. 오늘은 무드보다 방수가 먼저다.`;
-  } else if (A.rainy) {
-    // 비 오는 날은 무드 신발 중 물에 강하고 온도까지 딱 맞는 것만. 없으면 방수 신발 목록으로.
-    shoes = pick(M.shoes.filter(i => i.w && A.tMid >= i.lo && A.tMid <= i.hi), A.tMid, seed + 3, null, false, true);
-    if (!shoes.main) shoes = pick(RAIN_SHOES, A.tMid, 0);
-    shoesWhy = `강수확률 최대 ${A.pMax}%라 가죽이나 고무 밑창처럼 물에 강한 신발로 골랐다. 스웨이드·캔버스는 젖으면 얼룩이 남는다.`;
-  } else {
-    shoes = pick(M.shoes, A.tMid, seed + 3);
-  }
-  // 소품
+  // 눈 오는 날은 방수·보온 부츠, 비 오는 날은 고무 레인부츠. 단계와 상관없이 같은 신발
+  const shoes = A.snowy ? {main: SNOW_SHOE} : A.rainy ? {main: RAIN_SHOE} : pick(M.shoes, A.tMid, seed + 3);
   const ex = pick(M.extra, A.tOuter, seed + 4, null, true);
 
-  /* ----- 챙길 것 / 포인트 ----- */
+  /* ----- 오늘 제일 중요한 것 ----- */
+  const fo = deg(A.feelMinRaw), ft = deg(A.feelMaxRaw);
   const pts = [];
-  if (A.snowy) pts.push(['눈길 신발', `${A.hSnow}시부터 눈 예보가 있다. 고무 밑창에 홈이 깊은 신발을 신고, 바지 밑단은 부츠 위로 덮는다. 우산도 챙긴다.`]);
-  else if (A.rainy) pts.push(['비 대비 신발', `${A.hP}시 강수확률 ${A.pMax}%${A.precSum >= 0.1 ? `, 예상 강수량 ${A.precSum.toFixed(1)}mm` : ''}. ${A.pMax >= 70 || A.precSum >= 5 ? '장우산' : '접이식 우산'}을 챙기고 스웨이드·캔버스 신발은 피한다.`]);
-  else if (A.maybeRain) pts.push(['접이식 우산', `${A.hP}시 강수확률 ${A.pMax}%. 올 수도 안 올 수도 있는 정도라 가방에 하나 넣어 둔다.`]);
-  if (A.tTop >= 31) pts.push(['더위', `한낮 ${A.hTop}시 체감 ${fx(A.tTop)}. 몸에 붙지 않는 핏과 땀이 덜 비치는 두께감 있는 면·린넨이 낫다. 물도 챙긴다.`]);
-  if (A.tOuter <= -5) pts.push(['목·손 보온', `체감 ${fx(A.tOuter)}까지 내려간다. 머플러와 장갑이 없으면 겉옷이 두꺼워도 춥다. 안에는 발열 내의.`]);
-  else if (A.tOuter <= 4) pts.push(['발열 내의', `체감 ${fx(A.tOuter)}까지 내려간다. 겉옷을 두껍게 하는 것보다 안에 발열 내의 한 겹이 활동하기 편하다.`]);
-  if (A.diurnal >= 10) pts.push([`일교차 ${r0(A.diurnal)}°`, `기온이 ${deg(A.tMinRaw)}에서 ${deg(A.tMaxRaw)}까지 오르내린다. 벗어서 들고 다니기 쉬운 겉옷을 고르고, 안에는 얇은 옷을 겹쳐 입는다.`]);
-  else if (A.diurnal >= 7) pts.push([`일교차 ${r0(A.diurnal)}°`, `아침과 낮 기온 차가 ${r0(A.diurnal)}°다. 낮에 겉옷을 벗었을 때 상의만으로 괜찮은지가 중요하다.`]);
-  if (A.windMax >= 8) pts.push(['바람', `바람이 최대 초속 ${A.windMax.toFixed(1)}m로 분다. 니트 카디건처럼 바람이 통하는 겉옷보다 나일론·가죽 겉옷이 낫다.`]);
-  if (A.uv != null && A.uv >= 6) pts.push(['자외선', `자외선 지수 ${A.uv.toFixed(0)}(높음 이상). 볼캡이나 선글라스, 선크림.`]);
-  if (A.tTop >= 28 && A.humAvg >= 70) pts.push(['습도', `평균 습도 ${r0(A.humAvg)}%. 린넨이나 시어서커처럼 몸에 안 붙는 소재가 낫다.`]);
-  if (A.tTop >= 28) pts.push(['실내 냉방', '에어컨 센 실내를 대비해 얇은 셔츠 하나를 가방에.']);
-  const styleKey = M.key;
-  const first = pts.length ? pts[0] : styleKey;
-  const rest = pts.length ? pts.slice(1).concat([styleKey]) : [];
+  if (A.snowy) pts.push(['눈', `${A.hSnow}시부터 · 고무 밑창 신발, 우산`]);
+  else if (A.rainy) pts.push([A.pMax >= 70 || A.precSum >= 5 ? '장우산' : '우산', `${A.hP}시 강수 ${A.pMax}%${A.precSum >= 0.1 ? ` · ${A.precSum.toFixed(1)}mm` : ''} · 스웨이드·캔버스 신발은 피하기`]);
+  else if (A.maybeRain) pts.push(['접이식 우산', `${A.hP}시 강수 ${A.pMax}%`]);
+  if (A.tTop >= 31) pts.push(['더위', `${A.hTop}시 체감 ${ft} · 붙지 않는 핏, 물`]);
+  if (A.tOuter <= -5) pts.push(['목·손 보온', `체감 ${fo} · 머플러, 장갑, 발열 내의`]);
+  else if (A.tOuter <= 4) pts.push(['발열 내의', `체감 ${fo}까지 · 안에 한 겹`]);
+  if (A.diurnal >= 10) pts.push([`일교차 ${r0(A.diurnal)}°`, `${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · 벗기 쉬운 겉옷`]);
+  else if (A.diurnal >= 7) pts.push([`일교차 ${r0(A.diurnal)}°`, '겉옷을 벗어도 괜찮은 상의']);
+  if (A.windMax >= 8) pts.push(['바람', `초속 ${A.windMax.toFixed(1)}m · 나일론·가죽 겉옷`]);
+  if (A.uv != null && A.uv >= 6) pts.push(['자외선', `지수 ${A.uv.toFixed(0)} · 모자, 선크림`]);
+  if (A.tTop >= 28 && A.humAvg >= 70) pts.push(['습도', `${r0(A.humAvg)}% · 린넨·시어서커`]);
+  if (A.tTop >= 28) pts.push(['실내 냉방', '얇은 셔츠 하나 가방에']);
+  const key = M.key;
+  const first = pts.length ? pts[0] : key;
+  const rest = pts.length ? pts.slice(1).concat([key]) : [];
+  $('#point').innerHTML = `<p class="k">오늘 제일 중요한 것</p><p class="p1"><b>${esc(first[0])}</b>${esc(first[1])}</p>`
+    + (rest.length ? `<ul class="more">${rest.map(p => `<li><b>${esc(p[0])}</b>${esc(p[1])}</li>`).join('')}</ul>` : '');
+  $('#point').hidden = false;
 
-  const ptHtml = `<h2>오늘 제일 중요한 것</h2>
-    <p class="p1"><b>${esc(first[0])}</b>${esc(first[1])}</p>
-    ${rest.length ? `<ol class="rest" start="2">${rest.map((p,i) => `<li><b>${esc(p[0])}</b>${i === rest.length-1 ? ' (스타일)' : ''} · ${esc(p[1])}</li>`).join('')}</ol>` : ''}`;
-  $('#point').innerHTML = ptHtml; $('#point').hidden = false;
-
-  /* ----- 코디 표 ----- */
-  const shopUrl = kw => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(kw)}&gf=M`;
-  const tag = t => t && SRC[t] ? `<a class="tag" href="${SRC[t].u}" target="_blank" rel="noopener">2026 흐름 · ${esc(SRC[t].o)} ${SRC[t].d.slice(5)}</a>` : '';
-  const row = (label, p, why) => {
-    if (!p.main) return `<div class="row"><div class="slot">${label}</div><div><p class="item">필요 없음</p><p class="why">${esc(why)}</p></div></div>`;
-    const it = p.main;
-    return `<div class="row"><div class="slot">${label}</div><div>
-      <p class="item">${esc(it.n)}${tag(it.t)}</p>
-      <p class="why">${esc(why)}</p>
-      ${it.f && FIT[it.f] ? `<p class="fit">핏 · ${esc(FIT[it.f])}</p>` : ''}
-      ${p.alts.length ? `<p class="alt">다른 후보: ${p.alts.map(a => esc(a.n)).join(' · ')}</p>` : ''}
-      <a class="shop" href="${shopUrl(it.kw)}" target="_blank" rel="noopener">무신사에서 '${esc(it.kw)}' 보기 ↗</a>
-    </div></div>`;
-  };
-  let extraWhy = '';
-  const e = ex.main;
-  if (e) {
-    const cold = e.hi <= 10;
-    if (cold && e.t === 'T1') extraWhy = `체감 ${fx(A.tOuter)}까지 내려가서 목을 덮을 게 필요하다. 묶지 말고 흘러내리게 두는 게 올가을 무신사가 꼽은 방식이다.`;
-    else if (cold) extraWhy = `체감 ${fx(A.tOuter)}까지 내려가서 목·손·머리를 덮을 것이 필요하다.`;
-    else if (e.t === 'T1') extraWhy = '니트를 묶지 않고 어깨에 흘러내리게 두는 방식이 올가을 무신사가 꼽은 포인트다.';
-    else if (e.cap && A.uv != null && A.uv >= 6) extraWhy = `자외선 지수 ${A.uv.toFixed(0)}라 챙 있는 모자가 쓸모 있다.`;
-    else extraWhy = e.y || '';
-  }
+  /* ----- 착장 그림 + 목록 ----- */
   const pal = M.pal[(seed + st.shuffle) % M.pal.length];
-  const moodTag = M.t ? tag(M.t) : '';
-
-  $('#outfit').innerHTML = `<h2>오늘 코디 · ${esc(M.name)}${moodTag}</h2>
-    ${row('겉옷', outer, outerWhy)}
-    ${row('상의', top, topWhy)}
-    ${row('하의', bottom, bottomWhy)}
-    ${row('신발', shoes, shoesWhy)}
-    ${row('소품', ex, extraWhy)}
-    <div class="row"><div class="slot">색 조합</div><div>
-      <div class="pal">${pal.map(c => `<span class="sw"><i style="background:${c[1]}"></i>${esc(c[0])}</span>`).join('')}</div>
-      <p class="fit">이 세 색 안에서 고르면 위 아이템 색이 조금 달라도 어긋나지 않는다.</p>
-    </div></div>
-    <div class="acts"><button class="plain" type="button" id="shuf">다른 조합 보기</button><button class="plain" type="button" id="copy">코디 텍스트 복사</button></div>`;
+  const sel = {outer: outer.main, top: top.main, bottom: bottom.main, shoes: shoes.main, extra: ex.main};
+  const R = resolve(sel, pal, M.mood);
+  const umb = A.rainy ? (A.pMax >= 70 || A.precSum >= 5 ? 'long' : 'compact') : A.maybeRain ? 'compact' : null;
+  const TH = thumbs(R, umb);
+  const bySlot = {'겉옷': sel.outer, '상의': sel.top, '하의': sel.bottom, '신발': sel.shoes, '소품': sel.extra};
+  const rows = R.rows.map(r => {
+    const it = bySlot[r.slot];
+    // 제품 줄 → 입는 법 → 접힌 칸(대체·못 살 때) 순서. 겹쳐 입는 상의는 제품 두 개
+    let ps = [];
+    if (it && it.sp) {
+      const parts = it.sp2 ? it.n.split(/\s*\+\s*/).map(p => p.split(' ').pop()) : [];
+      ps = [prodHTML(it.sp, parts[0])].concat(it.sp2 ? [prodHTML(it.sp2, parts[1])] : []).filter(Boolean);
+    }
+    return `<li><span class="n${r.num ? '' : ' x'}">${r.num || ''}</span><div><span class="sl">${r.slot}${r.name !== '없이' ? ' · ' + esc(r.name) : ' 없이'}</span>`
+      + ps.map(p => p.h).join('') + (r.how ? `<span class="how">${esc(r.how)}</span>` : '') + ps.map(p => p.d).join('')
+      + `</div><span class="th">${r.drawn && TH[r.slot] ? TH[r.slot] : ''}</span></li>`;
+  }).join('');
+  // 넣어 둔 제품이 겨울용이라, 그보다 따뜻한 날엔 그렇다고 적는다
+  const topHi = Math.max(...M.top.map(i => i.hi));
+  const warm = A.tTop > topHi + 2 ? `<p class="note">넣어 둔 제품은 겨울용이라 오늘 낮 체감 ${ft}엔 두꺼울 수 있음</p>` : '';
+  const dates = [...new Set(PRODUCTS.map(p => p.checked))];
+  const dTxt = dates.length === 1 ? `${+dates[0].slice(5, 7)}월 ${+dates[0].slice(8, 10)}일` : '제품마다 다른 날짜에 확인한';
+  const needBody = (!st.bh || !st.bw || !st.bf) ? ` · <button class="plain" type="button" id="toSet" style="padding:1px 7px;font-size:12px">키·몸무게·발 넣기</button> 넣으면 내 사이즈가 나옴` : '';
+  $('#outfit').innerHTML = `<p class="note">가격은 ${dTxt} 무신사 판매가(쿠폰·적립 전)${needBody}</p>${warm}
+    <div class="look"><div class="fig">${figure(R, umb)}</div><ol class="items">${rows}</ol></div>
+    <div class="acts"><button class="plain" type="button" id="shuf">다른 조합</button></div>`;
   $('#outfit').hidden = false;
-
   $('#shuf').addEventListener('click', () => { st.shuffle++; render(); });
-  $('#copy').addEventListener('click', () => {
-    const line = (l,p) => `${l}: ${p.main ? p.main.n : '필요 없음'}`;
-    const txt = `${place} ${dLabel} ${win} 체감 ${deg(A.feelMinRaw)}~${deg(A.feelMaxRaw)}\n[${M.name}]\n`
-      + [line('겉옷',outer),line('상의',top),line('하의',bottom),line('신발',shoes),line('소품',ex)].join('\n')
-      + `\n제일 중요한 것: ${first[0]}`;
-    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(
-      () => { $('#copy').textContent = '복사했다'; setTimeout(() => { const b = $('#copy'); if (b) b.textContent = '코디 텍스트 복사'; }, 1500); },
-      () => { prompt('아래 내용을 복사해 줘', txt); });
-  });
+  const ts = $('#toSet');
+  if (ts) ts.addEventListener('click', () => { $('#set').hidden = false; $('#setBtn').setAttribute('aria-expanded', 'true'); $('#bh').focus(); window.scrollTo(0, 0); });
 }
 
-/* ---------- 출처 목록 ---------- */
-$('#srcs').innerHTML = Object.values(SRC).map(x =>
-  `<li><a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a><br><span class="meta">${esc(x.o)} · ${x.d}</span><br>${esc(x.s)}</li>`).join('');
+/* ---------- 제품·사이즈 ---------- */
+const PBY = {};
+PRODUCTS.forEach(p => { (PBY[p.spec] = PBY[p.spec] || {})[p.role] = p; });
+const won = n => Number(n).toLocaleString('ko-KR') + '원';
+const purl = id => `https://www.musinsa.com/products/${encodeURIComponent(id)}`;
+const lnk = (p, t) => `<a href="${purl(p.id)}" target="_blank" rel="noopener noreferrer">${t}</a>`;
+// '무신사 스탠다드(MUSINSA STANDARD) …'처럼 한글 브랜드 뒤에 붙은 영문 브랜드만 뺀다. '(BLACK)' 같은 색은 남긴다
+const shortName = n => n.replace(/^([가-힣]+(?: [가-힣]+)?)\(([A-Z][A-Z0-9 &.'\-]*)\)\s*/, (m, k, e) => /BLACK|WHITE|GR[AE]Y|NAVY|BROWN|BEIGE|IVORY|CHARCOAL|KHAKI|CREAM/.test(e) ? m : k + ' ');
+
+// 옷: 후기에 적힌 키·몸무게·산 사이즈·사이즈 평가로, 내 키·몸무게와 가까운 후기를 골라 계산한다
+function clothSize(p){
+  const S = p.sizes || [];
+  if (p.glove) return {t:'손 크기로 고르기', why:'장갑은 손 크기 기준이라 키·몸무게로 계산 안 함. 사이즈 ' + S.join(' · ')};
+  if (S.length <= 1) return {t: S[0] || '', k: S.length ? 0 : null, why: ''};
+  if (p.pick) return {t: p.pick, why: '보이는 후기에서 산 옵션이 ' + p.pick + ' 위주'};
+  if (!st.bh || !st.bw) return {t:'', why:''};
+  // 'Short ver. 50'처럼 앞에 기장 옵션이 붙은 후기는 뒤의 사이즈로 본다
+  const si = s => { const i = S.indexOf(s); return i >= 0 ? i : S.indexOf(s.split(' ').pop()); };
+  const rv = (p.rv || '').split(';').filter(Boolean).map(x => { const [h, w, s, f] = x.split(','); return {h:+h, w:+w, s, f: isFinite(+f) ? +f : 0, i: si(s)}; }).filter(r => r.i >= 0);
+  rv.forEach(r => { r.d = Math.hypot((r.h - st.bh) / 4, (r.w - st.bw) / 5); });
+  rv.sort((a, b) => a.d - b.d);
+  let use = rv.filter(r => r.d <= 1.5).slice(0, 5), loose = false;
+  if (!use.length) { use = rv.filter(r => r.d <= 3).slice(0, 3); loose = true; }
+  if (!use.length) return {t:'실측표로 고르기', why:'키·몸무게가 가까운 후기가 없음'};
+  // '조금 큼'이면 0.4치수 작게, '조금 작음'이면 0.4치수 크게 본다(후기 하나로 한 치수를 바꾸지 않게)
+  let sw = 0, sx = 0;
+  use.forEach(r => { const wt = 1 / (0.4 + r.d); sw += wt; sx += wt * (r.i - 0.4 * r.f); });
+  const k = Math.min(S.length - 1, Math.max(0, Math.round(sx / sw)));
+  const fw = f => f > 0 ? ' 큼' : f < 0 ? ' 작음' : '';
+  return {t: S[k], k, why: `키·몸무게 가까운 후기 ${use.length}개: ` + use.map(r => `${r.h}cm ${r.w}kg ${r.s}${fw(r.f)}`).join(', ') + (loose ? ' (체형 차이가 좀 있어 참고만)' : '')};
+}
+// 신발: 발 길이와 같은 옵션, 없으면 후기에 '큼'이 많을 때 작은 쪽
+function shoeSize(p){
+  if (!st.bf) return {t:'', why:''};
+  const opts = (p.stock || '').split(' ').filter(Boolean).map(x => ({mm: parseInt(x, 10), out: /x$/.test(x)})).sort((a, b) => a.mm - b.mm);
+  if (!opts.length) return {t:'', why:''};
+  const rv = (p.rvShoe || '').split(';').filter(Boolean).map(x => { const [mm, fit, ball] = x.split(','); return {mm:+mm, fit, ball}; });
+  const n = rv.length, big = rv.filter(r => /큼/.test(r.fit)).length, small = rv.filter(r => /작음/.test(r.fit)).length;
+  const F = st.bf, why = [];
+  let o = opts.find(x => x.mm === F);
+  if (!o) {
+    const lower = opts.filter(x => x.mm < F).pop(), upper = opts.find(x => x.mm > F);
+    o = lower && (!upper || (n && big * 2 >= n)) ? lower : upper;
+    why.push(`${F}mm 옵션이 없어서 ${o.mm}`);
+  }
+  if (n) why.push(`보이는 후기 ${n}개 중 '큼' ${big} · '작음' ${small}`);
+  if (n && big * 2 >= n && opts.some(x => x.mm === o.mm - 5 && !x.out)) why.push(`${o.mm - 5}도 고려`);
+  const wide = rv.filter(r => /넓음/.test(r.ball)).length, narrow = rv.filter(r => /좁음/.test(r.ball)).length;
+  if (n) why.push(`발볼 '넓음' ${wide} · '좁음' ${narrow}`);
+  return {t: String(o.mm), out: o.out, why: why.join(' · ')};
+}
+const sizeOf = p => p.shoe ? shoeSize(p) : clothSize(p);
+function chartLine(p, z){
+  const c = p.chart;
+  if (!c || !c.rows || z.k == null) return '';
+  const S = p.sizes || [];
+  const ri = p.rowNames ? p.rowNames.indexOf(S[z.k]) : c.rows.length === S.length ? z.k : -1;
+  if (ri < 0 || !c.rows[ri]) return '';
+  return `${esc(z.t)} 실측: ` + c.cols.map((h, j) => `${esc(h)} ${c.rows[ri][j]}`).join(' · ') + 'cm';
+}
+function optTxt(p){
+  const a = [];
+  const low = p.name.toLowerCase();
+  if (p.color && !low.includes(String(p.color).toLowerCase())) a.push(p.color);
+  if (p.option) a.push('옵션 ' + p.option);
+  return a.join(' · ');
+}
+function sizeTxt(z){
+  if (!z.t) return '';
+  return `<span class="sz">${esc(z.t)}</span>${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
+}
+function prodHTML(spec, label){
+  const g = PBY[spec];
+  if (!g || !g.main) return '';
+  const m = g.main, a = g.alt, zm = sizeOf(m), za = a ? sizeOf(a) : null;
+  const meta = (p, z) => [optTxt(p) && esc(optTxt(p)), sizeTxt(z), won(p.price)].filter(Boolean).join(' · ');
+  let s = `<span class="pd">${label ? `<span class="cn">${esc(label)}</span> ` : ''}<b>${esc(shortName(m.name))}</b><br>${meta(m, zm)} ${lnk(m, '무신사 ↗')}`
+    + (m.priceNote ? `<br><span class="cn">${esc(m.priceNote)}</span>` : '')
+    + (m.warn ? `<br><span class="warn">${esc(m.warn)}</span>` : '') + '</span>';
+  const fb = FB[spec];
+  const why = [zm.why, chartLine(m, zm)].filter(Boolean);
+  const facts = [m.fitPct, m.reviewCount ? `후기 ${Number(m.reviewCount).toLocaleString('ko-KR')}개` : '', m.sold ? `누적판매 ${m.sold}` : ''].filter(Boolean).join(' · ');
+  const d = `<details class="more2"><summary>${label ? esc(label) + ' ' : ''}대체 상품 · 못 살 때</summary>`
+    + (a ? `<p><span class="lbl">대체</span>${esc(shortName(a.name))} · ${meta(a, za)} ${lnk(a, '↗')}`
+      + (a.priceNote ? `<br><span class="cn">${esc(a.priceNote)}</span>` : '')
+      + (a.warn ? `<br><span class="warn">${esc(a.warn)}</span>` : '')
+      + `<br><span class="cn">소재 ${esc(a.mat)}${a.claim ? ' · ' + esc(a.claim) : ''}${a.optNote ? ' · ' + esc(a.optNote) : ''}</span>`
+      + (za && za.why ? `<br><span class="cn">${esc(za.why)}</span>` : '') + '</p>' : '')
+    + (fb ? `<p><span class="lbl">못 사면</span>핏: ${esc(fb[0])}<br>소재: ${esc(fb[1])}<br>느낌: ${esc(fb[2])}</p>` : '')
+    + `<p><span class="lbl">대표 소재</span>${esc(m.mat)}${m.claim ? '<br>' + esc(m.claim) : ''}${m.optNote ? '<br>' + esc(m.optNote) : ''}</p>`
+    + (why.length ? `<p><span class="lbl">사이즈</span>${why.map(esc).join('<br>')}</p>` : '')
+    + (facts ? `<p><span class="lbl">제품</span>${esc(facts)}</p>` : '')
+    + '</details>';
+  return {h: s, d};
+}
 
 /* ---------- 시작 ---------- */
-buildCity(); buildHours(); buildMoods(); syncSeg('day', st.day); syncSeg('sens', st.sens);
+buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens);
 load(true);
 })();
 </script>
