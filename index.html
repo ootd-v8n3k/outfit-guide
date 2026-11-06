@@ -95,6 +95,80 @@ input[type=number]{width:74px;border:1px solid #cfcfcf;border-radius:3px;padding
 .hint{font-size:12px;color:var(--sub)}
 .acts{margin-top:12px}
 footer{font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:10px}
+/* v6: 조건 한 줄 + 착용샷 */
+#cond{margin-top:14px}
+.cond{font-size:21px;font-weight:700;margin:0;letter-spacing:-.4px;line-height:1.3}
+.cond em{font-style:normal;color:var(--acc)}
+.key1{margin:4px 0 0;font-size:14.5px}
+.key1 b{margin-right:6px}
+details.hw{margin-top:8px;font-size:13px}
+details.hw summary{cursor:pointer;color:var(--acc);list-style:none;display:inline}
+details.hw summary::-webkit-details-marker{display:none}
+details.hw summary::before{content:'+ '}
+details.hw[open] summary::before{content:'− '}
+details.hw .sub{margin-top:6px}
+#look{padding-top:12px}
+.look{margin:0}
+.lk{position:relative;width:min(100%,max(240px,calc((100vh - 290px) * var(--ar))));width:min(100%,max(240px,calc((100svh - 290px) * var(--ar))));margin:0 auto;background:#f3f3f3;overflow:hidden}
+.lk img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.lk .face{position:absolute;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:rgba(120,120,120,.35);border-radius:50%}
+.lk svg.ld{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lk .hit{position:absolute;border:0;padding:0;margin:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:rgba(31,92,88,.15)}
+.lk .dot{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;border:2px solid var(--acc);box-shadow:0 0 0 1px rgba(0,0,0,.25);pointer-events:none}
+.lk .tag{position:absolute;transform:translate(-50%,-50%);border:1px solid rgba(0,0,0,.35);background:#fff;color:var(--ink);border-radius:3px;padding:6px 9px;font-size:13px;line-height:1.1;cursor:pointer;white-space:nowrap;min-height:30px}
+.lk .tag::after{content:'';position:absolute;inset:-8px}
+.lk .tag.nolink{color:var(--sub);border-style:dashed}
+.lk .tag[aria-pressed=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+.look figcaption{font-size:11.5px;color:var(--sub);margin:6px 0 0;line-height:1.45}
+ul.lki{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
+ul.lki li{border-bottom:1px solid var(--line)}
+ul.lki button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;padding:8px 0;text-align:left;cursor:pointer}
+ul.lki .ai{width:44px;height:52px}
+ul.lki .lt{flex:1;min-width:0}
+ul.lki .lt b{display:block;font-size:14px;font-weight:700;line-height:1.3}
+ul.lki .lt span{font-size:12.5px;color:var(--sub)}
+ul.lki .go{color:var(--acc);font-size:13px;flex:none}
+.alt1{margin-top:10px;padding:8px 0 0;border-top:1px solid var(--line);font-size:13.5px}
+.alt1 .k{margin-bottom:4px}
+.nolook{margin:0;font-size:14.5px}
+.nolook + .acts{margin-top:8px}
+details.recs > summary{cursor:pointer;color:var(--acc);font-size:14px;list-style:none}
+details.recs > summary::-webkit-details-marker{display:none}
+details.recs > summary::before{content:'+ '}
+details.recs[open] > summary::before{content:'− '}
+details.recs[open] > summary{margin-bottom:10px}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid #bdbdbd;box-shadow:0 -4px 16px rgba(0,0,0,.08);max-height:56vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#sheet .in{max-width:640px;margin:0 auto;padding:10px 16px calc(14px + env(safe-area-inset-bottom))}
+.shh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.shh .k{margin:0}
+.shh button{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:3px 10px;cursor:pointer;font-size:13px}
+.cardm{display:flex;gap:12px;margin-top:8px;align-items:flex-start}
+.cardm .ai{width:84px;height:100px}
+.cardm .tx{flex:1;min-width:0}
+.cardm .nm{display:block}
+.cardm .ln{display:block;font-size:13.5px;margin-top:3px}
+.cardm .ln .lbl{display:inline-block;min-width:58px;color:var(--sub);font-size:12.5px}
+.cardm .sz{color:var(--acc);font-weight:700}
+.cardm .warn{color:#8a3b12}
+.buy{display:inline-block;margin-top:8px;padding:7px 14px;border:1px solid var(--acc);border-radius:3px;color:var(--acc);text-decoration:none;font-size:14px}
+#sheet details{margin-top:10px;border-top:1px solid var(--line);padding-top:8px;font-size:13px}
+#sheet details summary{cursor:pointer;color:var(--acc);list-style:none}
+#sheet details summary::-webkit-details-marker{display:none}
+#sheet details summary::before{content:'+ '}
+#sheet details[open] summary::before{content:'− '}
+#sheet details p{margin:6px 0 0;color:#333}
+.altc{display:flex;gap:10px;margin-top:8px;align-items:flex-start}
+.altc .ai{width:56px;height:66px}
+.altc .tx{flex:1;min-width:0;font-size:13px;line-height:1.45}
+.nottag{display:inline-block;font-size:11px;color:var(--sub);border:1px solid #cfcfcf;border-radius:2px;padding:0 4px;margin-right:4px}
+body.sheet-open main{padding-bottom:58vh}
+/* 넓은 PC 화면: 카드를 아래에 깔지 않고 본문 오른쪽에 띄워 사진을 가리지 않게 */
+@media (min-width:1360px){
+#sheet{left:calc(50% + 336px);right:auto;top:16px;bottom:auto;width:min(380px,calc(50% - 352px));max-height:calc(100vh - 32px);border:1px solid #bdbdbd;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+#sheet .in{padding:10px 16px 14px}
+body.sheet-open main{padding-bottom:32px}
+}
+@media (max-width:400px){.cond{font-size:19px}.lk .tag{font-size:12.5px;padding:6px 8px}}
 @media (max-width:400px){.big{font-size:24px}.board{gap:6px}.nm{font-size:14px}}
 </style>
 </head>
@@ -120,11 +194,12 @@ footer{font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);paddin
   <div class="field"><span class="lb">몸</span><input type="number" id="bh" inputmode="numeric" min="140" max="210" placeholder="키" aria-label="키 cm">cm <input type="number" id="bw" inputmode="numeric" min="35" max="150" placeholder="몸무게" aria-label="몸무게 kg">kg</div>
   <div class="field"><span class="lb">발</span><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="5" placeholder="발 길이" aria-label="발 길이 mm">mm <span class="hint">이 폰에만 저장되고 사이트에는 안 올라감</span></div>
 </div>
-<section id="wx" aria-live="polite"><p class="msg">날씨 불러오는 중…</p></section>
-<section id="point" hidden></section>
+<section id="cond" aria-live="polite"><p class="msg">날씨 불러오는 중…</p></section>
+<section id="look" hidden></section>
 <section id="outfit" hidden></section>
-<footer>날씨 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · 제품 사진·정보 무신사 상품 페이지</footer>
+<footer>날씨 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · 착용 사진·제품 사진·정보 무신사 상품 페이지 (사진은 무신사 서버에서 바로 불러옴)</footer>
 </main>
+<div id="sheet" role="dialog" aria-modal="false" aria-labelledby="shT" hidden><div class="in" id="shIn"></div></div>
 
 <script>
 (() => {
@@ -212,7 +287,10 @@ const PRODUCTS = [
 {"spec":"S.snow","role":"main","checked":"2026-11-06","id":"5645576","name":"컬럼비아 공용 스노우피아 처카 옴니테크","color":"블랙","price":71200,"sold":"50개 이상","reviewCount":7,"fitPct":"후기가 적어 사이즈 집계 없음","mat":"겉감1 나일론 100%, 겉감2 인조가죽, 안감 폴리에스터 100%, 창 합성고무","claim":"상품설명: 옴니테크 방투습 멤브레인으로 비에 젖지 않게, 쉘은 PU 가죽, 안감 플리스로 보온","shoe":true,"stock":"230 240 250 260 270 280 290x","rvShoe":"260,정사이즈,조금 넓음;260,정사이즈,조금 넓음;290,정사이즈,매우 넓음;250,정사이즈,조금 넓음;260,조금 큼,적당함;270,정사이즈,적당함;270,정사이즈,적당함","priceNote":"최저가 도전가","img":"https://image.msscdn.net/images/goods_img/20251027/5645576/5645576_17615318634802_500.jpg"},
 {"spec":"S.snow","role":"alt","checked":"2026-11-06","id":"4949149","name":"무신사 스탠다드 시프트 첼시 레인 부츠 [블랙]","color":"블랙","price":75890,"sold":"2.6천 개 이상","reviewCount":241,"fitPct":"정사이즈 70%, 발볼 적당 81%","mat":"갑피 고무, 창 고무","claim":"보온 안감·보온 문구는 없음","shoe":true,"stock":"230 240 250 260 270 280","rvShoe":"260,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;280,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;230,정사이즈,적당함","warn":"보온 안감이 없어서 영하에 눈 오는 날엔 두꺼운 양말을 같이 신기","img":"https://image.msscdn.net/images/goods_img/20250326/4949149/4949149_17471023700834_500.jpg"},
 {"spec":"S.rain","role":"main","checked":"2026-11-06","id":"4949149","name":"무신사 스탠다드 시프트 첼시 레인 부츠 [블랙]","color":"블랙","price":75890,"sold":"2.6천 개 이상","reviewCount":241,"fitPct":"정사이즈 70%, 발볼 적당 81%","mat":"갑피 고무, 창 고무","shoe":true,"stock":"230 240 250 260 270 280","rvShoe":"260,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;280,정사이즈,적당함;260,정사이즈,적당함;270,정사이즈,적당함;260,조금 큼,적당함;230,정사이즈,적당함","img":"https://image.msscdn.net/images/goods_img/20250326/4949149/4949149_17471023700834_500.jpg"},
-{"spec":"S.rain","role":"alt","checked":"2026-11-06","id":"3694945","name":"로맨틱무브 포 시즌 첼시 레인부츠 R23M501 (블랙)","color":"블랙","price":95000,"sold":"3.8천 개 이상","reviewCount":737,"fitPct":"정사이즈 65%, 발볼 적당 71%","mat":"합성피혁(상품고시)","claim":"방수 문구는 페이지 글자로는 확인 못 함. 상품명만 레인부츠","shoe":true,"stock":"250x 260x 270 280x","optNote":"옵션 표기가 '270(270~275)'처럼 5mm 구간","rvShoe":"270,조금 큼,조금 넓음;260,조금 큼,적당함;270,조금 큼,조금 넓음;270,조금 큼,조금 넓음;260,정사이즈,적당함;260,정사이즈,적당함;260,조금 큼,적당함;250,조금 큼,적당함;260,정사이즈,적당함;280,조금 큼,조금 넓음","img":"https://image.msscdn.net/images/goods_img/20231108/3694945/3694945_16994115794473_500.jpg"}
+{"spec":"S.rain","role":"alt","checked":"2026-11-06","id":"3694945","name":"로맨틱무브 포 시즌 첼시 레인부츠 R23M501 (블랙)","color":"블랙","price":95000,"sold":"3.8천 개 이상","reviewCount":737,"fitPct":"정사이즈 65%, 발볼 적당 71%","mat":"합성피혁(상품고시)","claim":"방수 문구는 페이지 글자로는 확인 못 함. 상품명만 레인부츠","shoe":true,"stock":"250x 260x 270 280x","optNote":"옵션 표기가 '270(270~275)'처럼 5mm 구간","rvShoe":"270,조금 큼,조금 넓음;260,조금 큼,적당함;270,조금 큼,조금 넓음;270,조금 큼,조금 넓음;260,정사이즈,적당함;260,정사이즈,적당함;260,조금 큼,적당함;250,조금 큼,적당함;260,정사이즈,적당함;280,조금 큼,조금 넓음","img":"https://image.msscdn.net/images/goods_img/20231108/3694945/3694945_16994115794473_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-06","id":"5240758","name":"무신사 스탠다드 루즈 플레어 데님 팬츠 [라이트 인디고]","price":55900,"sold":"600개 이상","reviewCount":113,"fitPct":"정사이즈 85%","mat":"겉감 면 100%, 주머니감 폴리에스터 80%·면 20%","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[107,35,45.5,28.1,28.5,27.5],[107.5,36.25,46.75,28.75,28.5,27.75],[108,37.5,48,29.4,29,28],[108.5,38.75,49.25,30.05,29.5,28.25],[109,40,50.5,30.7,30,28.5],[109.5,41.25,51.75,31.35,30.5,28.75],[110,42.5,53,32,31,29],[110.5,43.75,54.25,32.65,31.5,29.25],[111,45,55.5,33.3,32,29.5],[112,47.5,58,34.6,33,30],[113,50,60.5,35.9,34,30.5],[114,52.5,63,37.2,34.5,31],[115,55,65.5,38.5,34.5,31.5]]},"rv":"180,65,30,0;168,77,32,-1;168,70,32,-1;173,70,30,1;190,90,36,0;173,71,29,0;173,68,29,0","out":["26","27","40","42"],"stockNote":"26·27·40·42 품절, 38 마지막 1개","img":"https://image.msscdn.net/images/goods_img/20250710/5240758/5240758_17544581746176_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-06","id":"5249189","name":"무신사 스탠다드 오버사이즈 CR 크루 넥 긴소매 티셔츠 [블랙]","price":18090,"sold":"300개 이상","reviewCount":29,"mat":"면 50%, 레이온 50%","sizes":["S","M","L","XL","2XL","3XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[72,54.5,57.5,58],[74,56.5,60,59],[75.5,58,62.5,60],[77,59.5,65,61],[78,61,67.5,61.5],[78,62.5,70,61.5]]},"rv":"183,70,XL,0;175,75,L,0;173,73,L,0;190,100,2XL,0;175,75,XL,0;181,78,XL,1;169,80,XL,0","soldAll":1,"stockNote":"전 사이즈 품절(재입고 알림만 됨)","img":"https://image.msscdn.net/images/goods_img/20250715/5249189/5249189_17538665480247_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-06","id":"1629076","name":"무신사 스탠다드 기모 후디드 스웨트 집업 [블랙]","price":48900,"sold":"5.9천 개 이상","reviewCount":1020,"fitPct":"정사이즈 92%","mat":"겉감 면 76%·폴리에스터 24%, 배색 면 95%·폴리우레탄 5%, 바인딩감 면 100%","sizes":["S","M","L","XL","2XL","3XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이"],"rows":[[64,49.5,55,60.5],[66,51.5,57.5,62.5],[67,53,60,63.5],[68.5,54.5,62.5,64.5],[70,56,65,65.5],[70,57.5,67.5,65.5]]},"rv":"150,50,XL,0;180,85,XL,0;166,46,L,0;167,70,L,0;165,78,XL,0;185,65,M,0;175,82,2XL,0;165,53,L,0","soldAll":1,"stockNote":"전 사이즈 품절(재입고 알림만 됨)","img":"https://image.msscdn.net/images/goods_img/20200928/1629076/1629076_17641185467053_500.jpg"}
 ];
 
 /* I(그림용 이름, 최저, 최고, 옵션) — 최저~최고: 이 체감온도에서 입기 알맞음. sp: 제품 칸, sp2: 겹쳐 입는 두 번째 제품, f: 핏, r: 비에 약함 */
@@ -250,6 +328,37 @@ L4:{name:'꾸꾸꾸', mood:'formal', key:['셔츠','깃·소매는 전날 다리
 };
 const RAIN_SHOE = I('블랙 레인부츠',-15,30,{f:'boots',sp:'S.rain'});
 const SNOW_SHOE = I('블랙 방수 처카 부츠',-30,8,{f:'boots',sp:'S.snow'});
+
+/* 착용샷: 무신사에 올라온 실제 사진 + 그 사진에 무신사가 태그해 둔 제품만 연결한다.
+   lo~hi: 사진 속 겉옷·하의 칸 온도 범위가 겹치는 구간(패딩 -15~3, 비기모 데님 -3~22).
+   spots: x,y = 옷 위 점(사진 폭·높이 대비 비율), lx,ly = 이름표 위치. id 없는 칸은 태그가 없어서 링크 안 함.
+   face: 얼굴 가릴 칸 [x,y,폭,높이] 비율 (일반인 스냅용, 공식 모델 사진은 없음) */
+const LOOKS = [
+  {key:'w-l2-1', level:'L2', lo:-3, hi:3,
+   img:'prd_img/20230622/3378514/detail_3378514_17800303541126_big.jpg', w:1500, h:1800,
+   page:'3378514', pageName:'무신사 스탠다드 데일리 푸퍼 숏 패딩 재킷 [블랙]',
+   source:'무신사 스탠다드 공식 상품 사진. 상품 페이지의 \'이 상품과 함께 착용한 코디 상품\'에 이 사진과 함께 태그된 제품만 연결함',
+   model:'사진에 적힌 모델 정보 179cm · 55kg, 이 사진이 실린 패딩 L',
+   spots:[
+     {id:'5249189', label:'긴팔티', x:.509, y:.194, lx:.13, ly:.17, b:[.47,.175,.55,.215]},
+     {id:'1629076', label:'후드집업', x:.585, y:.205, lx:.86, ly:.22, b:[.40,.145,.62,.245]},
+     {id:'3378514', label:'패딩', x:.655, y:.35, lx:.88, ly:.40, b:[.285,.15,.715,.495]},
+     {id:'5240758', label:'데님', x:.47, y:.62, lx:.14, ly:.58, b:[.36,.495,.625,.935]},
+     {id:null, label:'신발', x:.483, y:.953, lx:.15, ly:.88, b:[.36,.935,.61,.99], none:'이 사진의 무신사 태그에 신발이 없어서 어떤 제품인지 확인 못 했어. 비슷해 보인다는 이유로 구매 링크를 달지 않았어.'}
+   ],
+   alts:{'3378514':['3440439'], '5240758':['3460271','3051700']},
+   altWhy:{
+     '3440439':'같은 블랙 숏패딩. 겉감이 나일론 100%(사진 속은 폴리에스터)이고 이름대로 투웨이 지퍼. 정사이즈라는 후기 비율 69%(사진 속 81%)',
+     '3460271':'같은 무신사 스탠다드 데님. 안쪽이 기모라 더 따뜻하고, 색이 진한 딥 인디고, 플레어가 아닌 와이드',
+     '3051700':'같은 무신사 스탠다드 루즈 데님. 색이 워시드 블랙이고 플레어가 아닌 스트레이트'
+   },
+   fb:{
+     '3378514':'L2.o1',
+     '5240758':['무릎 아래로 밑단이 퍼지는 플레어(부츠컷)','면 100% 데님','연청(라이트 인디고), 워싱 있는 것'],
+     '5249189':['오버사이즈 크루넥 긴팔티','면·레이온 혼방(이 제품 50:50)','블랙 무지'],
+     '1629076':['후드 달린 스웨트 집업','안쪽 기모, 겉감 면 위주(이 제품 면 76%)','블랙 무지']
+   }}
+];
 
 /* 대표·대체 둘 다 못 살 때 볼 것: [핏, 소재, 느낌]. 숫자는 제품 페이지에 적힌 것만 */
 const FB = {
@@ -883,9 +992,9 @@ const S0 = {city:'서울', lat:37.566, lon:126.9784, day:0, start:9, end:18, sen
 const st = Object.assign({}, S0, saved);
 delete st.mood;
 if (!LEVELS[st.level]) st.level = 'L2';
-st.shuffle = 0;
+st.shuffle = 0; st.peek = false; st.lookN = 0;
 let wx = null, lastFetch = 0, fetching = false;
-const save = () => { const {shuffle, ...rest} = st; try { localStorage.setItem(KEY, JSON.stringify(rest)); } catch(e){} };
+const save = () => { const {shuffle, peek, lookN, ...rest} = st; try { localStorage.setItem(KEY, JSON.stringify(rest)); } catch(e){} };
 
 /* ---------- 컨트롤 ---------- */
 function buildCity(){
@@ -968,7 +1077,7 @@ $('#start').addEventListener('change', e => { st.start = +e.target.value; if (st
 $('#end').addEventListener('change', e => { st.end = +e.target.value; if (st.end < st.start) { st.start = st.end; $('#start').value = st.start; } save(); render(); });
 $('#lv').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  st.level = b.dataset.k; st.shuffle = 0; save();
+  st.level = b.dataset.k; st.shuffle = 0; st.peek = false; st.lookN = 0; save();
   document.querySelectorAll('#lv button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   render();
 });
@@ -986,7 +1095,7 @@ async function load(force){
   if (fetching) return;
   if (!force && wx && Date.now() - lastFetch < 30*60*1000) return;
   fetching = true;
-  if (!wx) $('#wx').innerHTML = '<p class="msg">날씨 불러오는 중…</p>';
+  if (!wx) $('#cond').innerHTML = '<p class="msg">날씨 불러오는 중…</p>';
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${st.lat}&longitude=${st.lon}`
     + '&current=temperature_2m,apparent_temperature,weather_code'
     + '&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,relative_humidity_2m'
@@ -998,9 +1107,9 @@ async function load(force){
     lastFetch = Date.now();
     render();
   } catch(e) {
-    $('#wx').innerHTML = `<p class="msg">날씨를 못 불러왔다 (${esc(e.message)}). <button class="plain" type="button" id="retry">다시 시도</button></p>`;
+    $('#cond').innerHTML = `<p class="msg">날씨를 못 불러왔다 (${esc(e.message)}). <button class="plain" type="button" id="retry">다시 시도</button></p>`;
     $('#retry').addEventListener('click', () => load(true));
-    $('#point').hidden = true; $('#outfit').hidden = true;
+    $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
   } finally { fetching = false; }
 }
 setInterval(() => { if (document.visibilityState === 'visible') load(false); }, 60*1000);
@@ -1082,9 +1191,9 @@ function render(){
 
   if (A.past) {
     $('#where').textContent = `${st.city} · ${dLabel}`;
-    $('#wx').innerHTML = `<p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
+    $('#cond').innerHTML = `<p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
     $('#toTmr').addEventListener('click', () => { st.day = 1; save(); syncSeg('day', 1); render(); });
-    $('#point').hidden = true; $('#outfit').hidden = true;
+    $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
     return;
   }
   const win = A.fromNow ? `지금~${A.e}시` : `${A.s}~${A.e}시`;
@@ -1092,9 +1201,11 @@ function render(){
 
   const lo = r0(A.feelMinRaw), hi = r0(A.feelMaxRaw);
   const hrs = A.hours.map((h,i) => `<div class="h"><span>${h}시</span>${icon(A.codes[i], A.night(h))}<b${h === A.hOuter ? ' class="lo"' : ''}>${deg(A.feels[i])}</b><i>${A.prob[i] ? A.prob[i] + '%' : ''}</i></div>`).join('');
-  $('#wx').innerHTML = `<div class="now">${icon(A.worst, false)}<p class="big">체감 <em>${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em></p></div>
-    <p class="sub">기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · ${esc(WMO[A.worst] ?? '')} · 강수 ${A.pMax}% · 바람 ${A.windMax.toFixed(1)}m/s${st.sens ? ` · 체질 ${st.sens > 0 ? '+' : ''}${st.sens}° 반영` : ''} · ${upd} 기준</p>
-    <div class="hrs" aria-label="시간별 체감온도와 강수확률">${hrs}</div>`;
+  // 위에는 '내일 · 꾸안꾸 · 체감 -2°~3°' 한 줄만, 시간별 날씨는 펼쳐서 본다
+  const condTop = `<p class="cond">${st.day ? '내일' : '오늘'} · ${esc(LEVELS[st.level].name)} · 체감 <em>${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em></p>`;
+  const wxMore = `<details class="hw"><summary>시간별 날씨 · ${esc(WMO[A.worst] ?? '')} · 강수 ${A.pMax}%</summary>
+    <p class="sub">기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · 바람 ${A.windMax.toFixed(1)}m/s${st.sens ? ` · 체질 ${st.sens > 0 ? '+' : ''}${st.sens}° 반영` : ''} · ${upd} 기준</p>
+    <div class="hrs" aria-label="시간별 체감온도와 강수확률">${hrs}</div></details>`;
 
   /* ----- 코디 고르기 ----- */
   const M = LEVELS[st.level];
@@ -1132,10 +1243,8 @@ function render(){
   if (A.tTop >= 28) pts.push(['실내 냉방', '얇은 셔츠 하나 가방에']);
   const key = M.key;
   const first = pts.length ? pts[0] : key;
-  const rest = pts.length ? pts.slice(1).concat([key]) : [];
-  $('#point').innerHTML = `<p class="k">오늘 제일 중요한 것</p><p class="p1"><b>${esc(first[0])}</b>${esc(first[1])}</p>`
-    + (rest.length ? `<ul class="more">${rest.map(p => `<li><b>${esc(p[0])}</b>${esc(p[1])}</li>`).join('')}</ul>` : '');
-  $('#point').hidden = false;
+  // 제일 중요한 것은 한 줄만 남긴다
+  $('#cond').innerHTML = condTop + `<p class="key1"><b>${esc(first[0])}</b>${esc(first[1])}</p>` + wxMore;
 
   /* ----- 착장 그림 + 목록 ----- */
   const pal = M.pal[(seed + st.shuffle) % M.pal.length];
@@ -1166,9 +1275,28 @@ function render(){
   const dates = [...new Set(PRODUCTS.map(p => p.checked))];
   const dTxt = dates.length === 1 ? `${+dates[0].slice(5, 7)}월 ${+dates[0].slice(8, 10)}일` : '제품마다 다른 날짜에 확인한';
   const needBody = (!st.bh || !st.bw || !st.bf) ? ` · <button class="plain" type="button" id="toSet" style="padding:1px 7px;font-size:12px">키·몸무게·발 넣기</button> 넣으면 내 사이즈가 나옴` : '';
-  $('#outfit').innerHTML = `<p class="note">가격은 ${dTxt} 무신사 판매가(쿠폰·적립 전)${needBody}</p>${warm}
+  const recs = `<p class="note">가격은 ${dTxt} 무신사 판매가(쿠폰·적립 전)${needBody}</p>${warm}
     ${board}<ol class="items">${rows}</ol>
     <div class="acts"><button class="plain" type="button" id="shuf">다른 조합</button></div>`;
+
+  /* ----- 착용샷 ----- */
+  // 단계가 같고 오늘 체감(겉옷 기준)이 사진 온도 범위에서 2° 안쪽인 착용샷만 쓴다
+  const looks = LOOKS.filter(L => L.level === st.level && dist(L, A.tOuter) <= 2);
+  const forced = !looks.length && st.peek ? LOOKS.find(L => L.level === st.level) : null;
+  const L = looks.length ? looks[st.lookN % looks.length] : forced;
+  curLook = L;
+  if (L) {
+    $('#look').innerHTML = lookHTML(L, A, !!forced, looks.length);
+    $('#outfit').innerHTML = `<details class="recs"><summary>사진 없이 날씨로 고른 제품 추천 보기</summary>${recs}</details>`;
+  } else {
+    const any = LOOKS.find(x => x.level === st.level);
+    $('#look').innerHTML = `<p class="nolook">이 조건에 등록된 착용샷이 없어.</p>`
+      + (any ? `<div class="acts"><button class="plain" type="button" id="peek">등록된 착용샷 보기 (체감 ${any.lo}°~${any.hi}°용)</button></div>` : '');
+    $('#outfit').innerHTML = `<p class="k" style="margin-bottom:8px">날씨로 고른 제품 추천 (착용샷 아님)</p>` + recs;
+  }
+  $('#look').hidden = false;
+  bindLook();
+  if (sheetI != null && L && L.key === sheetKey && L.spots[sheetI]) openSheet(sheetI, true); else closeSheet();
   $('#outfit').hidden = false;
   // 사진이 안 뜨면 깨진 아이콘 대신 글자로 알린다
   $('#outfit').querySelectorAll('img[data-ph]').forEach(im => im.addEventListener('error', () => {
@@ -1281,6 +1409,134 @@ function prodHTML(spec, label){
     + '</details>';
   return {h: s, d};
 }
+
+/* ---------- 착용샷 + 아래 카드 ---------- */
+const PID = {};
+PRODUCTS.forEach(p => { if (!PID[p.id]) PID[p.id] = p; });
+let curLook = null, sheetI = null, sheetKey = null, lastFocus = null, quietUntil = 0;
+const md = d => `${+d.slice(5, 7)}월 ${+d.slice(8, 10)}일`;
+const THUMB = (path, w) => 'https://image.msscdn.net/thumbnails/images/' + path + '?w=' + w;
+const HOVER = window.matchMedia('(hover: hover) and (pointer: fine)');
+function sizeLine(p){
+  const z = sizeOf(p);
+  const needs = p.shoe ? !st.bf : (!st.bh || !st.bw);
+  if (z.t && z.t !== '실측표로 고르기') return `<span class="sz">${esc(z.t)}</span>` + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
+  if (needs) return `<button class="plain" type="button" data-toset style="padding:1px 7px;font-size:12px">${p.shoe ? '발 길이' : '키·몸무게'} 넣으면 계산</button>`;
+  return '실측 확인';
+}
+function lookHTML(L, A, forced, n){
+  const pct = v => (v * 100).toFixed(2) + '%';
+  const seg = s => `x1="${s.lx * 100}" y1="${s.ly * 100}" x2="${s.x * 100}" y2="${s.y * 100}" vector-effect="non-scaling-stroke"`;
+  const lines = L.spots.map(s => `<line ${seg(s)} stroke="#fff" stroke-width="3" opacity=".85"/><line ${seg(s)} stroke="#1F5C58" stroke-width="1.3"/>`).join('');
+  const dots = L.spots.map(s => `<span class="dot" style="left:${pct(s.x)};top:${pct(s.y)}"></span>`).join('');
+  // 옷 자체를 눌러도 열리게: 큰 옷부터 깔고 작은 옷을 위에 얹는다
+  const area = s => (s.b[2] - s.b[0]) * (s.b[3] - s.b[1]);
+  const hits = L.spots.map((s, i) => [s, i]).filter(([s]) => s.b).sort((a, b) => area(b[0]) - area(a[0]))
+    .map(([s, i]) => `<button type="button" class="hit" data-i="${i}" tabindex="-1" aria-hidden="true" style="left:${pct(s.b[0])};top:${pct(s.b[1])};width:${pct(s.b[2] - s.b[0])};height:${pct(s.b[3] - s.b[1])}"></button>`).join('');
+  const tags = L.spots.map((s, i) => `<button type="button" class="tag${s.id ? '' : ' nolink'}" data-i="${i}" aria-pressed="false" style="left:${pct(s.lx)};top:${pct(s.ly)}" aria-label="${esc(s.label)}${s.id ? ' 제품 보기' : ' (태그 없음)'}">${esc(s.label)}${s.id ? '' : ' ?'}</button>`).join('');
+  const faces = (L.face || []).map(f => `<span class="face" style="left:${pct(f[0])};top:${pct(f[1])};width:${pct(f[2])};height:${pct(f[3])}"></span>`).join('');
+  const srcset = [640, 1000].map(w => THUMB(L.img, w) + ' ' + w + 'w').join(', ') + ', ' + IMG + L.img + ' ' + L.w + 'w';
+  const list = L.spots.map((s, i) => {
+    const p = s.id && PID[s.id];
+    return `<li><button type="button" data-i="${i}"><span class="ai">${p ? photo(p, 120, 1) : '<span class="noimg">태그 없음</span>'}</span>`
+      + `<span class="lt"><b>${esc(s.label)}${p ? ' · ' + esc(shortName(p.name)) : ''}</b><span>${p ? won(p.price) + (p.soldAll ? ' · 품절' : '') : '어떤 제품인지 확인 못 함'}</span></span>`
+      + `<span class="go">${p ? '보기' : '설명'}</span></button></li>`;
+  }).join('');
+  // 비·눈: 사진 속 신발은 그대로 두고 바꿔 신을 신발을 따로 보여 준다
+  const wet = A.snowy ? ['눈', PBY['S.snow'] && PBY['S.snow'].main] : A.rainy ? ['비', PBY['S.rain'] && PBY['S.rain'].main] : null;
+  const alt1 = wet && wet[1] ? `<div class="alt1"><p class="k">오늘 ${wet[0]} 때문에 바꿔 신을 대안 · 사진 속 신발 아님</p><div class="altc"><span class="ai">${photo(wet[1], 160, 1)}</span>`
+    + `<span class="tx"><b>${esc(shortName(wet[1].name))}</b><br>${sizeLine(wet[1])} · ${won(wet[1].price)} <span class="cn">${md(wet[1].checked)} 확인</span> · ${lnk(wet[1], '무신사 ↗')}</span></div></div>` : '';
+  return (forced ? `<p class="note">오늘 조건(겉옷 기준 체감 ${r0(A.tOuter)}°)에 맞는 착용샷이 아니야. 체감 ${L.lo}°~${L.hi}°용</p>` : '')
+    + `<figure class="look"><div class="lk" style="--ar:${(L.w / L.h).toFixed(4)};aspect-ratio:${L.w}/${L.h}">`
+    + `<img id="lkImg" src="${esc(THUMB(L.img, 1000))}" srcset="${esc(srcset)}" sizes="(max-width:640px) 100vw, 608px" alt="착용샷: ${esc(L.spots.filter(s => s.id).map(s => s.label).join(', '))}" referrerpolicy="no-referrer" decoding="async">`
+    + faces + hits + `<svg class="ld" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${lines}</svg>` + dots + tags + `</div>`
+    + `<figcaption>${esc(L.model)}. ${esc(L.source)} · ${lnk({id: L.page}, '사진 원본 상품 페이지 ↗')}</figcaption></figure>`
+    + `<ul class="lki" aria-label="사진 속 제품">${list}</ul>` + alt1
+    + (n > 1 ? `<div class="acts"><button class="plain" type="button" id="nextLook">다른 착용샷</button></div>` : '');
+}
+function cardHTML(L, i){
+  const s = L.spots[i];
+  const head = `<div class="shh"><p class="k" id="shT">사진 속 ${esc(s.label)}${s.id ? ' · 무신사가 이 사진에 태그한 제품' : ''}</p><button type="button" id="shX">닫기</button></div>`;
+  if (!s.id) return head + `<p style="margin:8px 0 0;font-size:14px">${esc(s.none)}</p>`;
+  const p = PID[s.id];
+  if (!p) return head + '<p>제품 정보를 못 찾았어.</p>';
+  const z = sizeOf(p);
+  const fb0 = L.fb && L.fb[s.id], fb = typeof fb0 === 'string' ? FB[fb0] : fb0;
+  const alts = ((L.alts && L.alts[s.id]) || []).map(id => PID[id]).filter(Boolean);
+  const color = (p.name.match(/\[([^\]]+)\]\s*$/) || [])[1];
+  const stock = p.soldAll ? `<span class="warn">${esc(p.stockNote || '품절')}</span>` : p.stockNote ? esc(p.stockNote) : '';
+  const why = [z.why, chartLine(p, z)].filter(Boolean);
+  const facts = [p.fitPct, p.reviewCount ? '후기 ' + Number(p.reviewCount).toLocaleString('ko-KR') + '개' : ''].filter(Boolean).join(' · ');
+  return head
+    + `<div class="cardm"><span class="ai">${photo(p, 240, '')}</span><span class="tx"><b class="nm">${esc(shortName(p.name))}</b>`
+    + (color ? `<span class="ln"><span class="lbl">색상</span>${esc(color)}</span>` : '')
+    + `<span class="ln"><span class="lbl">내 사이즈</span>${sizeLine(p)}</span>`
+    + `<span class="ln"><span class="lbl">판매가</span><b>${won(p.price)}</b> <span class="cn">${md(p.checked)} 확인</span></span>`
+    + (stock ? `<span class="ln"><span class="lbl">재고</span>${stock} <span class="cn">${md(p.checked)} 확인</span></span>` : '')
+    + `<a class="buy" href="${purl(p.id)}" target="_blank" rel="noopener noreferrer">무신사에서 보기 ↗</a></span></div>`
+    + (alts.length ? `<details${p.soldAll ? ' open' : ''}><summary>비슷한 제품 ${alts.length}개</summary>` + alts.map(a => `<div class="altc"><span class="ai">${photo(a, 160, 1)}</span>`
+      + `<span class="tx"><span class="nottag">사진 속 제품 아님</span><b>${esc(shortName(a.name))}</b><br>${esc((L.altWhy && L.altWhy[a.id]) || '')}<br>`
+      + `${sizeLine(a)} · ${won(a.price)} <span class="cn">${md(a.checked)} 확인</span> · ${lnk(a, '무신사 ↗')}</span></div>`).join('') + '</details>' : '')
+    + (fb ? `<details><summary>${alts.length ? '둘 다' : '이 제품을'} 못 살 때 고를 기준</summary><p>핏: ${esc(fb[0])}<br>소재: ${esc(fb[1])}<br>느낌: ${esc(fb[2])}</p></details>` : '')
+    + `<details><summary>소재 · 사이즈 근거</summary><p>소재 ${esc(p.mat)}</p>${why.length ? `<p>${why.map(esc).join('<br>')}</p>` : ''}${facts ? `<p>${esc(facts)}</p>` : ''}</details>`;
+}
+const imgFail = (root, msg) => root.querySelectorAll('img[data-ph]').forEach(im => im.addEventListener('error', () => {
+  const s = document.createElement('span'); s.className = 'noimg'; s.textContent = msg || '사진 못 불러옴'; im.replaceWith(s);
+}, {once: true}));
+const toSet = () => { closeSheet(); $('#set').hidden = false; $('#setBtn').setAttribute('aria-expanded', 'true'); $('#bh').focus(); window.scrollTo(0, 0); };
+function openSheet(i, keep){
+  if (!curLook || !curLook.spots[i]) return;
+  sheetI = i; sheetKey = curLook.key;
+  const sh = $('#sheet'), box = $('#shIn');
+  const top = sh.scrollTop;
+  box.innerHTML = cardHTML(curLook, i);
+  sh.hidden = false; document.body.classList.add('sheet-open');
+  sh.scrollTop = keep ? top : 0;
+  document.querySelectorAll('#look .tag').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === i)));
+  $('#shX').addEventListener('click', () => closeSheet(true));
+  box.querySelectorAll('[data-toset]').forEach(b => b.addEventListener('click', toSet));
+  imgFail(box);
+  // 누른 옷이 카드에 가리지 않게, 그 옷의 점이 카드 위 빈 화면 가운데쯤 오도록 페이지를 올린다
+  if (!keep) {
+    const dot = document.querySelectorAll('#look .dot')[i];
+    if (dot) {
+      const r = sh.getBoundingClientRect();
+      // 넓은 화면에선 카드가 오른쪽에 떠 있어서 화면 전체가 빈 자리
+      const free = r.left > 0 ? window.innerHeight : window.innerHeight - r.height;
+      const y = dot.getBoundingClientRect().top;
+      if (y > free - 40 || y < 40) {
+        window.scrollBy({top: y - Math.max(60, free * 0.45), behavior: 'smooth'});
+        // 페이지가 움직이는 동안 마우스 밑으로 다른 옷이 지나가도 카드가 바뀌지 않게
+        quietUntil = performance.now() + 800;
+      }
+    }
+  }
+}
+function closeSheet(user){
+  const sh = $('#sheet');
+  sh.hidden = true; document.body.classList.remove('sheet-open'); sheetI = null;
+  document.querySelectorAll('#look .tag').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  if (user && lastFocus && document.contains(lastFocus)) lastFocus.focus();
+}
+function bindLook(){
+  const root = $('#look');
+  let hv = null;
+  root.querySelectorAll('[data-i]').forEach(b => {
+    b.addEventListener('click', () => { lastFocus = b.classList.contains('hit') ? root.querySelector(`.tag[data-i="${b.dataset.i}"]`) : b; openSheet(+b.dataset.i); });
+    // PC: 옷이나 이름표 위에 마우스를 올리면 열린다(지나가기만 할 땐 안 열리게 잠깐 기다림)
+    if (HOVER.matches && !b.closest('ul')) {
+      b.addEventListener('mouseenter', () => { clearTimeout(hv); if (performance.now() < quietUntil) return; hv = setTimeout(() => { if (sheetI !== +b.dataset.i && performance.now() >= quietUntil) openSheet(+b.dataset.i); }, 140); });
+      b.addEventListener('mouseleave', () => clearTimeout(hv));
+    }
+  });
+  const im = $('#lkImg');
+  if (im) im.addEventListener('error', () => { const s = document.createElement('span'); s.className = 'noimg'; s.textContent = '착용샷을 못 불러옴'; im.replaceWith(s); }, {once: true});
+  imgFail(root);
+  root.querySelectorAll('[data-toset]').forEach(b => b.addEventListener('click', toSet));
+  const pk = $('#peek'); if (pk) pk.addEventListener('click', () => { st.peek = true; render(); });
+  const nl = $('#nextLook'); if (nl) nl.addEventListener('click', () => { st.lookN++; render(); });
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet').hidden) closeSheet(true); });
 
 /* ---------- 시작 ---------- */
 buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens);
