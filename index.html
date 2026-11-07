@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="referrer" content="no-referrer">
 <title>오늘 뭐 입지</title>
 <style>
@@ -158,13 +158,14 @@ table.pc th:last-child{text-align:right}
 .altbox .k{margin:0}
 ul.lki{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
 ul.lki li{border-bottom:1px solid var(--line)}
-ul.lki button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;padding:8px 0;text-align:left;cursor:pointer}
+ul.lki li > button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:none;padding:8px 0;text-align:left;cursor:pointer}
 ul.lki .ai{width:44px;height:52px}
 ul.lki .lt{flex:1;min-width:0}
 ul.lki .lt b{display:block;font-size:14px;font-weight:700;line-height:1.3}
 ul.lki .lt span{font-size:12.5px;color:var(--sub)}
 ul.lki .go{color:var(--acc);font-size:13px;flex:none}
 ul.lki .lkx{display:flex;align-items:center;gap:10px;padding:8px 0}
+ul.lki .lt .lsz{display:block;margin-top:3px}
 ul.lki li.lkh{font-size:12.5px;color:var(--sub);padding:10px 0 2px;border-bottom:0}
 .alt1{margin-top:10px;padding:8px 0 0;border-top:1px solid var(--line);font-size:13.5px}
 .alt1 .k{margin-bottom:4px}
@@ -2307,7 +2308,11 @@ function itemsHTML(L){
       : x.also ? '태그 없음 · 더비·로퍼 어느 쪽인지 확정 못 해서 더비로 고름' : al && al.why ? '같은 종류·색이 10만원 아래로 없어서 대안 · ' + al.why : '태그 없음 · 같은 종류·색 기본 제품');
     const nm = `${RN[x.role]} · ${slotName(sl)}`;
     if (!p) return `<li><div class="lkx"><span class="lt"><b>${esc(nm)}</b><span>${esc(why)} · 10만원 아래 제품을 못 찾음</span></span></div></li>`;
-    return `<li><div class="lkx"><span class="ai">${photo(p, 120, 1)}</span><span class="lt"><b>${esc(nm)} · ${esc(shortName(p.name))}</b><span>${won(p.price)}${badges(p)} · ${esc(why)}</span></span><span class="go">${lnk(p, '무신사 ↗')}</span></div></li>`;
+    // v15: 내 사이즈·품절(sizeLine)과 '비슷한 것 있음' 버튼도 이 줄에 바로(검토 v14 지시 4). 상세 시트는 사진 속 태그 위치를 기준으로 열려서 태그 없는 칸엔 안 씀
+    const ow = OWN.s[sl] === 'similar';
+    return `<li><div class="lkx"><span class="ai">${photo(p, 120, 1)}</span><span class="lt"><b>${esc(nm)} · ${esc(shortName(p.name))}</b><span>${won(p.price)}${badges(p)} · ${esc(why)}</span>`
+      + `<span class="lsz">내 사이즈 ${sizeLine(p)} <button type="button" class="plain sm" data-owns="${esc(sl)}" aria-pressed="${ow}">${ow ? esc(slotName(sl)) + ' 있음 취소' : '비슷한 ' + esc(slotName(sl)) + ' 있음'}</button></span></span>`
+      + `<span class="go">${lnk(p, '무신사 ↗')}</span></div></li>`;
   }).join('');
   return `<ul class="lki" aria-label="사진 속 제품">` + L.spots.map((s, i) => {
     const p = PID[s.id];
@@ -2491,9 +2496,16 @@ const shoeX = L => partsOf(L).find(x => x.role === 'shoes' && x.need === 'req' &
 function shoeAct(L, x, t){
   const c = x.col || '블랙', cn = CN[c] || c, easy = L.level === 'L1' || L.level === 'L2';
   const pa = partsOf(L).find(y => y.role === 'pants' && y.need === 'req');
-  let a = x.anyKind ? (easy ? `${cn} 스니커즈가 기본이야. 조금 단정하게 가고 싶으면 ${cn} 더비도 어울려` : `${cn} 더비가 기본이야. 힘을 빼고 싶으면 장식 없는 ${cn} 가죽 스니커즈로`)
+  const slx = !!(pa && pa.slot && /슬랙스/.test(pa.slot));
+  let a = x.anyKind ? (easy ? `${cn} ${slx ? '가죽 ' : ''}스니커즈가 기본이야. 조금 단정하게 가고 싶으면 ${cn} 더비도 어울려` : `${cn} 더비가 기본이야. 힘을 빼고 싶으면 장식 없는 ${cn} 가죽 스니커즈로`)
     : x.also ? `${cn} 더비나 로퍼면 사진과 같은 느낌이야` : `사진 속 ${slotName(x.slot)}는 태그가 없어서 같은 종류·색 제품으로 골랐어`;
   a += ". 고른 제품은 '착용 제품' 아래쪽에 있어";
+  // v15: 바지 종류·통에 따라 어떤 신발이 밑단을 받쳐 주는지(검토 v14 지시 4). 통을 모르는 바지는 안 적음
+  if (pa && pa.slot) { const kd = pa.slot.split('|')[0], fit = (pa.ft && pa.ft.fit) || '';
+    if (/와이드|벌룬|배기|루즈/.test(fit) && /슬랙스/.test(kd)) a += '. 통 넓은 슬랙스엔 매끈한 가죽 신발(더비·가죽 코트화)이 바지 선을 깔끔하게 이어 줘. 밑창이 두꺼운 러닝화를 신으면 캐주얼 쪽으로 기울어';
+    else if (/와이드|벌룬|배기|루즈/.test(fit)) a += `. 통 넓은 바지(${kd})라 밑단이 신발을 덮으니 밑창이 도톰한 코트화나 앞코가 둥근 신발이 밑단 무게를 받쳐 줘. 얇고 납작한 신발은 밑단에 묻혀 발이 작아 보여`;
+    else if (/플레어|부츠컷/.test(fit + kd)) a += '. 플레어 밑단은 앞코만 보이니 굽이 조금 있는 더비·부츠가 밑단 퍼짐과 맞아';
+    else if (/스트레이트|테이퍼드|슬림/.test(fit)) a += /슬랙스/.test(kd) ? '. 곧은 슬랙스는 가죽 신발이 기본이고, 스니커즈면 장식 없는 가죽 코트화로' : '. 곧게 떨어지는 바지라 밑단이 신발 위에서 한 번 접히는 길이면 스니커즈·더비 다 맞아'; }
   if (pa && c === '블랙' && ['블랙', '네이비', '진청'].includes(pa.col) && !/이어/.test(t || '')) a += `. 바지가 어두운 ${CN[pa.col] || pa.col}이라 검정 신발이면 다리 선이 끊기지 않고 이어져 보여`;
   return a;
 }
@@ -2705,6 +2717,9 @@ function drawBelow(){
     $('#abSkip').addEventListener('click', () => { TS.asked[P[2]] = 1; (TS.abDay = TS.abDay || {})[st.level] = today(); saveT(); drawBelow(); });
   }
   box.querySelectorAll('ul.lki button[data-i]').forEach(b => b.addEventListener('click', () => { lastFocus = b; openSheet(+b.dataset.i); }));
+  // v15: 태그 없는 칸의 '비슷한 것 있음'
+  box.querySelectorAll('ul.lki [data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
+    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; } else OWN.s[k0] = 'similar'; saveO(); reorder(); }));
   box.querySelectorAll('.abc img').forEach(im => im.addEventListener('error', () => im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})), {once: true}));
   imgFail(box);
   box.querySelectorAll('[data-toset]').forEach(b => b.addEventListener('click', () => toSet(b.dataset.toset)));
@@ -3012,7 +3027,8 @@ const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 
 // v14: 7일 준비의 '코디 다양하게'. 검토 문서(v13) 지시 1의 가중치(use 3.2·target 5)는 코디가 한 주 평균 0.5개 늘지만 살 옷이 11만~16만 원 늘고
 //      실제 예보 편하게 주는 14개·85만 원이 돼서 use 2.5·target 4로 낮춤
 //      (기온 고정 20가지: 코디 2.35→2.65, A-B-A-B 주 6→2, 살 옷 441k→513k · 실제 예보 4단계: 3.25→3.50, 522k→627k)
-const PWV = {use: 2.5, target: 4, aba: 3, rep3: 15, reuse: {outer: 1.4, top: .35, pants: .9, shoes: .8}, outer2: 3.2, outer3: 6};
+// v15: rep2 15·rep3 25(검토 v14 지시 1). 산 옷 재사용 점수를 키운 만큼 전날 코디를 또 고르기 쉬워져서 A-A-B-B가 20가지 중 14가지였음
+const PWV = {use: 2.5, target: 4, aba: 3, rep2: 15, rep3: 25, reuse: {outer: 1.4, top: .35, pants: .9, shoes: .8}, outer2: 3.2, outer3: 6};
 // 한 주 짜기: 날짜마다 따로 고르지 않고, 앞 날짜에서 쓰거나 사기로 한 옷을 다시 쓰면 점수를 더함(살 옷을 줄임)
 // 고정한 날, 전에 고른 코디가 아직 그날 날씨·단계에 맞는 날은 그대로 둠(예보가 바뀌어 안 맞게 된 날만 다시 고름)
 function planWeek(force){
@@ -3109,7 +3125,36 @@ function planWeek(force){
     p.rot = (!!pv && k !== pv && F.includes(pv)) || (!!nx && k !== nx && F.includes(nx));
     at.ds.pick = k; at.ds.t = `가진 ${slotName(k)}로 됨${p.rot ? ' · 앞뒤 날과 다른 상의로 고름' : ''}`; p.topK = k; });
   saveW();
+  // v15: 같은 코디가 이틀 연달아 나오면 이번 주에 고른 코디끼리 날짜만 바꿔서 떼어 놓음(검토 v14 지시 1).
+  //      날마다 앞에서부터 고르다 보니 새로 사야 하는 코디를 하루 미뤄서 A-A-B-B가 됐음. 고른 코디 묶음은 그대로라 살 옷은 안 늘어남.
+  //      바꾼 날짜에도 날씨·단계가 맞는 코디(그날 후보, 체감 ±2°)만 옮기고, 고정한 날은 안 건드림. 바꾼 뒤 한 번 더 짜서 그날 칸·살 옷 날짜를 다시 셈
+  if (!planWeek.re && spreadWeek(out)) { planWeek.re = true; try { return planWeek(false); } finally { planWeek.re = false; } }
   return out;
+}
+function spreadWeek(out){
+  const n = out.length, seq = out.map(p => p.L || null), dup = s => s.filter((L, i) => i && L && L === s[i - 1]).length;
+  const fits = (i, L) => !!out[i].cand && out[i].cand.some(o => o.L === L && o.dd <= 2);
+  // 옮길 수 있는 날: 코디가 있고, 고정 안 했고, 지금 코디가 그날 날씨에 맞는 날(체감 ±2° 밖 참고 코디는 그대로 둠)
+  const mov = seq.map((L, i) => !!(L && !(WK.days[out[i].d] || {}).pin && fits(i, L)));
+  const d0 = dup(seq);
+  if (!d0) return false;
+  // 옮길 수 있는 날끼리 코디 묶음을 다시 놓아 봄(7일이라 다 따져도 금방 끝남). 연달아 같은 코디가 적은 것 → 바뀌는 날이 적은 것 순
+  const pool = seq.filter((L, i) => mov[i]), used = pool.map(() => false), s = seq.slice();
+  let best = null, bD = d0, bC = 0;
+  const rec = (i, d, c) => {
+    if (d > bD || (best && d === bD && c >= bC)) return;
+    if (i === n) { if (d < bD || (best && c < bC)) { best = s.slice(); bD = d; bC = c; } return; }
+    if (!mov[i]) { rec(i + 1, d + (i && s[i] && s[i] === s[i - 1] ? 1 : 0), c); return; }
+    const tried = new Set();
+    for (let k = 0; k < pool.length; k++) { const L = pool[k]; if (used[k] || tried.has(L) || !fits(i, L)) continue; tried.add(L);
+      used[k] = true; s[i] = L; rec(i + 1, d + (i && L === s[i - 1] ? 1 : 0), c + (L !== seq[i] ? 1 : 0)); used[k] = false; }
+    s[i] = seq[i];
+  };
+  rec(0, 0, 0);
+  if (!best || bD >= d0) return false;
+  out.forEach((p, i) => { if (p.L && best[i] !== p.L) { const D = WK.days[p.d]; D.key = best[i].key; D.lvAt = p.lv; delete D.why; } });
+  saveW();
+  return true;
 }
 // v12: 사진 속 제품도, 같은 종류·색 대체품도 못 살 때는 그 코디에 골라 둔 대안(같은 느낌 → 일부 특징만 확인 → 분위기 바꾸기 순)에서 살 수 있는 걸 씀.
 //      분위기 바꾸기 대안(색·기장이 다름)은 'mood'로 표시해서 사진과 달라지는 점을 같이 보여 줌
