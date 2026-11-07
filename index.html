@@ -282,6 +282,10 @@ body.sheet-open main{padding-bottom:32px}
 .mtc button,.ownf button{border:1px solid #cfcfcf;background:#fff;border-radius:3px;padding:2px 8px;font-size:12.5px;cursor:pointer}
 .mtc button[aria-pressed=true],.ownf button[aria-pressed=true],.plain[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .warn{color:#8a3b12}
+.ownl{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px}
+.ownl .k{width:100%;margin:0}
+.ownl .plain.sm{margin:0}
+.sz.ref,.pd .sz.ref,.cardm .sz.ref{color:#6b5300;font-weight:600;text-decoration:underline dotted;text-underline-offset:3px}
 /* v10: 7일 준비 */
 #week{padding:8px 0 4px}
 #day[hidden]{display:none}
@@ -344,9 +348,10 @@ main > *{grid-column:1/-1}
 #look > #below{margin-top:8px}
 #look > #grid,#look > .nolook{grid-column:1/-1}
 #look .lk{width:100%}
-#sheet{left:auto;right:max(16px,calc(50% - 566px));top:12px;bottom:auto;width:min(560px,calc(100% - 590px));max-height:calc(100vh - 24px);border:1px solid #bdbdbd;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+/* v11: 제품 카드가 오른쪽 설명(코디 이유·저장 버튼)을 덮지 않게, 카드가 열리면 오른쪽 칸을 좁혀 카드 자리를 비움. 사진 위치는 그대로 */
+#sheet{left:auto;right:24px;top:12px;bottom:auto;width:min(400px,30vw);max-height:calc(100vh - 24px);border:1px solid #bdbdbd;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 #sheet .in{padding:10px 16px 14px}
-body.sheet-open main{padding-bottom:32px}
+body.sheet-open main{padding-bottom:32px;max-width:none;margin-left:max(0px,calc((100% - 1180px) / 2));margin-right:0;padding-right:calc(44px + min(400px,30vw))}
 .wbuy .bi{max-width:820px}
 }
 </style>
@@ -369,7 +374,7 @@ body.sheet-open main{padding-bottom:32px}
   <div class="field"><span class="lb">외출</span><select id="start" aria-label="나가는 시간"></select> 부터 <select id="end" aria-label="들어오는 시간"></select> 까지</div>
   <div class="field"><span class="lb">체질</span><div class="seg" id="sens"><button type="button" data-v="-3">추위 탐</button><button type="button" data-v="0">보통</button><button type="button" data-v="3">더위 탐</button></div></div>
   <div class="field"><span class="lb">몸</span><input type="number" id="bh" inputmode="numeric" min="140" max="210" placeholder="키" aria-label="키 cm">cm <input type="number" id="bw" inputmode="numeric" min="35" max="150" placeholder="몸무게" aria-label="몸무게 kg">kg</div>
-  <div class="field"><span class="lb">발</span><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="5" placeholder="발 길이" aria-label="발 길이 mm">mm</div>
+  <div class="field"><span class="lb">신발</span><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="5" placeholder="평소 신발" aria-label="평소 신는 운동화 사이즈 mm">mm</div>
   <div class="field"><span class="lb">바지</span>잘 맞는 바지 실측 <input type="number" id="pl" inputmode="decimal" min="80" max="125" step="0.5" placeholder="총장" aria-label="잘 맞는 바지 총장 cm">cm <input type="number" id="pw" inputmode="decimal" min="25" max="60" step="0.5" placeholder="허리단면" aria-label="잘 맞는 바지 허리단면 cm">cm</div>
   <div class="field"><span class="lb">핏</span><select id="pf" aria-label="좋아하는 바지 핏"><option value="">상관없음</option><option value="straight">스트레이트</option><option value="wide">와이드</option><option value="tapered">테이퍼드</option><option value="balloon">벌룬</option><option value="flare">플레어</option></select> <span class="hint">키·몸무게·발·바지 실측은 이 폰에만 저장되고 사이트에는 안 올라감</span></div>
 <div class="field" id="tasteSet"></div>
@@ -660,7 +665,7 @@ const LOOKS = [
   {key:'l1-c', level:'L1', lo:-8, hi:3, tip:'pad', img:'prd_img/20240805/4297613/detail_4297613_17649025709323_big.jpg', cx:.50, y0:.165,
    page:'4297613', cut:1, model:'179cm · 55kg, 이 사진이 실린 패딩 L',
    spots:[{id:'4297613', label:'패딩', x:.36, y:.38}, {id:'5186934', label:'셔츠', x:.51, y:.34}, {id:'5249188', label:'긴팔티', x:.50, y:.195}, {id:'4210168', label:'바지', x:.40, y:.72, pants:1}]},
-  {key:'l1-a', level:'L1', lo:-3, hi:8, tip:'lpad', img:'prd_img/20250701/5215502/detail_5215502_17604876202570_big.jpg', cx:.49, y0:.135,
+  {key:'l1-a', level:'L1', lo:-3, hi:8, tip:'lpad', img:'prd_img/20250701/5215502/detail_5215502_17604876202570_big.jpg', cx:.49, y0:.15,
    page:'5215502', cut:1, model:'182cm · 60kg, 이 사진이 실린 패딩 XL',
    spots:[{id:'5215502', label:'패딩', x:.40, y:.35}, {id:'4765952', label:'긴팔티', x:.47, y:.51}, {id:'5205753', label:'바지', x:.44, y:.75, pants:1}],
    alts:{'5215502':['5438737']},
@@ -746,13 +751,13 @@ const LOOKS = [
    alts:{'865864':['4407148']},
    altWhy:{'4407148':'10만원 아래 싱글 코트. 색이 블랙(사진 속은 네이비)이고 총장 109cm부터로 비슷, 겉감 울 30%(사진 속은 모 70%·캐시미어 11%). 정사이즈라는 후기 45%'}},
   // ---- v8: 무신사 매거진 콘텐츠 사진(600x720). 무신사가 그 사진 바로 아래에 붙여 둔 상품만 연결 ----
-  {key:'m-9bemrv', level:'L1', lo:-3, hi:8, tip:'lpad', mag:'A3', img:'cms/v2/content/file_1766380205819_1069025500_9bemrv.jpg', w:600, h:720, cx:.48, y0:.14, cut:0, model:'',
+  {key:'m-9bemrv', level:'L1', lo:-3, hi:8, tip:'lpad', mag:'A3', img:'cms/v2/content/file_1766380205819_1069025500_9bemrv.jpg', w:600, h:720, cx:.48, y0:.165, cut:0, model:'',
    spots:[{id:'4306408', label:'라이트 다운', x:.35, y:.33, col:'글로시 블루'}, {id:'4907753', label:'후드 집업', x:.47, y:.22}, {id:'5381244', label:'바지', x:.45, y:.75, pants:1}, {id:'5443619', label:'클로그', x:.45, y:.93}], alts:{'4306408':['5438737']}, altWhy:{'5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 글로시 블루), 충전재 폴리에스터(사진 속은 덕다운)'}},
   {key:'m-sycsb7', level:'L2', lo:-2, hi:9, tip:'sherpa', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402599_sycsb7.jpg', w:600, h:720, cx:.47, y0:.14, cut:0, model:'',
    spots:[{id:'5553074', label:'자켓', x:.33, y:.33}, {id:'5294635', label:'셔츠', x:.52, y:.30}, {id:'5275843', label:'바지', x:.45, y:.70, pants:1, col:'블루 그레이'}, {id:'3976349', label:'신발', x:.42, y:.92}], alts:{'5294635':['5335741','5354020']}, altWhy:{'5335741':'같은 플란넬 체크 셔츠. 블랙·아이보리 옴브레 체크(사진 속은 레드 체크)', '5354020':'10만원 아래 체크 셔츠. 베이지 체크(사진 속은 레드 체크)'}},
   {key:'m-dve2b0', level:'L2', lo:2, hi:12, tip:'fleece', mag:'A3', img:'cms/v2/content/file_1766380205820_1069026099_dve2b0.jpg', w:600, h:720, cx:.48, y0:.14, cut:0, model:'',
    spots:[{id:'5604609', label:'플리스 자켓', x:.33, y:.35, col:'카키'}, {id:'5487937', label:'니트', x:.48, y:.32}, {id:'5428156', label:'바지', x:.45, y:.70, pants:1}, {id:'5484356', label:'신발', x:.45, y:.92}], alts:{'5487937':['5215594']}, altWhy:{'5215594':'로고 없는 블랙 크루 니트. 울 50%·나일론 45%·캐시미어 5%(사진 속은 아크릴 100%)'}},
-  {key:'m-16q23y', level:'L2', lo:-3, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054536202_166329899_16q23y.jpg', w:600, h:720, cx:.48, y0:.15, cut:0, model:'',
+  {key:'m-16q23y', level:'L2', lo:-3, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054536202_166329899_16q23y.jpg', w:600, h:720, cx:.48, y0:.172, cut:0, model:'',
    spots:[{id:'4356798', label:'라이트 다운', x:.38, y:.30}, {id:'5205819', label:'플리스 하이넥', x:.50, y:.21}, {id:'5243802', label:'셔츠', x:.47, y:.46}, {id:'5210186', label:'바지', x:.45, y:.70, pants:1}, {id:'5507402', label:'부츠', x:.45, y:.93}], alts:{'4356798':['5438737'], '5243802':['5354020']}, altWhy:{'5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 카키)', '5354020':'10만원 아래 체크 셔츠. 베이지 체크(사진 속은 그린 체크)'}},
   {key:'m-1l0mzu', level:'L2', lo:-3, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054536202_166330100_1l0mzu.jpg', w:600, h:720, cx:.48, y0:.14, cut:0, model:'',
    spots:[{id:'5148065', label:'라이트 다운', x:.35, y:.30}, {id:'5438042', label:'긴팔티', x:.52, y:.30}, {id:'5354020', label:'셔츠'}, {id:'5210212', label:'바지', x:.45, y:.70, pants:1}], alts:{'5148065':['5438737']}, altWhy:{'5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 문 블루)'}},
@@ -761,7 +766,7 @@ const LOOKS = [
    spots:[{id:'4387507', label:'가디건', x:.40, y:.33}, {id:'4387517', label:'니트', x:.50, y:.24}, {id:'4352411', label:'바지', x:.45, y:.70, pants:1}]},
   {key:'m-80ufgd', level:'L3', lo:-3, hi:9, tip:'coat', mag:'A3', img:'cms/v2/content/file_1766380231713_1094919200_80ufgd.jpg', w:600, h:720, cx:.47, y0:.15, cut:0, model:'',
    spots:[{id:'5205729', label:'하프 코트', x:.55, y:.38}, {id:'5318857', label:'니트 집업', x:.40, y:.43}, {id:'5531751', label:'니트 후드', x:.50, y:.20}, {id:'5240767', label:'바지', x:.45, y:.85, pants:1}, {id:'5693262', label:'신발', x:.45, y:.93}], alts:{'5205729':['4209311']}, altWhy:{'4209311':'10만원 아래 무신사 스탠다드 울 블렌드 겉옷. 기장이 짧은 부클 블루종이고 색이 블랙(사진 속은 토프 하프 코트)'}},
-  {key:'m-suf3d8', level:'L4', lo:-6, hi:6, tip:'mouton', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402599_suf3d8.jpg', w:600, h:720, cx:.47, y0:.15, cut:0, model:'',
+  {key:'m-suf3d8', level:'L4', lo:-6, hi:6, tip:'mouton', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402599_suf3d8.jpg', w:600, h:720, cx:.47, y0:.178, cut:0, model:'',
    spots:[{id:'5532432', label:'무톤 자켓', x:.35, y:.35}, {id:'5335741', label:'셔츠', x:.47, y:.32}, {id:'5210208', label:'바지', x:.42, y:.72, pants:1}, {id:'5507631', label:'로퍼', x:.40, y:.93}]},
   {key:'m-qgfj41', level:'L3', lo:13, hi:20, tip:'blazer', mag:'A7', img:'cms/v2/content/file_1755432383746_235030799_qgfj41.jpg', w:600, h:720, cx:.47, y0:.16, cut:0, model:'',
    spots:[{id:'1558197', label:'블레이저', x:.38, y:.32}, {id:'2084430', label:'바지', x:.43, y:.72, pants:1}, {id:'5269360', label:'로퍼', x:.46, y:.91}]},
@@ -1060,7 +1065,7 @@ function icon(code, night){
   return `<svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
 }
 
-/* ---------- 색 ---------- */
+/* ---------- 색·제품 목록용 이름 풀이 (v11: 옛 착장 그림 코드 중 안 쓰는 함수는 지움) ---------- */
 const COL = [['스카이 블루','#BFD3EA'],['다크 그레이','#56585C'],['스톤 화이트','#E6E2D8'],['클라우드 댄서','#EFEDE8'],['다크 브라운','#3B2A22'],['다크 버건디','#4A1F27'],['연하늘','#C9D8EA'],['연청','#8FA9C9'],['중청','#5A7BA6'],['흑청','#2B2F38'],['블랙','#1C1C1C'],['화이트','#F4F4F2'],['차콜','#4A4A4A'],['그레이','#9A9A9A'],['네이비','#1F2A44'],['베이지','#D8C7A8'],['크림','#F1EBDD'],['오트밀','#D9CDB8'],['브라운','#6B4E3D'],['카멜','#B08354'],['카키','#7C7A55'],['올리브','#5C5E3D'],['인디고','#2E3B5C'],['버건디','#6E2633'],['레드','#B23A3A'],['머스타드','#B88A2E'],['아이보리','#EEE9DF'],['실버','#B8B8B8'],['오렌지','#D9692B'],['라임','#9CB33B'],['그린','#2F4A3A']];
 // 이름에 색이 없을 때 소재로 정해지는 색
 const MAT = [[/생지/,['생지','#22304D']],[/샴브레이/,['연청','#8FA9C9']],[/코듀로이/,['브라운','#6B4E3D']],[/청바지|데님|\s진$/,['중청','#5A7BA6']],[/치노/,['베이지','#D8C7A8']],[/퍼티그|M-65|헌팅|N-3B/,['올리브','#5C5E3D']],[/스웨이드|데저트/,['샌드','#C8A77E']],[/캔버스|에코백/,['아이보리','#EEE9DF']],[/로퍼|보트슈즈|워크부츠|가죽 벨트|가죽 시계|레더 샌들|뿔테/,['브라운','#6B4E3D']],[/양말/,['화이트','#F4F4F2']],[/메탈|반지|목걸이/,['실버','#B8B8B8']],[/반다나/,['레드','#9E2B2B']],[/플리스|보아/,['크림','#EEE6D6']],[/알로하/,['그린','#2F4A3A']],[/더비|레인부츠|방한|방수|하이킹|첼시|서류/,['블랙','#1C1C1C']]];
@@ -1078,7 +1083,6 @@ const D = p => 'M' + p.map(q => q[0] + ',' + q[1]).join('L') + 'Z';
 // 검정·네이비처럼 아주 어두운 옷은 검은 윤곽선이 묻혀서 회색 선으로 그린다
 const edge = f => f[0] === '#' && lum(f) < .07 ? '#8a8a8a' : OL;
 const sh = (p, f) => `<path d="${D(p)}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`;
-const sh2 = (p, f) => sh(p, f) + sh(MX(p), f);
 const tx = (p, ids) => [].concat(ids || []).filter(Boolean).map(id => `<path d="${D(p)}" fill="url(#${id})"/>`).join('');
 const tx2 = (p, ids) => tx(p, ids) + tx(MX(p), ids);
 const ln = (d, c, w = 1) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -1096,45 +1100,6 @@ const vsh2 = (p, f, t) => sh(p, f) + tx(p, t) + vs(p, 'vl') + sh(MX(p), f) + tx(
 // 박음질(점선)
 const seam = (d, c, w = .7) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="1.6 1.2" stroke-linecap="round"/>`;
 const seam2 = (d, c, w) => seam(d, c, w) + seam(mirD(d), c, w);
-// 곡선이 들어간 모양(path 문자열)을 좌우로 그린다
-const shp2 = (d, f) => [d, mirD(d)].map(q => `<path d="${q}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`).join('');
-
-function defs(){
-  const pat = (id, w, h, b) => `<pattern id="${id}" width="${w}" height="${h}" patternUnits="userSpaceOnUse">${b}</pattern>`;
-  const grad = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="0">${stops.map(([o, c, a]) => `<stop offset="${o}" stop-color="${c}" stop-opacity="${a}"/>`).join('')}</linearGradient>`;
-  let s = grad('vl', [[0,'#000',.2],[.4,'#000',0],[.62,'#fff',.08],[.85,'#fff',0],[1,'#000',.07]])
-    + grad('vr', [[0,'#000',.07],[.15,'#fff',0],[.38,'#fff',.08],[.6,'#000',0],[1,'#000',.2]])
-    + grad('vc', [[0,'#000',.17],[.2,'#000',.02],[.5,'#fff',.06],[.8,'#000',.02],[1,'#000',.17]])
-    + grad('gl', [[0,'#fff',0],[.45,'#fff',.35],[.55,'#fff',.35],[1,'#fff',0]]);
-  for (const [k, c] of [['D','rgba(0,0,0,.2)'],['L','rgba(255,255,255,.26)']]) {
-    s += pat('qt'+k, 40, 13, `<path d="M0,12.5H40" stroke="${c}"/>`)
-      + pat('st'+k, 8, 6, `<path d="M0,5H8" stroke="${c}" stroke-width="1.6"/>`)
-      + pat('ch'+k, 12, 12, `<path d="M0,3H12M0,9H12M3,0V12M9,0V12" stroke="${c}" stroke-width="1.3"/>`)
-      + pat('rb'+k, 3, 10, `<path d="M1.5,0V10" stroke="${c}" stroke-width=".6"/>`)
-      + pat('cb'+k, 10, 12, `<path d="M5,0Q8.5,3 5,6Q1.5,9 5,12" fill="none" stroke="${c}" stroke-width="1.2"/>`)
-      + pat('rg'+k, 40, 20, `<rect y="10" width="40" height="10" fill="${c}"/>`)
-      + pat('dt'+k, 5, 5, `<circle cx="2.5" cy="2.5" r=".8" fill="${c}"/>`);
-  }
-  return `<defs>${s}</defs>`;
-}
-
-function skin(){
-  const sk = p => `<path d="${D(p)}" fill="${SK}" stroke="${SO}" stroke-width="1" stroke-linejoin="round"/>`;
-  const arm = [[64,76],[72,80],[74,108],[61,212],[47,210]];
-  const leg = [[74,212],[100,212],[100,232],[97,300],[96,404],[82,404],[77,300],[73,214]];
-  // 손: 손바닥 + 엄지
-  const hand = x => `<path d="M${x-5},209Q${x-6.5},224 ${x-3.5},231Q${x},234 ${x+3.5},231Q${x+6.5},224 ${x+5},209Z" fill="${SK}" stroke="${SO}"/>`
-    + `<path d="M${x + (x < 100 ? 4.6 : -4.6)},217Q${x + (x < 100 ? 8 : -8)},221 ${x + (x < 100 ? 5.4 : -5.4)},226" fill="none" stroke="${SO}"/>`;
-  return sk(arm) + sk(MX(arm)) + sk(leg) + sk(MX(leg))
-    + ln2('M80,300Q87,303 94,300', 'rgba(0,0,0,.08)', 1)
-    + hand(54) + hand(146)
-    + sk([[92,48],[108,48],[109,70],[91,70]])
-    + '<path d="M92,51Q100,58 108,51L108.4,57Q100,63 91.6,57Z" fill="rgba(0,0,0,.09)"/>'
-    + `<ellipse cx="84.4" cy="35.5" rx="2.6" ry="4.6" fill="${SK}" stroke="${SO}"/><ellipse cx="115.6" cy="35.5" rx="2.6" ry="4.6" fill="${SK}" stroke="${SO}"/>`
-    + `<ellipse cx="100" cy="33" rx="16" ry="20" fill="${SK}" stroke="${SO}"/>`
-    + '<path d="M84.2,33Q82,11 101,10.5Q118.5,11.5 116.4,31Q114.5,19.5 105,17.5Q97,23.5 87,22Q85.4,26.5 84.2,33Z" fill="#2c2826"/>';
-}
-
 // 상의 한 벌: 몸판 + 소매
 function body(col, o){
   const w = o.wide, hem = o.hem;
@@ -1173,60 +1138,6 @@ function body(col, o){
   }
   return s;
 }
-const COLLAR = [[90,62],[100,78],[92,86],[85,70]];
-function tieBlade(t){
-  const c = t.col[1];
-  const p = t.kind === 'skinny' ? [[98.5,84],[101.5,84],[103.5,150],[100,155],[96.5,150]]
-    : t.kind === 'knit' ? [[98,84],[102,84],[103,150],[97,150]]
-    : [[97.5,84],[102.5,84],[105,152],[100,158],[95,152]];
-  return sh(p, c) + (t.kind === 'knit' ? tx(p, T(c,'rb')) : '');
-}
-const tieKnot = t => sh([[97.5,77],[102.5,77],[101.5,84],[98.5,84]], t.col[1]);
-
-function drawTop(P){
-  const c = P.col[1], dc = det(c);
-  let s = '';
-  if (P.shirt) {
-    s += body(P.shirt.col[1], {hem: P.hem + 7, tuck: P.shirtTuck ? 'full' : '', sleeve:'long', neck:'shirt', tex: P.shirt.tex});
-    if (P.tie) s += tieBlade(P.tie);
-  }
-  if (P.tee) s += body(P.tee.col[1], {hem: P.hem + 5, sleeve: P.short ? 'short' : 'long', neck:'crew'});
-  const neck = {turtle:'flat', qzip:'flat', hood:'flat', vknit:'v', vest:'deep', shirt:'shirt', polo:'shirt', rugby:'shirt'}[P.kind] || 'crew';
-  s += body(c, {wide: P.wide, hem: P.hem, tuck: P.tuck, sleeve: P.kind === 'vest' ? 'none' : P.short ? 'short' : 'long', neck, tex: P.tex, rib: P.rib});
-  if (P.band) {
-    const bc = lum(c) < .45 ? '#EEE9DF' : '#5C5E3D';
-    let z = 'M74,120'; for (let x = 78; x <= 126; x += 4) z += `L${x},${x % 8 === 2 ? 115 : 125}`;
-    s += sh([[73.6,112],[126.4,112],[126.2,128],[73.8,128]], bc) + ln(z, c, 1.4);
-  }
-  if (P.graphic === 'big') s += sh([[89,98],[111,98],[111,124],[89,124]], lum(c) < .45 ? '#EEE9DF' : '#2b2b2b') + dot(100, 111, 6, c);
-  else if (P.graphic === 'small') s += sh([[92,96],[108,96],[108,108],[92,108]], lum(c) < .45 ? '#EEE9DF' : '#2b2b2b');
-  switch (P.kind) {
-    case 'crew': case 'vknit': s += P.kind === 'crew' ? ln('M93,70Q100,77 107,70', dc) : ln('M91,67L100,93L109,67', dc); break;
-    case 'vest': s += ln('M91,67L100,111L109,67', dc); break;
-    case 'turtle': { const t = [[90,47],[110,47],[111,70],[89,70]]; s += sh(t, c) + tx(t, P.tex) + ln('M90,57L110,57', dc); break; }
-    case 'qzip': s += sh([[89,56],[111,56],[112,70],[88,70]], c) + ln('M100,57L100,104', dc, 1.2) + sh([[99,74],[101,74],[101,81],[99,81]], dc); break;
-    case 'henley': s += ln('M97.5,73L97.5,103M102.5,73L102.5,103', dc) + dot(100,80,1.2,dc) + dot(100,89,1.2,dc) + dot(100,98,1.2,dc); break;
-    case 'hood': s += sh([[84,70],[86,57],[94,53],[106,53],[114,57],[116,70],[108,75],[100,77],[92,75]], c) + ln('M90,66Q100,73 110,66', dc)
-      + ln('M95,75L94,106', dc, 1.2) + ln('M105,75L106,106', dc, 1.2) + ln('M79,194L83,166L117,166L121,194', dc); break;
-    case 'polo': case 'rugby': {
-      const cc = P.kind === 'rugby' ? '#F4F4F2' : c;
-      s += sh2([[90,63],[99,74],[93,79],[85,70]], cc) + ln('M100,75L100,96', dc) + dot(100,83,1.2,dc) + dot(100,91,1.2,dc); break;
-    }
-    case 'shirt': {
-      // 앞여밈(플라켓) 두 줄 + 단추, 소매 커프스 단추
-      const pe = P.tuck === 'full' ? 200 : P.hem - 2;
-      s += ln(`M98.6,80L98.6,${pe}`, dc, .8) + ln(`M104.4,80L104.4,${pe}`, dc, .8) + [98,122,146,169].map(y => dot(101.5, y, 1.2, dc)).join('')
-        + (P.short ? '' : dot(50.4, 207.6, .9, dc) + dot(149.6, 207.6, .9, dc));
-      if (P.tie) s += tieBlade(P.tie);
-      s += sh2(COLLAR, c) + tx2(COLLAR, P.tex);
-      if (P.tie) s += tieKnot(P.tie);
-      break;
-    }
-  }
-  if (P.shirt) { s += sh2(COLLAR, P.shirt.col[1]); if (P.tie) s += tieKnot(P.tie); }
-  return s;
-}
-
 const OCFG = {
   coat:{hem:296, lapel:1, btn:[150,186,222]}, trench:{hem:296, lapel:1, belt:1}, duffle:{hem:286, toggle:1, hood:1},
   blazer:{hem:240, lapel:1, btn:[200]}, puffer:{hem:214, quilt:1, stand:1, zip:1}, light:{hem:212, quilt:1, stand:1, zip:1},
@@ -1240,284 +1151,16 @@ function outerKind(n){
   for (const [re, k] of K) if (re.test(n)) return k;
   return 'jacket';
 }
-function drawOuter(O){
-  const k = O.cfg, c = O.col[1], hem = k.hem, dc = det(c);
-  let s = '', back = '';
-  const side = hem > 214 ? [[72,196],[70,214],[+(70 - (hem - 214) * .075).toFixed(1), hem]] : [[72, Math.min(196, hem - 4)],[71, hem]];
-  const lap = k.lapel || k.furLapel;
-  const inner = lap ? [[96,hem],[96,118]] : k.vopen ? [[96,hem],[95,122]] : [[95,hem],[94,68]];
-  const panel = [[89,63],[61,74],[69,110]].concat(side, inner);
-  const sleeve = [[61,74],[42,214],[63,217],[70,112],[68,90]];
-  const slc = k.varsity ? (lum(c) < .3 ? '#EEE9DF' : '#1F2A44') : c;
-  const tex = (k.quilt || /다운/.test(O.name)) ? T(c,'qt') : k.tex ? T(c,k.tex) : /코듀로이/.test(O.name) ? T(c,'rb') : null;
-  if (k.hood) back += sh([[77,76],[78,54],[88,45],[112,45],[122,54],[123,76]], c);
-  const fc = fold(c);
-  s += vsh2(sleeve, slc, tex) + vsh2(panel, c, tex)
-    + ln2('M61,74Q66.5,92 69.6,111', det(slc), .7)
-    + ln2('M61.5,150Q65.5,153.5 68.3,148.5M60.5,158Q64,161 67.6,157', fold(slc), .9);
-  // 소매 끝단: 시보리가 없는 겉옷은 커프스 선, 블레이저·코트는 소매 단추
-  if (!k.rib && !k.band && !k.furLapel) s += ln2('M43.5,203L63.7,206', det(slc), .8);
-  if (k.lapel) s += [194, 198.5].map(y => dot(46.8, y, .9, det(slc)) + dot(153.2, y, .9, det(slc))).join('');
-  // 주머니는 옷 종류마다 기본으로 달린 모양만 그린다
-  if (O.kind === 'blazer') s += sh2([[74.5,207],[91,206],[91,212],[74.8,213]], c) + ln('M110,128L123,126.5', dc, 1.2);
-  else if (k.toggle) s += ln2('M74.5,200L90,200L90,224L75,224', dc, .9) + seam2('M74.8,203L87.5,203', dc);
-  else if (k.lapel) s += ln2(`M76.5,${Math.min(198, hem - 30)}L80.5,${Math.min(220, hem - 8)}`, dc, 1.1);
-  else if (k.quilt) s += ln2(`M74,${hem - 40}L79,${hem - 16}`, dc, 1);
-  if (k.belt) s += [146, 172].map(y => dot(90, y, 1.8, dc) + dot(110, y, 1.8, dc)).join('') + sh2([[63,76],[84,67],[85.5,71],[65,80.5]], c);
-  if (k.furLapel) s += sh2([[89,63],[80,72],[86,86],[96,118],[93,72]], '#E7DCC8') + sh2([[43.3,206],[62.6,209.5],[63,217],[42,214]], '#E7DCC8');
-  else if (lap) s += ln2('M89,63L82,74L87,81L84,85L96,118', edge(c), .9);
-  if (k.stand) s += sh2([[85,55],[93,57],[94,70],[88,67]], c);
-  if (k.collar) s += sh2([[89,62],[95,72],[86,86],[80,70]], c);
-  if (k.fur) s += `<path d="M80,72Q80,60 92,58L108,58Q120,60 120,72Q110,80 100,80Q90,80 80,72Z" fill="#E7DCC8" stroke="${OL}" stroke-width="1"/>`;
-  if (k.zip) s += ln2(`M94.2,70L95,${hem}`, dc, 1.1);
-  if (k.btn) s += k.btn.filter(y => y < hem - 6).map(y => dot(93, y, 1.8, dc)).join('');
-  if (k.toggle) [112,142,172].forEach(y => { s += sh([[88,y],[95,y],[95,y+3],[88,y+3]], '#CDBB98'); });
-  if (k.belt) {
-    const b = [[71.6,188],[96,188],[96,196],[71.8,196]];
-    s += sh2(b, c) + sh([[93,193],[97,193],[96,236],[92,236]], c) + sh([[104,193],[108,193],[110,228],[106,228]], c);
-  }
-  if (k.rib || k.band) {
-    const hb = [[71.4,hem-8],[95,hem-8],[95,hem],[71,hem]], cb = [[43.3,206],[62.6,209.5],[63,217],[42,214]];
-    s += sh2(hb, c) + sh2(cb, k.varsity ? c : slc);
-    if (k.rib) s += tx2(hb, T(c,'rb')) + tx2(cb, T(c,'rb'));
-    if (k.varsity) s += ln2(`M71.3,${hem-4}L95,${hem-4}`, slc, 1.4);
-  }
-  if (k.pocket) s += ln2('M76,112L88,112L88,126L76,126Z', dc) + ln2('M76,116.5L88,116.5', dc, .8) + dot(82, 118.6, 1, dc) + dot(118, 118.6, 1, dc)
-    + (k.pocket > 1 && hem > 192 ? ln2('M74,166L90,166L90,188L74,188Z', dc) + ln2('M74,171L90,171', dc, .8) : '');
-  // 아노락은 머리로 뒤집어써서 입는 옷이라 앞이 막혀 있고 지퍼는 가슴까지만, 배에 큰 주머니
-  if (k.closed) s += vsh([[94,68],[106,68],[105,hem],[95,hem]], c) + ln('M100,70L100,124', dc, 1.1) + ln('M100,70L100,124', 'rgba(127,127,127,.5)', .5);
-  if (k.kanga) s += ln('M82,150L118,150L123,196L77,196Z', dc, .9);
-  if (k.shine) s += ln2('M66,124Q71,150 69,182', 'rgba(255,255,255,.35)', 2) + ln2('M57,100L49,180', 'rgba(255,255,255,.3)', 1.6);
-  if (/트랙/.test(O.name)) s += ln2('M63,78L45,211', lum(c) < .45 ? '#F4F4F2' : '#1C1C1C', 2);
-  return {s, back};
-}
-
-function drawBottom(B){
-  const c = B.col[1], dc = det(c), H = B.hem;
-  const L = {
-    wide:[[76,194],[100,194],[100,238],[99,H+2],[69,H+2],[72,214]],
-    slacks:[[76,194],[100,194],[100,236],[96.5,H],[80,H],[73,214]],
-    jogger:[[76,194],[100,194],[100,236],[96,H-9],[83,H-9],[74,214]],
-    shorts:[[76,194],[100,194],[100,236],[98.5,H],[71,H],[73,214]],
-    straight:[[76,194],[100,194],[100,236],[97,H],[79,H],[73,214]]
-  }[B.kind] || [];
-  const fc = fold(c), stc = B.jean ? '#C49149' : dc;
-  let s = vsh2(L, c, B.tex) + ln('M76,201L124,201', dc, .8);
-  // 허리 고리·지퍼 덮개·앞주머니: 조거는 고무줄 허리라 끈, 나머지는 벨트 고리
-  if (B.kind === 'jogger') s += ln('M98,201Q97,212 95,216M102,201Q103,212 105,216', dc, .9);
-  else s += sh2([[80,194],[82.4,194],[82.4,203.5],[80,203.5]], c) + sh2([[91.5,194],[93.9,194],[93.9,203.5],[91.5,203.5]], c);
-  s += ln('M100,202L100,230', dc, .8) + (B.jean ? seam('M96,202L96,223Q96,229 100,231', stc, .8) : ln('M96,202L96,224Q96,228 100,230', dc, .7));
-  if (B.jean) s += ln2('M74.6,213Q83,212 86,201.5', dc, .9) + seam2('M75,216.5Q85.5,215.5 88.8,201.6', stc, .8) + dot(86.2, 203.5, .9, '#B5B5B0') + dot(113.8, 203.5, .9, '#B5B5B0');
-  else s += ln2('M74,219L81.5,201.5', dc, .9);
-  // 주름: 무릎, 밑단(일자는 한 번 꺾임, 슬랙스는 살짝, 와이드는 세로로 떨어지는 주름)
-  if (B.kind === 'straight') s += ln2(`M79.4,${H - 7}Q88,${H - 3} 96.9,${H - 7}`, fc, 1.1) + ln2(`M81,${H - 13}Q86,${H - 11} 90,${H - 13}`, fc, .8);
-  else if (B.kind === 'slacks') s += ln2(`M81,${H - 4}Q88,${H - 2.4} 96,${H - 4}`, fc, .9);
-  else if (B.kind === 'wide') s += ln2(`M84,252L80.5,${H + 1}`, fc, .9) + ln2(`M93.5,266L94.5,${H + 1}`, fc, .9);
-  else if (B.kind === 'jogger') s += ln2(`M84,${H - 17}Q89,${H - 13} 95.6,${H - 17}`, fc, .9) + ln2(`M85,${H - 24}Q90,${H - 21} 95,${H - 25}`, fc, .8);
-  if (B.jean || B.kind === 'shorts') s += seam2(B.kind === 'shorts' ? `M71.2,${H - 3.5}L98.6,${H - 3.5}` : B.kind === 'wide' ? `M69.2,${H - 1}L99,${H - 1}` : `M79.2,${H - 3}L96.8,${H - 3}`, stc, .8);
-  if (B.kind === 'jogger') { const cf = [[83,H-9],[96,H-9],[95.5,H],[83.5,H]]; s += sh2(cf, c) + tx2(cf, T(c,'rb')); }
-  if (B.kind === 'slacks') s += ln2(`M88,214L88.3,${H}`, dc, .8);
-  if (B.cargo) { const y = B.kind === 'shorts' ? 238 : 262; s += ln2(`M72,${y}L84,${y}L84.5,${y+28}L72.5,${y+28}Z`, dc) + ln2(`M72,${y+6}L84,${y+6}`, dc); }
-  if (B.track) s += ln2(`M73.6,216L${B.kind === 'jogger' ? '83.5,' + (H-9) : '79.5,' + H}`, lum(c) < .45 ? '#F4F4F2' : '#1C1C1C', 2.2);
-  if (B.destroyed) s += ln2('M84,296L93,296M85,301L92,301M84,306L91,306', 'rgba(255,255,255,.75)', 1.3);
-  return s;
-}
-
 function shoeKind(n){
   const K = [[/슬라이드/,'slide'],[/샌들/,'sandal'],[/레인부츠/,'rainboot'],[/패딩 부츠|방한 부츠/,'padboot'],[/부츠/,'boot'],[/하이탑/,'hightop'],[/청키|러닝화/,'chunky'],[/로퍼|더비|보트슈즈/,'dress']];
   for (const [re, k] of K) if (re.test(n)) return k;
   return 'sneaker';
 }
-function drawShoes(S){
-  const c = S.col[1], dc = det(c), dark = '#2b2b2b', ws = lum(c) > .75 ? '#DADAD5' : '#F2F2EF';
-  let s = '';
-  if (S.socks) s += S.short ? sh2([[81,360],[97,360],[96.5,404],[81.5,404]], S.socks[1]) : sh2([[81,386],[97,386],[97,404],[81,404]], S.socks[1]);
-  const laces = ln2('M81,404L92,404M80,407.5L93,407.5', dc);
-  switch (S.kind) {
-    case 'chunky': s += sh2([[72,414],[72,406],[77,398],[96,398],[101,406],[101,414]], c) + sh2([[70,412],[103,412],[103,422],[70,422]], ws) + ln2('M81,402L92,402M80,406L93,406', dc); break;
-    case 'hightop': s += sh2([[73,418],[73,386],[97,386],[100,408],[100,418]], c) + sh2([[72,414],[101,414],[101,421],[72,421]], ws) + ln2('M81,392L91,392M81,397L92,397M81,402L93,402', dc); break;
-    // 부츠는 앞에서 보면 발목은 좁고 앞코가 둥글게 퍼진다
-    case 'boot': s += shp2('M74.5,418Q73,410 74.5,404L75,384Q75,382 77,382L95,382Q97,382 97,384L97.5,402Q101,407 100.5,418Z', c) + sh2([[73,416],[101,416],[101,421],[73,421]], dark)
-      + ln2('M79.5,412Q87,407.5 95,412', 'rgba(255,255,255,.18)', 1.2) + (/첼시/.test(S.name) ? sh2([[75.5,384],[79.5,384],[79.5,402],[75.5,402]], dc) : ln2('M82,388L92,388M82,394L93,394', dc)); break;
-    case 'padboot': { const p = 'M73.5,418Q71.5,408 72.5,396L72.5,381Q72.5,378 75.5,378L96.5,378Q99.5,378 99.5,381L99.5,402Q101.5,408 100.5,418Z';
-      s += shp2(p, c) + `<path d="${p}" fill="url(#${T(c,'qt')})"/><path d="${mirD(p)}" fill="url(#${T(c,'qt')})"/>` + sh2([[72,416],[101,416],[101,422],[72,422]], dark); break; }
-    case 'rainboot': s += shp2('M74.5,418Q73,410 74.5,404L74.5,378Q74.5,376 76.5,376L96,376Q98,376 98,378L98.5,402Q101,407 100.5,418Z', c) + sh2([[73,416],[101,416],[101,421],[73,421]], dark) + ln2('M78,380L78,410', 'rgba(255,255,255,.35)', 1.5); break;
-    case 'dress': s += sh2([[73,419],[73,411],[78,404],[95,404],[100,411],[100,419]], c) + sh2([[73,417],[100,417],[100,421],[73,421]], dark) + (/로퍼/.test(S.name) ? ln2('M77,409L96,409', dc, 1.2) : ln2('M83,407L90,407', dc)); break;
-    case 'sandal': s += sh2([[75,419],[75,402],[98,402],[99,419]], SK) + sh2([[74,405],[99,405],[99,409],[74,409]], c) + sh2([[74,412],[99,412],[99,416],[74,416]], c) + sh2([[73,418],[101,418],[101,422],[73,422]], c); break;
-    case 'slide': s += sh2([[75,419],[75,394],[97,394],[99,419]], '#F2F2EF') + sh2([[73,404],[100,404],[100,413],[73,413]], c) + sh2([[73,418],[101,418],[101,422],[73,422]], c); break;
-    default: s += sh2([[73,418],[73,409],[77,401],[96,401],[100,409],[100,418]], c) + sh2([[72,415],[101,415],[101,421],[72,421]], ws)
-      + (/슬립온/.test(S.name) ? '' : laces) + ln2('M74,413Q86.5,409.5 99,413', dc, .7);
-  }
-  return s;
-}
-
-// 신발 옆모습(목록 확대 그림용). 왼쪽이 뒤꿈치, 오른쪽이 앞코, 바닥선 y=58
-function shoeSide(S){
-  const c = S.col[1], dc = det(c), ws = lum(c) > .75 ? '#DADAD5' : '#F2F2EF', dark = '#2b2b2b', n = S.name;
-  const P = d => `<path d="${d}" fill="none" stroke="${dc}" stroke-width=".8" stroke-linecap="round"/>`;
-  const F = (d, f) => `<path d="${d}" fill="${f}" stroke="${edge(f)}" stroke-width="1" stroke-linejoin="round"/>`;
-  const sk = S.socks ? S.socks[1] : SK;
-  const ankle = (top, x1, x2) => F(`M${x1},${top}L${x2},${top}L${x2 + 1},34L${x1 + 1},30Z`, sk);
-  const eyelets = (x1, y1, x2, y2, k) => { let s = ''; for (let i = 0; i < k; i++) { const t = i / (k - 1); s += dot(+(x1 + (x2 - x1) * t).toFixed(1), +(y1 + (y2 - y1) * t).toFixed(1), .9, dc); } return s; };
-  const lowSole = (f, h) => F(`M5,${58 - h}L112,${58 - h}Q117,${59 - h} 116,${54}Q115,58 110,58L10,58Q4,58 4.5,${55 - h / 3}Z`, f);
-  let s = '';
-  switch (S.kind) {
-    case 'hightop':
-      s += lowSole(ws, 8) + F('M8,50L8,8Q8,4 13,4L30,4Q34,4 35,8L38,14L74,35Q96,37 107,42Q113,45 112,50Z', c)
-        + P('M90,50Q91,41 104,40.5') + P('M8,40L30,42') + eyelets(37, 12, 71, 33, 7) + P('M37,12L71,33');
-      if (S.socks) s = ankle(0, 12, 32) + s;
-      break;
-    case 'chunky':
-      s += F('M3,45L114,45Q119,47 118,53Q117,60 111,60L9,60Q2,60 2.5,53Z', ws) + P('M3.5,52L117.5,52')
-        + F('M8,45L8,24Q8,19 13,19L21,20Q28,26 34,25L38,16Q42,13 46,16L72,31Q96,33 106,38Q113,42 112,45Z', c)
-        + P('M24,45Q34,32 54,35L72,45') + P('M88,45Q90,38 102,37') + eyelets(43, 18, 69, 31, 5) + P('M43,18L69,31');
-      if (S.socks) s = ankle(2, 12, 33) + s;
-      break;
-    case 'dress': {
-      s += F('M8,50L112,50Q117,51 115,54.5L31,55L30,58L10,58Q7,58 7.5,55Z', dark)
-        + F('M10,50L10,33Q11,28 17,29L32,32Q48,34 60,31Q72,30 84,34Q104,39 111,45Q114,48 112,50Z', c)
-        + `<path d="M64,33Q88,35 104,42" fill="none" stroke="url(#gl)" stroke-width="2"/>` + P('M11,50L111,50');
-      if (/로퍼/.test(n)) s += P('M52,33Q60,41 74,39.5Q82,38.5 86,35') + P('M63,37.6L72,36.8') + P('M60,31.5Q76,28 92,37');
-      else if (/보트/.test(n)) s += seam('M62,31Q82,28 100,41', dc, .8) + P('M12,31Q36,38 58,31.5') + eyelets(44, 33, 58, 31.4, 3);
-      else s += P('M44,33Q47,44 40,50') + P('M44,33L62,31') + eyelets(46, 33, 60, 31.4, 4);
-      if (S.socks) s = ankle(4, 13, 33) + s;
-      break;
-    }
-    case 'boot': {
-      // 첼시·데저트·앵클은 굽이 따로 보이는 얇은 밑창, 워크·워커·하이킹은 두꺼운 밑창
-      const top = /데저트|앵클/.test(n) ? 16 : 6, chel = /첼시/.test(n), thin = chel || /데저트|앵클/.test(n);
-      s += thin ? F('M9,50L112,50Q116,51 114.5,54L31,55L30,58.5L11,58.5Q9,58.5 9,56Z', /데저트/.test(n) ? '#D9CBB2' : dark)
-        : F('M7,49L113,49Q117,50 116,55L115,59L10,59Q6,59 6.5,55Z', dark) + seam('M9,50.8L113,50.8', '#9a9a9a', .8);
-      s += F(`M14,${thin ? 50 : 49}Q8,44 10,34L11.5,${top + 2}Q11.5,${top} 14,${top}L37,${top}Q39.5,${top} 39.5,${top + 2.5}L41,24Q43,30.5 53,32.5L86,37Q104,40 110,45Q113,48 111,${thin ? 50 : 49}Z`, c)
-        + P(`M11,40Q20,38 25,${thin ? 50 : 49}`);
-      if (chel) s += F(`M19,${top}L25,27L31,${top}Z`, lum(c) < .2 ? '#3a3a3a' : dc) + F(`M12.5,${top}Q12,${top - 5} 16.5,${top - 5}L17.5,${top}Z`, c);
-      else s += eyelets(38.5, top + 4, 50, 31.4, /데저트/.test(n) ? 2 : 5) + P(`M38.5,${top + 4}L50,31.4`) + (thin ? '' : P('M88,49Q89,39 101,39.5'));
-      break;
-    }
-    case 'rainboot': {
-      const top = /숏/.test(n) ? 18 : 4;
-      s += F('M8,52L113,52Q117,53 116,56L115,59L10,59Q7,59 7.5,56Z', dark)
-        + F(`M14,52Q9,46 11,36L12,${top + 2}Q12,${top} 14,${top}L38,${top}Q40,${top} 40,${top + 2}L42,30Q46,34 60,35Q100,38 109,45Q113,48 111,52Z`, c) + ln(`M18,${top + 5}L18,44`, 'rgba(255,255,255,.4)', 2);
-      break;
-    }
-    case 'padboot':
-      s += F('M7,52L113,52Q117,53 116,57L115,60L10,60Q6,60 6.5,57Z', dark) + [14, 30, 46, 62, 78, 94].map(x => F(`M${x},60L${x + 8},60L${x + 7},62.5L${x + 1},62.5Z`, dark)).join('')
-        + F('M14,52Q8,46 9.5,36L9,8Q9,4 14,4L40,4Q44,4 44,8L45,28Q48,34 62,35Q104,39 110,46Q113,49 111,52Z', c) + P('M9.2,16L44.3,16M9.4,28L44.8,28M10,40L64,40');
-      break;
-    case 'sandal': {
-      s += F('M8,52L112,52Q117,53 115,57L10,58Q6,58 7,55Z', lum(c) < .2 ? dark : c)
-        + F('M14,52L14,22Q14,14 22,14L32,14Q36,18 38,27Q70,34 100,40Q112,43 112,52Z', SK)
-        + F('M76,34.5L86,36.5L90,52L80,52Z', c) + F('M44,27L56,29.4L60,52L48,52Z', c) + F('M14,34L46,28L47,34L14,40Z', c);
-      break;
-    }
-    case 'slide':
-      s += F('M7,50L113,50Q118,51 116,57L10,58Q5,58 6,54Z', c) + F('M14,50L14,24Q14,16 22,16L32,16Q36,20 38,28Q70,35 100,41Q112,44 112,50Z', sk)
-        + F('M42,26L76,32.6L84,50L38,50Z', c);
-      break;
-    default:
-      s += lowSole(ws, 8) + F('M8,50L8,26Q8,21 13,21L20,22Q27,28 34,27L38,18Q42,15 46,18L74,35Q96,37 107,42Q113,45 112,50Z', c)
-        + P('M90,50Q91,41 104,40.5') + P('M20,22Q22,37 30,50') + eyelets(44, 20.5, 71, 33.5, 5) + P('M44,20.5L71,33.5');
-      if (/슬립온/.test(n)) s = lowSole(ws, 8) + F('M8,50L8,26Q8,21 13,21L20,22Q27,28 34,27L40,24Q44,22 48,24L74,35Q96,37 107,42Q113,45 112,50Z', c) + P('M90,50Q91,41 104,40.5') + F('M38,25L48,23L52,30L42,32Z', lum(c) < .2 ? '#3a3a3a' : dc);
-      if (S.socks) s = ankle(2, 12, 33) + s;
-  }
-  return s;
-}
-
 function extraKind(n){
   const K = [[/머플러/,'scarf'],[/넥 게이터|넥워머/,'gaiter'],[/반다나/,'bandana'],[/비니/,'beanie'],[/버킷햇/,'bucket'],[/캡/,'cap'],[/장갑/,'gloves'],[/시계/,'watch'],[/백팩/,'backpack'],[/크로스백/,'cross'],[/서류/,'brief'],[/숄더백/,'shoulder'],[/토트백|에코백/,'tote'],[/안경/,'glasses'],[/반지/,'ring'],[/목걸이/,'necklace'],[/벨트/,'belt'],[/양말/,'socks'],[/두르기/,'drape']];
   for (const [re, k] of K) if (re.test(n)) return k;
   return null;
 }
-const EXA = {scarf:[107,112], gaiter:[106,60], bandana:[104,74], beanie:[107,18], bucket:[107,17], cap:[107,18], gloves:[146,224], watch:[146,216], backpack:[122,112], cross:[138,206], brief:[156,248], shoulder:[146,208], tote:[150,262], glasses:[107,35], ring:[148,229], necklace:[106,83], belt:[114,198], socks:[112,395], drape:[122,80]};
-function drawExtra(E){
-  const c = E.col[1], dc = det(c);
-  switch (E.kind) {
-    case 'scarf': { const a = [[85,57],[115,57],[117,74],[83,74]], b = [[87,72],[97,72],[98,169],[88,168]], d = [[103,72],[113,72],[112,148],[102,150]];
-      const t = /체크|타탄/.test(E.name) ? T(c,'ch') : T(c,'rb');
-      return sh(b, c) + tx(b, t) + sh(d, c) + tx(d, t) + sh(a, c) + tx(a, t) + ln('M90,169L90,175M93,169.5L93,175.5M96,169.5L96,175.5', c, 1.2); }
-    case 'gaiter': { const g = [[88,46],[112,46],[114,72],[86,72]]; return sh(g, c) + tx(g, T(c,'rb')); }
-    case 'bandana': return sh([[88,64],[112,64],[100,88]], c) + tx([[88,64],[112,64],[100,88]], T(c,'dt')) + dot(100, 66, 2.6, c);
-    case 'beanie': { const b = [[83,31],[83,20],[90,12],[110,12],[117,20],[117,31]], f = [[82.5,24],[117.5,24],[117.5,32],[82.5,32]]; return sh(b, c) + sh(f, c) + tx(f, T(c,'rb')); }
-    case 'cap': return sh([[85,27],[86,17],[93,11],[107,11],[114,17],[115,27]], c) + `<ellipse cx="100" cy="27.5" rx="18" ry="3.6" fill="${c}" stroke="${edge(c)}"/>`;
-    case 'bucket': return sh([[87,24],[89,12],[111,12],[113,24]], c) + sh([[81,31],[87,23],[113,23],[119,31]], c);
-    case 'gloves': {
-      // 손 모양 그대로 감싸는 장갑(엄지 포함)
-      const g = x => { const d = x < 100 ? 1 : -1; return `<path d="M${x-6},207Q${x-7.5},224 ${x-4},232.5Q${x},236 ${x+4},232.5Q${x+7.5},224 ${x+6},207Z" fill="${c}" stroke="${edge(c)}"/>`
-        + `<path d="M${x + 5 * d},214Q${x + 10 * d},220 ${x + 6 * d},228Z" fill="${c}" stroke="${edge(c)}"/>` + ln(`M${x-6},212L${x+6},212`, dc, .8); };
-      return g(54) + g(146) + (/플리스/.test(E.name) ? tx([[48,207],[60,207],[61,233],[47,233]], T(c,'dt')) : ''); }
-    case 'watch': return sh([[140,214],[152,214],[152,219.5],[140,219.5]], /메탈|실버/.test(E.name) ? '#B8B8B8' : c) + `<circle cx="146" cy="216.8" r="3.3" fill="#ececec" stroke="${OL}"/>`;
-    case 'ring': return `<circle cx="148" cy="229" r="1.8" fill="none" stroke="#9a9a9a" stroke-width="1.3"/>`;
-    case 'necklace': return ln('M91,68Q100,94 109,68', '#B8B8B8', 1.4);
-    case 'glasses': return `<circle cx="93" cy="35" r="5" fill="rgba(255,255,255,.2)" stroke="${c}" stroke-width="1.6"/><circle cx="107" cy="35" r="5" fill="rgba(255,255,255,.2)" stroke="${c}" stroke-width="1.6"/>` + ln('M98,35L102,35', c, 1.4);
-    case 'belt': return sh([[76,195],[124,195],[124,202],[76,202]], c) + `<rect x="96" y="194" width="8" height="9" fill="none" stroke="#9a9a9a" stroke-width="1.4"/>`;
-    case 'drape': { const b = [[64,72],[90,62],[110,62],[136,72],[134,86],[110,76],[90,76],[66,86]], h = [[80,78],[89,77],[103,109],[96,114]];
-      return sh2(h, c) + tx2(h, T(c,'rb')) + sh(b, c) + tx(b, T(c,'rb')) + dot(100, 111, 4.5, c); }
-    case 'tote': return ln('M135,236Q137,214 146,215Q155,214 157,236', c, 2.2) + sh([[131,236],[161,236],[164,288],[128,288]], c);
-    case 'brief': return ln('M140,234Q140,222 146,222Q152,222 152,234', OL, 2) + sh([[127,234],[165,234],[165,264],[127,264]], c) + ln('M127,244L165,244', dc);
-    case 'cross': return ln('M68,80L128,198', OL, 3.6) + ln('M68,80L128,198', c, 2.2) + sh([[120,194],[148,194],[148,218],[120,218]], c) + ln('M120,203L148,203', dc);
-    case 'shoulder': return ln('M131,76L138,192', OL, 3.6) + ln('M131,76L138,192', c, 2.2) + sh([[126,190],[156,190],[158,226],[124,226]], c);
-    case 'backpack': { const p = [[70,73],[79,71],[80,150],[73,153]]; return sh2(p, c) + sh2([[72,128],[80,128],[80,133],[72,133]], dc); }
-  }
-  return '';
-}
-
-// 사람 + 옷 전체. bare면 겉옷·소품·우산을 빼고 안에 입은 옷만 그린다
-function scene(R, umb, bare){
-  let back = '', mid = '', top = '';
-  const oi = !bare && R.Oin ? drawOuter(R.Oin) : null, oo = !bare && R.O ? drawOuter(R.O) : null;
-  if (oi) back += oi.back;
-  if (oo) back += oo.back;
-  const E = !bare && R.E && R.E.draw ? R.E : null;
-  const exS = E ? drawExtra(E) : '';
-  if (E && (E.kind === 'belt' || E.kind === 'necklace')) mid = exS; else top = exS;
-  let u = '';
-  if (umb === 'long') u = sh([[50,246],[58,246],[55,352],[53,352]], '#2E3440') + ln('M54,246L54,226Q54,214 60,216', '#3a3a3a', 2.2);
-  else if (umb) u = sh([[49,236],[59,236],[58,270],[50,270]], '#2E3440') + ln('M54,232L54,236', '#3a3a3a', 1.6);
-  return back + skin() + drawShoes(R.S) + drawBottom(R.B) + drawTop(R.P) + mid + (oi ? oi.s : '') + (oo ? oo.s : '') + top + u;
-}
-
-// 목록 칸마다 붙는 확대 그림
-const EXB = {scarf:'72 48 56 132', gaiter:'78 28 44 54', bandana:'80 50 40 44', beanie:'74 2 52 44', cap:'74 2 52 44', bucket:'72 2 56 44', glasses:'78 14 44 40', necklace:'80 54 40 52',
-  gloves:'124 196 44 48', watch:'128 198 36 40', ring:'132 208 30 32', belt:'70 180 60 40', drape:'56 52 88 72', tote:'118 206 52 90', brief:'116 212 58 60', cross:'58 66 104 160', shoulder:'112 64 54 168', socks:'62 340 76 86'};
-function thumbs(R, umb){
-  const box = (vb, b) => `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${b}</svg>`;
-  const t = {};
-  if (R.O) { const ps = [R.Oin, R.O].filter(Boolean).map(drawOuter); t['겉옷'] = box(`36 40 128 ${R.O.cfg.hem - 30}`, ps.map(p => p.back).join('') + ps.map(p => p.s).join('')); }
-  const bare = scene(R, null, true);
-  t['상의'] = box(`38 40 124 ${(R.P.shirt ? R.P.hem + 7 : R.P.hem) - 30}`, bare);
-  t['하의'] = box('60 184 80 240', bare);
-  t['신발'] = box('0 -2 120 66', shoeSide(R.S));
-  if (R.E && R.E.draw) {
-    if (R.E.kind === 'backpack') { const c = R.E.col[1], dc = det(c);
-      t['소품'] = box('0 0 64 84', ln('M26,11Q32,3 38,11', c, 2.4) + vsh([[12,12],[52,12],[55,78],[9,78]], c) + sh([[16,48],[48,48],[49,74],[15,74]], c) + ln('M13,22Q32,14 51,22', dc, .9) + ln('M16,54L48,54', dc, .8)); }
-    else if (EXB[R.E.kind]) t['소품'] = box(EXB[R.E.kind], scene(R, umb));
-  }
-  return t;
-}
-
-function figure(R, umb){
-  const svgBody = scene(R, umb);
-  const E = R.E && R.E.draw ? R.E : null;
-  // 번호 표시
-  const A = [];
-  const num = slot => (R.rows.find(r => r.slot === slot) || {}).num;
-  if (R.O && num('겉옷')) A.push({n: num('겉옷'), x: 124, y: R.O.cfg.hem > 300 ? 200 : 160});
-  // 상의는 겉옷·머플러에 가리지 않고 보이는 곳을 가리킨다
-  if (num('상의')) A.push(!R.O ? {n: num('상의'), x: 112, y: 140}
-    : R.O.cfg.hem <= 216 ? {n: num('상의'), x: 112, y: 219}
-    : {n: num('상의'), x: 100, y: E && E.kind === 'scarf' ? 186 : 124});
-  if (num('하의')) { const oh = R.O ? R.O.cfg.hem : 0; A.push({n: num('하의'), x: 113, y: R.B.kind === 'shorts' ? 258 : oh > 280 ? Math.min(oh + 22, R.B.hem - 10) : 300}); }
-  if (num('신발')) A.push({n: num('신발'), x: 113, y: 410});
-  if (E && num('소품')) A.push({n: num('소품'), x: EXA[E.kind][0], y: EXA[E.kind][1]});
-  A.sort((a, b) => a.y - b.y);
-  let last = -1e9;
-  A.forEach(m => { m.my = Math.max(m.y, last + 24, 16); last = m.my; });
-  for (let i = A.length - 1; i >= 0; i--) A[i].my = Math.min(A[i].my, i === A.length - 1 ? 416 : A[i+1].my - 24);
-  const mk = A.map(m => ln(`M${m.x},${m.y}L206,${m.my}`, '#8a8a8a', .8) + `<circle cx="${m.x}" cy="${m.y}" r="2.2" fill="#141414" stroke="#fff" stroke-width="1"/>`
-    + `<circle cx="216" cy="${m.my}" r="9.5" fill="#fff" stroke="#141414" stroke-width="1.4"/><text x="216" y="${m.my + 4}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#141414" font-family="Malgun Gothic, sans-serif">${m.n}</text>`).join('');
-  return `<svg viewBox="28 6 202 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="오늘 코디 착장 예시 그림">${defs()}${svgBody}${mk}</svg>`;
-}
-
 /* 고른 옷 → 그림·목록에 쓸 모양과 색 */
 function topKind(n){
   const K = [[/터틀넥|하이넥/,'turtle'],[/후드티/,'hood'],[/쿼터집|하프집업/,'qzip'],[/헨리넥/,'henley'],[/럭비/,'rugby'],[/피케|카라/,'polo'],[/베스트/,'vest'],[/브이넥/,'vknit']];
@@ -1608,6 +1251,7 @@ function resolve(sel, pal, mood){
   let n = 0; rows.forEach(r => { if (r.drawn) r.num = ++n; });
   return {O, Oin, P, B, S, E, rows};
 }
+
 
 /* ---------- 상태 ---------- */
 const KEY = 'outfit-guide-v1';
@@ -2001,6 +1645,8 @@ function render(){
 }
 
 /* ---------- 제품·사이즈 ---------- */
+// v11: 상품 페이지에서 사이즈 칸에 같이 긁혀 온 가격·배송 문구('99,900원', '예약배송')는 사이즈가 아니라서 뺀다
+PRODUCTS.forEach(p => { if (Array.isArray(p.sizes)) p.sizes = p.sizes.filter(s => !/원$|배송|품절|^\s*$/.test(String(s))); });
 const PBY = {};
 PRODUCTS.forEach(p => { (PBY[p.spec] = PBY[p.spec] || {})[p.role] = p; });
 const won = n => Number(n).toLocaleString('ko-KR') + '원';
@@ -2036,12 +1682,23 @@ function clothSize(p){
   use.forEach(r => { const wt = 1 / (0.4 + r.d); sw += wt; sx += wt * (r.i - 0.4 * r.f); });
   const k = Math.min(S.length - 1, Math.max(0, Math.round(sx / sw)));
   const fw = f => f > 0 ? ' 큼' : f < 0 ? ' 작음' : '';
-  return {t: S[k], k, why: `키·몸무게 가까운 후기 ${use.length}개: ` + use.map(r => `${r.h}cm ${r.w}kg ${r.s}${fw(r.f)}`).join(', ') + (loose ? ' (체형 차이가 좀 있어 참고만)' : '')};
+  // v11: 체형이 좀 먼 후기로만 짐작한 건 ref(참고)로 표시해서 확정 사이즈처럼 보이지 않게.
+  // 계산에 쓰는 후기는 그대로 두고, 가장 가까운 후기도 키 4cm 안팎(또는 키·몸무게 3씩) 넘게 차이 나면 참고로만 보여 줌
+  const ref = loose || use[0].d > 1.0;
+  return {t: S[k], k, ref, why: `키·몸무게 가까운 후기 ${use.length}개: ` + use.map(r => `${r.h}cm ${r.w}kg ${r.s}${fw(r.f)}`).join(', ') + (ref ? ' (체형 차이가 좀 있어 참고만)' : '')};
 }
-// 신발: 발 길이와 같은 옵션, 없으면 후기에 '큼'이 많을 때 작은 쪽
+// 신발: 평소 신는 사이즈와 같은 옵션(v11: 입력 이름을 '발 길이'에서 바꿈. 실제 발 길이를 넣으면 작게 나와서), 없으면 후기에 '큼'이 많을 때 작은 쪽
 function shoeSize(p){
   if (!st.bf) return {t:'', why:''};
-  const opts = (p.stock || '').split(' ').filter(Boolean).map(x => ({mm: parseInt(x, 10), out: /x$/.test(x)})).sort((a, b) => a.mm - b.mm);
+  let opts = (p.stock || '').split(' ').filter(Boolean).map(x => ({mm: parseInt(x, 10), out: /x$/.test(x)}));
+  // v11: 코디 사진에서 온 신발은 재고 문자열(stock) 대신 sizes·out 목록만 있음. 둘을 합쳐 mm 옵션으로 본다('230/M4W6' → 230)
+  if (!opts.length) {
+    const mm = s => parseInt(String(s), 10), outS = new Set((p.out || []).map(mm));
+    const all = [...new Set((p.sizes || []).concat(p.out || []).map(mm))].filter(v => v >= 200 && v <= 320);
+    opts = all.map(v => ({mm: v, out: outS.has(v)}));
+    if (!opts.length && (p.sizes || []).some(s => mm(s) >= 35 && mm(s) <= 48)) return {t:'', note: '유럽 사이즈 표기', why: `사이즈가 유럽 표기(${p.sizes[0]}~${p.sizes[p.sizes.length - 1]})라 평소 사이즈로 바로 못 고름. 상품 페이지의 mm 환산표 확인`};
+  }
+  opts.sort((a, b) => a.mm - b.mm);
   if (!opts.length) return {t:'', why:''};
   const rv = (p.rvShoe || '').split(';').filter(Boolean).map(x => { const [mm, fit, ball] = x.split(','); return {mm:+mm, fit, ball}; });
   const n = rv.length, big = rv.filter(r => /큼/.test(r.fit)).length, small = rv.filter(r => /작음/.test(r.fit)).length;
@@ -2056,9 +1713,10 @@ function shoeSize(p){
   if (n && big * 2 >= n && opts.some(x => x.mm === o.mm - 5 && !x.out)) why.push(`${o.mm - 5}도 고려`);
   const wide = rv.filter(r => /넓음/.test(r.ball)).length, narrow = rv.filter(r => /좁음/.test(r.ball)).length;
   if (n) why.push(`발볼 '넓음' ${wide} · '좁음' ${narrow}`);
+  if (o.out) why.push(`${o.mm}은 ${p.checked ? md(p.checked) + ' 확인 때' : '확인 때'} 품절`);
   return {t: String(o.mm), out: o.out, why: why.join(' · ')};
 }
-const sizeOf = p => p.shoe ? shoeSize(p) : clothSize(p);
+const sizeOf = p => isShoe(p) ? shoeSize(p) : clothSize(p);
 function chartLine(p, z){
   const c = p.chart;
   if (!c || !c.rows || z.k == null) return '';
@@ -2076,7 +1734,7 @@ function optTxt(p){
 }
 function sizeTxt(z){
   if (!z.t) return '';
-  return `<span class="sz">${esc(z.t)}</span>${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
+  return `<span class="sz${z.ref ? ' ref' : ''}">${esc(z.t)}</span>${z.ref ? ' <span class="cn">참고</span>' : ''}${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
 }
 function prodHTML(spec, label){
   const g = PBY[spec];
@@ -2126,11 +1784,24 @@ const OUTER_L = /패딩|다운|코트|블레이저|자켓|재킷|플리스 집�
 const SHOE_L = /신발|부츠|더비|로퍼|클로그/;
 const ROLE = {};
 LOOKS.forEach(L => L.spots.forEach(s => { if (!ROLE[s.id]) ROLE[s.id] = s.pants ? 'pants' : SHOE_L.test(s.label) ? 'shoes' : OUTER_L.test(s.label) ? 'outer' : 'top'; }));
+// v11: 코디 사진엔 없고 대안 목록에만 있는 제품은 원래 옷의 역할을 받는다(전엔 역할이 비어 '소품'으로 빠졌음)
+LOOKS.forEach(L => { for (const sid in (L.alts || {})) (L.alts[sid] || []).forEach(id => { if (!ROLE[id] && ROLE[sid]) ROLE[id] = ROLE[sid]; }); });
+// v11: 그래도 역할을 모르면 상품 이름으로 짐작. '옥스포드 셔츠'가 신발로 가지 않게 셔츠·양말을 먼저 거름
+function roleByName(n){
+  if (/스니커즈|운동화|더비|로퍼|부츠|클로그|슬립온|샌들|슈즈|SHOES?\b|1461|에어 ?포스|가젤|삼바|조그 ?100|어센틱|옥스포드 3604|DERBY|LOAFER|BOOTS?|어그|UGG|클래식 미니/i.test(n) && !/셔츠|SHIRT|양말|삭스|SOCKS/i.test(n)) return 'shoes';
+  if (/팬츠|데님|슬랙스|트라우저|조거|쇼츠|바지|진\b|JEANS/i.test(n)) return 'pants';
+  if (/캡\b|캡 |비니|모자|머플러|스카프|장갑|벨트|안경|선글라스|가방|백팩|토트|양말|목걸이|반지|시계/.test(n)) return '';
+  if (/패딩|다운|코트|자켓|재킷|블루종|점퍼|파카|무스탕|무톤|블레이저|MA-1|플리스 집업|DOWN|JACKET|COAT|PARKA/i.test(n)) return 'outer';
+  if (/니트|스웨터|후드|후디|스웨트셔츠|맨투맨|셔츠|티셔츠|롱슬리브|긴팔|반팔|폴로|가디건|카디건|베스트|터틀|스웨트|SHIRT|KNIT|HOODIE|TEE|SWEAT/i.test(n)) return 'top';
+  return '';
+}
 // 여러 계절 기본템(합의한 예외): 스니커즈·더비·로퍼, 데님 바지, 가방, 시계. 패딩·코트·방한화(부츠)는 예외 아님
+// v11: 역할은 roleOf로(코디에 안 실린 '날씨로 고른' 신발도 예외 판단을 받게). '워치 캡'(모자)이 시계로 잡히지 않게 모자를 먼저 거름
 function exempt(p){
-  const r = ROLE[p.id], n = p.name;
-  if (r === 'shoes') return !/부츠|윈터|타스만|클래식 미니|3604|첼시|어그|UGG/i.test(n) && /스니커|운동화|어센틱|에어 ?포스|AF1|가젤|조그|MXR|스페지알|삼바|더비|로퍼|1461|옥스포드|클로그|슈즈/i.test(n);
+  const r = roleOf(p), n = p.name;
+  if (r === 'shoes') return !/부츠|윈터|타스만|클래식 미니|3604|첼시|어그|UGG/i.test(n) && /스니커|운동화|어센틱|에어 ?포스|AF1|가젤|조그|MXR|스페지알|삼바|더비|로퍼|1461|옥스포드|클로그|슈즈|COURT|젤-|보메로/i.test(n);
   if (r === 'pants') return /데님|진\b|JEANS/i.test(n);
+  if (/캡|비니|모자/.test(n)) return false;
   return /백$|가방|토트|시계|워치/.test(n);
 }
 const over = p => p.price > LIMIT && !exempt(p);
@@ -2196,11 +1867,11 @@ function buyPen(L){
   L.spots.forEach(sp => { const p = PID[sp.id], r = ROLE[sp.id]; if (!p) return;
     const A2 = altsFor(L, sp), alt = A2.same.length > 0;
     // 특징이 하나 다르거나(색 등) 일부만 확인한 대안이라도 살 수 있으면 대안 없음보다는 덜 뒤로
-    const near = !alt && (A2.part || []).concat(A2.mood || []).some(a => !a.soldAll && !over(a));
+    const near = !alt && (A2.part || []).concat(A2.mood || []).some(a => !userSizeOut(a) && !over(a)), so = userSizeOut(p);
     // 안에 입은 옷(셔츠·니트·가디건)이 품절이어도 그 사진은 그대로 따라 입기 어려워서 조금 뒤로. 신발은 바꿔 신기 쉬워서 뺌
-    if (r === 'top') { if (p.soldAll) s -= alt ? .15 : near ? .2 : .3; return; }
+    if (r === 'top') { if (so) s -= alt ? .15 : near ? .2 : .3; return; }
     if (r !== 'outer' && r !== 'pants') return;
-    if (p.soldAll) s -= alt ? .5 : near ? .7 : 1; else if (over(p)) s -= alt ? .2 : near ? .3 : .45; });
+    if (so) s -= alt ? .5 : near ? .7 : 1; else if (over(p)) s -= alt ? .2 : near ? .3 : .45; });
   return s;
 }
 
@@ -2232,7 +1903,9 @@ const BAD = [];
 /* ----- 옷 종류·색으로 묶은 칸(비슷한 옷이 있는지 볼 때 씀) ----- */
 const CN = {블랙:'검정', 그레이:'회색', 크림:'크림', 화이트:'흰', '블루 그레이':'블루 그레이', 베이지:'베이지', 브라운:'갈색', 네이비:'네이비', 카키:'카키', 레드:'빨강', 그린:'초록', 옐로우:'노랑', 연청:'하늘색', 진청:'진한 파랑', 블루:'블루'};
 const CND = {연청:'연청', 진청:'진청', 블루:'중청'};
-const roleOf = p => ROLE[p.id] || ({o:'outer', t:'top', b:'pants', s:'shoes'})[((p.spec || '').match(/^L\d\.([otbs])/) || [])[1]] || (p.shoe ? 'shoes' : '');
+const roleOf = p => ROLE[p.id] || ({o:'outer', t:'top', b:'pants', s:'shoes'})[((p.spec || '').match(/^L\d\.([otbs])/) || [])[1]] || (p.shoe ? 'shoes' : roleByName(p.name || ''));
+// v11: 신발인지는 역할로 본다. 코디 사진에서 온 신발엔 shoe 표시가 없어서 발 사이즈 계산을 못 받던 문제
+const isShoe = p => !!p && (!!p.shoe || roleOf(p) === 'shoes');
 function kindOf(p, r){
   const n = p.name; r = r || roleOf(p);
   if (r === 'outer') return /라이트 ?(패딩|다운)/.test(n) ? '라이트 패딩' : /패딩|다운|푸퍼/.test(n) ? '패딩' : /하프|쇼트 코트/.test(n) ? '하프 코트' : /코트/.test(n) ? '롱코트'
@@ -2386,28 +2059,48 @@ function reasonsOf(o){
 }
 
 function sizeLine(p){
-  const z = sizeOf(p);
-  const needs = p.shoe ? !st.bf : (!st.bh || !st.bw);
-  if (z.t && z.t !== '실측표로 고르기') return `<span class="sz">${esc(z.t)}</span>` + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
-  if (needs) return `<button class="plain" type="button" data-toset="${p.shoe ? 'bf' : 'bh'}" style="padding:1px 7px;font-size:12px">${p.shoe ? '발 길이' : '키·몸무게'} 넣으면 계산</button>`;
-  return '실측 확인';
+  const z = sizeOf(p), sh = isShoe(p);
+  const needs = sh ? !st.bf : (!st.bh || !st.bw);
+  if (z.t && z.t !== '실측표로 고르기') return `<span class="sz${z.ref ? ' ref' : ''}">${esc(z.t)}</span>` + (z.ref ? ' <span class="cn">참고 · 체형이 좀 먼 후기로 짐작</span>' : '') + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
+  if (needs) return `<button class="plain" type="button" data-toset="${sh ? 'bf' : 'bh'}" style="padding:1px 7px;font-size:12px">${sh ? '평소 신발 사이즈' : '키·몸무게'} 넣으면 계산</button>`;
+  return z.note ? esc(z.note) + ' · 환산표 확인' : '실측 확인';
 }
+// v11: 내 사이즈가 품절인지(전 사이즈 품절 포함). 사이즈를 아직 계산 못 하면(키·몸무게·신발 사이즈 없음) 품절로 치지 않음
+function userSizeOut(p){
+  if (!p) return true;
+  if (p.soldAll) return true;
+  const out = (p.out || []).map(String);
+  if (!out.length) return false;
+  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q) return !!(q.row && out.includes(String(q.S[q.k]))); }
+  const z = sizeOf(p);
+  if (!z.t || z.t === '실측표로 고르기' || z.t === '손 크기로 고르기') return false;
+  return !!z.out || out.includes(String(z.t));
+}
+const myOutTxt = p => { if (p.soldAll) return '전 사이즈 품절';
+  const q = roleOf(p) === 'pants' ? pantsPick(p) : null, t = q && q.row ? q.S[q.k] : sizeOf(p).t; return `내 사이즈 ${t} 품절`; };
 // 바지 추천 사이즈: 허리단면을 넣었으면 실측 허리단면이 가장 가까운 사이즈, 아니면 키·몸무게가 비슷한 후기로 고른 사이즈
+// v11: 허리 전체가 고무줄인 바지(밴딩·스웨트)는 실측표 허리가 안 늘린 값이라 내 바지 허리와 바로 비교하면 1~2치수 크게 나옴.
+//      그래서 후기로 고를 수 있으면 후기로, 아니면 허리 비교를 하되 참고로만. '히든 밴딩'(뒤만 고무줄)은 보통 바지처럼 봄
+const elasticW = p => (/밴딩/.test(p.name) && !/히든 ?밴딩/.test(p.name)) || /스웨트|스웻|조거|트레이닝|라운지|이지 ?팬츠/.test(p.name);
 function pantsPick(p){
   const c = p.chart, S = p.sizes || [];
   if (!c || !c.rows || c.rows.length !== S.length) return null;
-  const iL = c.cols.indexOf('총장'), iW = c.cols.indexOf('허리단면');
-  let k = null, basis = '';
-  if (st.pw && iW >= 0) {
-    let best = Infinity;
-    c.rows.forEach((r, i) => { if (r[iW] == null) return; const d = Math.abs(r[iW] - st.pw); if (d < best - 1e-9) { best = d; k = i; } });
-    if (k != null) basis = '허리단면이 가장 가까운 사이즈';
+  const iL = c.cols.indexOf('총장'), iW = c.cols.indexOf('허리단면'), el = elasticW(p);
+  let k = null, basis = '', ref = false;
+  const byReview = () => { if (S.length <= 1) return; const z = clothSize(p);
+    if (z.k != null && z.t && S[z.k] === z.t) { k = z.k; ref = !!z.ref; basis = (el && st.pw ? '고무줄 허리라 허리단면 대신 ' : '') + (z.ref ? '체형이 좀 먼 후기로 짐작한 사이즈(참고)' : '키·몸무게 비슷한 후기로 고른 사이즈'); } };
+  if (el && st.pw) byReview();
+  if (k == null && st.pw && iW >= 0) {
+    // 허리 차이가 가장 작은 사이즈. 0.6cm 안으로 비슷하면 총장이 내 바지에 더 가까운 쪽(총장을 넣었을 때만)
+    const cd = c.rows.map((r, i) => ({i, d: r[iW] == null ? null : Math.abs(r[iW] - st.pw), dl: st.pl && iL >= 0 && r[iL] != null ? Math.abs(r[iL] - st.pl) : 0})).filter(x => x.d != null);
+    if (cd.length) { const m = Math.min(...cd.map(x => x.d)), near = cd.filter(x => x.d <= m + .6);
+      near.sort((a, b) => a.d - b.d || a.i - b.i); k = near[0].i;
+      const bl = st.pl ? near.slice(1).filter(x => x.dl <= near[0].dl - 2).sort((a, b) => a.dl - b.dl)[0] : null;
+      if (bl) { k = bl.i; basis = '허리단면이 가장 가까운 사이즈(허리 차이가 비슷한 사이즈 중 총장이 내 바지에 더 가까운 쪽)'; } }
+    if (k != null) { basis = basis || '허리단면이 가장 가까운 사이즈'; if (el) { ref = true; basis += ' · 고무줄 허리라 실제론 한 치수 작아도 맞을 수 있어 참고만'; } }
   }
-  if (k == null && S.length > 1) {
-    const z = clothSize(p);
-    if (z.k != null && z.t && S[z.k] === z.t) { k = z.k; basis = '키·몸무게 비슷한 후기로 고른 사이즈'; }
-  }
-  return {k, basis, iL, iW, S, rows: c.rows, row: k != null ? c.rows[k] : null};
+  if (k == null) byReview();
+  return {k, basis, ref, iL, iW, S, rows: c.rows, row: k != null ? c.rows[k] : null};
 }
 function fitScore(L){
   const p = pantsOf(L), r = {cmp: false, pf: false, d: 0};
@@ -2714,7 +2407,7 @@ function howHTML(L, A){
 const lvW = L => L.level === st.level ? 1 : (TS.lv && TS.lv[L.level] ? .8 : .5);
 function repOf(slot, looks){
   const inLooks = new Set(looks.flatMap(L => partsOf(L).filter(x => x.slot === slot && x.id).map(x => x.id)));
-  const c = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && !p.soldAll && roleOf(p) && slotOf(p) === slot && (!over(p)))
+  const c = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && slotOf(p) === slot && !over(p) && !userSizeOut(p))
     .sort((a, b) => inLooks.has(b.id) - inLooks.has(a.id) || a.price - b.price);
   return {p: c[0] || null, same: c[0] ? looks.filter(L => L.spots.some(s => s.id === c[0].id)).length : 0};
 }
@@ -2802,9 +2495,23 @@ function ownChipsHTML(scope, os){
   const lab = k => OWN.s[k] === 'similar' || os.has(k) ? '있음' : OWN.s[k] === 'no' ? '없음' : '모름';
   const fs = chips.filter(k => lab(k) === '있음' && need[k]).map(k => featRows(k, [...need[k]])).join('');
   return `<p class="k" style="margin-top:12px">가진 옷 체크 · 누를 때마다 모름 → 있음 → 없음 · 이 기기에만 저장</p><div class="ownc">`
-    + chips.map(k => `<button type="button" data-own="${esc(k)}" data-v="${lab(k)}">${esc(slotName(k))} <i>${lab(k)}</i></button>`).join('') + '</div>'
+    + chips.map(k => `<button type="button" data-own="${esc(k)}" data-v="${lab(k)}">${esc(slotName(k))} <i>${lab(k)}</i></button>`).join('') + '</div>' + ownListHTML(new Set(chips))
     + (fs ? `<p class="cn" style="margin:6px 0 0">있다고 한 옷의 모양을 고르면 사진 속 옷과 같은지 비교해. 모르면 '모름'으로 두면 '확인할 것'으로 남아</p>${fs}` : '')
     + (Object.keys(OWN.p).length + Object.keys(OWN.s).length ? '<button type="button" class="plain sm" id="ownClr" style="margin-top:6px">가진 옷 기록 지우기</button>' : '');
+}
+// v11: 어떤 경로로 적었든(오늘 화면 칩, 7일 준비 '있음' 버튼, '받음') 가진 옷 기록을 다 보여 주고 하나씩 지울 수 있게
+function ownListHTML(skip){
+  skip = skip || new Set();
+  const a = [];
+  for (const k in OWN.s) if (!skip.has(k)) a.push(['s:' + k, slotName(k) + (OWN.s[k] === 'no' ? ' 없음' : ' 있음')]);
+  for (const k in OWN.p) if (OWN.p[k] === 'own') { const p = PID[k.split('|')[0]], c = k.split('|')[1]; if (p) a.push(['p:' + k, shortName(p.name) + (c && c !== '?' ? ' · ' + (CN[c] || c) : '')]); }
+  if (!a.length) return '';
+  return `<div class="ownl"><span class="k">적어 둔 가진 옷 ${a.length}개 · 누르면 그 기록만 지움</span>` + a.map(([k, t]) => `<button type="button" class="plain sm" data-ownx="${esc(k)}">${esc(t)} ✕</button>`).join('') + '</div>';
+}
+function ownDel(k){
+  const t = k.slice(0, 1), key = k.slice(2);
+  if (t === 's') { delete OWN.s[key]; delete OWN.f[key]; } else { delete OWN.p[key]; if (OWN.d[key] && OWN.d[key].st === 'got') delete OWN.d[key]; }
+  saveO();
 }
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
@@ -2815,6 +2522,7 @@ function bindOwn(box, after){
     saveO(); after(); }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); after(); }));
+  box.querySelectorAll('[data-ownx]').forEach(b => b.addEventListener('click', () => { ownDel(b.dataset.ownx); after(); }));
   const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => { OWN.p = {}; OWN.s = {}; OWN.f = {}; saveO(); after(); });
 }
 function jumpTo(key){
@@ -2931,14 +2639,14 @@ const sizeOut = p => { const q = pantsPick(p); return !!(q && q.row && p.out && 
 // 대안 고르기. 같은 느낌(종류·색·실루엣이 같음)을 먼저, '분위기 바꾸기'(실루엣은 같고 색·소재가 다름)는 원래 걸 못 사거나 같은 느낌이 없을 때만
 function altsFor(L, s){
   const p = PID[s.id]; if (!p) return {same: [], mood: []};
-  const man0 = ((L.alts && L.alts[s.id]) || []).map(id => PID[id]).filter(a => a && !a.soldAll && !over(a));
+  const man0 = ((L.alts && L.alts[s.id]) || []).map(id => PID[id]).filter(a => a && !userSizeOut(a) && !over(a));
   if (ROLE[p.id] !== 'pants') {
     // v10: 주요 특징이 다 확인되고 같아야 '같은 느낌'. 다른 건 없지만 확인 못 한 특징이 있으면 '일부 특징만 확인한 후보'
     const g = a => gate(p, a, s), same = man0.filter(a => g(a).ok && !g(a).unk.length), part = man0.filter(a => g(a).ok && g(a).unk.length), mood = man0.filter(a => !g(a).ok);
     return {same, part, mood};
   }
   const pool = [...new Set(LOOKS.flatMap(x => x.spots.filter(t => t.pants).map(t => t.id)).concat(man0.map(a => a.id), XPOOL, PRODUCTS.filter(x => /^L\d\.b/.test(x.spec || '')).map(x => x.id)))].map(id => PID[id])
-    .filter(a => a && a.id !== p.id && !a.soldAll && !over(a));
+    .filter(a => a && a.id !== p.id && !userSizeOut(a) && !over(a));
   const fp = famOf(p), cp = colAt(s, p), sp = subOf(p);
   const srt = (a, b) => (a.price > p.price) - (b.price > p.price) || a.price - b.price;
   // v10: 통(실루엣)을 둘 다 아는 것만 '같은 느낌'. 한쪽이라도 모르면 '일부 특징만 확인한 후보'
@@ -2950,13 +2658,13 @@ function altsFor(L, s){
   return {same, part, mood};
 }
 function altHTML(L, p, a, s){
-  const why = L.altWhy && L.altWhy[a.id], isP = ROLE[p.id] === 'pants';
+  const why = L.altWhy && L.altWhy[a.id], isP = ROLE[p.id] === 'pants'; // v11: 대안 쪽은 roleOf(코디에 안 실린 바지도 바지로)
   const g = !isP ? gate(p, a, s) : {ok: true, unk: famOf(p) && famOf(a) ? [] : ['통']};
   return `<div class="altc"><span class="ai">${photo(a, 160, 1)}</span><span class="tx"><span class="nottag">사진 속 제품 아님</span><b>${esc(shortName(a.name))}</b>`
     + (g.ok ? '' : `<br><span class="df">달라지는 점: ${esc(g.why)}</span>`)
     + (g.ok && g.unk && g.unk.length ? `<br><span class="cn">확인 못 한 특징: ${esc(g.unk.join('·'))} · 상품 페이지 사진으로 확인</span>` : '')
     + `<br><span class="df">${esc(diffs(p, a, s).join(' · '))}</span>` + (why ? `<br><span class="cn">${esc(why)}</span>` : '')
-    + `<br>${ROLE[a.id] === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz">${esc(q.S[q.k])}</span> 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
+    + `<br>${roleOf(a) === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz${q.ref ? ' ref' : ''}">${esc(q.S[q.k])}</span> 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
     + ` · ${won(a.price)} <span class="cn">${md(a.checked)} 확인</span>${a.stockNote ? ' · ' + esc(a.stockNote) : ''} · ${lnk(a, '무신사 ↗')}</span></div>`;
 }
 function cardHTML(L, i){
@@ -2973,7 +2681,7 @@ function cardHTML(L, i){
   const fb0 = L.fb && L.fb[s.id], fb = typeof fb0 === 'string' ? FB[fb0] : fb0;
   // 품절이어도 바지는 사이즈를 계산해 둔다(대안 비교가 이 사이즈 기준이고, 재입고되면 바로 씀)
   const sz = p.soldAll ? (q && q.row ? `<span class="sz">${esc(q.S[q.k])}</span> <span class="warn">품절</span> <span class="cn">재입고되면 이 사이즈 · ${esc(q.basis)}</span>` : '<span class="warn">품절이라 계산 안 함</span>')
-    : q && q.row ? `<span class="sz">${esc(q.S[q.k])}</span>${p.out && p.out.includes(q.S[q.k]) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''} <span class="cn">${esc(q.basis)}</span>`
+    : q && q.row ? `<span class="sz${q.ref ? ' ref' : ''}">${esc(q.S[q.k])}</span>${p.out && p.out.includes(q.S[q.k]) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''} <span class="cn">${esc(q.basis)}</span>`
     : sizeLine(p);
   const why = [z.why, chartLine(p, zz)].filter(Boolean);
   const facts = [p.fitPct, p.reviewCount ? '후기 ' + Number(p.reviewCount).toLocaleString('ko-KR') + '개' : ''].filter(Boolean).join(' · ');
@@ -3119,6 +2827,8 @@ function buyRecFor(x){
   if (x.id && OWN.d[pk(x.id, x.col)]) return {key: pk(x.id, x.col), rec: OWN.d[pk(x.id, x.col)]};
   if (!x.slot) return null;
   for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === x.slot && fitsPart(PID[k.split('|')[0]], x).ok) return {key: k, rec: r}; }
+  // v11: 이번 주 그 칸에 사기로 한 게 있으면 특징을 다 확인 못 했어도 그걸로 같이 씀(같은 칸을 한 주에 두 번 사지 않게). 차이는 화면에 적음
+  for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === x.slot && r.st !== 'got' && PID[k.split('|')[0]]) return {key: k, rec: r, part: fitsPart(PID[k.split('|')[0]], x).why || '특징 확인 못 함'}; }
   return null;
 }
 // 세탁 등으로 못 쓰는 날: OWN.w[제품|색 또는 종류|색] = [날짜…]
@@ -3138,7 +2848,7 @@ function dayPart(x, d, os){
   if (s.lv === 2) return Object.assign({code: 'soft'}, s);
   if (s.lv === -1) return Object.assign({code: 'info'}, s);
   // 겉옷에 가린 상의·모양이 안 보이는 신발은 살 제품을 정할 수 없어서 '가진 옷 확인'으로
-  if ((x.anyTop || x.anyKind) && s.t !== '없음') return {lv: -1, code: 'info', t: `${x.what} · 가진 옷 중에 있으면 '있음'을 눌러 줘`};
+  if ((x.anyTop || x.anyKind) && s.t !== '없음') return {lv: -1, code: 'info', t: `${x.what} · 가진 옷 중에 있으면 ${x.anyKind ? '아래에서 종류를' : "'있음'을"} 눌러 줘`};
   const b = buyRecFor(x);
   if (b) { const r = b.rec;
     if (r.st === 'ordered') {
@@ -3161,7 +2871,7 @@ function dayStatus(L, d, os){
 // 한 주 짜기: 날짜마다 따로 고르지 않고, 앞 날짜에서 쓰거나 사기로 한 옷을 다시 쓰면 점수를 더함(살 옷을 줄임)
 // 고정한 날, 전에 고른 코디가 아직 그날 날씨·단계에 맞는 날은 그대로 둠(예보가 바뀌어 안 맞게 된 날만 다시 고름)
 function planWeek(force){
-  const ds = weekDates(), os = ownedSlots(), bought = {}, out = [], t0 = localNow(wx).date;
+  const ds = weekDates(), os = ownedSlots(), bought = {}, bRole = {}, out = [], t0 = localNow(wx).date;
   for (const k in WK.days) if (k < t0) delete WK.days[k];
   ds.forEach(d => {
     const D = WK.days[d] = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d);
@@ -3174,17 +2884,25 @@ function planWeek(force){
     else {
       let bv = -1e9;
       cand.forEach(o => { let v = o.sc;
-        const pt = out.length ? out[out.length - 1].topK : null; let buys = 0;
+        const pt = out.length ? out[out.length - 1].topK : null; let buys = 0, dead = 0, canRot = false;
         partsOf(o.L).filter(x => x.need === 'req').forEach(x => { const s = dayPart(x, d, os);
+          // 겉옷에 가려 아무 상의나 되는 칸(anyTop)도 상의를 바꿔 입을 수 있는 걸로 침
+          if (x.role === 'top' && (x.anyTop || (s.free && s.free.some(k => k !== pt)))) canRot = true;
           if (WK.gap && pt && x.role === 'top' && (x.slot ? x.slot === pt : s.free && s.free.every(k => k === pt))) v -= 1.2;
           if (s.code === 'ok') v += .5; else if (s.code === 'soft') v += .3; else if (s.code === 'eta') v += .2; else if (s.code === 'info') v -= .2;
           else if (s.code === 'wait' || s.code === 'wash') v -= .5;
           else if (x.slot && bought[x.slot]) v += .35; else if (s.code === 'plan') v -= .1;
-          else { const p = x.id && !over(x.p) && !x.p.soldAll ? x.p : x.slot ? repOf(x.slot, [o.L]).p : null; v -= (WK.thrift ? 2 : 1) * (p ? .5 + Math.min(150000, p.price) / 300000 : 1.6); buys++; } });
+          else { const p = x.id && !over(x.p) && !userSizeOut(x.p) ? x.p : x.slot ? repOf(x.slot, [o.L]).p : null;
+            // v11: 살 수 있는 제품이 없는 칸(품절·예산 초과에 대체도 없음)은 크게 빼서, 다른 코디가 있으면 그쪽을 고름
+            if (p) v -= (WK.thrift ? 2 : 1) * (.5 + Math.min(150000, p.price) / 300000); else { v -= 3.5; dead++; }
+            // v11: 이번 주에 이미 신발·겉옷을 하나 사기로 했으면 다른 종류를 또 사는 코디는 조금 더 뒤로(검정 스니커즈와 검정 구두를 한 주에 같이 사지 않게)
+            if ((x.role === 'shoes' || x.role === 'outer') && bRole[x.role]) v -= .8;
+            buys++; } });
         // 유행을 타거나 갈리는 코디(조건부·포인트)를 위해서는 되도록 새로 사지 않음
         if (buys && baseOf(o.L) < 2) v -= .6;
         const p1 = out[out.length - 1], p2 = out[out.length - 2];
-        if (p1 && p1.L === o.L) v -= 4; else if (p2 && p2.L === o.L) v -= 1.5;
+        // v11: 살 수 없는 칸 감점(3.5)이 커지면서 같은 코디가 닷새 이어지는 일이 생김 → 상의도 못 바꾸는 사흘째는 크게 빼서, 다른 코디가 있으면 그쪽으로
+        if (p1 && p1.L === o.L) v -= (p2 && p2.L === o.L && !canRot) ? 12 : 4; else if (p2 && p2.L === o.L) v -= 1.5;
         if (v > bv) { bv = v; pick = o; } });
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
       else delete D.why;
@@ -3193,7 +2911,7 @@ function planWeek(force){
     if (!pick) { out.push({d, A, lv, none: true}); return; }
     D.key = pick.L.key; D.lvAt = lv;
     const status = dayStatus(pick.L, d, os);
-    status.req.forEach(x => { if (x.slot && BUYC.includes(x.ds.code)) bought[x.slot] = bought[x.slot] || d; });
+    status.req.forEach(x => { if (x.slot && BUYC.includes(x.ds.code)) { bought[x.slot] = bought[x.slot] || d; bRole[x.role] = true; } });
     const prv = out.length ? out[out.length - 1] : null, pT = prv ? prv.topK : null, at = status.req.find(x => x.role === 'top' && x.ds.free);
     let topK = null, rot = false;
     if (at) { const k = at.ds.free.find(k => !WK.gap || k !== pT) || at.ds.free[0]; rot = !!(WK.gap && pT && k !== pT && at.ds.free.includes(pT));
@@ -3213,10 +2931,10 @@ function planWeek(force){
 // 살 제품 정하기: 이미 기록한 것 → 사진 속 제품(10만원 아래·재고 있음) → 같은 종류·색 대체 제품(주요 특징이 맞으면 '대신', 확인 못 하면 '일부 특징만 확인')
 function buyPick(x, L){
   const b = buyRecFor(x);
-  if (b) { const p = PID[b.key.split('|')[0]]; return p ? {p, col: b.key.split('|')[1], key: b.key, kind: p.id === x.id ? 'exact' : 'sub', rec: true} : null; }
-  if (x.id && !x.p.soldAll && !over(x.p)) return {p: x.p, col: x.col, key: pk(x.id, x.col), kind: 'exact'};
+  if (b) { const p = PID[b.key.split('|')[0]]; return p ? {p, col: b.key.split('|')[1], key: b.key, kind: p.id === x.id ? 'exact' : b.part ? 'part' : 'sub', why: b.part || '', rec: true} : null; }
+  if (x.id && !userSizeOut(x.p) && !over(x.p)) return {p: x.p, col: x.col, key: pk(x.id, x.col), kind: 'exact'};
   if (!x.slot) return null;
-  const r = repOf(x.slot, [L]).p, why0 = x.id ? (x.p.soldAll ? '사진 속 제품은 전 사이즈 품절' : `사진 속 제품은 ${won(x.p.price)}이라 예산을 넘음`) : '';
+  const r = repOf(x.slot, [L]).p, why0 = x.id ? (userSizeOut(x.p) ? '사진 속 제품은 ' + myOutTxt(x.p) : `사진 속 제품은 ${won(x.p.price)}이라 예산을 넘음`) : '';
   if (!r) return {p: null, why: why0};
   const f = fitsPart(r, x), col = x.slot.split('|')[1];
   return {p: r, col, key: pk(r.id, col), kind: f.ok ? 'sub' : 'part', why: f.ok ? '' : f.why, over: why0};
@@ -3228,12 +2946,15 @@ function weekBuy(plan){
     if (!BUYC.includes(x.ds.code) || !x.slot) return;
     const bp = buyPick(x, p.L);
     const k0 = bp && bp.p ? bp.key : 'slot:' + x.slot;
-    let it = items.find(i => i.k === k0);
+    let it = items.find(i => i.k === k0), diff = '';
     if (!it && !(bp && bp.rec)) it = items.find(i => i.p && i.slot === x.slot && fitsPart(i.p, x).ok);
+    // v11: 같은 칸(종류·색)을 이번 주에 이미 사기로 했으면, 기장·통을 다 확인 못 했어도 새로 사지 않고 그걸로 같이 입음.
+    //      (v10은 카키 패딩 두 벌처럼 같은 칸을 한 주에 두 번 사라고 했음) 사진과 다를 수 있는 점은 그날 칸과 목록에 적음
+    if (!it && !(bp && bp.rec)) { it = items.find(i => i.p && i.slot === x.slot); if (it) diff = fitsPart(it.p, x).why || '특징 확인 못 함'; }
     if (!it) { it = {k: k0, p: bp && bp.p, col: bp && bp.col, slot: x.slot, kind: bp ? bp.kind : null, why: (bp && bp.why) || '', over: (bp && bp.over) || '', days: [], uses: [], others: new Set()}; items.push(it); }
-    x.bi = it;
+    x.bi = it; x.biDiff = diff || (bp && bp.rec && bp.kind === 'part' ? bp.why : '');
     if (!it.days.includes(p.d)) it.days.push(p.d);
-    it.uses.push({d: p.d, L: p.L, exact: !!(it.p && x.id === it.p.id)});
+    it.uses.push({d: p.d, L: p.L, exact: !!(it.p && x.id === it.p.id), diff: x.biDiff});
     p.status.req.filter(y => y !== x && ['miss', 'plan', 'info'].includes(y.ds.code)).forEach(y => it.others.add(y.slot ? slotName(y.slot) : (y.what || y.info)));
   }));
   const list = items.sort((a, b) => a.days[0].localeCompare(b.days[0]) || b.days.length - a.days.length);
@@ -3253,9 +2974,13 @@ function partRow(x, p, os){
   const s = x.ds, nm = x.slot ? slotName(x.slot) : (x.what || x.info || RN[x.role]);
   const prod = x.p ? `<br><span class="cn">사진 속 제품: ${esc(shortName(x.p.name))}</span>` : '';
   let act = '';
-  if (BUYC.includes(s.code) && x.bi && x.bi.p) act = `<span class="cn">${x.bi.p.id === (x.p || {}).id ? '' : `살 제품: ${esc(shortName(x.bi.p.name))}${x.id ? ` (${x.p.soldAll ? '사진 속 제품은 품절' : over(x.p) ? '사진 속 제품은 10만원 넘음' : '다른 날 코디와 같은 칸이라 한 번만 사게'})` : ''} · `}${won(x.bi.p.price)}</span><br>` + buyActs(x.bi.k, x.slot);
+  if (BUYC.includes(s.code) && x.bi && x.bi.p) act = `<span class="cn">${x.bi.p.id === (x.p || {}).id ? '' : `살 제품: ${esc(shortName(x.bi.p.name))}${x.id ? ` (${userSizeOut(x.p) ? '사진 속 제품은 ' + myOutTxt(x.p) : over(x.p) ? '사진 속 제품은 10만원 넘음' : '다른 날 코디와 같은 칸이라 한 번만 사게'})` : ''} · `}${won(x.bi.p.price)}</span>${x.biDiff ? `<br><span class="cn warn">사진과 다를 수 있음: ${esc(x.biDiff)}</span>` : ''}<br>` + buyActs(x.bi.k, x.slot);
   else if (BUYC.includes(s.code) && x.bi) act = `<span class="cn">10만원 아래 같은 종류·색 제품을 못 찾음</span>`;
-  if (s.code === 'info' && (x.anyTop || x.anyKind)) act = `<button type="button" class="plain sm" data-have="${esc((x.anyTop ? '상의|' : '신발|') + (x.col || '?'))}">${esc(x.col ? (CN[x.col] || x.col) + ' ' : '')}${x.anyTop ? '상의' : '신발'} 있음</button>`;
+  // v11: 모양이 안 보이는 신발은 '신발 있음' 하나로 받지 않고 종류를 고르게 함(검정 구두가 검정 스니커즈 칸까지 채우지 않게)
+  if (s.code === 'info' && x.anyTop) act = `<button type="button" class="plain sm" data-have="${esc('상의|' + (x.col || '?'))}">${esc(x.col ? (CN[x.col] || x.col) + ' ' : '')}상의 있음</button>`;
+  else if (s.code === 'info' && x.anyKind) act = `<span class="cn">가진 ${esc(x.col ? (CN[x.col] || x.col) + ' ' : '')}신발이 있으면 종류:</span> ` + [['스니커즈', '스니커즈'], ['더비', '구두(더비·로퍼)'], ['부츠', '부츠']].map(([k, t]) => `<button type="button" class="plain sm" data-have="${esc(k + '|' + (x.col || '?'))}">${t}</button>`).join('');
+  const uk = (s.code === 'ok' || s.code === 'soft') && (s.pick || [x.slot].concat(x.also || []).find(k => k && OWN.s[k] === 'similar'));
+  if (uk && OWN.s[uk] === 'similar') act += `${act ? ' ' : ''}<button type="button" class="plain sm" data-unhave="${esc(uk)}">${esc(slotName(uk))} 있음 취소</button>`;
   else if (s.code === 'miss' && x.slot) act += `${act ? ' ' : ''}<button type="button" class="plain sm" data-have="${esc(x.slot)}">비슷한 ${esc(slotName(x.slot))} 있음</button>`;
   const wk = washKey(x, os);
   if ((s.code === 'ok' || s.code === 'soft' || s.code === 'wash') && wk) act += `<button type="button" class="plain sm" data-wash="${esc(wk)}" aria-pressed="${s.code === 'wash'}">이날 세탁 중</button>`;
@@ -3296,6 +3021,8 @@ function showWeek(){
   }).join('') + '</div>';
   const p = plan.find(x => x.d === WK.sel);
   h += `<div class="wdet" id="wdet">${dayDetail(p, os)}</div>`;
+  const ol = ownListHTML();
+  if (ol) h += `<details class="lkm ownw"><summary>가진 옷 기록 보기 · 지우기</summary>${ol}</details>`;
   h += weekBuyHTML(B, plan);
   box.innerHTML = h;
   imgFail(box);
@@ -3338,6 +3065,8 @@ function weekBuyHTML(B, plan){
     return h + `<p>${why}</p></div>`;
   }
   const bud = WK.budget;
+  // v11: 가진 옷을 하나도 안 적었으면 '전부 산다'고 계산한 거라는 걸 먼저 말함
+  if (!hasOwn()) h += `<p class="reft"><b>가진 옷 기록 없음</b>가진 옷을 아직 하나도 안 적어서 전부 새로 산다고 계산했어. 날짜 칸의 '있음' 버튼이나 오늘 화면 '가진 옷 체크'로 가진 옷을 적으면 이 목록이 줄어</p>`;
   h += `<p class="rd">아직 안 산 것 <b>${won(B.sumTodo)}</b> (${B.todo.length}개)${B.ordered.length ? ` · 주문한 것 ${won(B.sumOrd)} (${B.ordered.length}개, 받기 전)` : ''}${B.none.length ? ` · 제품을 못 정한 칸 ${B.none.length}개` : ''}`
     + ` · <label>주간 예산 <input type="number" id="wbud" min="0" step="10000" placeholder="설정 안 함" value="${bud == null ? '' : bud}">원</label></p>`;
   if (bud != null && B.sumTodo > bud) h += `<p class="reft"><b>예산 초과</b>${won(B.sumTodo - bud)} 넘어. 목록은 처음 필요한 날 순서라 위에서부터 사면 앞 날짜부터 채워져. ${WK.thrift ? (WK.thriftFrom != null && B.sumTodo >= WK.thriftFrom ? '가진 옷 우선으로 다시 짰는데, 가진 옷만으로 되는 코디가 더 없어서 살 옷이 그대로야. 예산 안에서 사려면 위에서부터(먼저 필요한 날 순서) 사고, 예산 밖 날은 그날 칸의 ‘사기 전에 가진 옷으로 입는다면’을 봐' : `가진 옷 우선으로 다시 짠 계획이야${WK.thriftFrom != null ? ` (${won(WK.thriftFrom)} → ${won(B.sumTodo)})` : ''}`) : `<button type="button" class="plain sm" id="wthrift">가진 옷 우선으로 다시 짜기</button>`}</p>`;
@@ -3347,11 +3076,11 @@ function weekBuyHTML(B, plan){
     const p = i.p, r = OWN.d[i.k] || {};
     if (p && r.st !== 'ordered') run += p.price;
     const ob = bud != null && p && r.st !== 'ordered' && run > bud;
-    const ex = i.uses.filter(u => u.exact).length, ot = i.uses.length - ex;
+    const ex = i.uses.filter(u => u.exact).length, ot = i.uses.length - ex, dn = i.uses.filter(u => u.diff).length;
     const st0 = r.st === 'ordered' ? (r.eta ? `주문함 · ${dLab(r.eta)} 도착 예정` : '주문함 · 도착 예정일 모름') : r.st === 'plan' ? '구매 예정' : '아직 안 삼';
     const late = r.st === 'ordered' && r.eta ? i.days.filter(d => d <= r.eta) : [];
     return `<div class="bi${ob ? ' ob' : ''}"><p class="bt"><b>${n + 1}. ${esc(slotName(i.slot))}</b> <span class="cn">${dLab(i.days[0])}에 처음 필요 · ${st0}${ob ? ' · 예산 밖' : ''}</span></p>`
-      + `<p>쓰는 날 ${esc(i.days.map(dLab).join(', '))} · 코디 ${new Set(i.uses.map(u => u.L)).size}벌${p ? ` (사진 속 제품 그대로 ${ex}번${ot ? ` · 같은 칸을 이 제품으로 대신 ${ot}번` : ''})` : ''}`
+      + `<p>쓰는 날 ${esc(i.days.map(dLab).join(', '))} · 코디 ${new Set(i.uses.map(u => u.L)).size}벌${p ? ` (사진 속 제품 그대로 ${ex}번${ot ? ` · 같은 칸을 이 제품으로 대신 ${ot}번` : ''}${dn ? `, 그중 ${dn}번은 사진과 ${esc([...new Set(i.uses.filter(u => u.diff).map(u => u.diff))].join(' · '))}` : ''})` : ''}`
       + (late.length ? `<br><span class="warn">${late.map(dLab).join(', ')}엔 아직 못 받아(도착 당일도 나가기 전에 받을지 몰라서 뺌). 그날 칸에서 대신 입을 것을 확인해</span>` : '')
       + `${i.others.size ? `<br><span class="cn">그 코디에 더 필요한 것: ${esc([...i.others].join(', '))}</span>` : ''}</p>`
       + (p ? `<div class="altc"><span class="ai">${photo(p, 160, 1)}</span><span class="tx"><span class="nottag">${ex && ot ? '한 코디의 사진 속 제품 · 다른 코디엔 대신' : ex ? KN.exact : KN[i.kind] || ''}</span><b>${esc(shortName(p.name))}</b>`
@@ -3380,6 +3109,8 @@ function bindWeek(){
       if (c.length > 1) { D.key = c[(i + 1) % c.length].L.key; D.pin = true; delete D.why; } saveW(); redraw(true); return; }
     if (b.dataset.swap) { D.key = b.dataset.swap; D.pin = true; delete D.why; saveW(); redraw(true); return; }
     if (b.dataset.have) { OWN.s[b.dataset.have] = 'similar'; saveO(); redraw(true); return; }
+    if (b.dataset.unhave) { delete OWN.s[b.dataset.unhave]; delete OWN.f[b.dataset.unhave]; saveO(); redraw(true); return; }
+    if (b.dataset.ownx) { const op = !!b.closest('details[open]'); ownDel(b.dataset.ownx); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } return; }
     if (b.dataset.wash) { const k = b.dataset.wash, a = wDays(k).slice(), j = a.indexOf(sel); if (j >= 0) a.splice(j, 1); else a.push(sel);
       const t0 = localNow(wx).date, keep = a.filter(x => x >= t0).sort(); if (keep.length) OWN.w[k] = keep; else delete OWN.w[k]; saveO(); redraw(true); return; }
     if (b.dataset.bst != null) { const wrap = b.closest('.bact'), k = wrap.dataset.k, v = b.dataset.bst;
