@@ -164,6 +164,8 @@ ul.lki .lt{flex:1;min-width:0}
 ul.lki .lt b{display:block;font-size:14px;font-weight:700;line-height:1.3}
 ul.lki .lt span{font-size:12.5px;color:var(--sub)}
 ul.lki .go{color:var(--acc);font-size:13px;flex:none}
+ul.lki .lkx{display:flex;align-items:center;gap:10px;padding:8px 0}
+ul.lki li.lkh{font-size:12.5px;color:var(--sub);padding:10px 0 2px;border-bottom:0}
 .alt1{margin-top:10px;padding:8px 0 0;border-top:1px solid var(--line);font-size:13.5px}
 .alt1 .k{margin-bottom:4px}
 .nolook{margin:0;font-size:14.5px}
@@ -292,6 +294,7 @@ body.sheet-open main{padding-bottom:32px}
 #day[hidden]{display:none}
 .wtop{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:6px 0}
 .wtop input[type=date]{border:1px solid #cfcfcf;border-radius:3px;padding:3px 6px;font-size:13px}
+.wtop .wg{display:inline-flex;align-items:center;gap:6px}
 .wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:10px}
 .wd{display:flex;gap:10px;align-items:stretch;text-align:left;border:1px solid var(--line);background:#fff;padding:8px;cursor:pointer;font:inherit;color:inherit;border-radius:3px}
 .wd.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
@@ -818,16 +821,16 @@ const LOOKS = [
   {key:'m-dve2b0', level:'L2', lo:2, hi:12, tip:'fleece', mag:'A3', img:'cms/v2/content/file_1766380205820_1069026099_dve2b0.jpg', w:600, h:720, cx:.48, y0:.14, cut:0, model:'',
    spots:[{id:'5604609', label:'플리스 자켓', x:.33, y:.35, col:'카키'}, {id:'5487937', label:'니트', x:.48, y:.32}, {id:'5428156', label:'바지', x:.45, y:.70, pants:1}, {id:'5484356', label:'신발', x:.45, y:.92}], alts:{'5487937':['5215594']}, altWhy:{'5215594':'로고 없는 블랙 크루 니트. 울 50%·나일론 45%·캐시미어 5%(사진 속은 아크릴 100%)'}},
   {key:'m-16q23y', level:'L2', lo:-3, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054536202_166329899_16q23y.jpg', w:600, h:720, cx:.48, y0:.172, cut:0, model:'',
-   spots:[{id:'4356798', label:'라이트 다운', x:.38, y:.30}, {id:'5205819', label:'플리스 하이넥', x:.50, y:.21}, {id:'5243802', label:'셔츠', x:.47, y:.46}, {id:'5210186', label:'바지', x:.45, y:.70, pants:1}, {id:'5507402', label:'부츠', x:.45, y:.93}], alts:{'4356798':['5438737'], '5243802':['5354020']}, altWhy:{'5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 카키)', '5354020':'10만원 아래 체크 셔츠. 베이지 체크(사진 속은 그린 체크)'}},
+   spots:[{id:'4356798', label:'라이트 다운', x:.38, y:.30}, {id:'5205819', label:'플리스 하이넥', x:.50, y:.21}, {id:'5243802', label:'셔츠', x:.47, y:.46}, {id:'5210186', label:'바지', x:.45, y:.70, pants:1}, {id:'5507402', label:'부츠', x:.45, y:.93}], alts:{'4356798':['5438737'], '5243802':['5354020'], '5507402':['5693262', '2098793']}, altWhy:{'5693262':'베이지 계열 운동화(운동화라 예산 예외, 15.9만). 부츠가 아니라 낮은 스니커즈(사진 속은 베이지 워크 부츠)', '2098793':'10만원 아래 첼시 부츠. 색이 블랙(사진 속은 베이지)', '5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 카키)', '5354020':'10만원 아래 체크 셔츠. 베이지 체크(사진 속은 그린 체크)'}},
   {key:'m-1l0mzu', level:'L2', lo:-3, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054536202_166330100_1l0mzu.jpg', w:600, h:720, cx:.48, y0:.14, cut:0, model:'',
    spots:[{id:'5148065', label:'라이트 다운', x:.35, y:.30}, {id:'5438042', label:'긴팔티', x:.52, y:.30}, {id:'5354020', label:'셔츠'}, {id:'5210212', label:'바지', x:.45, y:.70, pants:1}], alts:{'5148065':['5438737']}, altWhy:{'5438737':'10만원 아래 후드 라이트 패딩. 색이 블랙(사진 속은 문 블루)'}},
   {key:'s-4352411', level:'L2', lo:10, hi:18, tip:'cardigan', img:'goods_img/20240821/4352411/4352411_17333851962560_big.jpg', cx:.50, y0:.15,
    page:'4352411', cut:0, model:'',
    spots:[{id:'4387507', label:'가디건', x:.40, y:.33}, {id:'4387517', label:'니트', x:.50, y:.24}, {id:'4352411', label:'바지', x:.45, y:.70, pants:1}]},
   {key:'m-80ufgd', level:'L3', lo:-3, hi:9, tip:'coat', mag:'A3', img:'cms/v2/content/file_1766380231713_1094919200_80ufgd.jpg', w:600, h:720, cx:.47, y0:.15, cut:0, model:'',
-   spots:[{id:'5205729', label:'하프 코트', x:.55, y:.38}, {id:'5318857', label:'니트 집업', x:.40, y:.43}, {id:'5531751', label:'니트 후드', x:.50, y:.20}, {id:'5240767', label:'바지', x:.45, y:.85, pants:1}, {id:'5693262', label:'신발', x:.45, y:.93}], alts:{'5205729':['4209311']}, altWhy:{'4209311':'10만원 아래 무신사 스탠다드 울 블렌드 겉옷. 기장이 짧은 부클 블루종이고 색이 블랙(사진 속은 토프 하프 코트)'}},
+   spots:[{id:'5205729', label:'하프 코트', x:.55, y:.38}, {id:'5318857', label:'니트 집업', x:.40, y:.43}, {id:'5531751', label:'니트 후드', x:.50, y:.20}, {id:'5240767', label:'바지', x:.45, y:.85, pants:1}, {id:'5693262', label:'신발', x:.45, y:.93}], alts:{'5205729':['4209311'], '5318857':['5053145']}, altWhy:{'5053145':'10만원 아래 니트. 색이 베이지(사진 속은 갈색)이고 집업이 아닌 카라 니트', '4209311':'10만원 아래 무신사 스탠다드 울 블렌드 겉옷. 기장이 짧은 부클 블루종이고 색이 블랙(사진 속은 토프 하프 코트)'}},
   {key:'m-suf3d8', level:'L4', lo:-6, hi:6, tip:'mouton', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402599_suf3d8.jpg', w:600, h:720, cx:.47, y0:.178, cut:0, model:'',
-   spots:[{id:'5532432', label:'무톤 자켓', x:.35, y:.35}, {id:'5335741', label:'셔츠', x:.47, y:.32}, {id:'5210208', label:'바지', x:.42, y:.72, pants:1}, {id:'5507631', label:'로퍼', x:.40, y:.93}]},
+   spots:[{id:'5532432', label:'무톤 자켓', x:.35, y:.35}, {id:'5335741', label:'셔츠', x:.47, y:.32}, {id:'5210208', label:'바지', x:.42, y:.72, pants:1}, {id:'5507631', label:'로퍼', x:.40, y:.93}], alts:{'5532432':['5706927', '3731126']}, altWhy:{'5706927':'10만원 아래 스웨이드 무스탕 자켓. 같은 갈색 계열에 안쪽이 털인 짧은 자켓(사진 속은 시어링 무톤 자켓)', '3731126':'10만원 아래 스웨이드 무스탕 점퍼. 색이 블랙'}},
   {key:'m-qgfj41', level:'L3', lo:13, hi:20, tip:'blazer', mag:'A7', img:'cms/v2/content/file_1755432383746_235030799_qgfj41.jpg', w:600, h:720, cx:.47, y0:.16, cut:0, model:'',
    spots:[{id:'1558197', label:'블레이저', x:.38, y:.32}, {id:'2084430', label:'바지', x:.43, y:.72, pants:1}, {id:'5269360', label:'로퍼', x:.46, y:.91}]},
   {key:'m-z2jr3j', level:'L4', lo:-3, hi:9, tip:'coat', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402700_z2jr3j.jpg', w:600, h:720, cx:.47, y0:.15, cut:0, model:'',
@@ -847,11 +850,11 @@ const LOOKS = [
      '5269360':'10만원 아래 갈색 스웨이드 로퍼. 사진 속 어그 타스만처럼 발등이 덮이는 스웨이드지만 안쪽 털이 없고 굽이 낮은 구두 모양'
    }},
   {key:'m-xzzhk5', level:'L2', lo:-3, hi:9, tip:'coat', mag:'A3', img:'cms/v2/content/file_1766380253196_1116402500_xzzhk5.jpg', w:600, h:720, cx:.47, y0:.17, cut:0, model:'',
-   un:[{role:'outer', kind:'롱코트', col:'그레이', len:'긴 기장', what:'차콜 롱코트(사진에 태그 없음, 무릎 위 기장)'}],
+   un:[{role:'outer', kind:'롱코트', col:'그레이', len:'긴 기장', what:'차콜 롱코트(사진에 태그 없음, 무릎 위 기장)', alts:['4407148']}],
    spots:[{id:'5330412', label:'긴팔티', x:.50, y:.38}, {id:'5275783', label:'바지', x:.45, y:.78, pants:1, col:'블랙'}, {id:'5275176', label:'신발', x:.45, y:.93}],
    alts:{'5275176':['5693262']}, altWhy:{'5693262':'같은 아디다스 가젤 계열 운동화. 색이 골드 베이지(사진 속은 연노랑)이고 실내용 인도어 모델, 15.9만(운동화라 예산 예외 품목)'}},
   {key:'m-zmnicc', level:'L1', lo:-2, hi:8, tip:'lpad', mag:'A1', img:'cms/v2/content/file_1764054465553_95680799_zmnicc.jpg', w:600, h:720, cx:.50, y0:.18, cut:0, model:'',
-   un:[{role:'outer', kind:'라이트 패딩', col:'크림', len:'짧은 기장', what:'크림 라이트 패딩(사진에 태그 없음, 엉덩이 위 기장)'}],
+   un:[{role:'outer', kind:'라이트 패딩', col:'크림', len:'짧은 기장', what:'크림 라이트 패딩(사진에 태그 없음, 엉덩이 위 기장)', alts:['5215582']}],
    spots:[{id:'5478710', label:'긴팔티', x:.52, y:.38}, {id:'5401296', label:'바지', x:.48, y:.72, pants:1}, {id:'5331556', label:'신발', x:.48, y:.95}]}
 ];
 // 매거진 콘텐츠(사진 출처). 링크는 무신사 콘텐츠 페이지
@@ -1112,13 +1115,13 @@ const STY = {
     how:[['겉옷', '재킷 지퍼를 가슴 아래까지만 올려서 안의 흰 이너가 목 아래로 보이게. 재킷 밑단이 허리 바로 아래에서 끝나는 짧은 기장'],
       ['바지', '통이 넓고 곧게 떨어지는 치노. 밑단이 신발 위에 얹혀 한 번 접히는 길이. 크림색이라 바닥에 끌리면 때가 바로 보임'],
       ['신발', '베이지 스웨이드 신발(태그 없음, 발목 쪽은 바지에 가려 안 보임). 바지와 비슷한 밝은 색이라 다리가 길게 이어짐. 흰 운동화로 바꿔도 같은 밝기']],
-    shoe:{kind:'부츠', col:'베이지'}, opt:['4057917']},
+    shoe:{kind:'부츠', col:'베이지', alts:['5693262', '2098793']}, opt:['4057917']},
   'l3-q': {base:2, sit:'친구 약속, 발표 날', pal:['남색','연노랑','베이지'],
     core:'연노랑 카라티를 바지에 넣고 갈색 벨트를 보인 코디. 남색 블루종이 짧아서 허리선이 드러나 다리가 길어 보임',
     how:[['상의', '카라티를 바지 안에 다 넣고 벨트가 보이게. 블루종은 지퍼를 열어서 카라티가 가운데로 길게 보이게. 목 안쪽에 데님 셔츠 깃이 살짝 보이는데 없어도 느낌은 같음'],
       ['바지', '아래로 갈수록 살짝 좁아지는 테이퍼드 치노. 밑단이 운동화 등에 닿아 살짝만 접히는 길이라 발목 쪽이 깔끔함'],
       ['신발', '남색 캔버스 운동화(태그 없음)로 블루종 색과 맞춤. 흰 운동화로 바꾸면 더 가벼운 느낌']],
-    shoe:{kind:'스니커즈', col:'네이비'}, opt:['3918531']}
+    shoe:{kind:'스니커즈', col:'네이비', alts:['1900410']}, opt:['3918531']}
 };
 // 상의·겉옷 대안을 고를 때 지켜야 하는 특징. 이름으로 못 정하는 것(로고 크기)만 사진을 보고 적음
 const GFX = {'5487937': '큰 로고'};
@@ -1525,7 +1528,19 @@ function analyse(dateArg){
 /* ---------- 그리기 ---------- */
 function render(){
   if (!wx) return;
-  const A = analyse();
+  let A = analyse(), pastN = '';
+  // v14: 오늘 외출 시간이 지났으면 메시지만 두지 않고 내일 코디를 바로 보여 줌(검토 지시 5). 오늘 밤에 나가면 지금~23시 날씨로도 볼 수 있게
+  if (A.past && !st.day && st.mode !== 'week') {
+    const t0 = localNow(wx).date, nh = localNow(wx).h;
+    if (st.nightD === t0) { const k = [st.start, st.end]; st.start = nh; st.end = 23; const N = analyse(); st.start = k[0]; st.end = k[1];
+      if (!N.past && !N.nofc) { A = N; pastN = `오늘 밤 ${nh}~23시 날씨로 골랐어. <button class="plain sm" type="button" id="toTmr">내일 코디 보기</button>`; } }
+    if (A.past) { const T1 = analyse(addDays(t0, 1));
+      if (!T1.past && !T1.nofc) { A = T1; pastN = `오늘 외출 시간(${st.start}~${st.end}시)이 지나서 내일 코디를 보여 줘. <button class="plain sm" type="button" id="toNight">오늘 밤에 나가면</button>`; } }
+    syncSeg('day', A.date === t0 ? 0 : 1);
+  } else syncSeg('day', st.day);
+  // 안내는 사진 위에(폰에서 사진 아래면 첫 화면에 안 보임)
+  let pn = $('#pastN'); if (!pn) { pn = document.createElement('p'); pn.id = 'pastN'; pn.className = 'wxn'; $('#look').before(pn); }
+  pn.innerHTML = pastN; pn.hidden = !pastN || st.mode === 'week';
   const d = new Date(A.date + 'T12:00:00');
   const dLabel = `${d.getMonth()+1}월 ${d.getDate()}일(${DOW[d.getDay()]})`;
   const upd = wx.got ? new Date(wx.got).toTimeString().slice(0, 5) : '';
@@ -1602,6 +1617,9 @@ function render(){
   const keyL = A.unkRain ? `<p class="key1"><b>비·눈 모름</b>예보를 못 받아서 우산이 필요한지 몰라</p>` : `<p class="key1"><b>${esc(first[0])}</b>${esc(first[1])}</p>`;
   $('#cond').innerHTML = (estN || (wxNote ? `<p class="wxn">${esc(wxNote)} <button class="plain sm" type="button" id="retry">다시 받기</button></p>` : '')) + condTop + keyL + wxMore;
   if (wxNote) $('#retry').addEventListener('click', () => load(true));
+  const tn = $('#toNight'), tt = $('#toTmr');
+  if (tn) tn.addEventListener('click', () => { st.nightD = localNow(wx).date; st.lookN = 0; save(); render(); });
+  if (tt) tt.addEventListener('click', () => { delete st.nightD; st.lookN = 0; save(); render(); });
   $('#cond').querySelectorAll('[data-mt]').forEach(b => b.addEventListener('click', () => { st.mt = b.dataset.mt === '' ? null : +b.dataset.mt; save(); st.lookN = 0; render(); }));
 
   /* ----- 착장 그림 + 목록 ----- */
@@ -2013,14 +2031,17 @@ function partsOf(L){
     const col = slotCol(s, p);
     out.push({id: s.id, p, s, role: r, col, slot: slotOf(p, s), ft: keyFeat(p, r), need: s.x == null || (S.opt || []).includes(s.id) ? 'opt' : 'req'}); });
   // v13: 사진에 보이지만 태그가 없는 옷(L.un). 사진 속 제품은 모르니 보이는 종류·색 칸으로만 잇고, 겉옷 기장처럼 사진으로 보이는 특징만 붙임
-  (L.un || []).forEach(u => out.push({id: null, role: u.role, slot: u.kind + '|' + u.col, need: 'req', col: u.col, untagged: true, what: u.what,
+  // v14: u.alts = 같은 종류·색이 10만원 아래로 없을 때 살 대안 제품(altUn)
+  (L.un || []).forEach(u => out.push({id: null, role: u.role, slot: u.kind + '|' + u.col, need: 'req', col: u.col, untagged: true, what: u.what, alts: u.alts,
     ft: u.role === 'outer' ? {len: u.len || ''} : u.role === 'pants' ? {fit: u.fit || ''} : {}}));
   if (!out.some(x => x.role === 'shoes')) {
     const sh = S.shoe;
     if (!sh) out.push({id: null, role: 'shoes', slot: null, need: 'req', info: '신발(사진에서 종류·색을 확인 못 함)'});
-    else if (sh.kind === '*') out.push({id: null, role: 'shoes', slot: null, need: 'req', col: sh.col, anyKind: true, untagged: true, what: `${CN[sh.col] || sh.col} 신발(밑단에 가려 모양은 안 보임)`});
+    // v14: 모양이 안 보이는 신발도 살 칸을 정함(편하게·꾸안꾸는 스니커즈, 적당히 꾸민·꾸꾸꾸는 더비). v13까진 칸이 없어서 다른 날 신발을 안 사면 살 옷 목록에서 신발이 빠졌음.
+    //      가진 옷 판정은 그대로 같은 색 신발이면 아무 종류나 됨
+    else if (sh.kind === '*') out.push({id: null, role: 'shoes', slot: null, need: 'req', col: sh.col, anyKind: true, untagged: true, buy: (L.level === 'L1' || L.level === 'L2' ? '스니커즈|' : '더비|') + sh.col, what: `${CN[sh.col] || sh.col} 신발(밑단에 가려 모양은 안 보임)`});
     else if (sh.kind === '가죽 신발') out.push({id: null, role: 'shoes', slot: '더비|' + sh.col, also: ['로퍼|' + sh.col, '옥스포드|' + sh.col], need: 'req', col: sh.col, untagged: true, what: `${CN[sh.col] || sh.col} 가죽 신발(태그 없음, 더비·로퍼 어느 쪽인지는 사진으로 확정 못 함)`});
-    else out.push({id: null, role: 'shoes', slot: sh.kind + '|' + sh.col, need: 'req', col: sh.col, untagged: true});
+    else out.push({id: null, role: 'shoes', slot: sh.kind + '|' + sh.col, need: 'req', col: sh.col, untagged: true, alts: sh.alts});
   }
   if (!out.some(x => x.role === 'top' && x.need === 'req')) {
     const t = S.top || {};
@@ -2049,6 +2070,10 @@ function partState(x, os){
     const f = OWN.f[hit] || {}, keys = Object.keys(x.ft || {}).filter(k => x.ft[k]);
     const diff = keys.find(k => f[k] && f[k] !== x.ft[k]), unk = keys.filter(k => !f[k]);
     if (diff) return {lv: 1, t: `가진 ${slotName(hit)}는 ${f[diff]}, 사진은 ${x.ft[diff]}`, k: diff};
+    // v14: 이 칸에 맞춰 사서 받은 제품(주요 특징이 사진과 같은 대체품)이면 특징을 따로 안 적어도 됨으로 봄. v13까진 받음을 눌러도 '특징 확인'으로 남았음
+    const gp = unk.length && Object.keys(OWN.p).filter(k => OWN.p[k] === 'own').concat(Object.keys(OWN.d).filter(k => OWN.d[k].st === 'got'))
+      .find(k => { const q = PID[k.split('|')[0]]; return q && kindOf(q) + '|' + k.split('|')[1] === hit && fitsPart(q, x).ok; });
+    if (gp) return {lv: 3, t: `가진 ${shortName(PID[gp.split('|')[0]].name)}로 됨(사진과 주요 특징 같음)`};
     if (unk.length) return {lv: 2, t: `가진 ${slotName(hit)}와 종류·색은 같음. ${unk.map(k => FNM[k]).join('·')}은 아직 모름`, k: unk[0]};
     return {lv: 3, t: `가진 ${slotName(hit)}로 됨${keys.length ? ' (' + keys.map(k => FNM[k] + ' ' + x.ft[k]).join(', ') + ' 같음)' : ''}`};
   }
@@ -2275,13 +2300,22 @@ function reorder(){
 /* ----- 사진 아래 ----- */
 const badges = p => (p.soldAll ? '<span class="badge">품절</span>' : '') + (over(p) ? '<span class="badge g">10만원 넘음</span>' : p.price > LIMIT ? '<span class="badge g">여러 계절 기본템 예외</span>' : '');
 function itemsHTML(L){
+  // v14: 사진에 태그가 없는 겉옷·신발도 이 코디에 맞춰 고른 제품을 같이 보여 줌(검토 지시 2: 신발 태그가 없는 코디 24개)
+  const un = partsOf(L).filter(x => x.need === 'req' && !x.id && !x.anyTop && (x.slot || x.buy)).map(x => {
+    const sl = x.slot || x.buy, r = repOf(sl, [L]).p, al = r ? null : altUn(x), p = r || (al && al.p), ps = partState(x);
+    const why = (ps.lv >= 3 ? ps.t + ' · ' : '') + (x.anyKind ? `사진은 밑단에 가려 모양이 안 보여서 ${sl.startsWith('스니커즈') ? '편한 단계에 맞춰 스니커즈' : '갖춰 입는 단계에 맞춰 더비'}로 고름`
+      : x.also ? '태그 없음 · 더비·로퍼 어느 쪽인지 확정 못 해서 더비로 고름' : al && al.why ? '같은 종류·색이 10만원 아래로 없어서 대안 · ' + al.why : '태그 없음 · 같은 종류·색 기본 제품');
+    const nm = `${RN[x.role]} · ${slotName(sl)}`;
+    if (!p) return `<li><div class="lkx"><span class="lt"><b>${esc(nm)}</b><span>${esc(why)} · 10만원 아래 제품을 못 찾음</span></span></div></li>`;
+    return `<li><div class="lkx"><span class="ai">${photo(p, 120, 1)}</span><span class="lt"><b>${esc(nm)} · ${esc(shortName(p.name))}</b><span>${won(p.price)}${badges(p)} · ${esc(why)}</span></span><span class="go">${lnk(p, '무신사 ↗')}</span></div></li>`;
+  }).join('');
   return `<ul class="lki" aria-label="사진 속 제품">` + L.spots.map((s, i) => {
     const p = PID[s.id];
     if (!p) return '';
     return `<li><button type="button" data-i="${i}"><span class="ai">${photo(p, 120, 1)}</span>`
       + `<span class="lt"><b>${esc(s.label)} · ${esc(shortName(p.name))}</b><span>${won(p.price)}${badges(p)} · ${md(p.checked)} 확인${s.x == null ? ' · 이 사진에선 안 보임' : ''}</span></span>`
       + `<span class="go">보기</span></button></li>`;
-  }).join('') + '</ul>';
+  }).join('') + (un ? `<li class="lkh">사진엔 태그가 없어서 이 코디에 맞춰 고른 제품</li>` + un : '') + '</ul>';
 }
 const wetProne = p => p && /스웨이드|캔버스|어센틱|메쉬|어그|타스만|클래식 미니/i.test(p.name + ' ' + (p.mat || ''));
 // v10: 겉옷 없이 입은 사진(후드 니트·셔츠 한 벌 등)
@@ -2452,7 +2486,19 @@ function pairOf(L){
 }
 // v10: 사진 속 연출(추운 날 앞을 연 겉옷, 바닥에 쌓인 밑단)을 그대로 따라 하라는 뜻이 되지 않게, 실제로 입을 때 할 일을 따로 적음
 const OUTW = /패딩|다운|코트|자켓|재킷|블루종|블레이저|MA-1|무톤|플리스/;
+// v14: 사진에 신발 태그가 없을 때 무엇을 신을지(검토 지시 2). 편하게·꾸안꾸는 스니커즈, 적당히 꾸민·꾸꾸꾸는 더비를 기본으로
+const shoeX = L => partsOf(L).find(x => x.role === 'shoes' && x.need === 'req' && !x.id && (x.slot || x.buy));
+function shoeAct(L, x, t){
+  const c = x.col || '블랙', cn = CN[c] || c, easy = L.level === 'L1' || L.level === 'L2';
+  const pa = partsOf(L).find(y => y.role === 'pants' && y.need === 'req');
+  let a = x.anyKind ? (easy ? `${cn} 스니커즈가 기본이야. 조금 단정하게 가고 싶으면 ${cn} 더비도 어울려` : `${cn} 더비가 기본이야. 힘을 빼고 싶으면 장식 없는 ${cn} 가죽 스니커즈로`)
+    : x.also ? `${cn} 더비나 로퍼면 사진과 같은 느낌이야` : `사진 속 ${slotName(x.slot)}는 태그가 없어서 같은 종류·색 제품으로 골랐어`;
+  a += ". 고른 제품은 '착용 제품' 아래쪽에 있어";
+  if (pa && c === '블랙' && ['블랙', '네이비', '진청'].includes(pa.col) && !/이어/.test(t || '')) a += `. 바지가 어두운 ${CN[pa.col] || pa.col}이라 검정 신발이면 다리 선이 끊기지 않고 이어져 보여`;
+  return a;
+}
 function actOf(L, k, t, A){
+  if (k === '신발') { const x = shoeX(L); if (x) return shoeAct(L, x, t); }
   const tt = A && A.tOuter != null ? A.tOuter : (L.lo + L.hi) / 2;
   if ((k === '겉옷' || OUTW.test(t)) && tt <= 5 && /(열고|열어|앞을 열|단추를 풀|단추를 풀고|지퍼를 열|지퍼를 가슴까지)/.test(t) && !/다 잠그/.test(t))
     return `사진은 앞을 열어 안쪽 색 조합을 보여 주는 모습이야. 체감 ${deg(tt)}면 밖에선 잠그고, 실내에 들어가서 열어`;
@@ -2466,7 +2512,9 @@ function howHTML(L, A){
   const li = (S.how || []).map(([k, t]) => { const a = actOf(L, k, t, A);
     return `<li><b>${esc(k)}</b><span>${esc(t)}${a ? `<span class="act"><i>입을 때</i>${esc(a)}</span>` : ''}</span></li>`; }).join('')
     || '<li class="cn">이 코디는 입는 법을 아직 안 적었어. 사진 속 밑단과 신발이 만나는 곳을 기준으로 봐</li>';
-  return `<div class="howp"><p class="cn" style="margin:6px 0 0">사진에서 보이는 대로 적었고, 따라 할 때 다르게 할 건 '입을 때'로 따로 적었어</p><ul>${li}${lenHTML(L)}</ul>${unkHTML(L)}${pairOf(L)}</div>`;
+  const sx = !(S.how || []).some(([k]) => k === '신발') && shoeX(L);
+  const sl = sx ? `<li><b>신발</b><span>${esc(sx.what || slotName(sx.slot) + '(태그 없음)')}<span class="act"><i>입을 때</i>${esc(shoeAct(L, sx))}</span></span></li>` : '';
+  return `<div class="howp"><p class="cn" style="margin:6px 0 0">사진에서 보이는 대로 적었고, 따라 할 때 다르게 할 건 '입을 때'로 따로 적었어</p><ul>${li}${sl}${lenHTML(L)}</ul>${unkHTML(L)}${pairOf(L)}</div>`;
 }
 // 먼저 살 옷: 기록된 코디 사진만 센다(조합을 곱해서 늘리지 않음). 모름은 가진 걸로 치지 않음
 // 원리 참고: zebangeth/ai-closet RelevantOutfits.tsx(MIT), Lismo77/capward item.dart(GPL → 원리만). 코드는 새로 씀
@@ -2876,7 +2924,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet
    오늘 주문한 옷은 오늘 못 입는다. 앞으로 7일 날짜별 코디 · 산 옷의 배송·수령 상태 · 한 주 전체에서 겹치지 않게 센 구매 목록.
    계획·배송 기록은 이 기기에만 저장(KEY-week, 가진 옷 기록 OWN.d·OWN.w). 판매처 배송일은 읽어 오지 않고 주문 후 직접 넣은 날짜만 씀 */
 const WKEY = KEY + '-week';
-const WK = (() => { let w = {}; try { w = JSON.parse(localStorage.getItem(WKEY)) || {}; } catch(e){} return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false}, w); })();
+const WK = (() => { let w = {}; try { w = JSON.parse(localStorage.getItem(WKEY)) || {}; } catch(e){} return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false},w); })();
 const saveW = () => { try { localStorage.setItem(WKEY, JSON.stringify(WK)); } catch(e){} };
 const dLab = d => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}/${x.getDate()}(${DOW[x.getDay()]})`; };
 function weekDates(){
@@ -2898,10 +2946,11 @@ const wxLine = A => A.fc ? `체감 ${r0(A.feelMinRaw)}~${r0(A.feelMaxRaw)}°${A.
 // 산 옷 기록 찾기: 그 조각의 사진 속 제품 → 아니면 그 칸을 대신하려고 산 다른 제품(주요 특징이 맞는 것만)
 function buyRecFor(x){
   if (x.id && OWN.d[pk(x.id, x.col)]) return {key: pk(x.id, x.col), rec: OWN.d[pk(x.id, x.col)]};
-  if (!x.slot) return null;
-  for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === x.slot && fitsPart(PID[k.split('|')[0]], x).ok) return {key: k, rec: r}; }
+  const slot = x.slot || x.buy;
+  if (!slot) return null;
+  for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === slot && fitsPart(PID[k.split('|')[0]], x).ok) return {key: k, rec: r}; }
   // v11: 이번 주 그 칸에 사기로 한 게 있으면 특징을 다 확인 못 했어도 그걸로 같이 씀(같은 칸을 한 주에 두 번 사지 않게). 차이는 화면에 적음
-  for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === x.slot && r.st !== 'got' && PID[k.split('|')[0]]) return {key: k, rec: r, part: fitsPart(PID[k.split('|')[0]], x).why || '특징 확인 못 함'}; }
+  for (const k in OWN.d) { const r = OWN.d[k]; if (r.slot === slot && r.st !== 'got' && PID[k.split('|')[0]]) return {key: k, rec: r, part: fitsPart(PID[k.split('|')[0]], x).why || '특징 확인 못 함'}; }
   return null;
 }
 // 세탁 등으로 못 쓰는 날: OWN.w[제품|색 또는 종류|색] = [날짜…]
@@ -2921,7 +2970,8 @@ function dayPart(x, d, os){
   if (s.lv === 2) return Object.assign({code: 'soft'}, s);
   if (s.lv === -1) return Object.assign({code: 'info'}, s);
   // 겉옷에 가린 상의·모양이 안 보이는 신발은 살 제품을 정할 수 없어서 '가진 옷 확인'으로
-  if ((x.anyTop || x.anyKind) && s.t !== '없음') return {lv: -1, code: 'info', t: `${x.what} · 가진 옷 중에 있으면 ${x.anyKind ? '아래에서 종류를' : "'있음'을"} 눌러 줘`};
+  // v14: 모양이 안 보이는 신발도 x.buy 칸이 있으면 다른 옷처럼 '살 옷'로(가진 신발 종류 버튼은 그날 칸에 그대로 둠)
+  if ((x.anyTop || (x.anyKind && !x.buy)) && s.t !== '없음') return {lv: -1, code: 'info', t: `${x.what} · 가진 옷 중에 있으면 ${x.anyKind ? '아래에서 종류를' : "'있음'을"} 눌러 줘`};
   const b = buyRecFor(x);
   if (b) { const r = b.rec;
     if (r.st === 'ordered') {
@@ -2946,7 +2996,9 @@ function dayStatus(L, d, os){
 const linkOf = (x, bought) => Object.keys(bought).find(k => roleOfSlot(k) === x.role && (!x.col || k.split('|')[1] === x.col)) || null;
 function linkPart(x, k, d, os, d0){
   const s = dayPart({id: null, role: x.role, slot: k, need: 'req', col: x.col, untagged: true}, d, os);
-  const t = `${d0 === d ? '이날' : '이번 주 ' + dLab(d0) + '에'} 사기로 한 ${slotName(k)}로 같이 입음 · ${x.anyKind ? '사진은 밑단에 가려 신발 모양이 안 보여서 색만 맞춤' : '겉옷에 가려 거의 안 보임'}`;
+  // v14: 이 코디가 스스로 사는 신발 칸(x.buy)이면 '같이 입음' 대신 왜 그 종류인지 적음
+  const t = d0 === d && x.anyKind && k === x.buy ? `${slotName(k)}로 삼 · 사진은 밑단에 가려 신발 모양이 안 보여서 ${x.buy.startsWith('스니커즈') ? '편한 단계에 맞춰 스니커즈' : '갖춰 입는 단계에 맞춰 더비'}로 고름`
+    : `${d0 === d ? '이날' : '이번 주 ' + dLab(d0) + '에'} 사기로 한 ${slotName(k)}로 같이 입음 · ${x.anyKind ? '사진은 밑단에 가려 신발 모양이 안 보여서 색만 맞춤' : '겉옷에 가려 거의 안 보임'}`;
   return Object.assign(s, {t: s.code === 'miss' ? t : t + ' · ' + s.t, link: k});
 }
 // v13: 한 주 짜기 가중치를 한곳에
@@ -2955,11 +3007,18 @@ function linkPart(x, k, d, os, d0){
 //   useReady 가진 옷만으로 다 되는 코디의 use에 곱함 · target 코디가 이만큼 나온 주에는 use 감점을 멈춤
 //   aba 이틀 전과 같은 코디 감점(v12 1.5) · outer2 두 번째 겉옷을 사는 코디 감점(v12 .8)
 //   back 뒤 날짜 구매와 연결 · oldRot v12 방식 상의 바꾸기 판정(테스트 사본 비교용)
-const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false}, window.__PW || {});
+//   v14: rep2 전날과 같은 코디 감점 · rep3 상의도 못 바꾸는 사흘째 감점 · reuse 이번 주 산 옷을 다시 쓰는 코디 점수(역할별) · outer3 세 번째 겉옷 감점(null이면 outer2×벌수)
+const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false, rep2: 4, rep3: 12, reuse: {outer: .35, top: .35, pants: .35, shoes: .35}, outer3: null}, window.__PW || {});
+// v14: 7일 준비의 '코디 다양하게'. 검토 문서(v13) 지시 1의 가중치(use 3.2·target 5)는 코디가 한 주 평균 0.5개 늘지만 살 옷이 11만~16만 원 늘고
+//      실제 예보 편하게 주는 14개·85만 원이 돼서 use 2.5·target 4로 낮춤
+//      (기온 고정 20가지: 코디 2.35→2.65, A-B-A-B 주 6→2, 살 옷 441k→513k · 실제 예보 4단계: 3.25→3.50, 522k→627k)
+const PWV = {use: 2.5, target: 4, aba: 3, rep3: 15, reuse: {outer: 1.4, top: .35, pants: .9, shoes: .8}, outer2: 3.2, outer3: 6};
 // 한 주 짜기: 날짜마다 따로 고르지 않고, 앞 날짜에서 쓰거나 사기로 한 옷을 다시 쓰면 점수를 더함(살 옷을 줄임)
 // 고정한 날, 전에 고른 코디가 아직 그날 날씨·단계에 맞는 날은 그대로 둠(예보가 바뀌어 안 맞게 된 날만 다시 고름)
 function planWeek(force){
-  const ds = weekDates(), os = ownedSlots(), bought = {}, bRole = {}, out = [], t0 = localNow(wx).date;
+  // v14: '코디 다양하게'면 PWV로(가진 옷 우선으로 다시 짤 땐 금액이 먼저라 안 씀)
+  const Q = WK.vary && !WK.thrift ? Object.assign({}, PW, PWV) : PW;
+  const ds = weekDates(), os = ownedSlots(), bought = {}, boughtP = {}, bRole = {}, out = [], t0 = localNow(wx).date;
   for (const k in WK.days) if (k < t0) delete WK.days[k];
   ds.forEach(d => {
     const D = WK.days[d] = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d);
@@ -2976,36 +3035,40 @@ function planWeek(force){
         partsOf(o.L).filter(x => x.need === 'req').forEach(x => { const s = dayPart(x, d, os); nq++;
           // v13: 가진 상의 중 전날과 다른 게 있을 때만 '상의를 바꿔 입을 수 있음'으로 침.
           //      v12는 겉옷에 가린 상의 칸(anyTop)이면 가진 상의가 없어도 바꿀 수 있다고 봐서 같은 코디 사흘 연속 감점(12)이 안 걸렸음
-          if (x.role === 'top' && ((PW.oldRot && x.anyTop) || (s.free && s.free.some(k => k !== pt)))) canRot = true;
+          if (x.role === 'top' && ((Q.oldRot && x.anyTop) || (s.free && s.free.some(k => k !== pt)))) canRot = true;
           if (WK.gap && pt && x.role === 'top' && (x.slot ? x.slot === pt : s.free && s.free.every(k => k === pt))) v -= 1.2;
           // v12: 모양이 안 보이는 신발·겉옷에 가린 상의를 가진 옷에서 못 찾았어도, 이번 주 앞 날짜에 사기로 한 같은 역할·색 옷이 있으면 그걸로 같이 입는 걸로 침
           if (s.code === 'ok') { v += .5; mine++; } else if (s.code === 'soft') { v += .3; mine++; } else if (s.code === 'eta') { v += .2; mine++; }
-          else if ((x.anyTop || x.anyKind) && (s.code === 'info' || !x.slot) && linkOf(x, bought)) v += .35;
+          else if ((x.anyTop || x.anyKind) && (s.code === 'info' || !x.slot) && linkOf(x, bought)) v += Q.reuse[x.role] || .35;
           else if (s.code === 'info') v -= .2;
           else if (s.code === 'wait' || s.code === 'wash') v -= .5;
-          else if (x.slot && bought[x.slot]) v += .35; else if (s.code === 'plan') v -= .1;
-          else { let p = x.id && !over(x.p) && !userSizeOut(x.p) ? x.p : x.slot ? repOf(x.slot, [o.L]).p : null, al = null;
+          else if (x.slot && bought[x.slot]) v += Q.reuse[x.role] || .35; else if (s.code === 'plan') v -= .1;
+          else { let p = x.id && !over(x.p) && !userSizeOut(x.p) ? x.p : (x.slot || x.buy) ? repOf(x.slot || x.buy, [o.L]).p : null, al = null;
             // v12: 같은 칸 제품이 없으면 코디에 골라 둔 대안으로. 분위기가 바뀌는 대안은 사진과 달라지니 조금 더 뺌
-            if (!p && x.slot) { al = altBuy(x, o.L); p = al && al.p; }
+            if (!p && x.slot) { al = altBuy(x, o.L) || altUn(x); p = al && al.p; }
+            // v14: 다른 칸으로 이번 주에 이미 사기로 한 같은 제품(대안이 겹칠 때 · 예: 하프 코트 칸과 롱코트 칸이 같은 블랙 코트)이면 새로 사는 게 아니라 다시 씀.
+            //      v13까진 칸만 봐서 같은 코트를 세 번째 겉옷으로 쳐서 감점했음(목록에는 한 번만 올라감)
+            if (p && boughtP[p.id]) v += Q.reuse[x.role] || .35; else {
             // v11: 살 수 있는 제품이 없는 칸(품절·예산 초과에 대체도 없음)은 크게 빼서, 다른 코디가 있으면 그쪽을 고름
             if (p) v -= (WK.thrift ? 2 : 1) * (.5 + Math.min(150000, p.price) / 300000) + (al ? (al.kind === 'mood' ? .9 : al.kind === 'part' ? .3 : 0) : 0); else { v -= 3.5; dead++; }
             // v11: 이번 주에 이미 신발·겉옷을 하나 사기로 했으면 다른 종류를 또 사는 코디는 조금 더 뒤로(검정 스니커즈와 검정 구두를 한 주에 같이 사지 않게)
             // v12: 편하게·꾸안꾸는 신발 한 켤레로 한 주를 나는 게 맞아서 두 번째 신발 감점을 키움(스니커즈 산 주에 더비를 또 사던 문제)
-            // v13: 같은 코디 반복을 줄이면서 겉옷을 두 벌 사는 주가 늘지 않게 두 번째 겉옷 감점도 키움(.8 → PW.outer2)
-            if ((x.role === 'shoes' || x.role === 'outer') && bRole[x.role]) v -= x.role === 'shoes' ? (lv === 'L1' || lv === 'L2' ? 2.5 : .8) : PW.outer2 * bRole.outer;
-            buys++; } });
+            // v13: 같은 코디 반복을 줄이면서 겉옷을 두 벌 사는 주가 늘지 않게 두 번째 겉옷 감점도 키움(.8 → Q.outer2)
+            if ((x.role === 'shoes' || x.role === 'outer') && bRole[x.role]) v -= x.role === 'shoes' ? (lv === 'L1' || lv === 'L2' ? 2.5 : .8) : (bRole.outer >= 2 && Q.outer3 != null ? Q.outer3 : Q.outer2 * bRole.outer);
+            buys++; } } });
         // 유행을 타거나 갈리는 코디(조건부·포인트)를 위해서는 되도록 새로 사지 않음
         if (buys && baseOf(o.L) < 2) v -= .6;
         const p1 = out[out.length - 1], p2 = out[out.length - 2];
         // v11: 살 수 없는 칸 감점(3.5)이 커지면서 같은 코디가 닷새 이어지는 일이 생김 → 상의도 못 바꾸는 사흘째는 크게 빼서, 다른 코디가 있으면 그쪽으로
-        if (p1 && p1.L === o.L) v -= (p2 && p2.L === o.L && !canRot) ? 12 : 4; else if (p2 && p2.L === o.L) v -= PW.aba;
+        if (p1 && p1.L === o.L) v -= (p2 && p2.L === o.L && !canRot) ? Q.rep3 : Q.rep2; else if (p2 && p2.L === o.L) v -= Q.aba;
         // v13: 이번 주에 이미 입은 횟수만큼 뺌. 산 옷 재사용 점수가 커서 두 코디가 A-B-A-B로 번갈아 나오던 문제(검토 문서 지시 1).
         //      산 옷을 같이 쓰는 다른 코디는 재사용 점수를 그대로 받으니, 살 옷을 크게 늘리지 않고 다른 코디로 넘어감
-        //      단 가진 옷만으로 다 되는 코디는 감점을 줄임(PW.useReady). 감점을 똑같이 주면 가진 옷으로 되는 코디를 두고 새로 사야 하는 코디를 골라서,
+        //      단 가진 옷만으로 다 되는 코디는 감점을 줄임(Q.useReady). 감점을 똑같이 주면 가진 옷으로 되는 코디를 두고 새로 사야 하는 코디를 골라서,
         //      이번 주 산 옷을 가진 옷에 적고 다시 짜면 또 살 옷이 생겼음
-        //      코디가 이미 PW.target개 나온 주에는 더 늘리려고 새 옷을 사게 하지 않음(이 감점만 두면 L1 한 주에 살 옷이 14개까지 늘었음)
+        //      코디가 이미 Q.target개 나온 주에는 더 늘리려고 새 옷을 사게 하지 않음(이 감점만 두면 L1 한 주에 살 옷이 14개까지 늘었음)
         const used = out.filter(q => q.L === o.L).length, nU = new Set(out.filter(q => q.L).map(q => q.L)).size;
-        if (used && nU < PW.target) v -= used * (WK.thrift ? PW.useThrift : PW.use) * (nq && mine === nq ? PW.useReady : 1);
+        if (used && nU < Q.target) v -= used * (WK.thrift ? Q.useThrift : Q.use) * (nq && mine === nq ? Q.useReady : 1);
+        if (window.__PWDBG) window.__PWDBG.push({d, k: o.L.key, sc: o.sc, v, buys, dead, used});
         if (v > bv) { bv = v; pick = o; } });
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
       else delete D.why;
@@ -3015,7 +3078,10 @@ function planWeek(force){
     D.key = pick.L.key; D.lvAt = lv;
     const status = dayStatus(pick.L, d, os);
     // v13: bRole = 이번 주에 사기로 한 역할별 칸 수(겉옷은 벌수만큼 감점이 쌓이게)
-    status.req.forEach(x => { if (x.slot && BUYC.includes(x.ds.code)) { if (!bought[x.slot]) bRole[x.role] = (bRole[x.role] || 0) + 1; bought[x.slot] = bought[x.slot] || d; } });
+    // v14: 모양이 안 보이는 신발은 이번 주에 사기로 한 같은 색 신발이 없을 때만 x.buy 칸을 삼
+    status.req.forEach(x => { const k = x.slot || (x.buy && !linkOf(x, bought) ? x.buy : null);
+      if (k && BUYC.includes(x.ds.code)) { if (!bought[k]) bRole[x.role] = (bRole[x.role] || 0) + 1; bought[k] = bought[k] || d;
+        const bp = buyPick(x, pick.L); if (bp && bp.p && !boughtP[bp.p.id]) boughtP[bp.p.id] = d; } });
     // v12: 모양이 안 보이는 신발·가린 상의는 이번 주에 사기로 한 같은 역할·색 옷으로 연결(v11은 '가진 옷 확인 필요'로 남겨 둠)
     status.req.forEach(x => { if (!(x.anyTop || x.anyKind) || !(x.ds.code === 'info' || (x.ds.code === 'miss' && !x.slot))) return;
       const k = linkOf(x, bought); if (k) x.ds = linkPart(x, k, d, os, bought[k]); });
@@ -3029,7 +3095,7 @@ function planWeek(force){
   });
   // v13: 모양이 안 보이는 신발·가린 상의를 뒤 날짜에 사기로 한 같은 역할·색 옷과도 연결(v12는 앞 날짜 것만 봐서 앞날은 '가진 옷 확인 필요'로 남았음).
   //      연결하면 그 옷이 처음 필요한 날을 그날로 앞당기고, 연결 문구도 앞당긴 날로 다시 씀
-  if (PW.back) {
+  if (Q.back) {
     const can = x => (x.anyTop || x.anyKind) && (x.ds.link || x.ds.code === 'info' || (x.ds.code === 'miss' && !x.slot));
     out.forEach(p => { if (p.status) p.status.req.forEach(x => { if (!can(x) || x.ds.link) return; const k = linkOf(x, bought); if (k && bought[k] > p.d) bought[k] = p.d; }); });
     out.forEach(p => { if (!p.status) return; let ch = false;
@@ -3062,15 +3128,27 @@ function altBuy(x, L){
   const col = slotCol(null, c) || '?';
   return {p: c, col, key: pk(c.id, col), kind, why, alt: true};
 }
+// v14: 태그 없는 칸(L.un 겉옷·STY 신발)에 골라 둔 대안(x.alts). 같은 종류·색이 10만원 아래로 없을 때만 씀. 달라지는 종류·색을 다 적음
+function altUn(x){
+  if (!x.untagged || !x.alts || !x.slot) return null;
+  const c = x.alts.map(id => PID[id]).find(p => p && !over(p) && !userSizeOut(p));
+  if (!c) return null;
+  const [k0, c0] = x.slot.split('|'), [k1, c1] = slotOf(c).split('|');
+  const dl = [k1 !== k0 ? `종류 ${k1}(사진 속은 ${k0})` : '', c1 !== c0 ? `색 ${CN[c1] || c1}(사진 속은 ${CN[c0] || c0})` : ''].filter(Boolean);
+  const col = slotCol(null, c) || c1 || '?';
+  return {p: c, col, key: pk(c.id, col), kind: dl.length ? 'mood' : 'sub', why: dl.join(' · '), alt: true};
+}
 // 살 제품 정하기: 이미 기록한 것 → 사진 속 제품(10만원 아래·재고 있음) → 같은 종류·색 대체 제품(주요 특징이 맞으면 '대신', 확인 못 하면 '일부 특징만 확인') → 코디에 골라 둔 대안
 function buyPick(x, L){
   const b = buyRecFor(x);
   if (b) { const p = PID[b.key.split('|')[0]]; return p ? {p, col: b.key.split('|')[1], key: b.key, kind: p.id === x.id ? 'exact' : b.part ? 'part' : 'sub', why: b.part || '', rec: true} : null; }
   if (x.id && !userSizeOut(x.p) && !over(x.p)) return {p: x.p, col: x.col, key: pk(x.id, x.col), kind: 'exact'};
-  if (!x.slot) return null;
-  const r = repOf(x.slot, [L], x.role === 'top' && x.p ? featOf(x.p, x.s).neck : '').p, why0 = x.id ? (userSizeOut(x.p) ? '사진 속 제품은 ' + myOutTxt(x.p) : `사진 속 제품은 ${won(x.p.price)}이라 예산을 넘음`) : '';
-  if (!r) { const al = altBuy(x, L); return al ? Object.assign(al, {over: why0}) : {p: null, why: why0}; }
-  const f = fitsPart(r, x), col = x.slot.split('|')[1];
+  // v14: 모양이 안 보이는 신발은 x.buy 칸(단계에 맞춘 종류)으로 고름
+  const slot = x.slot || x.buy;
+  if (!slot) return null;
+  const r = repOf(slot, [L], x.role === 'top' && x.p ? featOf(x.p, x.s).neck : '').p, why0 = x.id ? (userSizeOut(x.p) ? '사진 속 제품은 ' + myOutTxt(x.p) : `사진 속 제품은 ${won(x.p.price)}이라 예산을 넘음`) : '';
+  if (!r) { const al = altBuy(x, L) || altUn(x); return al ? Object.assign(al, {over: why0}) : {p: null, why: why0}; }
+  const f = x.slot ? fitsPart(r, x) : {ok: true}, col = slot.split('|')[1];
   return {p: r, col, key: pk(r.id, col), kind: f.ok ? 'sub' : 'part', why: f.ok ? '' : f.why, over: why0};
 }
 // 주간 구매 목록: 같은 제품·같은 색은 여러 날 써도 한 번만. 다른 날 코디의 같은 칸도 이미 고른 제품이 주요 특징까지 맞으면 그걸로 같이 셈
@@ -3095,6 +3173,10 @@ function weekBuy(plan){
     it.uses.push({d: p.d, L: p.L, exact: !!(it.p && x.id === it.p.id), diff: x.biDiff});
     p.status.req.filter(y => y !== x && !y.ds.link && ['miss', 'plan', 'info'].includes(y.ds.code)).forEach(y => it.others.add(y.slot ? slotName(y.slot) : (y.what || y.info)));
   }));
+  // v14: 모양이 안 보이는 신발이 스스로 산 칸(x.buy)이면 그 품목은 여기서 만듦(v13까진 이런 신발이 살 옷 목록에 아예 안 나왔음)
+  later.forEach(([p, x]) => { if (!x.buy || x.ds.link !== x.buy || items.some(i => i.slot === x.buy)) return;
+    const bp = buyPick(x, p.L);
+    items.push({k: bp && bp.p ? bp.key : 'slot:' + x.buy, p: bp && bp.p, col: bp && bp.col, slot: x.buy, kind: bp ? bp.kind : null, why: (bp && bp.why) || '', over: '', days: [], uses: [], others: new Set()}); });
   later.forEach(([p, x]) => { const it = items.find(i => i.slot === x.ds.link); if (!it) return;
     x.bi = it; x.biDiff = '';
     if (!it.days.includes(p.d)) it.days.push(p.d);
@@ -3155,7 +3237,9 @@ function showWeek(){
     + `<div class="wtop"><span class="k">시작</span><div class="seg" id="wstart"><button type="button" data-v="" aria-pressed="${!WK.start || WK.start <= t0}">오늘부터</button><button type="button" data-v="${nm}" aria-pressed="${WK.start === nm}">다음 주 월요일부터</button></div>`
     + `<input type="date" id="wdate" value="${esc(WK.start && WK.start > t0 ? WK.start : '')}" min="${t0}" aria-label="시작 날짜 직접 고르기">`
     + `<span class="k">같은 상의 이틀 연달아</span><div class="seg" id="wgap"><button type="button" data-v="1" aria-pressed="${!!WK.gap}">피하기</button><button type="button" data-v="0" aria-pressed="${!WK.gap}">상관없음</button></div>`
+    + `<span class="wg"><span class="k">코디</span><div class="seg" id="wvary"><button type="button" data-v="0" aria-pressed="${!WK.vary}">살 옷 적게</button><button type="button" data-v="1" aria-pressed="${!!WK.vary}">다양하게</button></div></span>`
     + `<button class="plain sm" type="button" id="wre">고정 안 한 날 다시 짜기</button></div>`
+    + (WK.vary && !WK.thrift ? `<p class="cn">'다양하게'는 같은 코디를 덜 반복하는 대신 살 옷이 늘 수 있어(여러 날씨로 재 보면 한 주 평균 7만~10만 원 더). 산 겉옷·바지·신발을 같이 쓰는 코디를 먼저 고르고, 그 주 날씨에 맞는 코디가 적으면 결과가 같을 수 있어</p>` : '')
     + `<p class="cn">날마다 기본 단계는 위에서 고른 '${esc(LEVELS[st.level].name)}'. 꾸미는 날은 그날 칸에서 바꿔. 앞 날짜에 쓰거나 사기로 한 옷을 다른 날에도 다시 쓰게 짰어`
     + `${wx.est ? '. 예보를 못 받아서 날씨는 전부 계절 참고값이야' : last && last < ds[6] ? `. ${dLab(addDays(last, 1))}부터는 예보가 없어서 계절 참고로 짠 거라 예보가 나오면 다시 확인해야 해` : ''}.`
     + ` 준비됨 ${cnt('ready')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일</p>`;
@@ -3256,6 +3340,7 @@ function bindWeek(){
     if (b.dataset.day) { WK.sel = b.dataset.day; saveW(); redraw(true); return; }
     if (b.closest('#wstart')) { WK.start = b.dataset.v || null; WK.sel = null; saveW(); redraw(); return; }
     if (b.closest('#wgap')) { WK.gap = +b.dataset.v; saveW(); planWeek(true); redraw(true); return; }
+    if (b.closest('#wvary')) { WK.vary = !!+b.dataset.v; saveW(); planWeek(true); redraw(true); return; }
     if (b.id === 'wre') { planWeek(true); redraw(true); return; }
     if (b.id === 'wthrift') { WK.thriftFrom = weekBuy(planWeek(false)).sumTodo; WK.thrift = true; saveW(); planWeek(true); redraw(true); return; }
     if (b.dataset.lv) { if (b.dataset.lv === 'skip') D.skip = !D.skip; else { D.skip = false; if (b.dataset.lv === st.level) delete D.lv; else D.lv = b.dataset.lv; D.pin = false; delete D.why; } saveW(); redraw(true); return; }
