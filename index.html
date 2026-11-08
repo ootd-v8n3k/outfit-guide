@@ -279,6 +279,7 @@ body.sheet-open main{padding-bottom:32px}
 #ownImp button{margin:2px 6px 0 0}
 #ownImp .ownf{gap:4px}
 #ownImp .ownf button{margin:0;padding:3px 7px}
+#ownImp .impx{position:sticky;bottom:-14px;margin:8px -16px -14px;padding:8px 16px 12px;background:#fff;border-top:1px solid var(--line)}
 #ownImp .go{background:var(--ink);color:#fff;border:0;border-radius:3px;padding:7px 16px;cursor:pointer}
 #pl,#pw{width:84px;-moz-appearance:textfield;appearance:textfield}
 #pl::-webkit-inner-spin-button,#pw::-webkit-inner-spin-button,#pl::-webkit-outer-spin-button,#pw::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
@@ -328,7 +329,7 @@ ol.g2 li{margin:4px 0;font-size:14px;line-height:1.6}
 .ww.est{color:#6b5300}
 .wl{color:var(--sub);font-size:12.5px}
 .ws{font-size:13px;font-weight:700;margin-top:auto}
-.ws.ready{color:var(--acc)}
+.ws.ready,.ws.sub{color:var(--acc)}
 .ws.buy,.ws.wait{color:#8a3b12}
 .ws.eta,.ws.wash,.ws.info,.ws.soft{color:#6b5300}
 .ws.none{color:var(--sub)}
@@ -420,6 +421,13 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 
 /* 무신사 제품 (2026-11-06 확인). 빌드 때 products.jsonl에서 들어옴 */
 const PRODUCTS = [
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"5662157","name":"무신사 스탠다드 워셔블 수피마 코튼 라운드 넥 가디건 [더스티 크림]","price":45490,"reviewCount":61,"fitPct":"정사이즈 81%","mat":"면 100% (색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이","밑단단면","소매부리단면","암홀"],"rows":[[62,44,52.5,58.6,41,9.5,23.9],[64,46,55,59.8,43.5,10,24.7],[66,48,57.5,61,46,10.5,25.5],[68,50,60,62.2,48.5,11,26.3],[70,52,62.5,63.4,51,11.5,27.1]]},"rv":"184,80,XL,-2;183,75,XL,0;165,64,M,0;177,70,L,1;182,90,XL,1;178,77,XL,0;164,67,M,0;181,71,XL,0;177,85,XL,0","stockNote":"전 사이즈 주문 가능","img":"https://image.msscdn.net/images/goods_img/20251029/5662157/5662157_17682942064411_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"3405554","name":"무신사 스탠다드 울 블렌드 미니멀 블루종 재킷 [블랙]","price":129900,"reviewCount":736,"fitPct":"정사이즈 80%","mat":"겉감 모 54%, 폴리에스터 42%, 기타섬유 4%, 안감 폴리에스터 100%, 주머니감 폴리에스터 65%, 면 35%","sizes":["M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이","밑단단면","소매부리단면","암홀"],"rows":[[63,54.4,60.5,58,49,14,24.6],[65,56,63,60,51.5,14.5,25.4],[67,57.6,65.5,62,54,15,26.2],[69,59.2,68,64,56.5,15.5,27]]},"rv":"185,70,2XL,0;178,80,XL,1;177,73,XL,0;180,70,M,0;172,70,L,0;183,64,L,0;181,78,XL,0;178,78,XL,0;180,80,XL,0","stockNote":"전 사이즈 주문 가능","img":"https://image.msscdn.net/images/goods_img/20230712/3405554/3405554_16957070439666_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"2668327","name":"무신사 스탠다드 울 블렌드 리버스 턱 와이드 슬랙스 [그레이]","price":39890,"reviewCount":140,"mat":"겉감 모 60% 폴리에스터 40% 안감 폴리에스터 80% 면 20%(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"rows":[[104,35,54.5,34,30,26],[104,36.25,55.75,34.625,30,26.25],[105,37.5,57,35.25,30.5,26.5],[105,38.75,58.25,35.875,30.5,26.75],[106,40,59.5,36.5,31,27],[106,41.25,60.75,37.125,31,27.25],[106,42.5,62,37.75,31.5,27.5],[106,43.75,63.25,38.375,32,27.75],[107,45,64.5,39,32.5,28],[107,47.5,67,40.25,33.5,28.5],[108,50,69.5,41.5,34.5,29],[108,52.5,72,42.75,35.5,29.5],[109,55,74.5,44,36.5,30]],"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"]},"soldAll":1,"stockNote":"전 사이즈 품절(재입고 알림만 됨)","img":"https://image.msscdn.net/images/goods_img/20220718/2668327/2668327_16760227131709_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"2741208","name":"무신사 스탠다드 라운드 더비 슈즈 [블랙]","price":104390,"reviewCount":1069,"fitPct":"정사이즈 60%","mat":"갑피: 천연가죽(소가죽), 내피: 천연가죽(돈피), 창:고무(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["230","235","240","245","250","255","260","265","270","275","280","285","290"],"chart":{"rows":[[26.5,10,24.5,3.5],[26.9,10.3,25,3.5],[27.4,10.4,25.5,3.5],[27.7,10.5,26,3.5],[28.3,10.6,26.5,3.5],[28.8,10.8,27,3.5],[29,10.8,27.5,3.5],[29.5,10.9,28,3.5],[30,11,28.5,3.5],[30.5,11,29,3.5],[30.9,11,29.5,3.5],[30,9.7,null,3.5],[30.5,9.8,null,3.5]],"cols":["신발 길이","신발 너비","발 길이","굽/솔 높이"]},"out":["245","265","280","285","290"],"stockNote":"245·265·280·285·290 품절, 255 5개 남음","img":"https://image.msscdn.net/images/goods_img/20220825/2741208/2741208_17138418219659_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"4719576","name":"무신사 스탠다드 스트레이트 치노 팬츠 [크림]","price":41890,"reviewCount":106,"fitPct":"정사이즈 89%","mat":"겉감 면 100%(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"rows":[[102,35,45,27.25,27,20.5],[102,36.25,46.25,27.875,27,20.75],[103,37.5,47.5,28.5,27.5,21],[103,38.75,48.75,29.125,27.5,21.25],[104,40,50,29.75,28,21.5],[104,41.25,51.25,30.375,28,21.75],[104,42.5,52.5,31,28.5,22],[104,43.75,53.75,31.625,29,22.25],[105,45,55,32.25,29.5,22.5],[105,47.5,57.5,33.5,30.5,23],[106,50,60,34.75,31.5,23.5],[106,52.5,62.5,36,32.5,24],[107,55,65,37.25,33.5,24.5]],"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"]},"rv":"175,94,36,0;171,68,32,0;183,83,33,0;178,74,34,0;184,78,33,0;183,95,36,-1;165,60,30,0","out":["26","27"],"stockNote":"26·27 품절, 40 5개 남음","img":"https://image.msscdn.net/images/goods_img/20250114/4719576/4719576_17538750349131_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"5107709","name":"무신사 스탠다드 워셔블 수피마 코튼 크루 넥 니트 [네이비]","price":47390,"reviewCount":233,"fitPct":"정사이즈 89%","mat":"코튼(Cotton)100%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이","밑단단면","소매부리단면","암홀"],"rows":[[65.5,45.5,53,58.5,41,9,23.1],[67.5,47.5,55.5,60.5,43.5,9.5,23.9],[69,49,58,61.5,46,10,24.7],[70.5,50.5,60.5,62.5,48.5,10.5,25.5],[72,52,63,63.5,51,11,26.3]]},"rv":"174,72,XL,0;181,80,L,0;177,85,XL,0;174,67,XL,0;176,80,2XL,0;175,70,L,0","stockNote":"S 마지막 1개","img":"https://image.msscdn.net/images/goods_img/20250513/5107709/5107709_17544708966267_500.jpg"},
+{"spec":"LOOK","role":"item","checked":"2026-11-08","id":"2402829","name":"무신사 스탠다드 수피마 릴렉스드 크루 넥 티셔츠 [크림]","price":25900,"reviewCount":241,"mat":"겉감 면 72%, 폴리에스터 28%, 배색 면 70%, 폴리에스터 30%, 바인딩감 면 100%(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["S","M","L","XL","2XL","3XL"],"chart":{"rows":[[68.8,48.5,53,23,52.5,18,24.7],[70.8,50.5,55.5,24,55,18.5,25.5],[72.3,52,58,25,57.5,19,26.3],[73.8,53.5,60.5,26,60,19.5,27.1],[74.8,55,63,26.5,null,null,null],[74.8,56.5,65.5,26.5,null,null,null]],"cols":["총장","어깨너비","가슴단면","소매길이","밑단단면","소매부리단면","암홀"]},"rv":"183,65,XL,1;174,82,XL,0","out":["XL","2XL","3XL"],"stockNote":"XL·2XL·3XL 품절","img":"https://image.msscdn.net/images/goods_img/20220307/2402829/2402829_17137482121585_500.jpg"},
 {"spec":"LOOK","role":"item","checked":"2026-11-08","id":"4664355","name":"무신사 스탠다드 스크럽 워시드 와이드 데님 팬츠 [워시드 블랙]","price":41290,"reviewCount":49,"fitPct":"정사이즈 80%","mat":"겉감 면 100%, 주머니감 폴리에스터 80%, 면 20%(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"],"rows":[[107,35.5,48.5,31.75,31,23.9],[107,36.75,49.75,32.375,31,24.25],[108,38,51,33,31.5,24.6],[108,39.25,52.25,33.625,31.5,24.95],[109,40.5,53.5,34.25,32,25.3],[109,41.75,54.75,34.875,32,25.65],[109,43,56,35.5,32.5,26],[109,44.25,57.25,36.125,33,26.35],[110,45.5,58.5,36.75,33.5,26.7],[110,48,61,38,34.5,27.4],[111,50.5,63.5,39.25,35.5,28.1],[111,53,66,40.5,36.5,28.8],[112,55.5,68.5,41.75,37.5,29.5]]},"rv":"182,78,30,0;177,65,30,0;178,82,33,0;186,91,34,0;176,67,29,0;173,60,26,0;178,73,31,1;178,75,29,0","out":["26","34","36","38","40","42"],"stockNote":"26·34·36·38·40·42 품절","img":"https://image.msscdn.net/images/goods_img/20241213/4664355/4664355_17472062072259_500.jpg"},
 {"spec":"LOOK","role":"item","checked":"2026-11-08","id":"5215580","name":"무신사 스탠다드 데일리 푸퍼 신세틱 스웨이드 숏 패딩 재킷 [블랙]","price":76890,"reviewCount":47,"fitPct":"정사이즈 76%","mat":"겉감 - 폴리에스터 100%, 안감 - 폴리에스터 100%, 충전재 - 폴리에스터 100%","sizes":["S","M","L","XL","2XL"],"chart":{"cols":["총장","어깨너비","가슴단면","소매길이","밑단단면","소매부리단면","암홀"],"rows":[[60,50,61,61,58,13.2,24.9],[62,53.4,61,62,60.5,13.6,25.7],[64,55,66,63.5,63,14,26.5],[66,56.6,71,65,65.5,14.4,27.3],[68,58.2,76,66.5,68,14.8,28.1]]},"rv":"178,85,2XL,1;178,88,XL,0;171,80,L,0;182,90,2XL,1;174,63,M,0;172,95,2XL,0;181,72,XL,0;173,57,M,0","out":["2XL"],"stockNote":"2XL 품절","img":"https://image.msscdn.net/images/goods_img/20250701/5215580/5215580_17604871145761_500.jpg"},
 {"spec":"LOOK","role":"item","checked":"2026-11-08","id":"2268294","name":"무신사 스탠다드 레귤러 핏 데님 팬츠 [블랙]","price":44390,"reviewCount":4929,"fitPct":"정사이즈 83%","mat":"겉감 면 100% 주머니감 폴리에스터 80% 면 20%(색상 또는 품번에 따라 기재된 혼용률에서 허용 오차 범위 내 차이가 있을 수 있습니다)","sizes":["26","27","28","29","30","31","32","33","34","36","38","40","42"],"chart":{"rows":[[104,35.5,46.5,29.8,29,19.9],[104,36.8,47.8,30.4,29,20.3],[105,38,49,31,29.5,20.6],[105,39.3,50.3,31.6,29.5,21],[106,40.5,51.5,32.3,30,21.3],[106,41.8,52.8,32.9,30,21.7],[106,43,54,33.5,30.5,22],[106,44.3,55.3,34.1,31,22.4],[107,45.5,56.5,34.8,31.5,22.7],[107,48,59,36,32.5,23.4],[108,50.5,61.5,37.3,33.5,24.1],[108,53,64,38.5,34.5,24.8],[109,55.5,66.5,39.8,35.5,25.5]],"cols":["총장","허리단면","엉덩이단면","허벅지단면","밑위","밑단단면"]},"rv":"184,83,34,0;168,62,28,0;171,63,30,1;173,62,29,0;178,91,38,0;174,72,31,0;188,80,34,-1;178,100,36,0","out":["40"],"stockNote":"40 품절","img":"https://image.msscdn.net/images/goods_img/20211214/2268294/2268294_17623224322646_500.jpg"},
@@ -960,7 +968,24 @@ const LOOKS = [
   // ---- v22: 검토 v21 지시 3(지금~겨울 전신 사진). 바지 상품 페이지·겉옷 갤러리 15곳쯤 봤고 가진 옷 조합과 같은 전신 컷은 이 한 장(나머지 검정 패딩 전신은 회색·플레어·카고 바지) ----
   {key:'n-5215580', level:'L2', lo:-8, hi:3, tip:'pad', img:'prd_img/20250701/5215580/detail_5215580_17604871207721_big.jpg', cx:.50, y0:.14,
    page:'5215580', cut:1, model:'179cm · 55kg, 이 사진이 실린 패딩 L',
-   spots:[{id:'5215580', label:'패딩', x:.42, y:.32}, {id:'4664355', label:'바지', x:.44, y:.72, pants:1}]}
+   spots:[{id:'5215580', label:'패딩', x:.42, y:.32}, {id:'4664355', label:'바지', x:.44, y:.72, pants:1}]},
+  // ---- v23: 검토 v22 지시 4(5~15° 전신). 검토가 준 번호 넷은 못 씀(4209311 갤러리는 전부 허리 위, 1551845는 없는 상품, 3435629는 오트밀 니트, 2086651은 플리스 맨투맨 허리 위 컷).
+  //      같은 줄 다른 색(5662153 → 5662157 크림), 블루종과 같이 태그된 바지 페이지(4719576), 예전에 본 블루종 갤러리 옆모습 전신(3405554)에서 찾음 ----
+  {key:'n-5662157', level:'L2', lo:12, hi:19, tip:'knit', img:'prd_img/20251029/5662157/detail_5662157_17682942130691_big.jpg', cx:.48, y0:.155,
+   page:'5662157', cut:1, model:'182cm · 60kg, 이 사진이 실린 가디건 L',
+   spots:[{id:'5662157', label:'가디건', x:.43, y:.30}, {id:'2402829', label:'티셔츠', x:.47, y:.47}, {id:'1666444', label:'바지', x:.45, y:.68, pants:1}],
+   alts:{'1666444':['2208662']},
+   altWhy:{'2208662':'같은 촬영 대표 컷에 같이 태그된 검정 와이드 데님. 워시드가 아니라 더 진한 검정'}},
+  {key:'n-4719576', level:'L2', lo:9, hi:16, tip:'knit', img:'prd_img/20250114/4719576/detail_4719576_17539393325972_big.jpg', cx:.50, y0:.15,
+   page:'4719576', cut:1, model:'181cm · 63kg, 이 사진이 실린 바지 31',
+   un:[{role:'top', kind:'반팔티', col:'화이트', what:'니트 안에 받친 흰 티(목둘레와 밑단만 보임. 같은 촬영 대표 컷에 태그된 건 레이어드 슬리브리스 탑 [화이트])', alts:['996177']}],
+   spots:[{id:'5107709', label:'니트', x:.42, y:.30}, {id:'4719576', label:'바지', x:.45, y:.68, pants:1}]},
+  {key:'n-3405554', level:'L3', lo:4, hi:12, tip:'jacket', img:'prd_img/20230712/3405554/detail_3405554_16957070546312_big.jpg', cx:.52, y0:.15,
+   page:'3405554', cut:1, model:'',
+   spots:[{id:'3405554', label:'블루종', x:.48, y:.34}, {id:'2668327', label:'바지', x:.53, y:.70, pants:1}, {id:'2741208', label:'더비', x:.55, y:.95}],
+   alts:{'3405554':['4209311'], '2668327':['4368567']},
+   altWhy:{'4209311':'10만원 아래 검정 카라 블루종. 지퍼·카라 모양은 같고 겉감이 부클(꼬불꼬불한 짜임)이라 표면이 더 거침',
+     '4368567':'사진 속 바지는 품절. 같은 회색 계열 투 턱 와이드 슬랙스(건메탈이라 조금 더 짙음)'}}
 ];
 // 매거진 콘텐츠(사진 출처). 링크는 무신사 콘텐츠 페이지
 const MAG = {
@@ -1030,7 +1055,11 @@ const FEAT = {
   'n-1224094': {ot:'겉옷 없음', ol:'', pf:'와이드', pm:'슬랙스', pc:'차콜', sh:'더비', tone:'흑백', mood:'깔끔'},
   'n-5662153': {ot:'가디건', ol:'엉덩이', pf:'와이드', pm:'데님', pc:'네이비', sh:'더비', tone:'어두운 톤', mood:'깔끔'},
   // v22
-  'n-5215580': {ot:'패딩', ol:'짧음', pf:'와이드', pm:'데님', pc:'블랙', sh:'더비', tone:'어두운 톤', mood:'깔끔'}
+  'n-5215580': {ot:'패딩', ol:'짧음', pf:'와이드', pm:'데님', pc:'블랙', sh:'더비', tone:'어두운 톤', mood:'깔끔'},
+  // v23
+  'n-5662157': {ot:'가디건', ol:'엉덩이', pf:'와이드', pm:'데님', pc:'블랙', sh:'로퍼', tone:'흑백', mood:'깔끔'},
+  'n-4719576': {ot:'겉옷 없음', ol:'', pf:'스트레이트', pm:'면', pc:'크림', sh:'스니커즈', tone:'밝은 톤', mood:'캐주얼'},
+  'n-3405554': {ot:'블루종', ol:'짧음', pf:'와이드', pm:'슬랙스', pc:'차콜', sh:'더비', tone:'흑백', mood:'깔끔'}
 };
 /* ---------- v9: 기본안 판단 · 입는 법 (사진을 보고 붙임, 코디재평가-v9.md) ----------
    base 2 기본안: 흔한 기본템, 색 2~3개, 소품 없이 완성 · 1 조건부: 유행 핏·3겹 이상 · 0 포인트: 취향이 갈리는 소품·색·로고가 핵심
@@ -1312,7 +1341,22 @@ const STY = {
     core:'검정 숏 패딩을 목 끝까지 잠그고 살짝 바랜 검정 와이드 데님, 검정 스웨이드 신발. 안에 입은 옷이 안 보여서 가진 상의 아무거나 받쳐 입으면 되는 추운 날 조합',
     how:[['겉옷', '허리선에서 끝나는 짧은 패딩. 지퍼와 스냅 단추를 다 채우고 스탠드 칼라를 세워 목을 덮음. 짧아서 아래 와이드 바지가 길게 보임'],
       ['바지', '회색빛이 도는 워시드 블랙 와이드 데님. 허벅지부터 넓게 곧게 떨어지고, 밑단이 신발 등에 얹혀 한 번 쌓이는 길이'],
-      ['신발', '검정 스웨이드 가죽 신발(태그 없음). 검정 운동화로 바꾸면 조금 더 편해 보임']]}
+      ['신발', '검정 스웨이드 가죽 신발(태그 없음). 검정 운동화로 바꾸면 조금 더 편해 보임']]},
+  'n-5662157': {shoe:{kind:'가죽 신발', col:'블랙'}, base:2, sit:'등교, 친구 약속', pal:['크림','검정'],
+    core:'크림 라운드 넥 가디건을 단추 끝까지 채워 한 장으로 입고, 안에 받친 크림 티가 목둘레와 밑단으로 살짝 보이게. 아래는 살짝 바랜 검정 와이드 데님과 검정 가죽 신발. 선선한 날 밝은 상의로 부드러워 보이는 조합',
+    how:[['상의', '가디건 단추를 맨 위까지 다 채워 니트처럼 입음. 목둘레와 가디건 밑단 아래로 크림 티가 1cm쯤 보이게'],
+      ['바지', '회색빛이 살짝 도는 검정 와이드 데님. 허벅지부터 넓게 곧게 떨어지고 밑단이 신발 등에 얹히는 길이'],
+      ['신발', '검정 가죽 로퍼(태그 없음). 더비도 맞음']]},
+  'n-4719576': {shoe:{kind:'스니커즈', col:'화이트'}, base:2, sit:'등교, 동네 약속', pal:['네이비','크림','흰색'],
+    core:'네이비 크루 넥 니트 안에 흰 티를 받쳐 목둘레·밑단으로 보이게 하고, 크림 스트레이트 치노와 흰 캔버스 운동화. 선선한 날 밝은 바지로 가볍게 입는 조합',
+    how:[['상의', '얇은 면 니트 한 장. 넣어 입지 않고 바지 허리를 덮고, 니트 밑단 아래로 흰 티가 살짝 보임'],
+      ['바지', '크림색 스트레이트 치노. 허벅지부터 밑단까지 일자로 떨어지고 밑단이 운동화 등에 살짝 닿는 길이'],
+      ['신발', '흰(살짝 아이보리) 캔버스 운동화(태그 없음)']]},
+  'n-3405554': {base:2, sit:'발표 날, 친구 약속', pal:['검정','차콜'],
+    core:'검정 울 블루종을 카라까지 지퍼로 잠그고 차콜 와이드 슬랙스, 검정 라운드 더비. 쌀쌀한 날 두 색으로 끝나는 단정한 조합',
+    how:[['겉옷', '허리선에서 끝나는 짧은 울 블루종. 지퍼를 끝까지 올려 카라를 세움. 같은 촬영 앞모습 컷에선 안에 네이비 크루 넥 니트를 입었음'],
+      ['바지', '앞 주름선이 있는 차콜 그레이 와이드 슬랙스. 엉덩이부터 넓게 떨어지고 밑단이 더비 등에 얹혀 살짝 쌓이는 길이'],
+      ['신발', '앞코가 둥근 검정 가죽 더비. 검정 운동화로 바꾸면 꾸안꾸에 가까워짐']]}
 };
 // 상의·겉옷 대안을 고를 때 지켜야 하는 특징. 이름으로 못 정하는 것(로고 크기)만 사진을 보고 적음
 const GFX = {'5487937': '큰 로고'};
@@ -2258,20 +2302,23 @@ const impFRows = ks => { const r = ks.map(k => { const rl = roleOfSlot(k), f = r
 function showOwnImport(list, add){
   const old = document.getElementById('ownImp'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '가진 옷 적기');
-  const close = '<button type="button" class="plain" data-x>닫기</button>';
+  // v23: 닫기를 창 맨 아래에 붙여 둠. 창은 v20부터 화면 70%에서 스크롤되는데, 옷이 많으면 닫기가 스크롤 끝에 있어서 안 보였음(검토 v22)
+  const close = '<div class="impx"><button type="button" class="plain" data-x>닫기</button></div>';
   let dirty = false;
+  // v23: 바지 통·기장을 고르면 뒤 화면도 바로 바꿈(전엔 닫을 때만 바뀜)
+  const live = () => { saveO(); dirty = true; if (typeof wx !== 'undefined' && wx) render(); };
   d.innerHTML = !list.length ? `<p>링크에서 읽을 수 있는 옷이 없어. 링크가 중간에 잘렸을 수 있어</p>${close}`
     : !add.length ? `<p>링크의 옷 ${list.length}개는 이 기기에 이미 다 적혀 있어</p>${impFRows(list)}${close}`
     : `<p><b>가진 옷 ${add.length}개를 이 기기에 적을까?</b></p><p class="cn">${add.map(k => esc(slotName(k))).join(', ')}</p>`
       + `<p class="cn">지금 적어 둔 건 그대로 두고 더하기만 해. 이 폰(브라우저)에만 저장되고 어디로도 안 보냄</p><button type="button" class="go" data-ok>적기</button><button type="button" class="plain" data-x>안 적기</button>`;
   d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.ownf) { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
-      OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); dirty = true;
-      b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); return; }
+      OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v;
+      b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); live(); return; }
     if (b.dataset.ownall) { const f = b.dataset.ownall, v = b.dataset.v;
       list.filter(k => roleOfSlot(k) === 'pants').forEach(k => { OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v;
         d.querySelectorAll(`[data-ownf][data-f="${f}"]`).forEach(o => { if (o.dataset.ownf === k) o.setAttribute('aria-pressed', String(o.dataset.v === v)); }); });
-      saveO(); dirty = true; b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); return; }
+      b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); live(); return; }
     if (b.hasAttribute('data-ok')) { add.forEach(k => { OWN.s[k] = 'similar'; }); saveO();
       d.innerHTML = `<p><b>${add.length}개 적었어.</b> 사진 속 옷과 종류·색이 같은 코디는 '가진 ○○로 됨'으로 보이고, '먼저 살 옷'과 7일 준비에도 바로 반영돼. '먼저 살 옷' 아래 목록에서 하나씩 지울 수 있어</p>${impFRows(list)}${close}`;
       if (typeof wx !== 'undefined' && wx) render(); return; }
@@ -2288,6 +2335,9 @@ function showOwnImport(list, add){
 //      니트 → 같은 색 가디건(단추를 다 채우면 니트처럼 보임) · 스웨트 팬츠 → 같은 색 슬랙스(가진 슬랙스 통이 사진과 같다고 적었을 때만)
 //      검정 구두 → 검정 운동화(편하게·꾸안꾸, 적당히 꾸민은 바지가 슬랙스가 아닐 때만. 꾸꾸꾸와 슬랙스 코디는 구두가 사진의 핵심이라 안 함)
 //      안 연 것: 색이 바뀌는 것(검정 후드 집업 → 회색, 크림 니트 → 하늘색 니트·흰 셔츠, 스웨트 → 다른 색 데님), 갈색 나일론 팬츠 → 데님, 흰·회색 운동화 → 검정 구두 자리
+// v23: 검토 v22를 보고 적당히 꾸민의 슬랙스 코디도 검정 구두 자리에 검정 운동화를 '대신 입음'으로 열었음(와이드 슬랙스 + 검정 운동화는 흔한 조합).
+//      대신 달라지는 점에 '꾸안꾸에 가깝게 보임'을 적음. 꾸꾸꾸는 그대로 안 함.
+//      안 연 것: l3-i 안의 크림(아이보리) 터틀넥 → 검정 니트·크림 가디건. 블루종 앞이 열려 있어 목까지 올라온 밝은 터틀넥이 사진의 핵심이라 색·목 모양을 바꾸면 다른 코디가 됨
 const KSUB = {'슬랙스': [['면바지', '같은 색 면바지라 앞 주름선이 없고 조금 더 편해 보임']],
   '면바지': [['슬랙스', '같은 색 슬랙스라 앞 주름선이 있고 조금 더 단정해 보임']],
   '니트': [['가디건', '같은 색 가디건 단추를 맨 위까지 채워 니트처럼 입음. 앞 단추 줄이 보이고 짜임이 사진과 다를 수 있음']],
@@ -2300,8 +2350,9 @@ function subFor(x, os){
   if (x.role !== 'shoes') {
     (KSUB[kd] || []).forEach(([k2, why, need]) => cand.push({k: k2 + '|' + c, why, need}));
     (CSUB[c] || []).forEach(([c2, why]) => cand.push({k: kd + '|' + c2, why: `색만 ${CN[c] || c} → ${CN[c2] || c2}, ${why}`}));
-  } else if (SHOE_SUB.test(kd) && (x.lvl === 'L1' || x.lvl === 'L2' || (x.lvl === 'L3' && !/슬랙스/.test(x.pk || ''))))
-    cand.push({k: '스니커즈|' + c, why: `사진은 ${CN[c] || c} 가죽 구두라 더 단정해 보임. 운동화면 조금 캐주얼해지고, 밑창이 흰색이면 발끝이 더 눈에 띔`});
+  } else if (SHOE_SUB.test(kd) && (x.lvl === 'L1' || x.lvl === 'L2' || x.lvl === 'L3'))
+    cand.push({k: '스니커즈|' + c, why: `사진은 ${CN[c] || c} 가죽 구두라 더 단정해 보임. 운동화면 조금 캐주얼해지고, 밑창이 흰색이면 발끝이 더 눈에 띔`
+      + (x.lvl === 'L3' && /슬랙스/.test(x.pk || '') ? '. 슬랙스에 운동화라 적당히 꾸민보다 꾸안꾸에 가깝게 보임' : '')});
   const keys = Object.keys(x.ft || {}).filter(f => x.ft[f]);
   return cand.find(o => os.has(o.k) && !OWN.x[x.slot + '>' + o.k] && !keys.some(f => ownF(o.k)[f] && ownF(o.k)[f] !== x.ft[f])
     && (!o.need || (x.ft && x.ft[o.need] && ownF(o.k)[o.need] === x.ft[o.need]))) || null;
@@ -3335,10 +3386,12 @@ function dayPart(x, d, os){
   }
   return Object.assign({code: 'miss'}, s, {t: s.lv === 1 ? s.t : s.t === '없음' ? '없다고 표시함' : '가진 옷 기록 없음'});
 }
-const DSN = {ready: '준비됨', soft: '가진 옷으로 될 듯 · 특징 확인', info: '가진 옷 확인 필요', eta: '배송 대기 · 받으면 준비', wait: '배송 대기 · 이날 못 입음', wash: '세탁 중인 옷 있음', buy: '살 옷 있음', none: ''};
+// v23: '대신 입음'만 남은 날(sub)과 바지 통·겉옷 기장을 아직 안 고른 날(soft)을 나눔. 전엔 둘 다 '특징 확인'이라 통·기장을 다 골라도 그렇게 떴음(검토 v22)
+const DSN = {ready: '준비됨', sub: '가진 옷으로 됨 · 대신 입는 옷 있음', soft: '가진 옷으로 될 듯 · 바지 통·기장 확인', info: '가진 옷 확인 필요', eta: '배송 대기 · 받으면 준비', wait: '배송 대기 · 이날 못 입음', wash: '세탁 중인 옷 있음', buy: '살 옷 있음', none: ''};
 const BUYC = ['miss', 'plan', 'wait', 'eta'];
 const dayCode = req => { const c = req.map(x => x.ds.code);
-  return c.includes('miss') || c.includes('plan') ? 'buy' : c.includes('wait') ? 'wait' : c.includes('wash') ? 'wash' : c.includes('eta') ? 'eta' : c.includes('info') ? 'info' : c.includes('soft') ? 'soft' : 'ready'; };
+  return c.includes('miss') || c.includes('plan') ? 'buy' : c.includes('wait') ? 'wait' : c.includes('wash') ? 'wash' : c.includes('eta') ? 'eta' : c.includes('info') ? 'info'
+    : c.includes('soft') ? (req.some(x => x.ds.code === 'soft' && !x.ds.sub && !x.ds.pick) ? 'soft' : 'sub') : 'ready'; };
 function dayStatus(L, d, os){
   const parts = partsOf(L).map(x => Object.assign(x, {ds: dayPart(x, d, os)})), req = parts.filter(x => x.need === 'req');
   return {parts, req, code: dayCode(req)};
@@ -3635,7 +3688,7 @@ function weekBuy(plan){
 // 배송이 늦거나 세탁 중일 때: 같은 날 가진 옷만으로 되는 다른 코디, 막힌 조각만 가진 같은 역할 옷으로 바꾸기
 function dayAlts(p, os){
   const pool = orderLooks(p.A, p.lv).filter(o => o.L !== p.L && o.dd <= 2 && !TS.nope[o.L.key]);
-  const looks = pool.map(o => [o, dayStatus(o.L, p.d, os)]).filter(([, s]) => s.code === 'ready' || s.code === 'soft').slice(0, 2);
+  const looks = pool.map(o => [o, dayStatus(o.L, p.d, os)]).filter(([, s]) => s.code === 'ready' || s.code === 'sub' || s.code === 'soft').slice(0, 2);
   const blocked = p.status.req.filter(x => ['wait', 'wash', 'miss', 'plan', 'eta'].includes(x.ds.code));
   const subs = blocked.map(x => [x, [...os].filter(k => roleOfSlot(k) === x.role && k !== x.slot && !wDays(k).includes(p.d)).slice(0, 2)]).filter(([, a]) => a.length);
   return {looks, subs};
@@ -3689,7 +3742,7 @@ function showWeek(){
     + (WK.vary && !WK.thrift ? `<p class="cn">'다양하게'는 같은 코디를 덜 반복하는 대신 살 옷이 늘 수 있어(여러 날씨로 재 보면 한 주 평균 11만~13만 원 더). 산 겉옷·바지·신발을 같이 쓰는 코디를 먼저 고르고, 그 주 날씨에 맞는 코디가 적으면 결과가 같을 수 있어</p>` : '')
     + `<p class="cn">날마다 기본 단계는 위에서 고른 '${esc(LEVELS[st.level].name)}'. 꾸미는 날은 그날 칸에서 바꿔. 앞 날짜에 쓰거나 사기로 한 옷을 다른 날에도 다시 쓰게 짰어`
     + `${wx.est ? '. 예보를 못 받아서 날씨는 전부 계절 참고값이야' : last && last < ds[6] ? `. ${dLab(addDays(last, 1))}부터는 예보가 없어서 계절 참고로 짠 거라 예보가 나오면 다시 확인해야 해` : ''}.`
-    + ` 준비됨 ${cnt('ready')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일</p>`;
+    + ` 준비됨 ${cnt('ready')}일 · 가진 옷으로 대신 입는 날 ${cnt('sub')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일</p>`;
   h += '<div class="wgrid">' + plan.map(p => {
     const code = p.skip || p.none ? 'none' : p.status.code;
     return `<button type="button" class="wd${p.d === WK.sel ? ' on' : ''}" data-day="${p.d}" aria-pressed="${p.d === WK.sel}">`
@@ -3743,6 +3796,7 @@ function weekBuyHTML(B, plan){
   if (!B.list.length) {
     const L = plan.filter(p => p.L), why = !L.length ? '짠 코디가 없어서 살 옷을 셀 수 없어'
       : L.every(p => p.status.code === 'ready') ? '7일 모두 가진 옷으로 준비돼서 살 옷이 없어'
+      : L.every(p => p.status.code === 'ready' || p.status.code === 'sub') ? '7일 모두 가진 옷으로 입을 수 있어서 살 옷이 없어(사진과 다른 옷을 대신 입는 날 포함)'
       : '살 옷은 없어. 대신 위 날짜 중 확인할 것(가진 옷·세탁·배송)이 남아 있어';
     return h + `<p>${why}</p></div>`;
   }
