@@ -274,6 +274,10 @@ body.sheet-open main{padding-bottom:32px}
 .owna{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
 .owna .k{flex-basis:100%}
 .owna select{font-size:13px;padding:4px 6px}
+#ownImp{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18);padding:14px 16px;font-size:14px;line-height:1.55;max-height:70vh;overflow:auto}
+#ownImp p{margin:0 0 8px}
+#ownImp button{margin:2px 6px 0 0}
+#ownImp .go{background:var(--ink);color:#fff;border:0;border-radius:3px;padding:7px 16px;cursor:pointer}
 #pl,#pw{width:84px;-moz-appearance:textfield;appearance:textfield}
 #pl::-webkit-inner-spin-button,#pw::-webkit-inner-spin-button,#pl::-webkit-outer-spin-button,#pw::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 ol.g2{margin:6px 0 0;padding-left:20px}
@@ -2155,14 +2159,36 @@ const OWN_KIND = {outer: ['패딩', '라이트 패딩', '롱코트', '하프 코
   pants: ['데님', '슬랙스', '면바지', '코듀로이', '스웨트', '워크 팬츠', '나일론 팬츠'],
   shoes: ['스니커즈', '더비', '로퍼', '옥스포드', '부츠', '클로그']};
 const okSlot = k => { const m = /^([^|]{1,12})\|([^|]{1,8})$/.exec(k || ''); return !!m && Object.values(OWN_KIND).some(a => a.includes(m[1])) && !!CN[m[2]]; };
+// v19: 짧은 코드(#o=…): 한 칸 = 종류 1글자 + 색 1글자(36진수). 종류·색 목록 순서를 바꾸면 예전 코드가 틀어지니 바꾸지 말 것
+const OWN_KL = Object.values(OWN_KIND).flat(), OWN_CL = Object.keys(CN), B36 = '0123456789abcdefghijklmnopqrstuvwxyz';
+const ownCode = ks => ks.filter(okSlot).map(k => { const [a, b] = k.split('|'); return B36[OWN_KL.indexOf(a)] + B36[OWN_CL.indexOf(b)]; }).join('');
+const ownDecode = s => (String(s).toLowerCase().match(/[0-9a-z]{2}/g) || []).map(p => (OWN_KL[B36.indexOf(p[0])] || '') + '|' + (OWN_CL[B36.indexOf(p[1])] || ''));
+// v19: 브라우저 확인 창(confirm)은 앱 안 브라우저에서 막히기도 하고, 이미 열린 탭에서 링크를 누르면 다시 읽지 않아서 아무 반응이 없었음
+//      → 화면 아래에 직접 묻는 창을 띄우고, 주소 # 가 바뀔 때도 읽음. 이미 다 적혀 있거나 읽을 게 없을 때도 그렇다고 말함
 function importOwnFromHash(){
-  const h = location.hash || ''; if (!/^#own=/.test(h)) return false;
+  const h = location.hash || ''; let list = [];
+  if (/^#own=/.test(h)) { try { list = decodeURIComponent(h.slice(5)).split(',').map(s => s.trim()); } catch(e){} }
+  else if (/^#o=/.test(h)) list = ownDecode(h.slice(3));
+  else return false;
   try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
-  let list = []; try { list = decodeURIComponent(h.slice(5)).split(',').map(s => s.trim()).filter(okSlot); } catch(e){}
-  list = [...new Set(list)].filter(k => OWN.s[k] !== 'similar');
-  if (!list.length) return false;
-  if (!confirm(`가진 옷 ${list.length}개를 이 기기에 적을까?\n${list.slice(0, 6).map(slotName).join(', ')}${list.length > 6 ? ' 외 ' + (list.length - 6) + '개' : ''}\n(지금 적어 둔 건 그대로 두고 더하기만 함)`)) return false;
-  list.forEach(k => { OWN.s[k] = 'similar'; }); saveO(); return true;
+  list = [...new Set(list.filter(okSlot))];
+  showOwnImport(list, list.filter(k => OWN.s[k] !== 'similar'));
+  return true;
+}
+function showOwnImport(list, add){
+  const old = document.getElementById('ownImp'); if (old) old.remove();
+  const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '가진 옷 적기');
+  const close = '<button type="button" class="plain" data-x>닫기</button>';
+  d.innerHTML = !list.length ? `<p>링크에서 읽을 수 있는 옷이 없어. 링크가 중간에 잘렸을 수 있어</p>${close}`
+    : !add.length ? `<p>링크의 옷 ${list.length}개는 이 기기에 이미 다 적혀 있어</p>${close}`
+    : `<p><b>가진 옷 ${add.length}개를 이 기기에 적을까?</b></p><p class="cn">${add.map(k => esc(slotName(k))).join(', ')}</p>`
+      + `<p class="cn">지금 적어 둔 건 그대로 두고 더하기만 해. 이 폰(브라우저)에만 저장되고 어디로도 안 보냄</p><button type="button" class="go" data-ok>적기</button><button type="button" class="plain" data-x>안 적기</button>`;
+  d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-ok')) { add.forEach(k => { OWN.s[k] = 'similar'; }); saveO();
+      d.innerHTML = `<p><b>${add.length}개 적었어.</b> 코디마다 '가진 ○○로 됨'·'대신 입음'으로 보이고, '먼저 살 옷'과 7일 준비에도 바로 반영돼. '먼저 살 옷' 아래 목록에서 하나씩 지울 수 있어</p>${close}`;
+      if (typeof wx !== 'undefined' && wx) render(); return; }
+    d.remove(); });
+  document.body.appendChild(d);
 }
 // v18: 가진 옷으로 대신 입기. 칸이 똑같진 않아도 겉으로 비슷한 것만, 한 단계만(종류만 바꾸거나 색만 바꾸거나).
 //      바지 종류가 바뀌는 것(스웨트 팬츠 → 데님), 보온이 다른 것(라이트 패딩 → 패딩·코트), 핏이 다른 것(테이퍼드·플레어), 신발은 대신으로 안 봄.
@@ -3681,6 +3707,7 @@ function bindWeek(){
 
 /* ---------- 시작 ---------- */
 importOwnFromHash();
+addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); });
 buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncSeg('mode', st.mode === 'week' ? 'week' : 'today'); bindWeek();
 load(true);
 })();
