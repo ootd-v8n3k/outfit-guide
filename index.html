@@ -3412,7 +3412,9 @@ function linkPart(x, k, d, os, d0){
 //   aba 이틀 전과 같은 코디 감점(v12 1.5) · outer2 두 번째 겉옷을 사는 코디 감점(v12 .8)
 //   back 뒤 날짜 구매와 연결 · oldRot v12 방식 상의 바꾸기 판정(테스트 사본 비교용)
 //   v14: rep2 전날과 같은 코디 감점 · rep3 상의도 못 바꾸는 사흘째 감점 · reuse 이번 주 산 옷을 다시 쓰는 코디 점수(역할별) · outer3 세 번째 겉옷 감점(null이면 outer2×벌수)
-const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false, rep2: 4, rep3: 12, reuse: {outer: .35, top: .35, pants: .35, shoes: .35}, outer3: null, gap: 3, gapThrift: 1.2, abaThrift: 1, shoe1: 2.5}, window.__PW || {});
+const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false, rep2: 4, rep3: 12, reuse: {outer: .35, top: .35, pants: .35, shoes: .35}, outer3: null, gap: 3, gapThrift: 1.2, abaThrift: 1, shoe1: 2.5, adj: .4, adjBuy: 2}, window.__PW || {});
+// v24: 7일 준비에서 그날 단계에 가진 옷 코디가 없을 때 같이 보는 옆 단계. adj는 옆 단계 코디 감점(새 옷 한 벌 감점 0.5 + 값보다 작게 둬서 사는 것보단 먼저)
+const LVADJ = {L1: ['L2'], L2: ['L1', 'L3'], L3: ['L2', 'L4'], L4: ['L3']};
 // v17: gap '같은 상의 이틀 연달아 피하기' 감점(v16까지 1.2). 같은 조건 20주 비교(가린 상의를 산 상의와 이은 것까지 셈): 연달아 같은 상의 v16 37번 → 0번,
 //      살 옷 441k → 447k(추운 꾸안꾸 한 주만 +111k, 나머지는 같음). 6도 20주 결과는 3과 똑같은데, 옷을 다 가진 주에 상의 하나 겹치는 걸 피하려고
 //      새 코디 한 벌(4개 22만 원)을 사게 해서 3. 전날과 같은 코디면 rep2만 걸고 gap은 안 더함(같은 코디면 상의도 당연히 같음)
@@ -3447,8 +3449,18 @@ function planWeek(force){
   for (const k in WK.days) if (k < t0) delete WK.days[k];
   // v16: 날마다 가진 옷만으로 다 되는(그날 날씨에도 맞는) 코디. 뒷날에 이런 코디가 있어서 가진 옷만으로 코디 Q.target개를 채울 수 있으면,
   //      앞날에 코디 수를 늘리려고 새 옷을 사게 하지 않음(W21: 가진 옷 세 번째 코디가 엿새째에만 맞아서 닷새째에 살 옷 2개짜리 코디를 골랐음)
-  const RDY = ds.map(d => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d), s = new Set(); if (D.skip) return s;
-    orderLooks(A, lv).forEach(o => { if (o.dd <= 2 && !TS.nope[o.L.key] && partsOf(o.L).filter(x => x.need === 'req').every(x => ['ok', 'soft', 'eta'].includes(dayPart(x, d, os).code))) s.add(sigOf(o.L)); });
+  const wear = (o, d) => o.dd <= 2 && !TS.nope[o.L.key] && partsOf(o.L).filter(x => x.need === 'req').every(x => ['ok', 'soft', 'eta'].includes(dayPart(x, d, os).code));
+  // v24: 그날 단계 사진 중엔 가진 옷만으로 되는 코디가 하나도 없으면, 옆 단계(LVADJ) 사진 중 가진 옷만으로 되는 코디도 후보로 넣음(검토 v23 지시 2).
+  //      꾸안꾸 3~9° 주에 꾸안꾸 사진은 전부 새 옷(MA-1 등 21만 원)이 필요했는데, 가진 블루 그레이 라이트 패딩(편하게 l1-a)·검정 블루종(적당히 꾸민 n-3405554)
+  //      코디는 단계가 달라서 후보에도 안 올라왔음. 그날 단계에 가진 옷 코디가 두 벌 이상이면 그 단계만 씀.
+  //      한 벌만 있을 때도 넣는 건, 그 한 벌을 사흘 연달아 입지 않으려고 새 옷을 사게 했기 때문(꾸안꾸 n-5215580 이틀 뒤 셋째 날 회색 패딩 55,990원)
+  //      그날 단계를 직접 고른 날(D.lv)과 '옆 단계 코디 안 쓰기'(WK.adj === false)면 안 함. 옆 단계 코디는 Q.adj만큼 빼서, 이번 주에 이미 사기로 한 옷을 다시 쓰는 같은 단계 코디가 있으면 그쪽이 먼저
+  const ADJ = ds.map(d => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d);
+    if (D.skip || D.lv || WK.adj === false || orderLooks(A, lv).filter(o => wear(o, d)).length >= 2) return [];
+    return (LVADJ[lv] || []).flatMap(l2 => orderLooks(A, l2).filter(o => wear(o, d)).map(o => Object.assign({}, o, {adj: l2}))); });
+  const RDY = ds.map((d, i) => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d), s = new Set(); if (D.skip) return s;
+    orderLooks(A, lv).forEach(o => { if (wear(o, d)) s.add(sigOf(o.L)); });
+    ADJ[i].forEach(o => s.add(sigOf(o.L)));
     return s; });
   // v17: 편하게·꾸안꾸에서 이번 주 첫 신발을 살 때, 이번 주 날마다 맞는 코디(날짜×코디) 가운데 그 신발을 같이 신는 비율이 낮으면 그만큼 미리 뺌
   //      (Q.shoe1, 둘째 신발 감점과 같은 2.5). 새로 넣은 n-5304023·n-3435630(흰 스니커즈)을 첫날 골라 놓고 나머지 날 검정 스니커즈를 또 사서
@@ -3463,14 +3475,15 @@ function planWeek(force){
   ds.forEach((d, di) => {
     const D = WK.days[d] = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d);
     if (D.skip) { out.push({d, A, lv, skip: true}); return; }
-    const cand = orderLooks(A, lv).filter((o, j) => o.dd <= 2 || j < 3).filter(o => !TS.nope[o.L.key]);
+    // v24: 옆 단계 가진 옷 코디가 있는 날은 날씨가 안 맞는 참고 코디(j < 3)를 안 넣음
+    const cand = orderLooks(A, lv).filter((o, j) => o.dd <= 2 || (j < 3 && !ADJ[di].length)).filter(o => !TS.nope[o.L.key]).concat(ADJ[di]);
     let pick = null, why = '';
     const prev = D.key && cand.find(o => o.L.key === D.key), PL = D.pin && D.key && LOOKS.find(L => L.key === D.key);
     if (PL) { pick = prev || {L: PL, dd: dist(PL, A.tOuter), sc: 0}; why = pick.dd > 2 ? `고정한 코디인데 사진은 체감 ${PL.lo}°~${PL.hi}°용이라 이날 날씨와 차이가 있음` : ''; }
     else if (prev && !force && prev.dd <= 2 && D.lvAt === lv) pick = prev;
     else {
       let bv = -1e9;
-      cand.forEach(o => { let v = o.sc;
+      cand.forEach(o => { let v = o.sc - (o.adj ? Q.adj : 0);
         const pt = out.length ? out[out.length - 1].topK : null; let buys = 0, dead = 0, canRot = false, mine = 0, nq = 0;
         partsOf(o.L).filter(x => x.need === 'req').forEach(x => { const s = dayPart(x, d, os); nq++;
           // v13: 가진 상의 중 전날과 다른 게 있을 때만 '상의를 바꿔 입을 수 있음'으로 침.
@@ -3520,6 +3533,9 @@ function planWeek(force){
         // v16: '다양하게'가 아니면, 뒷날의 가진 옷 코디까지 쳐서 Q.target개가 되는 주는 감점 안 함(위 RDY)
         let nUx = nU; if (!WK.vary && used) { const S = new Set(UL); RDY.slice(di + 1).forEach(s => s.forEach(L => S.add(L))); nUx = S.size; }
         if (used && nUx < Q.target) v -= used * (WK.thrift ? Q.useThrift : Q.use) * (nq && mine === nq ? Q.useReady : 1);
+        // v24: 옆 단계 가진 옷 코디가 후보에 있는 날, 새로 사야 하는 코디는 Q.adjBuy를 더 뺌. 안 빼면 사진 기온대가 이날과 딱 맞는 코디(꾸안꾸 l2-f, 4~12°)가
+        //      기본 점수 차(1.2)로 두 벌 사는 감점(1.4)을 넘겨서, 가진 옷 코디(l1-a)를 두고 MA-1·회색 데님 12만 원을 사게 했음
+        if (buys && ADJ[di].length) v -= Q.adjBuy;
         if (window.__PWDBG) window.__PWDBG.push({d, k: o.L.key, sc: o.sc, v, buys, dead, used});
         if (v > bv) { bv = v; pick = o; } });
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
@@ -3688,7 +3704,11 @@ function weekBuy(plan){
 // 배송이 늦거나 세탁 중일 때: 같은 날 가진 옷만으로 되는 다른 코디, 막힌 조각만 가진 같은 역할 옷으로 바꾸기
 function dayAlts(p, os){
   const pool = orderLooks(p.A, p.lv).filter(o => o.L !== p.L && o.dd <= 2 && !TS.nope[o.L.key]);
-  const looks = pool.map(o => [o, dayStatus(o.L, p.d, os)]).filter(([, s]) => s.code === 'ready' || s.code === 'sub' || s.code === 'soft').slice(0, 2);
+  const ok = ([, s]) => s.code === 'ready' || s.code === 'sub' || s.code === 'soft';
+  let looks = pool.map(o => [o, dayStatus(o.L, p.d, os)]).filter(ok).slice(0, 2);
+  // v24: 같은 단계에 없으면 옆 단계 사진에서도 찾음('옆 단계 코디 안 쓰기'를 골랐거나 그날 단계를 직접 고른 날도 여기선 보여 줌. 사진 단계를 같이 적음)
+  if (looks.length < 2) looks = looks.concat((LVADJ[p.lv] || []).flatMap(l2 => orderLooks(p.A, l2)).filter(o => o.L !== p.L && o.dd <= 2 && !TS.nope[o.L.key])
+    .map(o => [o, dayStatus(o.L, p.d, os)]).filter(ok)).slice(0, 2);
   const blocked = p.status.req.filter(x => ['wait', 'wash', 'miss', 'plan', 'eta'].includes(x.ds.code));
   const subs = blocked.map(x => [x, [...os].filter(k => roleOfSlot(k) === x.role && k !== x.slot && !wDays(k).includes(p.d)).slice(0, 2)]).filter(([, a]) => a.length);
   return {looks, subs};
@@ -3732,24 +3752,27 @@ function showWeek(){
   if (!WK.sel || !ds.includes(WK.sel)) WK.sel = ds[0];
   $('#where').innerHTML = `${esc(st.city)} · <em>${dLab(ds[0])}~${dLab(ds[6])}</em> <span class="s">${wx.est ? '예보 확인 불가 · 계절 참고 계획' : last && last < ds[6] ? `예보는 ${dLab(last)}까지` : '7일 모두 예보 있음'}</span>`;
   const t0 = localNow(wx).date, nm = addDays(t0, ((8 - new Date(t0 + 'T12:00:00').getDay()) % 7) || 7);
-  const cnt = c => plan.filter(p => p.status && p.status.code === c).length;
+  const cnt = c => plan.filter(p => p.status && p.status.code === c).length, nAdj = plan.filter(p => p.L && p.L.level !== p.lv).length;
   let h = (wxNote && wxNote !== 'est' ? `<p class="wxn">${esc(wxNote)}</p>` : '')
     + `<div class="wtop"><span class="k">시작</span><div class="seg" id="wstart"><button type="button" data-v="" aria-pressed="${!WK.start || WK.start <= t0}">오늘부터</button><button type="button" data-v="${nm}" aria-pressed="${WK.start === nm}">다음 주 월요일부터</button></div>`
     + `<input type="date" id="wdate" value="${esc(WK.start && WK.start > t0 ? WK.start : '')}" min="${t0}" aria-label="시작 날짜 직접 고르기">`
     + `<span class="k">같은 상의 이틀 연달아</span><div class="seg" id="wgap"><button type="button" data-v="1" aria-pressed="${!!WK.gap}">피하기</button><button type="button" data-v="0" aria-pressed="${!WK.gap}">상관없음</button></div>`
     + `<span class="wg"><span class="k">코디</span><div class="seg" id="wvary"><button type="button" data-v="0" aria-pressed="${!WK.vary}">살 옷 적게</button><button type="button" data-v="1" aria-pressed="${!!WK.vary}">다양하게</button></div></span>`
+    // v24: 그날 단계에 가진 옷 코디가 없을 때 옆 단계 가진 옷 코디를 쓸지
+    + `<span class="wg"><span class="k">옆 단계 코디</span><div class="seg" id="wadj"><button type="button" data-v="1" aria-pressed="${WK.adj !== false}">가진 옷이면 쓰기</button><button type="button" data-v="0" aria-pressed="${WK.adj === false}">안 쓰기</button></div></span>`
     + `<button class="plain sm" type="button" id="wre">고정 안 한 날 다시 짜기</button></div>`
     + (WK.vary && !WK.thrift ? `<p class="cn">'다양하게'는 같은 코디를 덜 반복하는 대신 살 옷이 늘 수 있어(여러 날씨로 재 보면 한 주 평균 11만~13만 원 더). 산 겉옷·바지·신발을 같이 쓰는 코디를 먼저 고르고, 그 주 날씨에 맞는 코디가 적으면 결과가 같을 수 있어</p>` : '')
     + `<p class="cn">날마다 기본 단계는 위에서 고른 '${esc(LEVELS[st.level].name)}'. 꾸미는 날은 그날 칸에서 바꿔. 앞 날짜에 쓰거나 사기로 한 옷을 다른 날에도 다시 쓰게 짰어`
     + `${wx.est ? '. 예보를 못 받아서 날씨는 전부 계절 참고값이야' : last && last < ds[6] ? `. ${dLab(addDays(last, 1))}부터는 예보가 없어서 계절 참고로 짠 거라 예보가 나오면 다시 확인해야 해` : ''}.`
-    + ` 준비됨 ${cnt('ready')}일 · 가진 옷으로 대신 입는 날 ${cnt('sub')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일</p>`;
+    + ` 준비됨 ${cnt('ready')}일 · 가진 옷으로 대신 입는 날 ${cnt('sub')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일`
+    + (nAdj ? `. 그중 ${nAdj}일은 ${esc(LEVELS[st.level].name)} 사진에 가진 옷만으로 되는 게 없어서 옆 단계 사진으로 골랐어(날마다 칸에 표시)` : '') + `</p>`;
   h += '<div class="wgrid">' + plan.map(p => {
     const code = p.skip || p.none ? 'none' : p.status.code;
     return `<button type="button" class="wd${p.d === WK.sel ? ' on' : ''}" data-day="${p.d}" aria-pressed="${p.d === WK.sel}">`
       + (p.L ? `<span class="gk">${imgTag(p.L, 9, 1)}</span>` : `<span class="gk none">${p.skip ? '안 짬' : '사진 없음'}</span>`)
       + `<span class="wtx2"><b>${dLab(p.d)}</b>${WK.days[p.d].pin ? ' <i class="pin">고정</i>' : ''}`
       + `<span class="ww${p.A.fc ? '' : ' est'}">${esc(wxLine(p.A))}</span>`
-      + `<span class="wl">${p.skip ? '' : esc(LEVELS[p.lv].name)}</span><span class="ws ${code}">${code === 'ready' && !p.A.fc ? '옷은 준비됨 · 날씨 미확정' : DSN[code]}${p.same ? (p.rot ? ' · 전날과 같은 옷, 상의만 바꿈' : ' · 전날과 같은 코디') : p.sameTop ? ' · 전날과 같은 상의' : ''}</span></span></button>`;
+      + `<span class="wl">${p.skip ? '' : esc(LEVELS[p.lv].name) + (p.L && p.L.level !== p.lv ? ` · ${esc(LEVELS[p.L.level].name)} 사진` : '')}</span><span class="ws ${code}">${code === 'ready' && !p.A.fc ? '옷은 준비됨 · 날씨 미확정' : DSN[code]}${p.same ? (p.rot ? ' · 전날과 같은 옷, 상의만 바꿈' : ' · 전날과 같은 코디') : p.sameTop ? ' · 전날과 같은 상의' : ''}</span></span></button>`;
   }).join('') + '</div>';
   const p = plan.find(x => x.d === WK.sel);
   h += `<div class="wdet" id="wdet">${dayDetail(p, os)}</div>`;
@@ -3772,6 +3795,8 @@ function dayDetail(p, os){
     + `<p class="cn">${softP ? '사진은 원래 제품 조합이야. 가진 비슷한 옷으로 입으면 색·핏이 조금 다를 수 있어' : '사진 속 제품 조합'}</p></div><div class="wtx">`
     + `<p class="core">${esc(coreOf(p.L))}</p>`
     + (p.why ? `<p class="reft"><b>바뀜</b>${esc(p.why)}</p>` : '')
+    // v24: 옆 단계 사진으로 고른 날
+    + (p.L.level !== p.lv ? `<p class="reft"><b>${esc(LEVELS[p.L.level].name)} 사진</b>${D.pin ? `직접 고른 ${esc(LEVELS[p.L.level].name)} 사진이야` : `이날 날씨에 맞는 ${esc(LEVELS[p.lv].name)} 사진은 전부 새 옷이 있어야 해서, 가진 옷만으로 되는 옆 단계 사진을 골랐어`}. ${esc(LEVELS[p.lv].name)} 사진으로 보려면 '다른 코디로', 늘 ${esc(LEVELS[p.lv].name)} 사진만 쓰려면 위 '옆 단계 코디 · 안 쓰기'</p>` : '')
     + (p.same ? `<p class="reft"><b>전날과 같은 코디</b>새로 살 옷을 늘리지 않으려고 이어서 골랐어${p.rot ? '. 안에 입는 상의만 다른 걸로 골랐어' : ''}. 다른 사진으로 바꾸려면 '다른 코디로'</p>` : '')
     + (p.sameTop ? `<p class="reft"><b>전날과 같은 상의</b>이틀 이어서 ${esc(slotName(p.topK))}. 이 날씨·단계에 상의가 다른 코디가 적어서 그래. 다른 상의를 가졌으면 그걸로 입거나 '다른 코디로'</p>` : '')
     + (notes.length ? `<p class="reft"><b>${p.o && p.o.dd > 2 ? '참고 코디' : '이날 바꿀 점'}</b>${notes.map(esc).join('<br>')}</p>` : '')
@@ -3781,7 +3806,7 @@ function dayDetail(p, os){
     + `<p class="k wk2">이날 필요한 옷 · ${DSN[p.status.code]}</p><ul class="wparts">${p.status.req.map(x => partRow(x, p, os)).join('')}</ul>`;
   if (alts) {
     r += `<div class="walt"><p class="k">${p.status.code === 'buy' ? '사기 전에 가진 옷으로 입는다면' : '못 입는 옷이 있어서 이날 대신 입을 것'}</p>`;
-    if (alts.looks.length) r += alts.looks.map(([o, s]) => `<div class="altc"><span class="ai gk">${imgTag(o.L, 9, 1)}</span><span class="tx"><b>${esc(coreOf(o.L))}</b><br><span class="cn">${DSN[s.code]} · 같은 날씨 사진</span><br><button type="button" class="plain sm" data-swap="${esc(o.L.key)}">이 코디로 바꾸기</button></span></div>`).join('');
+    if (alts.looks.length) r += alts.looks.map(([o, s]) => `<div class="altc"><span class="ai gk">${imgTag(o.L, 9, 1)}</span><span class="tx"><b>${esc(coreOf(o.L))}</b><br><span class="cn">${DSN[s.code]} · 같은 날씨 ${o.L.level !== p.lv ? esc(LEVELS[o.L.level].name) + ' ' : ''}사진</span><br><button type="button" class="plain sm" data-swap="${esc(o.L.key)}">이 코디로 바꾸기</button></span></div>`).join('');
     if (alts.subs.length) r += alts.subs.map(([x, ks]) => `<p class="cn">${esc(RN[x.role])}만 가진 ${esc(wro(ks.map(k => slotName(k)).join(' 또는 ')))} 바꿔 입기 · 사진과 모습이 달라지니 사진은 참고만</p>`).join('');
     if (!alts.looks.length && !alts.subs.length) r += `<p class="cn warn">가진 옷으로 대신할 코디를 못 찾았어. 이날은 준비가 덜 된 상태야</p>`;
     r += '</div>';
@@ -3843,6 +3868,7 @@ function bindWeek(){
     if (b.closest('#wstart')) { WK.start = b.dataset.v || null; WK.sel = null; saveW(); redraw(); return; }
     if (b.closest('#wgap')) { WK.gap = +b.dataset.v; saveW(); planWeek(true); redraw(true); return; }
     if (b.closest('#wvary')) { WK.vary = !!+b.dataset.v; saveW(); planWeek(true); redraw(true); return; }
+    if (b.closest('#wadj')) { WK.adj = !!+b.dataset.v; saveW(); planWeek(true); redraw(true); return; }
     if (b.id === 'wre') { planWeek(true); redraw(true); return; }
     if (b.id === 'wthrift') { WK.thriftFrom = weekBuy(planWeek(false)).sumTodo; WK.thrift = true; saveW(); planWeek(true); redraw(true); return; }
     if (b.dataset.lv) { if (b.dataset.lv === 'skip') D.skip = !D.skip; else { D.skip = false; if (b.dataset.lv === st.level) delete D.lv; else D.lv = b.dataset.lv; D.pin = false; delete D.why; } saveW(); redraw(true); return; }
