@@ -540,17 +540,124 @@ details.gcr ul{margin:4px 0 0;padding-left:18px;color:#4a4a4f}
 .gb > .gbc > .gbt{grid-column:1/-1}
 .gb > .gbc > .gbth{grid-column:2;grid-row:2/span 6;margin-top:12px}}
 @media (max-width:400px){ul.slots li{padding:10px 12px}ul.slots .s2,ul.slots .alts{margin-left:0}.gbd{grid-template-columns:minmax(0,1fr);gap:2px}.gbd dd{margin-bottom:6px}}
+/* ===== v29: 탐색 구조·시각 위계(검토 v29). 흰 배경·청록(--acc) 그대로, 검은 사각 버튼과 상자 겹침을 줄임 ===== */
+:root{--tint:#e6f0ef;--track:#f1f4f4;--bd:#d5dbdb}
+html.fpret,html.fpret body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif}
+/* 눌림 상태: 검정 칠 대신 옅은 청록 바탕 + 청록 글자 + 굵게 + 테두리(색만으로 구분하지 않음) */
+.seg button[aria-pressed=true],.chips button[aria-pressed=true],.mtc button[aria-pressed=true],.ownf button[aria-pressed=true],.plain[aria-pressed=true],.plain[aria-expanded=true],.cact .plain[aria-pressed=true]{background:var(--tint);color:var(--acc);border-color:var(--acc);font-weight:700}
+.seg button[aria-pressed=true]{box-shadow:inset 0 -2px 0 var(--acc)}
+button:focus-visible,summary:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+/* 1) 맨 위: 사이트 이름 · 주요 화면 탭 · 내 옷장 · 설정 */
+.hd{display:flex;align-items:center;gap:0 8px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-size:19px;font-weight:800;letter-spacing:-.5px;margin-right:18px;white-space:nowrap}
+.tabs{display:flex;gap:0}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:12px 4px 9px;margin:0 9px;font-size:15.5px;color:#5b6363;cursor:pointer;white-space:nowrap;border-radius:0}
+.tabs button:hover{color:var(--ink);border-bottom-color:#c5d6d4}
+.tabs button[aria-current=page]{color:var(--ink);font-weight:700;border-bottom-color:var(--acc)}
+.hdr{margin-left:auto;display:flex;align-items:center;gap:6px}
+.hb{border:1px solid var(--bd);background:#fff;border-radius:8px;padding:5px 11px;font-size:14px;cursor:pointer;white-space:nowrap}
+.hb:hover{border-color:var(--acc)}
+.hb b{color:var(--acc)}
+.hb.fitb{background:#fff8e6;border-color:#e9d6a6;color:#7a4a05;font-size:13px}
+.hb.fitb[hidden]{display:none}
+#setBtn[aria-expanded=true]{background:var(--tint);border-color:var(--acc);color:var(--acc);font-weight:700}
+/* 2) 오늘 무엇을 볼지: 날짜·날씨 + 오늘/내일 · 꾸밈 단계 */
+.cbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;padding:10px 0 4px}
+.cwx{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;min-width:0}
+.cbar #where{flex:0 1 auto;min-width:0;font-size:15px;line-height:1.35}
+.seg.dseg{border-color:var(--bd);border-radius:8px}
+.seg.dseg button{padding:4px 13px;font-size:14px;border-right-color:var(--bd)}
+.seg.dseg button[aria-pressed=true]{border-color:transparent}
+.seg.dseg[hidden]{display:none}
+.clv{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+.clv .q{font-size:14px;font-weight:700;color:#3d4545}
+.lvg,.vseg{display:inline-flex;flex-wrap:wrap;background:var(--track);border-radius:10px;padding:3px;gap:2px}
+.lvg button,.vseg button{border:1.5px solid transparent;background:transparent;border-radius:8px;padding:5px 13px;font-size:14.5px;color:#3d4545;cursor:pointer;white-space:nowrap}
+.lvg button:hover:not([aria-pressed=true]),.vseg button:hover:not([disabled]):not([aria-pressed=true]){background:#e2eaea;color:var(--ink)}
+.seg.dseg button:hover:not([aria-pressed=true]){background:var(--track)}
+.lvg button[aria-pressed=true],.vseg button[aria-pressed=true]{background:#fff;border-color:var(--acc);color:var(--acc);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.vseg button[disabled]{color:#9aa1a1;cursor:default}
+/* 3) 코디 결과 영역 안의 보기 전환 */
+.rbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
+.vseg button{font-size:14px;padding:5px 12px}
+.vseg button b{font-weight:700;margin-left:2px}
+.rbar .rh{font-weight:700}
+.gtog{margin-left:auto;border:1px solid var(--bd);background:#fff;border-radius:8px;padding:5px 11px;font-size:13.5px;cursor:pointer;color:#3d4545}
+.gtog::before{content:"▦ ";color:var(--acc)}
+.gtog[aria-pressed=true]::before{content:"▢ "}
+.gtog:hover{border-color:var(--acc)}
+.rbar .rnote{flex-basis:100%;margin:0}
+#grid .rbar{margin-top:8px}
+/* 사진 옆 카드: 회색 상자 안에 흰 상자를 겹치지 않음. 칸 줄만 옅은 회색 */
+.box.rcp{background:none;padding:0;border-radius:0;margin-top:0}
+ul.slots li{background:#f5f6f6}
+/* 4) 사진 넘기기 · 주요 행동 · 보조 버튼을 따로 */
+.lkbar{gap:8px 10px;margin-top:14px}
+.lkbar .nav{display:inline-flex;align-items:center;gap:0;background:var(--track);border-radius:999px;padding:2px;height:36px;margin:0}
+.lkbar .nb{width:32px;height:32px;border:0;background:transparent;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;color:var(--ink);padding:0 0 2px}
+.lkbar .nb:hover{background:#dfe7e6}
+.lkbar .cnt{min-width:3.6em;font-size:13.5px;color:#3d4545;font-variant-numeric:tabular-nums}
+.lkbar .lka{display:inline-flex;gap:6px}
+.pb{height:36px;padding:0 14px;border:1.5px solid var(--acc);background:#fff;color:var(--acc);border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.pb:hover{background:#eef5f4}
+.pb[aria-pressed=true]{background:var(--acc);color:#fff}
+.lkbar .subs{margin-left:auto;display:inline-flex;gap:2px}
+.sb2{border:0;background:transparent;color:#5b6363;font-size:13.5px;padding:6px 8px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.sb2:hover{background:var(--track);color:var(--ink)}
+.sb2[aria-pressed=true]{color:var(--acc);font-weight:700}
+/* 일주일 코디: 설정은 한 줄 + 펼치기 */
+details.wsetd{margin:10px 0 4px;border-radius:12px}
+details.wsetd > summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;cursor:pointer;list-style:none;padding:6px 0}
+details.wsetd > summary::-webkit-details-marker{display:none}
+.wcur{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.wcur .k{font-weight:700;color:#3d4545;margin-right:2px}
+.wsl{margin-left:auto;font-size:14px;font-weight:700;color:var(--acc);white-space:nowrap}
+.wsl::after{content:" ▾"}
+details.wsetd[open] .wsl::after{content:" ▴"}
+details.wsetd[open]{background:var(--soft);padding:4px 14px 10px}
+details.wsetd .wtop{margin-top:6px}
+/* 무엇을 살까: 머리줄에 가격·확인일, 세부 셈은 펼쳐서 */
+.gbt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.gpr{margin-left:auto;font-size:14px;white-space:nowrap}
+.gpr b{font-size:17px}
+.gbt .tg{margin-left:0}
+details.gsub{margin-top:4px}
+details.gsub > summary{font-size:13px;color:var(--sub);cursor:pointer;width:max-content;max-width:100%}
+details.gsub[open] > summary{margin-bottom:2px}
+/* 폰: 탭은 한 줄 전체로, 사진은 남은 높이에 맞춤 */
+@media (max-width:699px){
+.logo{font-size:18px;margin-right:auto;padding:8px 0}
+.hdr{margin-left:0}
+.tabs{order:3;width:100%;justify-content:space-between;border-top:1px solid var(--line)}
+.tabs button{margin:0;padding:10px 2px 8px;font-size:15px;flex:1}
+.cbar{gap:8px 12px}
+.clv .q{flex-basis:100%}
+.lvg{width:100%}.lvg button{flex:1;padding:6px 4px}
+.lkbar .subs{margin-left:0}
+.gpr{margin-left:0}
+}
+@media (max-width:1023px){.lk{width:min(100%,calc((100vh - 240px) * .56));width:min(100%,calc((100svh - 240px) * .56))}}
+@media (min-width:1024px){
+main{grid-template-columns:minmax(0,min(520px,calc((100vh - 130px) * .56))) minmax(0,1fr)}
+.hd{padding-top:2px}
+}
+/* v29: 저녁에 내일 코디로 넘어간 안내 줄(#pastN)이 보이면 사진을 그만큼 줄임 */
+@media (min-width:1024px){body.haspast main{grid-template-columns:minmax(0,min(520px,calc((100vh - 160px) * .56))) minmax(0,1fr)}}
+@media (max-width:1023px){body.haspast .lk{width:min(100%,calc((100vh - 290px) * .56));width:min(100%,calc((100svh - 290px) * .56))}}
 </style>
 </head>
 <body>
 <main>
-<div class="top">
-  <div class="seg" id="mode" aria-label="보기"><button type="button" data-v="today">오늘 입기</button><button type="button" data-v="week">7일 준비</button></div>
-  <div class="seg" id="day"><button type="button" data-v="0">오늘</button><button type="button" data-v="1">내일</button></div>
-  <span id="where" aria-live="polite">날씨 불러오는 중…</span>
-  <button class="plain" id="setBtn" type="button" aria-expanded="false" aria-controls="set">설정</button>
+<!-- v29: 맨 위는 '어디로 갈지'(사이트 이름 · 주요 화면 탭 · 내 옷장 · 설정), 그 아래는 '오늘 무엇을 볼지'(날짜·날씨 + 오늘/내일 · 꾸밈 단계) -->
+<header class="hd">
+  <span class="logo">오늘 뭐 입지</span>
+  <nav class="tabs" id="tabs" aria-label="주요 화면"><button type="button" data-v="today">오늘의 코디</button><button type="button" data-v="week">일주일 코디</button><button type="button" data-v="buy">무엇을 살까</button></nav>
+  <span class="hdr"><button class="hb" id="closetB" type="button">내 옷장</button><button class="hb fitb" id="fitB" type="button" hidden></button><button class="hb" id="setBtn" type="button" aria-expanded="false" aria-controls="set">설정</button></span>
+</header>
+<div class="cbar">
+  <div class="cwx"><span id="where" aria-live="polite">날씨 불러오는 중…</span><div class="seg dseg" id="day" role="group" aria-label="날짜"><button type="button" data-v="0">오늘</button><button type="button" data-v="1">내일</button></div></div>
+  <div class="clv"><span class="q" id="lvQ">오늘 얼마나 꾸밀까?</span><div class="lvg" id="lv" role="group" aria-labelledby="lvQ"></div></div>
 </div>
-<div class="chips" id="lv" aria-label="꾸밈 정도"></div>
 <div id="set" hidden>
   <div class="field"><span class="lb">지역</span><select id="city" aria-label="지역"></select><button class="plain" id="geo" type="button">현재 위치</button></div>
   <div id="search">
@@ -562,6 +669,7 @@ details.gcr ul{margin:4px 0 0;padding-left:18px;color:#4a4a4f}
   <div class="field"><span class="lb">몸</span><span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bh" data-d="-1" aria-label="키 10cm 줄이기">−</button><input type="number" id="bh" inputmode="numeric" min="140" max="210" step="any" placeholder="키" aria-label="키 cm"><button type="button" class="sb" data-stp="bh" data-d="1" aria-label="키 10cm 늘리기">+</button></span>cm</span> <span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bw" data-d="-1" aria-label="몸무게 5kg 줄이기">−</button><input type="number" id="bw" inputmode="numeric" min="35" max="150" step="any" placeholder="몸무게" aria-label="몸무게 kg"><button type="button" class="sb" data-stp="bw" data-d="1" aria-label="몸무게 5kg 늘리기">+</button></span>kg</span> </div>
   <div class="field"><span class="lb">신발</span><span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bf" data-d="-1" aria-label="신발 10mm 줄이기">−</button><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="any" placeholder="사이즈" aria-label="평소 신는 운동화 사이즈 mm"><button type="button" class="sb" data-stp="bf" data-d="1" aria-label="신발 10mm 늘리기">+</button></span>mm</span> </div>
   <div class="field"><span class="lb">바지</span>잘 맞는 바지 실측 <input type="number" id="pl" inputmode="decimal" min="80" max="125" step="0.5" placeholder="총장" aria-label="잘 맞는 바지 총장 cm">cm <input type="number" id="pw" inputmode="decimal" min="25" max="60" step="0.5" placeholder="허리단면" aria-label="잘 맞는 바지 허리단면 cm">cm</div>
+  <div class="field"><span class="lb">글꼴</span><div class="seg" id="font" role="group" aria-label="글꼴 비교"><button type="button" data-v="">맑은 고딕</button><button type="button" data-v="p">Pretendard</button></div> <span class="hint">비교용. Pretendard는 고를 때만 jsDelivr에서 글꼴을 받아 와(그때 이 기기 IP가 jsDelivr에 보임). 못 받으면 맑은 고딕으로 보임</span></div>
   <div class="field"><span class="lb">핏</span><select id="pf" aria-label="좋아하는 바지 핏"><option value="">상관없음</option><option value="straight">스트레이트</option><option value="wide">와이드</option><option value="tapered">테이퍼드</option><option value="balloon">벌룬</option><option value="flare">플레어</option></select> <span class="hint">키·몸무게·발·바지 실측은 이 폰에만 저장되고 사이트에는 안 올라감</span></div>
 <div class="field" id="tasteSet"></div>
 </div>
@@ -1718,6 +1826,26 @@ function buildBody(){
   $('#pf').value = FITS[st.pf] ? st.pf : '';
 }
 function syncSeg(id, v){ document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute('aria-pressed', String(String(b.dataset.v) === String(v)))); }
+// v29: 탭은 지금 보이는 화면을 aria-current로(누르면 화면이 바뀌는 이동이라 눌림 상태가 아님)
+function syncTabs(){ const v = st.mode === 'week' ? 'week' : bview ? 'buy' : 'today';
+  document.querySelectorAll('#tabs button').forEach(b => { if (b.dataset.v === v) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  const q = $('#lvQ'); if (q) q.textContent = st.mode === 'week' ? '날마다 기본으로 얼마나 꾸밀까?' : bview ? '주로 얼마나 꾸밀까?' : '오늘 얼마나 꾸밀까?'; }
+// v29: 머리줄 '내 옷장 N벌' · '바지 핏 모름 N'. 숫자는 이 기기에 적은 옷장 기록에서 셈(코드에 고정한 수 없음)
+function drawHead(){
+  const cb = $('#closetB'), fb = $('#fitB'); if (!cb || !fb) return;
+  const os = [...ownedSlots()], pu = os.filter(k => OKR(k) === 'pants' && !ownF(k).fit).length;
+  cb.innerHTML = os.length ? `내 옷장 <b>${os.length}벌</b>` : '내 옷장 적기';
+  fb.hidden = !pu; fb.textContent = pu ? `바지 핏 모름 ${pu}` : '';
+  syncTabs();
+}
+// v29: 글꼴 비교. 기본은 맑은 고딕(그대로). Pretendard는 고를 때만 jsDelivr에서 받음(SRI로 내용 고정). 못 받으면 맑은 고딕으로 보임
+const PRET = {href: 'https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css', sri: 'sha384-uR1wgObmx89ZQ4VVXHdzjbDJZ1PvBK01K+E3GebmaBKdZ87qRJvBWPoPbzWeEd5T'};
+function applyFont(){
+  const p = st.font === 'p';
+  if (p && !document.getElementById('pretCss')) { const l = document.createElement('link'); l.id = 'pretCss'; l.rel = 'stylesheet'; l.href = PRET.href; l.integrity = PRET.sri; l.crossOrigin = 'anonymous'; l.referrerPolicy = 'no-referrer'; document.head.appendChild(l); }
+  document.documentElement.classList.toggle('fpret', p);
+  syncSeg('font', p ? 'p' : '');
+}
 
 $('#setBtn').addEventListener('click', e => { const open = $('#set').hidden; $('#set').hidden = !open; e.currentTarget.setAttribute('aria-expanded', String(open)); });
 $('#city').addEventListener('change', e => {
@@ -1769,7 +1897,12 @@ async function search(){
 }
 $('#qgo').addEventListener('click', search);
 $('#q').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-$('#mode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.mode = b.dataset.v === 'week' ? 'week' : 'today'; save(); syncSeg('mode', st.mode); window.scrollTo(0, 0); render(); });
+// v29: 주요 화면 탭(오늘의 코디 · 일주일 코디 · 무엇을 살까). 화면만 바꾸고 날짜(st.day)·꾸밈 단계·옷장 기록은 안 건드림
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.v;
+  st.mode = v === 'week' ? 'week' : 'today'; bview = v === 'buy'; save(); window.scrollTo(0, 0); render(); });
+$('#closetB').addEventListener('click', () => showOwnEdit());
+$('#fitB').addEventListener('click', () => showOwnEdit('fit'));
+$('#font').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.font = b.dataset.v || ''; save(); applyFont(); });
 $('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; st.shuffle = 0; PV = null; st.lookN = 0; save(); syncSeg('day', st.day); render(); });
 $('#sens').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.sens = +b.dataset.v; save(); syncSeg('sens', st.sens); render(); });
 $('#start').addEventListener('change', e => { st.start = +e.target.value; if (st.end < st.start) { st.end = st.start; $('#end').value = st.end; } save(); render(); });
@@ -1948,9 +2081,9 @@ function render(){
   // 안내는 사진 위에(폰에서 사진 아래면 첫 화면에 안 보임)
   let pn = $('#pastN'); if (!pn) { pn = document.createElement('p'); pn.id = 'pastN'; pn.className = 'wxn'; $('#look').before(pn); }
   pn.innerHTML = pastN; pn.hidden = !pastN || st.mode === 'week';
-  // v25: 내 옷장 줄(사진 위). 코디 목록을 만든 뒤에 채움
-  let ob = $('#ownBar'); if (!ob) { ob = document.createElement('div'); ob.id = 'ownBar'; $('#look').before(ob); }
-  ob.hidden = true;
+  document.body.classList.toggle('haspast', !pn.hidden); // v29: 이 안내 줄이 보이면 사진을 그만큼 줄여 첫 화면에 사진 끝까지
+  // v29: 사진 위 '내 옷장 줄'은 없앰. 옷장 벌 수·핏 모름은 머리줄, '내 옷으로 / 전체 코디'는 코디 결과 영역 안(resBarHTML)
+  drawHead();
   // v26: 국밥템 보기 자리(내 옷장 줄 바로 아래). 7일 준비·예보 밖·외출 시간 지남이면 숨김
   let bv = $('#buyV'); if (!bv) { bv = document.createElement('div'); bv.id = 'buyV'; $('#look').before(bv); }
   bv.hidden = true;
@@ -2083,8 +2216,6 @@ function render(){
   curA = A;
   curOrder = keepHead(lookList(A), st.lookN);
   if (st.lookN >= curOrder.length) st.lookN = 0;
-  if (LOOKS.some(L => L.level === st.level)) { ob.innerHTML = ownBarHTML(); ob.hidden = false; bindOwnBar(ob); }
-  document.body.classList.toggle("hasbar", !ob.hidden);
   const prevKey = sheetKey, prevI = sheetI;
   // 30분마다 날씨를 다시 받아도 사진 순서가 같으면 사진은 그대로 두고 아래 설명만 바꾼다(사진이 깜빡이지 않게)
   const sig = curOrder.map(o => o.L.key + (o.dd > 2 ? '*' : '')).join(',');
@@ -2107,7 +2238,7 @@ function render(){
   if (st.grid) setGrid(true);
   drawBuyV();
   if (prevI != null && curLook && curLook.key === prevKey && curLook.spots[prevI]) openSheet(prevI, true); else closeSheet();
-  $('#outfit').hidden = false;
+  $('#outfit').hidden = !!bview;
   // 사진이 안 뜨면 깨진 아이콘 대신 글자로 알린다
   $('#outfit').querySelectorAll('img[data-ph]').forEach(im => im.addEventListener('error', () => {
     const s = document.createElement('span'); s.className = 'noimg'; s.textContent = '사진 못 불러옴'; im.replaceWith(s);
@@ -2958,10 +3089,9 @@ function whyLine(o){
 }
 // v28: 저장·내 취향 아님은 사진 이동 버튼과 같은 줄(첫 화면 안), 모아보기·국밥템은 TOP 3 아래 줄(검토 v28 지시 1-3)
 const tasteBtns = L => { const k = L.key, lk = !!TS.like[k], np = !!TS.nope[k];
-  return `<button class="plain" type="button" id="likeB" aria-pressed="${lk}">${lk ? '저장함 ✓' : '저장'}</button>`
-    + `<button class="plain" type="button" id="nopeB" aria-pressed="${np}">${np ? '내 취향 아님 ✓' : '내 취향 아님'}</button>`; };
-const viewBtns = () => `<div class="tb"><button class="plain" type="button" id="gridB" aria-pressed="${!!st.grid}">모아보기</button>`
-  + `<button class="plain" type="button" id="buyB" aria-pressed="${bview}">국밥템 추천</button></div>`;
+  return `<button class="sb2" type="button" id="likeB" aria-pressed="${lk}">${lk ? '♥ 저장함' : '♡ 저장'}</button>`
+    + `<button class="sb2" type="button" id="nopeB" aria-pressed="${np}">${np ? '내 취향 아님 ✓' : '내 취향 아님'}</button>`; };
+// v29: v28의 '모아보기 · 국밥템 추천' 줄은 뺌. 모아보기는 결과 영역 위 '한눈에 보기', 국밥템은 맨 위 '무엇을 살까' 탭
 function tasteBar(L){
   const k = L.key, lk = !!TS.like[k], np = !!TS.nope[k];
   let h = '';
@@ -3010,7 +3140,7 @@ function gridHTML(){
   return `<div class="gw">` + curOrder.map((o, n) => { const k = o.L.key, R = recipeOf(o.L, os), sc = S.ids[n];
     const hd = useSec && (!n || S.ids[n - 1] !== sc) ? `<p class="gsec"><b>${SECN[sc]} (${S.n(sc)}벌)</b>${SECK[sc] ? `<span class="cn">${SECK[sc]}</span>` : ''}</p>` : '';
     return hd + `<button type="button" class="gc${TS.nope[k] ? ' no' : ''}${n === st.lookN ? ' cur' : ''}" data-n="${n}"><span class="gk">${imgTag(o.L, n + 2, 1)}${o.dd > 2 ? '<i>참고</i>' : o.adj ? `<i>${esc(LEVELS[o.adj].name)} 단계 사진</i>` : ''}${TS.like[k] ? '<b>저장</b>' : ''}</span>`
-      + (own ? cardTags(o, R) : '') + `<span class="gl"><b>${esc(R.title)}</b> <span class="gt">${o.L.lo}~${o.L.hi}°</span></span></button>`; }).join('') + '</div>';
+      + (own ? cardTags(o, R, o.dd <= 2) : '') + `<span class="gl"><b>${esc(R.title)}</b> <span class="gt">${o.L.lo}~${o.L.hi}°</span></span></button>`; }).join('') + '</div>';
 }
 function setGrid(on){
   st.grid = on;
@@ -3020,8 +3150,10 @@ function setGrid(on){
   if (on) {
     const nA = curOrder.filter(o => o.adj).length;
     // v28: 긴 정렬 규칙 설명은 빼고 한 줄(검토 v28 지시 2-1). 순서는 아래 구간 제목으로 보임
-    g.innerHTML = `<p class="k gh">${ownOn ? `내 옷으로 입어볼 코디 ${curOrder.length}벌${nA ? `(옆 단계 사진 ${nA}벌 포함)` : ''}` : `${esc(LEVELS[st.level].name)} 전체 코디 ${curOrder.length}벌`} · 누르면 크게</p>`
+    // v29: 모아보기 머리줄에도 같은 보기 전환(결과 영역 안). 그 아래 한 줄은 지금 목록 이름·벌 수
+    g.innerHTML = resBarHTML() + `<p class="k gh">${ownOn && nA ? `옆 단계 사진 ${nA}벌 포함 · ` : ''}사진을 누르면 크게 보여 줘</p>`
       + gridHTML();
+    bindRBar(g);
     g.querySelectorAll('.gc').forEach(b => b.addEventListener('click', () => { st.lookN = +b.dataset.n; setGrid(false); }));
     g.querySelectorAll('img').forEach(im => im.addEventListener('error', () => { im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})); }, {once: true}));
   } else { car.scrollLeft = st.lookN * car.clientWidth; }
@@ -3429,7 +3561,7 @@ function recipeOf(L, os){
   return {s, rows, tags, title: tt.join(' + ') || coreOf(L), bc, bl, bs, nB: buyN.length, nU: unlN.length};
 }
 // v28: 모아보기·TOP 3 카드의 작은 배지(검토 v28 지시 2). 준비됨 / 바지 핏 확인 / 변형 / 옆 단계 사진 / 보유 여부 확인 N개 / 구매 필요 N개를 따로
-function cardTags(o, R){
+function cardTags(o, R, noAdj){
   if (!hasOwn()) return '';
   const s = R.s, g = [];
   if (s.ready) g.push(['own', '준비됨']);
@@ -3437,7 +3569,8 @@ function cardTags(o, R){
   if (s.vari.length) g.push(['sub', '변형']);
   if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
   if (R.nB) g.push(['buy', `구매 필요 ${R.nB}개`]);
-  if (o.adj) g.push(['adj', '옆 단계 사진']);
+  // v29: 모아보기 사진 위에 이미 '○○ 단계 사진'이 있으면 아래 배지는 안 겹치게(noAdj)
+  if (o.adj && !noAdj) g.push(['adj', '옆 단계 사진']);
   return `<span class="ctg">${g.map(([c, t]) => `<span class="tg sm ${c}">${esc(t)}</span>`).join('')}</span>`;
 }
 const RBTN = {fit: '핏 고르기', len: '기장 고르기', own: '가진 옷 적기'};
@@ -3455,7 +3588,7 @@ function recipeHTML(o, R){
       return `<li class="${w.c}"><div class="s1"><span class="sr">${w.r}</span><b class="sn">${esc(w.t)}</b>${w.bd ? `<span class="st ${w.c}">${esc(w.bd)}</span>` : ''}</div>`
         + ln.map(h => `<p class="s2">${h}</p>`).join('')
         + (w.alt && w.alt.length ? `<p class="alts"><span class="al">바꿔 입기</span>${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join('')}</p>` : '') + `</li>`; }).join('')}</ul>`
-    + (hasOwn() ? '' : `<p class="cn" style="margin:10px 0 0">가진 옷을 적으면 칸마다 내 옷 중 뭘 입을지, 뭘 사야 하는지 알려 줘 <button type="button" class="plain sm" data-ownedit>가진 옷 적기</button></p>`)
+    + (hasOwn() ? '' : `<p class="cn" style="margin:10px 0 0">가진 옷을 적으면 <b>내 옷으로 입어볼 코디</b>부터 보여 주고, 칸마다 내 옷 중 뭘 입을지·뭘 사야 하는지 알려 줘 <button type="button" class="plain sm" data-ownedit>가진 옷 적기</button></p>`)
     + '</div>';
 }
 // v26: 이 날씨 세 벌. 겉옷(내 옷장이면 실제로 입을 겉옷, 아니면 사진 속 겉옷 칸)이 겹치지 않게 목록 순서대로 고르고, 모자라면 순서대로 채움(검토 v25 지시 3).
@@ -3476,45 +3609,36 @@ function top3HTML(){
       + (own ? cardTags(o, R) : '') + `<span class="gl">${esc(R.title)}</span></button>`; }).join('') + '</div></div>';
 }
 // 내 옷장 줄(사진 위)
-function ownBarHTML(){
-  // v28: '바로 입기'는 핏 확인·변형이 섞인 목록에 쓰지 않음(검토 v28 원칙 1) → '내 옷으로 입어볼 코디'
-  if (!hasOwn()) return `<div class="obar"><div class="obh"><span>가진 옷을 적으면 <b>내 옷으로 입어볼 코디</b>부터</span><button type="button" class="lnk" id="ownEdit">가진 옷 적기</button></div></div>`;
-  const os = [...ownedSlots()], c = {outer: 0, layer: 0, top: 0, pants: 0, shoes: 0};
-  // v26: 상의 중 겉에 걸치는 옷(집업·가디건·베스트)은 따로 셈(검토 v25 지시 4③). 겉옷에 가린 상의 칸엔 안 들어가는 옷이라 구분해서 보여 줌
-  os.forEach(k => { const r = OKR(k), l = r === 'top' && /집업|가디건|베스트/.test(k.split('|')[0]) ? 'layer' : r; c[l] = (c[l] || 0) + 1; });
-  const pu = os.filter(k => OKR(k) === 'pants' && !ownF(k).fit).length;
-  // 폰에서 사진(어깨~신발)이 첫 화면에 들어가게 두 줄 + 버튼 한 줄로
-  // v26: 버튼 셋으로(검토 v25 지시 1). '전체 코디'는 모아보기로 바로 열어서 화면이 바뀌는 게 보이게(v25는 첫 장이 같은 코디라 안 바뀐 것처럼 보였음), '국밥템'은 이 자리에 바로 열림
-  return `<div class="obar"><div class="obh"><b>내 옷장 ${os.length}벌 반영됨</b><button type="button" class="lnk" id="ownEdit">내 옷 목록·수정</button></div>`
-    + `<div class="obk">겉옷 ${c.outer}${c.layer ? `, 집업·가디건 ${c.layer}` : ''}, 상의 ${c.top}, 바지 ${c.pants}, 신발 ${c.shoes}${pu ? ` <button type="button" class="lnk" id="ownFit">바지 ${pu}벌 핏 모름 · 고르기</button>` : ''}</div>`
-    + `<div class="seg oseg" id="ownSeg"><button type="button" data-v="own" aria-pressed="${ownOn && !bview}"${ownN ? '' : ' disabled'}>내 옷으로<span class="w"> 입어볼 코디</span> (${ownN}벌)</button>`
-    + `<button type="button" data-v="all" aria-pressed="${!ownOn && !bview}">전체 코디<span class="w"> 한눈에</span> (${allN}벌)</button>`
-    + `<button type="button" data-v="buy" aria-pressed="${bview}">국밥템<span class="w"> 살 옷</span> TOP 3</button></div>`
-    + (ownN ? '' : `<span class="cn">이 날씨엔 가진 옷만으로 되는 코디가 없어서 전체 코디를 보여 줘. '국밥템'에서 뭘 사면 되는지 볼 수 있어</span>`) + '</div>';
+// v29: 코디 결과 영역 안의 보기 전환(검토 v29 지시 1-4). 사진 옆 카드 위(폰은 사진 바로 아래), 모아보기에선 모아보기 머리줄에.
+//      '내 옷으로 입어볼 코디'는 사진 크게, '전체 코디'는 한눈에(v26부터 같은 동작). '한눈에 보기 / 사진 크게'는 지금 목록 그대로 보는 방식만 바꿈
+//      국밥템은 맨 위 '무엇을 살까' 탭 한 곳으로(v28의 국밥템 버튼 두 개는 뺌). 가진 옷만으로 되는 코디가 없을 때만 여기서 그 탭으로 이어 줌
+function resBarHTML(){
+  const gt = `<button type="button" class="gtog" data-rv="grid" aria-pressed="${!!st.grid}">${st.grid ? '사진 크게 보기' : '한눈에 보기'}</button>`;
+  if (!hasOwn()) return `<div class="rbar"><span class="rh">${esc(LEVELS[st.level].name)} 코디 ${allN}벌</span>${gt}</div>`;
+  return `<div class="rbar"><div class="vseg" role="group" aria-label="코디 목록"><button type="button" data-rv="own" aria-pressed="${ownOn}"${ownN ? '' : ' disabled'}>내 옷으로 입어볼 코디 <b>${ownN}</b></button>`
+    + `<button type="button" data-rv="all" aria-pressed="${!ownOn}">전체 코디 <b>${allN}</b></button></div>${gt}`
+    + (ownN ? '' : `<p class="cn rnote">이 날씨엔 가진 옷만으로 되는 코디가 없어서 전체 코디를 보여 줘. 뭘 사면 되는지는 <button type="button" class="lnk" data-rv="buy">무엇을 살까</button>에서 볼 수 있어</p>`) + '</div>';
 }
-function bindOwnBar(box){
-  const e = box.querySelector('#ownEdit'), f = box.querySelector('#ownFit');
-  if (e) e.addEventListener('click', () => showOwnEdit());
-  if (f) f.addEventListener('click', () => showOwnEdit('fit'));
-  box.querySelectorAll('#ownSeg button').forEach(b => b.addEventListener('click', () => { if (b.disabled) return; const v = b.dataset.v;
+function bindRBar(box){
+  box.querySelectorAll('.rbar [data-rv]').forEach(b => b.addEventListener('click', () => { if (b.disabled) return; const v = b.dataset.rv;
     if (v === 'buy') { openBuyV(); return; }
+    if (v === 'grid') { setGrid(!st.grid); return; }
     bview = false; st.own = v; save(); st.lookN = 0; st.grid = v === 'all'; render(); }));
 }
-// v26: 국밥템 보기. 사진 칸 자리에 국밥템 TOP 3를 바로 보여 줌(v25는 '국밥템 추천'을 누르면 맨 아래에 열려서 한참 내려야 보였음)
+// v26: 국밥템 보기. 사진 칸 자리에 국밥템 TOP 3를 바로 보여 줌. v29: 맨 위 '무엇을 살까' 탭과 같은 화면
 function openBuyV(){
-  bview = true; render();
-  const ob = $('#ownBar'), bv = $('#buyV'), to = ob && !ob.hidden ? ob : bv;
-  if (to) window.scrollTo({top: Math.max(0, to.getBoundingClientRect().top + window.scrollY - 8), behavior: 'smooth'});
+  bview = true; render(); window.scrollTo(0, 0);
 }
 function drawBuyV(){
   const bv = $('#buyV'), lk = $('#look'); if (!bv || !lk) return;
   const on = bview && st.mode !== 'week' && !!curA;
   bv.hidden = !on; lk.hidden = on;
-  document.querySelectorAll('#ownSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === 'buy' ? on : !on && (b.dataset.v === 'own') === ownOn)));
-  const bb = $('#buyB'); if (bb) bb.setAttribute('aria-pressed', String(on));
+  // v29: '무엇을 살까' 화면엔 오늘 날씨 메모·날씨로 고른 제품을 안 보임(구매 화면만)
+  if (st.mode !== 'week') { const oc = $('#cond'), of = $('#outfit'); if (oc) oc.hidden = on; if (of) of.hidden = on; }
+  syncTabs();
   if (!on) { bv.innerHTML = ''; const car = $('#car'); if (car && !st.grid) car.scrollLeft = st.lookN * car.clientWidth; return; }
-  bv.innerHTML = `<div class="bvh"><button type="button" class="plain sm" id="bvX">← 코디 사진으로</button></div>` + gukbapHTML();
-  $('#bvX').addEventListener('click', () => { bview = false; drawBuyV(); });
+  bv.innerHTML = gukbapHTML();
+  bv.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { st.mode = b.dataset.tab === 'week' ? 'week' : 'today'; bview = false; save(); window.scrollTo(0, 0); render(); }));
   bv.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.jump)));
   bindOwn(bv, () => { reorder(); drawBuyV(); });
   imgFail(bv);
@@ -3612,7 +3736,9 @@ function gukbapHTML(){
   let h = `<div class="buyp box gb"><p class="bh">최우선 살 국밥템 추천</p><p class="k">${own ? `하나만 사도 내 옷장 ${os.size}벌과 같이 입는 코디가 생기는 옷이야. 모든 기온·단계 기본 코디 ${G.scope.length}벌에서 셈`
     : `가진 옷을 아직 안 적어서 여러 코디 사진에 같이 나오는 옷 순서야. 가진 옷을 적으면 내 옷장 기준으로 다시 셈`}</p>`
     + (own ? `<details class="gcr"><summary>고른 기준</summary><ul><li>그것 하나만 사면 더 살 옷이 없는 코디가 1벌 이상인 옷만(내 옷의 핏·기장 확인이 남은 코디도 셈)</li><li>같이 입는 코디가 많은 순서</li>`
-      + `<li>이미 있는 종류·색은 바지 통이 달라도 뺌. 같은 종류를 다른 색으로 가졌으면 뒤로</li><li>코트·패딩·방한화는 10만원 아래 제품만</li></ul></details>` : '');
+      + `<li>이미 있는 종류·색은 바지 통이 달라도 뺌. 같은 종류를 다른 색으로 가졌으면 뒤로</li><li>코트·패딩·방한화는 10만원 아래 제품만</li></ul></details>` : '')
+    // v29: 7일 계획에 맞춘 살 옷 목록은 일주일 코디 화면에 따로 있음(두 목록이 무엇이 다른지 이어 줌)
+    + `<p class="cn">일주일 계획에 필요한 옷과 합계는 <button type="button" class="lnk" data-tab="week">일주일 코디</button> 아래 '이번 주 살 옷'에 따로 있어</p>`;
   if (!G.top.length) h += `<p>${own ? '가진 옷과 같이 두 벌 이상에 들어가는 옷이 없어. 코디마다 빠진 옷이 서로 달라서 우선순위를 정하지 않았어' : '셀 코디가 없어'}</p>`;
   G.top.forEach((b, i) => {
     const p = b.r.p, ls = b.unlock.concat(b.upg, b.near, b.far), looks = [...new Set(ls.map(e => e.L))];
@@ -3627,12 +3753,13 @@ function gukbapHTML(){
     //      나머지 = 이 칸이 나오는 사진 중 위 세 줄에 안 든 코디. 이 칸은 가진 옷으로 채우지만 다른 옷이 비었거나, 이미 가진 옷으로 입거나, 추천 제품 모양이 사진과 다름
     const inN = new Set(ls.map(e => e.L)), refL = new Set(b.ref), restL = own ? G.scope.filter(L => !inN.has(L) && !refL.has(L) && partsOf(L).some(x => x.need === 'req' && (x.slot === b.k || x.buy === b.k))) : [];
     const restA = restL.filter(L => { const s = lookStatus(L, os); return s.miss.length + s.unk.length > 0; }).length, restZ = restL.length - restA;
-    const chg = [`하나만 사면 새로 입는 코디 <b>${b.unlock.length}벌</b>`,
+    // v29: 핵심 효과(새로 입는 코디 · 바꿔 신는/입는 코디 · 핏·기장 확인)는 늘 보이게, 나머지 검산(다른 옷도 필요 · 나머지)은 펼쳐서(검토 v29 지시 4-2)
+    const chgK = [`하나만 사면 새로 입는 코디 <b>${b.unlock.length}벌</b>`,
       b.upg.length ? `${esc(subNm || '다른 내 옷')} 대신 ${esc(kdn)}${ro(kdn)} 바꿔 ${vb}는 코디 <b>${b.upg.length}벌</b>` : '',
       chkL.length ? `<span class="cn">${chkL.length < b.done ? `위 ${b.done}벌 중 ${chkL.length}벌은` : b.done === 1 ? '이 1벌은' : `위 ${b.done}벌 모두`} 내 ${esc(chkK.join('·'))} 확인이 아직 남아 있어</span>` : '',
-      b.near.length + b.far.length ? `${esc(kdn)}도 없고 다른 옷도 더 있어야 하는 코디 <b>${b.near.length + b.far.length}벌</b> <span class="cn">(${[b.near.length ? `1개 더 ${b.near.length}벌` : '', b.far.length ? `2개 이상 ${b.far.length}벌` : ''].filter(Boolean).join(', ')})</span>` : '',
-      restL.length + refL.size ? `나머지 <b>${restL.length + refL.size}벌</b>은 이것만 사서는 입을 수 있는 코디 수가 그대로 <span class="cn">(${[restA ? `${esc(kdn)} 자리는 가진 옷으로 채우지만 다른 옷이 빈 코디 ${restA}벌` : '', restZ ? `이미 가진 옷으로 입는 코디 ${restZ}벌` : '', refL.size ? `추천 제품 모양이 사진과 달라 뺀 코디 ${refL.size}벌` : ''].filter(Boolean).join(', ')})</span>` : '',
       own && b.have && b.have.length ? `<span class="cn">이미 ${esc(b.have.map(k => ownNm(k)).join('·'))}${jongOf(ownNm(b.have[b.have.length - 1])) ? '이' : '가'} 있지만 사면 새로 입는 코디가 ${b.unlock.length}벌이라 넣음</span>` : ''].filter(Boolean);
+    const chgD = [b.near.length + b.far.length ? `${esc(kdn)}도 없고 다른 옷도 더 있어야 하는 코디 <b>${b.near.length + b.far.length}벌</b> <span class="cn">(${[b.near.length ? `1개 더 ${b.near.length}벌` : '', b.far.length ? `2개 이상 ${b.far.length}벌` : ''].filter(Boolean).join(', ')})</span>` : '',
+      restL.length + refL.size ? `나머지 <b>${restL.length + refL.size}벌</b>은 이것만 사서는 입을 수 있는 코디 수가 그대로 <span class="cn">(${[restA ? `${esc(kdn)} 자리는 가진 옷으로 채우지만 다른 옷이 빈 코디 ${restA}벌` : '', restZ ? `이미 가진 옷으로 입는 코디 ${restZ}벌` : '', refL.size ? `추천 제품 모양이 사진과 달라 뺀 코디 ${refL.size}벌` : ''].filter(Boolean).join(', ')})</span>` : ''].filter(Boolean);
     const pair = {}; if (own) ls.forEach(e => e.s.req.forEach(x => { if (x.state.lv >= 2 && x.slot !== b.k) { const w = wearOf(x, os); if (w && w.k) pair[w.k] = (pair[w.k] || 0) + 1; } }));
     const pr = Object.keys(pair).sort((a, c) => pair[c] - pair[a]).slice(0, 3).map(ownNm);
     const lv = [...new Set(looks.map(L => LEVELS[L.level].name))].join('·');
@@ -3643,13 +3770,17 @@ function gukbapHTML(){
       .filter((z, j, a) => a.findIndex(y => y.e.L === z.e.L) === j).sort((a, c) => a.w - c.w || a.d - c.d || a.j - c.j).slice(0, 4).map(z => z.e);
     // v28: 머리줄 왼쪽 '1위 검정 더비', 오른쪽 실제 셈한 사진 수. 본문은 라벨 + 내용 세 줄(코디 변화 · 함께 입는 내 옷 · 계절·단계), 제품은 확인 가격·확인일을 또렷하게
     const ssn = seasonsOf(looks).replace(/ · /g, ', ');
-    h += `<div class="gbc"><div class="gbt"><p class="gbn"><span class="gr">${i + 1}위</span><b>${esc(slotName(b.k))}</b></p><span class="tg adj">${own ? `기본 코디 ${b.app}벌에 나옴` : `사진 ${b.n}벌에 나옴`}</span></div>`
-      + (own ? `<dl class="gbd"><dt>코디 변화</dt><dd>${chg.map(t => `<span class="ln">${t}</span>`).join('')}</dd>`
+    // v29: 머리줄에 실제 확인 가격·확인일을 같이(검토 v29 지시 4-2). 아래 제품 칸엔 이름·사이즈·링크만(가격 두 번 안 씀)
+    h += `<div class="gbc"><div class="gbt"><p class="gbn"><span class="gr">${i + 1}위</span><b>${esc(slotName(b.k))}</b></p>`
+      + `<span class="gpr"><b>${won(p.price)}</b> <span class="cn">${md(p.checked)} 확인 가격${p.price > LIMIT ? ' · 10만원 넘지만 예산 예외 품목' : ''}</span></span>`
+      + `<span class="tg adj">${own ? `기본 코디 ${b.app}벌에 나옴` : `사진 ${b.n}벌에 나옴`}</span></div>`
+      + (own ? `<dl class="gbd"><dt>코디 변화</dt><dd>${chgK.map(t => `<span class="ln">${t}</span>`).join('')}`
+        + (chgD.length ? `<details class="gsub"><summary>세부 셈 보기 · 기본 코디 ${b.app}벌 나눔</summary>${chgD.map(t => `<span class="ln">${t}</span>`).join('')}</details>` : '') + `</dd>`
         + (pr.length ? `<dt>함께 입는 내 옷</dt><dd class="caps">${pr.map(k => `<span class="cap">내 ${esc(k)}</span>`).join('')}</dd>` : '')
         + `<dt>계절·단계</dt><dd><span class="ln">${nowN ? `요즘 날씨 코디 ${nowN}벌 · ` : ''}${esc(ssn)}</span><span class="ln cn">${esc(lv)}</span></dd></dl>`
         : `<p class="gbw"><span class="cn">${esc(lv)} · ${esc(seasonsOf(looks))}${nowN ? ` · 요즘 날씨 코디 ${nowN}벌` : ''}</span></p>`)
       + `<div class="gbth">${pick.map(e => `<button type="button" class="gc" data-jump="${esc(e.L.key)}" aria-label="${esc(LEVELS[e.L.level].name)} 코디 보기"><span class="gk">${imgTag(e.L, 9, 1)}</span><span class="gl">${esc(own ? formulaOf(e, b.k, os) || lbl(e.L) : lbl(e.L))}</span></button>`).join('')}</div>`
-      + `<div class="gbp"><span class="ai">${photo(p, 160, 1)}</span><span class="tx"><b>${esc(shortName(p.name))}</b><span class="prc"><b>${won(p.price)}</b> · ${md(p.checked)} 확인 가격${p.price > LIMIT ? ' · 10만원 넘지만 예산 예외 품목' : ''}</span>`
+      + `<div class="gbp"><span class="ai">${photo(p, 160, 1)}</span><span class="tx"><b>${esc(shortName(p.name))}</b>`
       + `<span class="cn">${b.r.same ? `이 제품이 나온 사진 ${b.r.same}벌` : '사진 속 제품은 아니고 같은 종류·색 중 살 수 있는 것'}</span><span class="cn">내 사이즈 ${sizeLine(p)}</span><span class="go2">${lnk(p, '무신사에서 보기 ↗')}</span></span></div>`
       + (b.ref.length ? `<p class="cn">이 제품과 바지 통·겉옷 기장이 다른 코디 ${b.ref.length}벌은 셈에서 뺌</p>` : '')
       + (burden(b.k, p) ? `<p class="cn">살 때 볼 것: ${esc(burden(b.k, p))}</p>` : '') + '</div>';
@@ -3696,14 +3827,16 @@ function drawBelow(){
   // v26: TOP 3를 사진 옆 카드 바로 아래로(검토 v25 지시 3: v25는 이렇게 입기·오늘 바꿀 점 아래라 PC에서도 내려야 보였음)
   // v28: 카드 바로 아래 한 줄에 사진 이동(‹ 번호 다음 ›) · 이렇게 입기 · 착용 제품 · 저장 · 내 취향 아님(PC 첫 화면 안, 검토 v28 지시 1-3).
   //      누른 내용(이렇게 입기·착용 제품)은 그 줄 바로 아래 펼침. TOP 3 → 오늘 바꿀 점 → 모아보기·국밥템 → 접는 메뉴는 한 상자에
-  box.innerHTML = recipeHTML(o, recipeOf(L))
-    + `<div class="lkbar"><span class="nav">${N > 1 ? `<button class="plain" type="button" id="prevLook" aria-label="이전 코디">‹</button>` : ''}<span class="cnt">${st.lookN + 1} / ${N}</span>`
-    + (N > 1 ? `<button class="plain" type="button" id="nextLook">다음 ›</button>` : '') + `</span>`
-    + `<button class="plain" type="button" id="howBtn" aria-pressed="${!!st.how}">이렇게 입기</button>`
-    + `<button class="plain" type="button" id="showBtn" aria-pressed="${st.show}">착용 제품</button>`
-    + tasteBtns(L) + `</div>` + tasteBar(L)
+  // v29: 버튼 줄을 세 무리로(검토 v29 지시 2-2). 사진 넘기기(‹ 1 / 3 ›, 옅은 알약) · 주요 행동(이렇게 입기 · 착용 제품, 청록 테두리) · 보조(저장 · 내 취향 아님, 글자 버튼, 오른쪽 끝)
+  //      결과 영역 맨 위엔 '내 옷으로 입어볼 코디 / 전체 코디' 보기 전환. 모아보기 땐 모아보기 머리줄에 있어서 여기선 뺌
+  box.innerHTML = (st.grid ? '' : resBarHTML()) + recipeHTML(o, recipeOf(L))
+    + `<div class="lkbar"><span class="nav" role="group" aria-label="사진 넘기기">${N > 1 ? `<button class="nb" type="button" id="prevLook" aria-label="이전 코디">‹</button>` : ''}<span class="cnt">${st.lookN + 1} / ${N}</span>`
+    + (N > 1 ? `<button class="nb" type="button" id="nextLook" aria-label="다음 코디">›</button>` : '') + `</span>`
+    + `<span class="lka"><button class="pb" type="button" id="howBtn" aria-pressed="${!!st.how}">이렇게 입기</button>`
+    + `<button class="pb" type="button" id="showBtn" aria-pressed="${st.show}">착용 제품</button></span>`
+    + `<span class="subs">` + tasteBtns(L) + `</span></div>` + tasteBar(L)
     + (st.how ? howHTML(L) : '') + (st.show ? itemsHTML(L) : '')
-    + top3HTML() + ref + viewBtns() + whyLine(o) + (P ? abHTML(P) : '')
+    + top3HTML() + ref + whyLine(o) + (P ? abHTML(P) : '')
     + `<div class="aux">` + (why ? `<details class="lkm"><summary>${o === curOrder[0] ? '첫 장인 이유' : '고른 이유'} · 어울리는 날</summary>${why}</details>` : '') + srcHTML(L) + alt1 + `</div>`;
   $('#howBtn').addEventListener('click', () => { st.how = !st.how; drawBelow(); });
   box.querySelectorAll('[data-t3]').forEach(b => b.addEventListener('click', () => { const n = +b.dataset.t3; if (st.grid) setGrid(false); const car = $('#car');
@@ -3711,7 +3844,7 @@ function drawBelow(){
   box.querySelectorAll('[data-ownedit]').forEach(b => b.addEventListener('click', () => showOwnEdit()));
   // v28: 칸 줄 끝 버튼(핏 고르기 · 기장 고르기 · 가진 옷 적기)
   box.querySelectorAll('[data-rowact]').forEach(b => b.addEventListener('click', () => { const a = b.dataset.rowact; showOwnEdit(a === 'own' ? undefined : a); }));
-  $('#buyB').addEventListener('click', () => openBuyV());
+  bindRBar(box);
   box.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.jump)));
   bindOwn(box, reorder);
   $('#showBtn').addEventListener('click', () => { st.show = !st.show; $('#look').classList.toggle('show', st.show); if (!st.show) closeSheet(); drawBelow(); });
@@ -3719,7 +3852,6 @@ function drawBelow(){
   if (nl) nl.addEventListener('click', () => { if (st.grid) setGrid(false); const car = $('#car'); car.scrollTo({left: ((st.lookN + 1) % N) * car.clientWidth, behavior: 'smooth'}); });
   const pv = $('#prevLook');
   if (pv) pv.addEventListener('click', () => { if (st.grid) setGrid(false); const car = $('#car'); car.scrollTo({left: ((st.lookN - 1 + N) % N) * car.clientWidth, behavior: 'smooth'}); });
-  $('#gridB').addEventListener('click', () => setGrid(!st.grid));
   const tg = (m, other) => { const k = L.key;
     if (TS[m][k]) { delete TS[m][k]; delete TS.why[k]; } else { TS[m][k] = Date.now(); delete TS[other][k]; TS.why[k] = []; }
     saveT(); reorder(); };
@@ -4025,7 +4157,7 @@ function dayPart(x, d, os){
   return Object.assign({code: 'miss'}, s, {t: s.lv === 1 ? s.t : s.t === '없음' ? '없다고 표시함' : '가진 옷 기록 없음'});
 }
 // v23: '대신 입음'만 남은 날(sub)과 바지 통·겉옷 기장을 아직 안 고른 날(soft)을 나눔. 전엔 둘 다 '특징 확인'이라 통·기장을 다 골라도 그렇게 떴음(검토 v22)
-const DSN = {ready: '준비됨', sub: '가진 옷으로 됨 · 대신 입는 옷 있음', soft: '가진 옷으로 될 듯 · 바지 통·기장 확인', info: '가진 옷 확인 필요', eta: '배송 대기 · 받으면 준비', wait: '배송 대기 · 이날 못 입음', wash: '세탁 중인 옷 있음', buy: '살 옷 있음', none: ''};
+const DSN = {ready: '준비됨', sub: '가진 옷으로 됨 · 대신 입는 옷 있음', soft: '가진 옷으로 될 듯 · 바지 핏·겉옷 기장 확인', info: '가진 옷 확인 필요', eta: '배송 대기 · 받으면 준비', wait: '배송 대기 · 이날 못 입음', wash: '세탁 중인 옷 있음', buy: '살 옷 있음', none: ''};
 const BUYC = ['miss', 'plan', 'wait', 'eta'];
 const dayCode = req => { const c = req.map(x => x.ds.code);
   return c.includes('miss') || c.includes('plan') ? 'buy' : c.includes('wait') ? 'wait' : c.includes('wash') ? 'wash' : c.includes('eta') ? 'eta' : c.includes('info') ? 'info'
@@ -4391,7 +4523,11 @@ function showWeek(){
   $('#where').innerHTML = `${esc(st.city)} · <em>${dLab(ds[0])}~${dLab(ds[6])}</em> <span class="s">${wx.est ? '예보 확인 불가 · 계절 참고 계획' : last && last < ds[6] ? `예보는 ${dLab(last)}까지` : '7일 모두 예보 있음'}</span>`;
   const t0 = localNow(wx).date, nm = addDays(t0, ((8 - new Date(t0 + 'T12:00:00').getDay()) % 7) || 7);
   const cnt = c => plan.filter(p => p.status && p.status.code === c).length, nAdj = plan.filter(p => p.L && p.L.level !== p.lv).length;
+  // v29: 날짜별 착용샷이 먼저 보이게(검토 v29 지시 3). 지금 쓰는 설정은 캡슐 한 줄, 바꾸는 칸·설명은 '주간 추천 설정'을 펼쳐서
+  const wsNow = [!WK.start || WK.start <= t0 ? '오늘부터' : WK.start === nm ? '다음 주 월요일부터' : `${dLab(WK.start)}부터`, WK.vary ? '다양하게' : '살 옷 적게',
+    WK.gap ? '같은 상의 연달아 피함' : '같은 상의 연달아 상관없음', WK.adj !== false ? '옆 단계 사진 씀' : '옆 단계 사진 안 씀'].concat(WK.thrift ? ['가진 옷 우선'] : []);
   let h = (wxNote && wxNote !== 'est' ? `<p class="wxn">${esc(wxNote)}</p>` : '')
+    + `<details class="wsetd" id="wsetd"${wsetOpen ? ' open' : ''}><summary><span class="wcur"><span class="k">적용 중</span>${wsNow.map(t => `<span class="cap">${esc(t)}</span>`).join('')}</span><span class="wsl">주간 추천 설정</span></summary>`
     + `<div class="wtop"><span class="k">시작</span><div class="seg" id="wstart"><button type="button" data-v="" aria-pressed="${!WK.start || WK.start <= t0}">오늘부터</button><button type="button" data-v="${nm}" aria-pressed="${WK.start === nm}">다음 주 월요일부터</button></div>`
     + `<input type="date" id="wdate" value="${esc(WK.start && WK.start > t0 ? WK.start : '')}" min="${t0}" aria-label="시작 날짜 직접 고르기">`
     + `<span class="k">같은 상의 이틀 연달아</span><div class="seg" id="wgap"><button type="button" data-v="1" aria-pressed="${!!WK.gap}">피하기</button><button type="button" data-v="0" aria-pressed="${!WK.gap}">상관없음</button></div>`
@@ -4403,7 +4539,7 @@ function showWeek(){
     + `<p class="cn">날마다 기본 단계는 위에서 고른 '${esc(LEVELS[st.level].name)}'. 꾸미는 날은 그날 칸에서 바꿔. 앞 날짜에 쓰거나 사기로 한 옷을 다른 날에도 다시 쓰게 짰어`
     + `${wx.est ? '. 예보를 못 받아서 날씨는 전부 계절 참고값이야' : last && last < ds[6] ? `. ${dLab(addDays(last, 1))}부터는 예보가 없어서 계절 참고로 짠 거라 예보가 나오면 다시 확인해야 해` : ''}.`
     + ` 준비됨 ${cnt('ready')}일 · 가진 옷으로 대신 입는 날 ${cnt('sub')}일 · 확인할 것 있음 ${cnt('soft') + cnt('info')}일 · 배송·세탁 ${cnt('eta') + cnt('wait') + cnt('wash')}일 · 살 옷 있음 ${cnt('buy')}일`
-    + (nAdj ? `. 그중 ${nAdj}일은 ${esc(LEVELS[st.level].name)} 사진에 가진 옷만으로 되는 게 없어서 옆 단계 사진으로 골랐어(날마다 칸에 표시)` : '') + `</p>`;
+    + (nAdj ? `. 그중 ${nAdj}일은 ${esc(LEVELS[st.level].name)} 사진에 가진 옷만으로 되는 게 없어서 옆 단계 사진으로 골랐어(날마다 칸에 표시)` : '') + `</p></details>`;
   h += '<div class="wgrid">' + plan.map(p => {
     const code = p.skip || p.none ? 'none' : p.status.code;
     return `<button type="button" class="wd${p.d === WK.sel ? ' on' : ''}" data-day="${p.d}" aria-pressed="${p.d === WK.sel}">`
@@ -4495,8 +4631,11 @@ function weekBuyHTML(B, plan){
   }).join('') + '</div>';
   return h;
 }
+let wsetOpen = false;
 function bindWeek(){
   const box = $('#week');
+  // v29: '주간 추천 설정'을 펼친 채로 칸을 바꿔도 다시 그릴 때 접히지 않게(이번 방문 동안만 기억)
+  box.addEventListener('toggle', e => { if (e.target.id === 'wsetd') wsetOpen = e.target.open; }, true);
   const redraw = keep => { const y = window.scrollY; showWeek(); if (keep) window.scrollTo(0, y); };
   box.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || !box.contains(b)) return;
@@ -4538,7 +4677,7 @@ function bindWeek(){
 /* ---------- 시작 ---------- */
 importOwnFromHash();
 addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); });
-buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncSeg('mode', st.mode === 'week' ? 'week' : 'today'); bindWeek();
+buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncTabs(); applyFont(); bindWeek();
 load(true);
 })();
 </script>
