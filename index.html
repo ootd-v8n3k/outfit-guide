@@ -490,6 +490,9 @@ ul.slots .st.buy{background:#fef3c7;color:#7a4a05}
 ul.slots .st.unl{background:#fff;color:#7a4a05;box-shadow:inset 0 0 0 1px #e3c27a}
 ul.slots .s2{margin:4px 0 0 40px;font-size:13px;line-height:1.5;color:#4a4a4f}
 ul.slots .s2 .lnk{font-size:12.5px;margin-left:4px}
+/* v36: 10만원 넘는 코트·패딩·겨울 신발의 제품명·가격은 눌러야 보임 */
+ul.slots details.ovf summary{cursor:pointer;color:var(--sub)}
+ul.slots details.ovf .ovd{display:block;margin-top:2px}
 ul.slots .alts{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:7px 0 0 40px}
 ul.slots .alts .al{font-size:12px;color:var(--sub);margin-right:2px}
 .cap{display:inline-block;font-size:12.5px;line-height:1.35;padding:3px 10px;border-radius:999px;background:#f1f1ef;color:#333}
@@ -1591,7 +1594,7 @@ const STY = {
     core:'누빔 간격이 좁은 검정 패딩 안에 회색 롤넥, 아래는 갈색 코듀로이와 갈색 스웨이드 신발. 아래만 갈색으로 맞춘 조합',
     how:[['겉옷', '누빔 간격이 좁은 검정 패딩(태그 없음)을 열어 입음. 밑단은 바지 허리선 근처에서 끝나는 짧은 기장(한쪽은 가방에 가려 안 보임). 얇아 보이지만 두께는 사진으로 확정 못 함. 안의 회색 롤넥 니트가 가운데로 보이고, 니트 위아래로 연한 색 셔츠 깃과 밑단이 조금 나옴(셔츠는 태그 없음)'],
       ['바지', '갈색 코듀로이 바지. 통이 곧게 넓고 밑단이 신발 위에 쌓이는 길이'],
-      ['신발', '어그 타스만 II 체스넛(사진에 태그됨, 19.8만. 방한화라 예산 예외 품목이 아님). 스웨이드 겉에 양모 안감을 댄, 끈 없이 신는 슬리퍼형이라 포근하고 느슨한 분위기. 갈색 바지와 같은 계열. 앱은 이 칸을 갈색 로퍼 칸으로 판정하지만, 로퍼는 구두형이라 같은 갈색이어도 더 단정하고 가벼워 보여']]},
+      ['신발', '사진 속 신발은 체스넛색 타스만(사진에 태그됨). 10만원이 넘는 겨울 신발이라 추천에서 뺌(10만원을 넘어도 추천에 남기는 신발은 운동화·로퍼처럼 여러 계절 신는 것뿐이야). 스웨이드 겉에 양모 안감을 댄, 끈 없이 신는 슬리퍼형이라 포근하고 느슨한 분위기. 갈색 바지와 같은 계열. 앱은 이 칸을 갈색 로퍼 칸으로 판정하지만, 로퍼는 구두형이라 같은 갈색이어도 더 단정하고 가벼워 보여']]},
   'm-xzzhk5': {base:1, sit:'친구 약속', pal:['차콜','흰색','검정'], diff:'줄무늬 머플러와 캡, 바지 밑단을 접어 보이는 체크 안감이 사진 분위기의 큰 부분',
     core:'차콜 롱코트에 줄무늬 머플러, 검정 와이드 팬츠 밑단을 접어 체크를 보인 코디. 캡과 머플러로 캐주얼하게',
     how:[['겉옷', '차콜 롱코트(태그 없음)를 열고, 흑백 줄무늬 머플러를 목에 한 번 걸쳐 양쪽으로 길게 내림'],
@@ -1601,7 +1604,7 @@ const STY = {
     core:'크림 라이트 패딩 안에 체크 셔츠와 차콜 헨리넥, 아래는 검정 더블니 치노. 위는 밝고 아래는 검정',
     how:[['겉옷', '크림 라이트 패딩(태그 없음)을 열고 안에 체크 셔츠를 단추 풀어 걸침(셔츠는 태그 없음). 맨 안의 차콜 헨리넥이 가운데로 보이게'],
       ['바지', '검정 커브드 더블니 치노. 무릎에 덧댄 천이 있고 통이 넓으며 밑단이 신발 위에 쌓이는 길이. 허리에 검정 벨트'],
-      ['신발', '어그 타스만 II 블랙(사진에 태그됨, 19.8만. 방한화라 예산 예외 품목이 아님). 스웨이드 겉에 양모 안감을 댄, 끈 없이 신는 슬리퍼형이라 포근하고 느슨한 분위기. 앱은 이 칸을 검정 로퍼 칸으로 판정하지만, 로퍼는 구두형이라 같은 검정이어도 더 단정해 보여']]},
+      ['신발', '사진 속 신발은 검정 타스만(사진에 태그됨). 10만원이 넘는 겨울 신발이라 추천에서 뺌(10만원을 넘어도 추천에 남기는 신발은 운동화·로퍼처럼 여러 계절 신는 것뿐이야). 스웨이드 겉에 양모 안감을 댄, 끈 없이 신는 슬리퍼형이라 포근하고 느슨한 분위기. 앱은 이 칸을 검정 로퍼 칸으로 판정하지만, 로퍼는 구두형이라 같은 검정이어도 더 단정해 보여']]},
   'l2-p': {top:{col:'화이트'}, base:2, sit:'등교, 친구 약속', pal:['블루 그레이','크림','흰색'],
     core:'블루 그레이 워크 재킷에 크림 와이드 치노. 칼라만 검정 코듀로이라 단색 재킷에 포인트가 하나 생김',
     how:[['겉옷', '재킷 지퍼를 가슴 아래까지만 올려서 안의 흰 이너가 목 아래로 보이게. 재킷 밑단이 허리 바로 아래에서 끝나는 짧은 기장'],
@@ -2414,15 +2417,15 @@ function optTxt(p){
   if (p.option) a.push('옵션 ' + p.option);
   return a.join(' · ');
 }
-function sizeTxt(z){
+function sizeTxt(z, p){
   if (!z.t) return '';
-  return `<span class="sz${z.ref ? ' ref' : ''}">${esc(z.t)}</span>${z.ref ? ' <span class="cn">참고</span>' : ''}${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
+  return `<span class="sz${z.ref ? ' ref' : ''}">${esc(p ? szPlain(p, z.t, null, 1) : z.t)}</span>${z.ref ? ' <span class="cn">참고</span>' : ''}${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
 }
 function prodHTML(spec, label){
   const g = PBY[spec];
   if (!g || !g.main) return '';
   const m = g.main, a = g.alt, zm = sizeOf(m), za = a ? sizeOf(a) : null;
-  const meta = (p, z) => [optTxt(p) && esc(optTxt(p)), sizeTxt(z), won(p.price)].filter(Boolean).join(' · ');
+  const meta = (p, z) => [optTxt(p) && esc(optTxt(p)), sizeTxt(z, p), won(p.price)].filter(Boolean).join(' · ');
   let s = `<span class="pd">${label ? `<span class="cn">${esc(label)}</span> ` : ''}<b>${esc(shortName(m.name))}</b><br>${meta(m, zm)} ${lnk(m, '무신사 ↗')}`
     + (m.priceNote ? `<br><span class="cn">${esc(m.priceNote)}</span>` : '')
     + (m.warn ? `<br><span class="warn">${esc(m.warn)}</span>` : '') + '</span>';
@@ -2934,7 +2937,7 @@ function reasonsOf(o){
 
 function sizeLine(p){
   // v12: 바지는 허리단면·총장을 넣었으면 제품 카드와 같은 판정(pantsPick)을 씀(제품 카드 29, 7일 준비 28처럼 다르게 말하던 문제)
-  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k]; return `<span class="sz${q.ref ? ' ref' : ''}">${esc(t)}</span>` + (q.ref ? ' <span class="cn">참고 · 허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음</span>' : '') + (p.out && p.out.includes(t) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''); } }
+  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k]; return `<span class="sz${q.ref ? ' ref' : ''}">${esc(szPlain(p, t, q, 1))}</span>` + (q.ref ? ' <span class="cn">참고 · 허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음</span>' : '') + (p.out && p.out.includes(t) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''); } }
   const z = sizeOf(p), sh = isShoe(p);
   const needs = sh ? !st.bf : (!st.bh || !st.bw);
   if (z.t && z.t !== '실측표로 고르기') return `<span class="sz${z.ref ? ' ref' : ''}">${esc(z.t)}</span>` + (z.ref ? ' <span class="cn">참고 · 체형이 좀 먼 후기로 짐작</span>' : '') + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
@@ -3282,6 +3285,17 @@ function whyHTML(o){
   const sit = S.sit ? `<br><b>어울리는 날</b>${esc(S.sit)}${/등교/.test(S.sit) ? '' : (o.L.level === 'L4' ? ' · 평소 등교엔 갖춘 느낌이 강함' : '')}` : '';
   return r.length ? `<p class="whyd"><b>${o === curOrder[0] ? '첫 장인 이유' : '고른 이유'}</b>${r.map(esc).join(' · ')}${sit}</p>` : '';
 }
+// v36: 무신사 상품 페이지의 사이즈 이름(0SIZE·1SIZE·2SIZE처럼 숫자+SIZE)은 그대로 쓰되, 처음 보면 뭔지 모르니
+//      몇 번째 사이즈인지와 허리단면을 붙임(검토 v36 Part 3). 다른 표기(S·M·L, 30·32 등)는 그대로
+function szPlain(p, z, q, short){
+  if (!p || !/^\d+SIZE$/i.test(z || '')) return z;
+  const S = p.sizes || [], i = S.indexOf(z), n = S.length;
+  const pos = i < 0 || n < 2 ? '' : i === 0 ? '가장 작은 사이즈' : i === n - 1 ? '가장 큰 사이즈' : `작은 쪽에서 ${i + 1}번째 사이즈`;
+  const ch = p.chart && p.chart.cols && p.chart.rows && p.chart.rows.length === n ? p.chart : null, iw = ch ? ch.cols.indexOf('허리단면') : -1;
+  const row = q && q.row ? q.row : ch && i >= 0 ? ch.rows[i] : null, w = iw >= 0 && row && row[iw] != null ? `허리단면 ${row[iw]}cm` : '';
+  if (short) return `${z}(${[pos ? `${n}개 중 ${pos}` : '', w].filter(Boolean).join(' · ') || '이 브랜드 사이즈 이름'})`;
+  return `${z}(이 브랜드는 사이즈를 ${S.join('·')}로 적음${[pos, w].filter(Boolean).length ? '. ' + [pos, w].filter(Boolean).join(', ') : ''})`;
+}
 // 바지 길이: 추천 사이즈의 총장(근거 있는 것만)과 내가 넣은 바지 총장 비교
 function lenHTML(L){
   const p = pantsOf(L), q = p && pantsPick(p);
@@ -3290,7 +3304,7 @@ function lenHTML(L){
     : `<li><b>내 길이</b>아직 키·몸무게가 없어서 바지·겉옷 사이즈와 총장을 안 골랐어. 위 설명은 사진 모델 기준 <button class="plain sm" type="button" data-toset="bh">키·몸무게 넣기</button></li>`;
   const len = q.row[q.iL], z = q.S[q.k];
   // v35: 사진 속 바지 제품의 추천 사이즈라는 걸 밝힘(내가 입을 바지 사이즈로 읽히지 않게, 검토 v35 2)
-  let t = `사진 속 바지 기준 추천 ${z} 총장 ${len}cm (${q.basis})`;
+  let t = `사진 속 바지 기준 추천 ${szPlain(p, z, q)} 총장 ${len}cm (${q.basis})`;
   if (st.pl) { const d = len - st.pl;
     t += ` · 내가 잘 입는 바지보다 ${sgn(d)}. ` + (d >= 3 ? '사진처럼 밑단이 신발 위에 쌓일 수 있어. 신발 신고 섰을 때 뒤꿈치 쪽이 바닥에 끌리면 기장 수선을 생각해'
       : d <= -3 ? '평소보다 짧아서 사진처럼 신발 등을 덮지 않을 수 있어' : '평소 바지와 길이가 비슷해');
@@ -3670,6 +3684,11 @@ const sameTxt = x => { const ks = Object.keys(x.ft || {}).filter(k => x.ft[k]); 
 // 코디 하나를 내 옷장 기준으로: 상단 태그(tags), 입을 옷 이름 줄(title), 칸별 줄(rows). bc·bl·bs는 예전 이름 그대로 남김(색·긴 문구·짧은 문구)
 // v28(검토 v28 지시 1·2): 칸마다 [부위][입을 옷][상태 배지] + 둘째 줄. 상단엔 이 코디에 있는 상태를 빠짐없이 짧은 태그로.
 //   핏·기장을 모르는 칸이나 안 적은 옷이 있으면 '추가 구매 없음'이라고 확정하지 않음. 계산(lookStatus·partState)은 v27 그대로
+// v36: 코디 카드 기본 화면에서 제품명·가격을 접어 두는 칸(검토 v36 Part 2). 10만원 넘는 코트·패딩·겨울 신발만.
+//      다른 예산 초과 옷(니트·셔츠 등)은 v35 그대로 이름·가격을 보임. 추천·구매 계산은 안 바꿈
+const COLDW = /부츠|boots?\b|윈터|타스만|클래식 미니|첼시|어그|UGG/i;
+const foldOver = (p, r) => !!p && over(p) && (r === 'outer' ? /코트|패딩/.test(kindOf(p)) : r === 'shoes' && COLDW.test(p.name || ''));
+const foldKind = (p, r) => r === 'shoes' ? '겨울 신발' : /코트/.test(kindOf(p)) ? '코트' : '패딩';
 function recipeOf(L, os){
   os = os || ownedSlots();
   const own = hasOwn(), s = lookStatus(L, os), rows = [], tt = [], buyN = [], unlN = [];
@@ -3702,7 +3721,10 @@ function recipeOf(L, os){
         // v34: 살 제품이 사진에 태그된 제품인지 · 다른 제품(대안)인지 · 태그가 없는 칸인지 나눔(검토 v34 Part 1-1·1-5). 사진 속 제품을 안 고른 이유(예산·사이즈)도
         const qk = !q ? '' : !x.id ? '태그 없는 칸이라 비슷한 제품 · ' : q.id === x.id ? '사진 속 제품 · ' : '사진 속 제품 아닌 대안 · ';
         const pr = q ? `${qk}${won(q.price)} · ${md(q.checked)} 확인 가격` : '10만원 아래 제품 못 찾음';
-        const tgx = x.id && x.p && (!q || q.id !== x.id) ? `사진 속 태그 제품: ${shortName(x.p.name)} ${won(x.p.price)}${over(x.p) ? ' · 예산 초과라 추천에서 뺌' : userSizeOut(x.p) ? ' · 내 사이즈가 없어서 뺌' : ''}` : '';
+        // v36: 10만원 넘는 코트·패딩·겨울 신발은 기본 화면엔 '예산 초과라 뺌'만, 제품명·가격은 눌러야 보임(접기, 지우지 않음)
+        const tgx = x.id && x.p && (!q || q.id !== x.id) ? (foldOver(x.p, r)
+          ? {fold: '사진 속 제품은 예산 초과라 뺌', det: `사진 속 태그 제품: ${shortName(x.p.name)} ${won(x.p.price)} · 10만원을 넘는 ${foldKind(x.p, r)}${jongOf(foldKind(x.p, r)) ? '이라' : '라'} 추천에서 뺌`}
+          : `사진 속 태그 제품: ${shortName(x.p.name)} ${won(x.p.price)}${over(x.p) ? ' · 예산 초과라 추천에서 뺌' : userSizeOut(x.p) ? ' · 내 사이즈가 없어서 뺌' : ''}`) : '';
         if (x.grp === 'buy') { c = 'buy'; buyN.push(ph); t = ph; bd = '구매 필요'; n.push(lv === 1 ? x.state.t : '옷장에 없다고 적음'); n.push(pr); if (tgx) n.push(tgx); }
         else { c = 'unl'; unlN.push(ph); t = ph; bd = '보유 여부 확인'; n.push('옷장에 안 적어서 있는지 몰라'); n.push(`없으면 살 것 · ${pr}`); if (tgx) n.push(tgx); act = 'own'; } }
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
@@ -3813,11 +3835,13 @@ function recipeHTML(o, R){
   return `<div class="box rcp">` + (tags.length ? `<p class="rtags">${tags.map(g => `<span class="tg ${g.c}">${esc(g.t)}</span>`).join('')}</p>` : '')
     + `<p class="rt">${esc(R.title)}</p><p class="rd">${R.rows.some(w => w.pil) ? '사진 속 코디 · ' : ''}${esc(coreOf(o.L))}</p>` + mirHTML(o.L)
     + `<ul class="slots" aria-label="칸마다 입을 옷">${R.rows.map(w => {
-      const ln = w.n.map((t, i) => esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
+      // v36: 접는 줄({fold, det})은 details로 그림. 줄 끝 버튼은 접는 줄이 아닌 마지막 줄에 붙임
+      const ln = w.n.map((t, i) => t && t.fold ? t : esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
       if (w.sh && !w.shIn) ln.push(`${chip(w.sh)}사진 속 색 ${esc(w.sh.nm)} · ${esc(w.sh.t)}`);
-      if (w.act && ln.length) ln[ln.length - 1] += ` <button type="button" class="lnk" data-rowact="${w.act}">${RBTN[w.act]}</button>`;
+      const lsi = ln.map(h => typeof h === 'string').lastIndexOf(true);
+      if (w.act && lsi >= 0) ln[lsi] += ` <button type="button" class="lnk" data-rowact="${w.act}">${RBTN[w.act]}</button>`;
       return `<li class="${w.c}"><div class="s1"><span class="sr">${w.r}</span><b class="sn">${esc(w.t)}</b>${w.bd ? `<span class="st ${w.c}">${esc(w.bd)}</span>` : ''}</div>`
-        + ln.map(h => `<p class="s2">${h}</p>`).join('')
+        + ln.map(h => typeof h === 'string' ? `<p class="s2">${h}</p>` : `<details class="s2 ovf"><summary>${esc(h.fold)}</summary><span class="ovd">${esc(h.det)}</span></details>`).join('')
         + (w.alt && w.alt.length ? `<p class="alts"><span class="al">바꿔 입기</span>${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join('')}</p>` : '') + `</li>`; }).join('')}</ul>`
     + (hasOwn() ? '' : `<p class="cn" style="margin:10px 0 0">가진 옷을 적으면 <b>내 옷으로 입어볼 코디</b>부터 보여 주고, 칸마다 내 옷 중 뭘 입을지·뭘 사야 하는지 알려 줘 <button type="button" class="plain sm" data-ownedit>가진 옷 적기</button></p>`)
     + '</div>';
@@ -4108,7 +4132,15 @@ function gukbapHTML(){
   const ref = [], rl = (b, t) => `<b>${esc(slotName(b.k))}</b> ${won(b.r.p.price)}<br>${t}`;
   G.down.forEach(b => ref.push(rl(b, `이미 다른 색 보유(${esc(b.have.map(k => ownNm(k)).join(', '))}). 사면 새로 입는 코디 ${b.unlock.length}벌${b.upg.length ? `, 대신 입던 코디 ${b.upg.length}벌은 사진 속 옷으로 바꿈` : ''}`)));
   G.twin.forEach(b => ref.push(rl(b, `위의 ${esc(slotName(b.tw.k))}${jongOf(slotName(b.tw.k)) ? '과' : '와'} 같은 종류라 하나만 위에 넣음. 이것만 사면 더 살 옷이 없는 코디 ${b.done}벌`)));
-  if (own) G.pair.forEach(b => ref.push(rl(b, `기본 코디 ${b.app}벌 사진에 나오지만 이것 하나만 사서 끝나는 코디는 없음(다른 옷 1개 더: ${b.near.length}벌, 2개 이상 더: ${b.far.length}벌)`)));
+  // v36: 추천 제품이 이 칸 사진에 다 태그된 게 아니면 사진마다 나눠 적음(검토 v36 Part 3: 갈색 로퍼 2벌 중 1벌은 사진 속 신발이 타스만)
+  const pairHead = b => { const r = tagRel(b.k, G.scope, b.r.p), n = r.same.length + r.other.length + r.none.length;
+    if (!n || r.same.length === n) return `기본 코디 ${b.app}벌 사진에 나오지만`;
+    const kd = kindOf(b.r.p), oth = [...new Set(r.oth.filter(o => o.p).map(o => TASM.test(o.p.name) ? '타스만' : kindOf(o.p) === kd ? `다른 ${kd} 제품` : kindOf(o.p)))].join('·');
+    return `기본 코디 ${b.app}벌에 쓰이는 칸. ` + [r.same.length ? `이 ${kd}${jongOf(kd) ? '이' : '가'} 태그된 사진 ${r.same.length}벌` : '',
+      r.other.length ? `${oth ? `${oth}${jongOf(oth) ? '이' : '가'}` : '다른 제품이'} 태그된 사진 ${r.other.length}벌(이 ${kd}${jongOf(kd) ? '은' : '는'} 그 사진 속 제품이 아닌 대안)` : '',
+      r.none.length ? `태그 없는 사진 ${r.none.length}벌(사진 속 제품 모름)` : ''].filter(Boolean).join(', ') + '.';
+  };
+  if (own) G.pair.forEach(b => ref.push(rl(b, `${esc(pairHead(b))} 이것 하나만 사서 끝나는 코디는 없음(다른 옷 1개 더: ${b.near.length}벌, 2개 이상 더: ${b.far.length}벌)`)));
   if (ref.length) h += `<div class="gbr"><p class="k">아래 참고 · TOP에 안 넣은 이유</p><ul>${ref.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
   // v27: 코트·패딩은 10만원 기준 그대로(작업 기준). 아래 제품이 없으면 눌렀을 때만 비싼 제품을 따로 보여 주고, 살 옷 합계·7일 준비엔 안 넣음
   if (G.noP.length) {
@@ -4271,7 +4303,7 @@ function altHTML(L, p, a, s){
     + (g.ok ? '' : `<br><span class="df">달라지는 점: ${esc(g.why)}</span>`)
     + (g.ok && g.unk && g.unk.length ? `<br><span class="cn">확인 못 한 특징: ${esc(g.unk.join('·'))} · 상품 페이지 사진으로 확인</span>` : '')
     + `<br><span class="df">${esc(diffs(p, a, s).join(' · '))}</span>` + (why ? `<br><span class="cn">${esc(why)}</span>` : '')
-    + `<br>${roleOf(a) === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz${q.ref ? ' ref' : ''}">${esc(q.S[q.k])}</span> 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
+    + `<br>${roleOf(a) === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz${q.ref ? ' ref' : ''}">${esc(szPlain(a, q.S[q.k]))}</span> 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
     + ` · ${won(a.price)} <span class="cn">${md(a.checked)} 확인</span>${a.stockNote ? ' · ' + esc(a.stockNote) : ''} · ${lnk(a, '무신사 ↗')}</span></div>`;
 }
 function cardHTML(L, i){
