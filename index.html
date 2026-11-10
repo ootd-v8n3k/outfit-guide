@@ -707,6 +707,8 @@ ul.slots .st.chk,ul.slots .st.info{background:#e7e5e4;color:#44403c}
 @media (min-width:1024px){
 ul.slots{grid-template-columns:repeat(2,minmax(0,1fr))}
 ul.slots li{min-width:0}
+/* v33: 전역 .sub(4px)·.buy(8px) 위 여백이 칸 카드에도 붙어서 2×2 한 줄 카드 높이가 어긋났음 */
+ul.slots li.sub,ul.slots li.buy{margin:0}
 ul.slots .s2,ul.slots .alts{margin-left:40px}
 .wdb ul.wparts.slots{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -2718,6 +2720,15 @@ const varNm = (x, os) => { const k = x.state && x.state.sub; if (!k) return x.st
   const o = subsFor(x, os).find(y => y.k === k); return (o && o.lab) || '사진과 조금 다른 변형'; };
 const CSUB = {크림: [['화이트', '사진보다 조금 하얗고 차갑게 보임']], 화이트: [['크림', '사진보다 조금 따뜻한 색']]};
 const SHOE_SUB = /^(더비|로퍼|옥스포드)$/;
+// v33: 옷장에 비슷한 옷이 있는데 종류·색 비교 기준 때문에 빠진 코디 중, 사진을 직접 보고 실루엣·분위기가 크게 안 바뀌는 세 벌만 '사진과 다른 변형'으로 엶.
+//   전체 규칙(KSUB·CSUB)은 안 바꿈. 가진 옷의 소재·색 농도·카라 모양은 모르니 단정하지 않음
+const PILOT33 = {
+  'n-1180665': {from: '플리스|블랙', to: '블루종|블랙', lab: '종류가 다른 겉옷 변형',
+    why: '사진은 털이 긴 검정 플리스 집업이라 포근하고 편해 보임. 같은 검정에 허리 기장 집업인 블루종이면 실루엣은 비슷하고, 겉면이 매끈해서 조금 더 단정해 보임(내 블루종 소재·카라 모양은 확인 안 함)'},
+  'l1-n': {from: '후드 니트|그레이', to: '후드 집업|그레이', lab: '종류가 다른 상의 변형',
+    why: '사진은 반쯤 열리는 짜임 굵은 회색 후드 니트. 회색 후드 집업 지퍼를 가슴까지 올리면 회색 후드 덩어리는 비슷하고, 앞 지퍼 줄이 길게 보여 조금 더 캐주얼해짐(내 집업 색 농도·소재는 확인 안 함)'},
+  'n-1666442': {from: '후드 집업|블랙', to: '후드 집업|그레이', lab: '색이 다른 변형',
+    why: '같은 후드 집업인데 색만 검정 → 회색. 흰 티·연청 데님·흰 운동화와 입으면 사진보다 전체가 밝고 부드러워 보임'}};
 // v26: 대신 입을 수 있는 가진 옷 전부(첫 번째가 칸에 들어가고 나머지는 '바꿔 입기'로 보여 줌)
 const subFor = (x, os) => subsFor(x, os)[0] || null;
 function subsFor(x, os){
@@ -2730,6 +2741,7 @@ function subsFor(x, os){
   } else if (SHOE_SUB.test(kd) && (x.lvl === 'L1' || x.lvl === 'L2' || x.lvl === 'L3'))
     cand.push({k: '스니커즈|' + c, why: `사진은 ${CN[c] || c} 가죽 구두라 더 단정해 보임. 운동화면 조금 캐주얼해지고, 밑창이 흰색이면 발끝이 더 눈에 띔`
       + (x.lvl === 'L3' && /슬랙스/.test(x.pk || '') ? '. 슬랙스에 운동화라 적당히 꾸민보다 꾸안꾸에 가깝게 보임' : ''), lab: '사진보다 캐주얼한 변형'});
+  const pl = PILOT33[x.lk]; if (pl && pl.from === x.slot) cand.push({k: pl.to, why: pl.why, lab: pl.lab, pilot: 1});
   const keys = Object.keys(x.ft || {}).filter(f => x.ft[f]);
   return cand.filter(o => os.has(o.k) && !OWN.x[x.slot + '>' + o.k] && !keys.some(f => ownF(o.k)[f] && ownF(o.k)[f] !== x.ft[f])
     && (!o.need || (x.ft && x.ft[o.need] && ownF(o.k)[o.need] === x.ft[o.need])));
@@ -2771,7 +2783,7 @@ function partsOf(L){
   }
   // v22: 신발 대신 입기(subFor)가 단계·바지 종류를 봄
   const pk = (out.find(x => x.role === 'pants' && x.slot) || {}).slot;
-  out.forEach(x => { x.lvl = L.level; x.pk = pk ? pk.split('|')[0] : ''; });
+  out.forEach(x => { x.lvl = L.level; x.pk = pk ? pk.split('|')[0] : ''; x.lk = L.key; });
   return out;
 }
 function ownedSlots(){ const set = new Set(Object.keys(OWN.s).filter(k => OWN.s[k] === 'similar'));
@@ -3609,7 +3621,7 @@ const RORD = ['outer', 'top', 'pants', 'shoes'];
 const FN2 = {fit: '바지 핏', len: '겉옷 기장'};
 // v28: 변형 이름을 상단 태그용으로 짧게(칸 둘째 줄엔 원래 이름 그대로). 예: 신발 '사진보다 캐주얼한 변형' → '신발 캐주얼 변형'
 const VSH = {'사진보다 캐주얼한 변형': '캐주얼 변형', '사진과 다른 단정한 변형 코디': '단정한 변형', '편한 느낌은 비슷한 변형': '비슷한 느낌 변형',
-  '색이 조금 다른 변형': '색 변형', '대신 산 옷으로 입는 변형': '산 옷으로 변형', '사진과 조금 다른 변형': '변형'};
+  '색이 조금 다른 변형': '색 변형', '종류가 다른 겉옷 변형': '종류 변형', '종류가 다른 상의 변형': '종류 변형', '색이 다른 변형': '색 변형', '대신 산 옷으로 입는 변형': '산 옷으로 변형', '사진과 조금 다른 변형': '변형'};
 // 같음(특징 일치) 문구: '겉옷 기장 짧은 기장 같음' → '짧은 기장 일치', '바지 통 와이드 같음' → '와이드 핏 일치'
 const sameTxt = x => { const ks = Object.keys(x.ft || {}).filter(k => x.ft[k]); return ks.length ? ks.map(k => k === 'fit' ? x.ft.fit + ' 핏' : x.ft[k]).join(' · ') + ' 일치' : ''; };
 // 코디 하나를 내 옷장 기준으로: 상단 태그(tags), 입을 옷 이름 줄(title), 칸별 줄(rows). bc·bl·bs는 예전 이름 그대로 남김(색·긴 문구·짧은 문구)
@@ -3627,12 +3639,13 @@ function recipeOf(L, os){
       const lv = x.state.lv, ph = photoNm(x), inT = !x.anyTop && !x.info && (r !== 'top' || !s.req.some(y => y.role === 'outer'));
       const tgN = x.anyTop && tg ? `태그엔 ${CN[tg.col] || tg.col} ${kindOf(tg.p)}${jongOf(kindOf(tg.p)) ? '이' : '가'} 있지만 사진에선 겉옷에 가려 안 보임` : '';
       // bd: 칸 상태 배지 · n: 둘째 줄부터(한 줄에 하나씩) · shIn: 사진 속 색을 첫 줄에 붙임 · act: 줄 끝 버튼(fit·len 고르기, 가진 옷 적기)
-      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '';
+      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0;
       if (!own) { c = 'ph'; t = x.info ? '사진에서 신발 종류·색 확인 못 함' : x.anyTop ? '안에 입을 상의' : ph; if (x.anyTop) n.push('겉옷에 가려 거의 안 보임'); if (tgN) n.push(tgN); }
       else if (lv === -1) { c = 'info'; t = '가진 신발 중 골라 신기'; bd = '신발 확인'; n.push('사진에서 신발 종류·색을 못 봐서 사지 않고 가진 신발 중 골라 신음'); }
       else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L);
         // v27: 대신 입는 옷과 대신 산 옷은 '변형'(사진과 분위기가 달라짐), 통·기장을 모르는 같은 종류·색은 '확인 필요'
-        if (x.state.sub || x.state.pick) { c = 'sub'; t = x.state.sub ? `내 ${nm}` : `산 ${nm}`; bd = '변형 매치'; n.push(`사진 속 ${ph} 대신 · ${varNm(x, os)}`); }
+        if (x.state.sub || x.state.pick) { c = 'sub'; t = x.state.sub ? `내 ${nm}` : `산 ${nm}`; bd = '변형 매치'; n.push(`사진 속 ${ph} 대신 · ${varNm(x, os)}`);
+          const pw = x.state.sub && subsFor(x, os).find(y => y.k === x.state.sub); if (pw && pw.pilot) { n.push(pw.why); pil = 1; } }
         else if (lv === 2) { const k = x.state.k, fv = (x.ft || {})[k]; c = 'chk'; t = `내 ${nm}`; bd = k === 'fit' ? '핏 확인' : k === 'len' ? '기장 확인' : '확인 필요';
           n.push(fv ? `사진은 ${fv}${k === 'fit' ? ' 핏' : ''}` : `사진은 ${ph}`); shIn = true;
           n.push(`내 ${FN2[k] || '옷 모양'}을 아직 안 골라서 사진과 같은지 확인 필요`); if (k === 'fit' || k === 'len') act = k; }
@@ -3645,7 +3658,7 @@ function recipeOf(L, os){
       else { const q = repOf(x.slot || x.buy || '', [L]).p, pr = q ? `${won(q.price)} · ${md(q.checked)} 확인 가격` : '10만원 아래 제품 못 찾음';
         if (x.grp === 'buy') { c = 'buy'; buyN.push(ph); t = ph; bd = '구매 필요'; n.push(lv === 1 ? x.state.t : '옷장에 없다고 적음'); n.push(pr); }
         else { c = 'unl'; unlN.push(ph); t = ph; bd = '보유 여부 확인'; n.push('옷장에 안 적어서 있는지 몰라'); n.push(`없으면 살 것 · ${pr}`); act = 'own'; } }
-      rows.push({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt});
+      rows.push({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil});
       if (inT) tt.push(nm);
     });
   });
@@ -3750,7 +3763,7 @@ function recipeHTML(o, R){
   if (o.adj) tags.push({c: 'adj', t: `${LEVELS[o.adj].name} 단계 사진`});
   const chip = sh => `<span class="chip" style="background:${sh.hex}" aria-hidden="true"></span>`;
   return `<div class="box rcp">` + (tags.length ? `<p class="rtags">${tags.map(g => `<span class="tg ${g.c}">${esc(g.t)}</span>`).join('')}</p>` : '')
-    + `<p class="rt">${esc(R.title)}</p><p class="rd">${esc(coreOf(o.L))}</p>` + mirHTML(o.L)
+    + `<p class="rt">${esc(R.title)}</p><p class="rd">${R.rows.some(w => w.pil) ? '사진 속 코디 · ' : ''}${esc(coreOf(o.L))}</p>` + mirHTML(o.L)
     + `<ul class="slots" aria-label="칸마다 입을 옷">${R.rows.map(w => {
       const ln = w.n.map((t, i) => esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
       if (w.sh && !w.shIn) ln.push(`${chip(w.sh)}사진 속 색 ${esc(w.sh.nm)} · ${esc(w.sh.t)}`);
