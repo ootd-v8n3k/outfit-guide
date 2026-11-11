@@ -737,6 +737,195 @@ ul.slots .s2,ul.slots .alts{margin-left:40px}
 .bkt{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 8px}
 .bkt td,.bkt th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
 .noq{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+/* ===== v41: PC 화면 재디자인 1단계 · 오늘의 코디 + 공통 스타일(검토 v41).
+   흰 바탕 · 검정 글씨 · 굵은 제목 · 얇은 선. 모서리는 거의 각지게, 그림자·둥근 상자는 최소. 색은 상태 구분에만
+   (준비됨 검정 · 변형 파랑 · 확인 호박 · 구매 빨강, 흰 바탕 대비 4.5:1 이상). 추천·계산·문구 판정은 그대로, 배치와 모양만 ===== */
+:root{--ink:#111;--sub:#555;--line:#e5e5e5;--acc:#111;--soft:#f5f5f5;--tint:#f2f2f2;--track:#f2f2f2;--bd:#cfcfcf;--var:#1d4ed8;--chk:#a55a00;--buy:#c0262d}
+a{color:#111;text-underline-offset:2px}
+/* 1) 글씨: PC 본문 16px. 보조 글씨도 13.5px 아래로 내리지 않음 */
+@media (min-width:1024px){html,body{font-size:16px}}
+.cn{font-size:13.5px;color:var(--sub)}
+.k{font-size:14px;color:var(--sub)}
+.sub,.hint,.sortn,.hid,.note{font-size:13.5px}
+.msg{font-size:15px}
+/* 2) 버튼: 주요 = 검정 채움 · 보조 = 테두리만 · 글자 버튼. 마우스 오버 · 키보드 초점 · 선택 상태가 다 보이게 */
+.plain,.hb,.gtog,.pb,.shh button,.ownc button,.mtc button,.ownf button,.chips button,.cact .plain,.buy,#ownImp .go,#syncB .go,.clrq .go,select,input[type=text],input[type=number],.eta input,.wtop input[type=date]{border-radius:2px}
+.plain{border-color:#bdbdbd}
+.plain:hover,.hb:hover,.gtog:hover,.mtc button:hover,.ownf button:hover,.ownc button:hover,.chips button:hover{border-color:#111;background:#f7f7f7}
+.seg button[aria-pressed=true],.chips button[aria-pressed=true],.mtc button[aria-pressed=true],.ownf button[aria-pressed=true],.plain[aria-pressed=true],.plain[aria-expanded=true],.cact .plain[aria-pressed=true]{background:#111;color:#fff;border-color:#111;font-weight:700;box-shadow:none}
+button:focus-visible,summary:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #111;outline-offset:2px;box-shadow:0 0 0 4px #fff}
+#ownImp .go,#syncB .go,.clrq .go{background:#111}
+.buy{border-color:#111;color:#111}
+.lnk{color:#111}
+/* 3) 고르는 칸(오늘/내일 · 꾸밈 단계 · 설정 칸 · 일주일 '이날 꾸밈 정도'): 검정 테두리 한 줄, 고른 칸은 검정 채움 + 흰 굵은 글씨 */
+.seg,.seg.dseg,.lvg,#wlv{display:inline-flex;flex-wrap:wrap;border:1px solid #111;border-radius:0;background:#fff;padding:0;gap:0;overflow:hidden}
+.seg button,.seg.dseg button,.seg.dseg button:last-child,.lvg button,#wlv button{border:0;border-right:1px solid #111;border-radius:0;background:#fff;color:#111;padding:6px 14px;font-size:15px;line-height:1.35;box-shadow:none;font-weight:400}
+.seg button:last-child,.seg.dseg button:last-child,.lvg button:last-child,#wlv button:last-child{border-right:0}
+.seg button[aria-pressed=true],.seg.dseg button[aria-pressed=true],.lvg button[aria-pressed=true],#wlv button[aria-pressed=true]{background:#111;color:#fff;font-weight:700;box-shadow:none;border-color:#111}
+.seg button:hover:not([aria-pressed=true]),.seg.dseg button:hover:not([aria-pressed=true]),.lvg button:hover:not([aria-pressed=true]),#wlv button:hover:not([aria-pressed=true]){background:#efefef;color:#111}
+/* 4) 맨 위: 사이트 이름 · 화면 탭(지금 화면 = 검정 굵은 밑줄) · 내 옷장 · 설정. 아래 검정 선 한 줄 */
+.hd{border-bottom:1px solid #111;gap:0 10px}
+.logo{font-size:21px;font-weight:800;letter-spacing:-.8px;margin-right:20px}
+.tabs button{font-size:16px;color:#555;padding:13px 0 11px;margin:0 13px;border-bottom:3px solid transparent}
+.tabs button:hover{color:#111;border-bottom-color:#cfcfcf}
+.tabs button[aria-current=page]{color:#111;font-weight:800;border-bottom-color:#111}
+.hb{border:1px solid #cfcfcf;border-radius:2px;padding:6px 12px;font-size:14.5px;background:#fff;color:#111}
+.hb b{color:#111}
+.hb.fitb{background:#fff;border-color:var(--chk);color:var(--chk);font-size:14px;font-weight:700}
+#setBtn[aria-expanded=true]{background:#111;border-color:#111;color:#fff;font-weight:700}
+/* 5) 날짜·날씨 · 오늘/내일 · 꾸밈 단계 */
+.cbar{gap:10px 22px;padding:12px 0 12px}
+.cbar #where{font-size:16px;color:#111}
+#where em{color:#111;font-weight:800}
+#where .s{color:#555}
+.clv .q{font-size:14.5px;font-weight:700;color:#111}
+/* 6) 상태 표시: 한 모양(네모 테두리 + 굵은 글씨), 색은 뜻마다 하나. 보유 여부 확인은 점선(있는지 모름) */
+.tg,ul.slots .st,.bdg{display:inline-block;border-radius:2px;background:#fff;box-shadow:none;border:1px solid currentColor;font-weight:700;line-height:1.4;padding:2px 8px;color:#111}
+.tg,.tg.sub,.tg.own,.tg.buy,.tg.unl,.tg.chk,.tg.chk0,.tg.adj{font-size:13.5px}
+.tg.sm,.tg.sm.sub{font-size:13.5px;padding:1px 6px}
+.tg.own,ul.slots .st.own,.bdg.own{background:#fff;color:#111}
+.tg.sub,ul.slots .st.sub,.bdg.sub{background:#fff;color:var(--var)}
+.tg.chk,ul.slots .st.chk,ul.slots .st.info,.bdg.chk{background:#fff;color:var(--chk)}
+.tg.unl,ul.slots .st.unl{background:#fff;color:var(--chk);border-style:dashed;box-shadow:none}
+.tg.buy,ul.slots .st.buy,.bdg.buy{background:#fff;color:var(--buy)}
+.tg.chk0,.tg.adj{background:#fff;color:#555;border-color:#bdbdbd;box-shadow:none}
+.tg.adj{font-weight:400}
+/* 7) 모서리·그림자 줄이기(일주일·무엇을 살까는 배치 그대로, 모양만) */
+.box,.obar,.gb .gbc,.gbp,.lvc,.walt,.wd,details.wsetd,details.wsetd[open],.gk,.t3c .gk,.gb .gk,.unk,.mir,#sheet,#ownImp,#syncB,#svFail,#syncN,.clrq,.gbp .ai,.cap{border-radius:0}
+.wd.on{border-color:#111;box-shadow:0 0 0 1px #111}
+.gc.cur .gk{outline:2px solid #111;outline-offset:-2px}
+/* 8) 거울 앞에서 확인할 한 가지: 따라 할 행동이 먼저 읽히게 */
+.mir{margin:12px 0 0;padding:10px 14px 11px;background:#f5f5f5;border-left:3px solid #111;font-size:16px;line-height:1.6;color:#111}
+.mir b{display:inline;font-size:14.5px;color:#111;margin:0 10px 0 0}
+.mir .mk{border-radius:0;background:#111;color:#fff;box-shadow:none;font-size:13.5px;padding:1px 8px;margin-right:8px;vertical-align:1px}
+.mir .cn{font-size:14px;color:#555;margin-top:4px}
+/* 9) 사진: 사진 넘기기(‹ ›)와 번호는 사진 위에. 단계 이름표는 검정 네모 */
+.phw{position:relative}
+.phw:has(> #car[hidden]){display:none}
+.lknav{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+.lknav .nb{pointer-events:auto;position:absolute;top:50%;margin-top:-23px;width:46px;height:46px;border:1px solid #111;background:rgba(255,255,255,.94);color:#111;font-size:28px;line-height:1;border-radius:0;padding:0 0 4px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lknav #prevLook{left:10px}
+.lknav #nextLook{right:10px}
+.lknav .nb:hover{background:#111;color:#fff}
+.lknav .cnt{position:absolute;right:10px;top:10px;background:rgba(17,17,17,.86);color:#fff;font-size:14px;font-weight:700;line-height:1;padding:7px 10px;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.lk{background:#f2f2f2}
+.lk .ref{left:10px;top:10px;border-radius:0;background:#111;color:#fff;font-size:13.5px;font-weight:700;padding:5px 9px}
+/* 10) 오늘의 코디 오른쪽: 보기 전환(글자 탭) → 상태 → 제목 → 사진 설명 → 내가 입을 옷 → 거울 앞 한 가지 → 버튼 */
+.vseg{background:none;border-radius:0;padding:0;gap:0 18px}
+.vseg button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:6px 0 5px;font-size:15px;color:#555;box-shadow:none}
+.vseg button b{margin-left:3px}
+.vseg button[aria-pressed=true]{background:none;color:#111;font-weight:700;border-bottom-color:#111;box-shadow:none}
+.vseg button:hover:not([disabled]):not([aria-pressed=true]){background:none;color:#111}
+.gtog{border:1px solid #cfcfcf;padding:6px 12px;font-size:14px;color:#111}
+.gtog::before{color:#111}
+#below .rbar{margin:0 0 4px;gap:6px 16px}
+#below .box.rcp{margin-top:8px}
+.rk{margin:0;font-size:14px;font-weight:700;color:#555}
+#below .rtags{align-items:center;gap:6px;margin:6px 0 0}
+#below .rtags .rk{margin-right:6px}
+#below .rcp .rt{font-size:26px;font-weight:800;line-height:1.3;letter-spacing:-.7px;margin:8px 0 0;word-break:keep-all}
+#below .rcp .rd{font-size:15.5px;color:#333;line-height:1.6;margin:6px 0 0}
+.rdl{font-weight:700;color:#111;margin-right:8px;font-size:14px}
+.slh{margin:14px 0 0;padding-bottom:6px;border-bottom:2px solid #111;font-size:15px;font-weight:800;color:#111}
+#below ul.slots{display:block;margin:0;border-top:0;padding:0}
+#below ul.slots li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;column-gap:14px;align-items:start;background:none;border:0;border-bottom:1px solid #e5e5e5;border-radius:0;padding:8px 0 9px;margin:0;box-shadow:none;color:#111;font-size:15px}
+#below ul.slots .s1{display:contents}
+#below ul.slots .s1 .sr{grid-column:1;grid-row:1;flex:none;font-size:14px;color:#555;padding-top:3px}
+#below ul.slots .s1 .sm{grid-column:2;grid-row:1;min-width:0;line-height:1.5}
+#below ul.slots li b.sn{display:inline;font-size:17px;line-height:1.45;font-weight:700;color:#111;margin-right:10px}
+#below ul.slots li.none b.sn{font-weight:400;color:#555;font-size:15px}
+#below ul.slots .s1 .rl{font-size:15px;color:#444}
+#below ul.slots .s1 .rl .lnk{font-size:14px;margin-left:6px}
+#below ul.slots .st{grid-column:3;grid-row:1;margin:1px 0 0;font-size:13.5px;padding:2px 9px;white-space:nowrap}
+#below ul.slots .s2,#below ul.slots .alts{grid-column:2 / -1;margin:3px 0 0;font-size:15px;line-height:1.55;color:#333}
+#below ul.slots .s2 .lnk{font-size:14px;margin-left:6px}
+#below ul.slots .alts{gap:5px}
+#below ul.slots .alts .al{font-size:14px;color:#555}
+/* 칸 셋째 줄: 펼쳐 보는 것(확인할 점 · 사진과 다른 점 · 사진 속 색)과 바꿔 입기를 한 줄에. 펼치면 그 줄 전체 너비 */
+#below ul.slots .s3{grid-column:2 / -1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:4px 0 0;font-size:14.5px;line-height:1.55;color:#333}
+#below ul.slots .s3 .alts{margin:0;display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:5px}
+#below ul.slots .s3 details.f41[open]{flex-basis:100%}
+#below .cap{background:#f2f2f2;color:#111;font-size:14px;padding:2px 8px}
+#below ul.slots details.ovf summary,#below details.f41 summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-size:14.5px;color:#111}
+#below details.f41 summary::-webkit-details-marker{display:none}
+#below details.f41 summary::after{content:"▾";font-size:13px;color:#111;margin-left:1px}
+#below details.f41[open] summary::after{content:"▴"}
+#below details.f41 summary::before{content:"참고";font-size:13px;font-weight:700;color:#555;border:1px solid #bdbdbd;border-radius:2px;padding:0 5px;line-height:1.5}
+#below details.f41.w summary::before{content:"확인";color:var(--chk);border-color:var(--chk)}
+#below details.f41 .ovd{display:block;margin:4px 0 2px;color:#333}
+#below .lkbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px}
+#below .lkbar .lka{display:inline-flex;gap:8px}
+#below .lkbar .pb,#howBtn,#showBtn{height:46px;padding:0 22px;border-radius:0;font-size:16px;font-weight:700}
+#howBtn{background:#111;border:1px solid #111;color:#fff}
+#howBtn:hover{background:#333;border-color:#333}
+#howBtn[aria-pressed=true]{background:#111;border-color:#111;color:#fff;box-shadow:none}
+#showBtn{background:#fff;border:1px solid #111;color:#111}
+#showBtn:hover{background:#f2f2f2}
+#showBtn[aria-pressed=true]{background:#fff;border-color:#111;color:#111}
+#below .lkbar .subs{margin-left:auto;display:inline-flex;gap:4px}
+.sb2{font-size:15px;color:#333;border-radius:0;padding:8px 10px}
+.sb2:hover{background:#f2f2f2;color:#111}
+.sb2[aria-pressed=true]{color:#111;font-weight:700}
+/* 11) TOP 3: 큰 사진 1~3번과 같은 코디. 지금 보는 코디는 굵은 검정 테두리 + '보는 중' */
+#below .t3{background:none;border-radius:0;margin-top:32px;border-top:2px solid #111;padding:12px 0 0}
+#below .t3 .bh{font-size:17px;font-weight:800;margin:0}
+.t3s{margin:4px 0 12px;font-size:14px;color:#555;line-height:1.5}
+.t3s b{color:#111}
+#below .t3w{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.t3c .gk{background:#f2f2f2}
+.t3c .gk i{left:0;top:0;border-radius:0;background:#111;color:#fff;font-size:13.5px;font-weight:700;padding:3px 8px}
+.t3c .gk b.nowb{right:0;top:0;left:auto;border-radius:0;background:#fff;color:#111;font-size:13.5px;font-weight:800;padding:2px 7px;border:1px solid #111}
+.t3c.cur .gk{outline:3px solid #111;outline-offset:-3px}
+.t3c:hover .gk{outline:1px solid #111;outline-offset:-1px}
+.t3c.cur:hover .gk{outline:3px solid #111;outline-offset:-3px}
+.t3c .ctg{margin-top:8px}
+.t3c .gl{font-size:14px;color:#111;line-height:1.45;margin-top:5px}
+/* 12) 아래 섹션: 오늘 바꿀 점 · 꾸밈 단계를 바꾸면 · 접는 메뉴 */
+#below .reft{font-size:15px;line-height:1.55;margin-top:22px}
+.reft b{color:#111;margin-right:8px}
+#below .lvs{margin-top:26px}
+#below .lvs > .k{font-size:15px;font-weight:800;color:#111;margin:0 0 10px}
+.lvc{background:#fff;border:1px solid #e5e5e5;padding:10px}
+.lvc p{font-size:14.5px}
+.lvc p b{font-size:15px}
+.aux{border-radius:0;background:#f5f5f5;margin-top:26px}
+#look:not([hidden]) + #cond{border-radius:0;background:#f5f5f5}
+details.lkm,details.hw{font-size:14.5px}
+details.lkm summary,details.hw summary,details.recs > summary{color:#111;font-size:15px}
+details.lkm p{font-size:14.5px;color:#333}
+.howp li{font-size:15.5px}
+.howp li b{color:#111;font-size:14.5px}
+.act i{color:#111;border-color:#111;border-radius:0;font-size:13.5px}
+.howp i.pk{border-radius:0;font-size:13.5px}
+.howp details.pmd summary{font-size:14px}
+.unk{font-size:14.5px;background:#f5f5f5}
+.unk b{font-size:13.5px;color:#555}
+ul.lki .lt b{font-size:15px}
+ul.lki .lt span{font-size:13.5px}
+ul.lki .go{color:#111;font-size:14px;text-decoration:underline}
+.why span{font-size:14px}
+.why button{border-radius:2px;font-size:14px}
+.why button[aria-pressed=true]{border-color:#111;color:#111}
+/* 13) 제품 카드(오른쪽 위에 뜨는 창) */
+#sheet{border:1px solid #111;box-shadow:0 8px 28px rgba(0,0,0,.14)}
+.shh button{border-color:#111}
+.cardm .sz,.pd .sz{color:#111}
+/* 14) PC 오늘의 코디: 사진은 머리줄 바로 아래부터 화면 높이만큼(사진 줄이 보일 때만). 날씨·단계·설명은 오른쪽 칸.
+       일주일 코디 · 무엇을 살까 · 한눈에 보기는 v40 배치 그대로 */
+@media (min-width:1024px){
+main:has(> #look:not([hidden]) > .phw > #car:not([hidden])){grid-template-columns:minmax(0,min(600px,calc((100vh - 132px) * .56))) minmax(0,1fr);column-gap:40px}
+main:has(> #look:not([hidden]) > .phw > #car:not([hidden])) > :not(.hd):not(footer):not(#look):not(.cbar){grid-column:2}
+/* 날짜·날씨 · 오늘/내일 · 꾸밈 단계는 사진과 설명 위 한 줄(화면 전체에 걸리는 조건이라). 아래 얇은 선 */
+main:has(> #look:not([hidden]) > .phw > #car:not([hidden])) > .cbar{grid-column:1 / -1;grid-row:2;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e5e5;padding:8px 0 9px}
+#look > .phw{grid-column:1;grid-row:3 / span 40;position:sticky;top:10px;align-self:start;margin-top:10px}
+#look > .phw .lk{width:100%}
+}
+/* 15) 칸 셋째 줄의 사진 속 색(늘 보임) */
+#below ul.slots .s3 .shd{display:inline;color:#333}
+#below ul.slots .s3 .shd .chip{vertical-align:-1px;margin:0 4px 0 2px}
+#below ul.slots .s3 .shd .al,#below ul.slots .s3 .alts .al{font-size:14px;color:#555}
+/* 16) 칸 상태: 준비됨은 테두리 없는 굵은 검정 글자(칸마다 같은 네모가 반복되지 않게). 변형·확인·구매·보유 여부 확인만 색 테두리로 눈에 띄게 */
+#below ul.slots .st.own{border-color:transparent;padding-left:4px;padding-right:0}
 </style>
 </head>
 <body>
@@ -3306,8 +3495,9 @@ function slideHTML(o, n){
 }
 const carSig = () => curOrder.map(o => o.L.key + (o.dd > 2 ? '*' : '')).join(',');
 function carHTML(){
-  return `<div class="car" id="car" data-sig="${esc(carSig())}" aria-label="코디 사진. 옆으로 밀면 다음 코디">`
-    + curOrder.map((o, n) => slideHTML(o, n)).join('') + `</div><div id="grid" hidden></div><div id="below"></div>`;
+  // v41: 사진 넘기기(‹ 번호 ›)를 사진 위에 얹으려고 사진 줄과 한 틀(.phw)로 묶음. #car·#grid·#below는 그대로
+  return `<div class="phw" id="phw"><div class="car" id="car" data-sig="${esc(carSig())}" aria-label="코디 사진. 옆으로 밀면 다음 코디">`
+    + curOrder.map((o, n) => slideHTML(o, n)).join('') + `</div><div class="lknav" id="lkNav"></div></div><div id="grid" hidden></div><div id="below"></div>`;
 }
 function rebuildCar(){
   $('#look').innerHTML = carHTML();
@@ -3430,7 +3620,7 @@ const lbl = L => { const F = FEAT[L.key]; return F ? `${F.ot} · ${F.pf} ${F.pc}
 //      순서는 v27 그대로(lookList). 같은 구간이 끊기지 않고 이어질 때만 구간 제목을 넣고, 끊기면 제목 없이 카드 배지만(secOK)
 const secOf = o => o.dd > 2 ? 'far' : !hasOwn() ? 'near' : o.adj || o.tier <= 1 ? 'mine' : o.tier === 2 ? 'one' : 'more';
 const SECN = {mine: '내 옷으로 입어볼 코디', one: '옷 1개 보유 확인·구매가 필요한 코디', more: '옷 2개 이상 보유 확인·구매가 필요한 코디', near: '오늘 날씨에 맞는 코디', far: '오늘 날씨와 거리가 있는 참고 코디'};
-const SECK = {mine: '준비됨 · 핏 확인 · 변형 · 옆 단계 사진을 카드마다 표시', one: '보유 여부 확인 = 옷장에 안 적은 옷, 구매 필요 = 없다고 적은 옷. 카드마다 따로 셈', more: '', near: '', far: '사진 기온이 오늘 체감과 2° 넘게 차이 나서 참고로만'};
+const SECK = {mine: '준비됨 · 내 옷으로 변형 · 핏·기장 확인을 카드마다 표시 · 옆 단계 사진은 사진 위에 단계 이름', one: '보유 여부 확인 = 옷장에 안 적은 옷, 구매 필요 = 없다고 적은 옷. 카드마다 따로 셈', more: '', near: '', far: '사진 기온이 오늘 체감과 2° 넘게 차이 나서 참고로만'};
 const GSN = {mine: '내 옷으로 입어볼', one: '1개 확인·구매', more: '2개 이상 확인·구매', near: '오늘 날씨에 맞음', far: '참고 · 날씨 차이'};
 function secRuns(list){ const ids = list.map(secOf), runs = ids.filter((x, i) => !i || x !== ids[i - 1]); return {ids, ok: new Set(runs).size === runs.length, n: k => ids.filter(x => x === k).length}; }
 let secOK = true;
@@ -3957,18 +4147,46 @@ function recipeOf(L, os){
   }
   return {s, rows, tags, title: tt.join(' + ') || coreOf(L), bc, bl, bs, nB: buyN.length, nU: unlN.length};
 }
-// v28: 모아보기·TOP 3 카드의 작은 배지(검토 v28 지시 2). 준비됨 / 바지 핏 확인 / 변형 / 옆 단계 사진 / 보유 여부 확인 N개 / 구매 필요 N개를 따로
+// v41: 화면에 쓰는 상태 이름 한 벌(검토 v41 2번). 판정·셈(lookStatus·recipeOf의 R.tags·칸 bd)은 그대로 두고 보이는 이름만 맞춤.
+//   칸: 준비됨(사진 속 제품 · 비슷한 내 옷) / 내 옷으로 변형 · 산 옷으로 변형 / 핏 확인 · 기장 확인 · 모양 확인(핏·기장 확인) / 신발 직접 고르기 / 보유 여부 확인 / 구매 필요.
+//   '사진 속 제품과 같은 제품'인지 '같은 종류·색 내 옷'인지는 칸 둘째 줄 맨 앞에 따로 적음(두 뜻을 하나로 뭉개지 않게). '그대로'는 칸이 전부 같은 제품일 때만(전과 같음)
+const ROWST = {'사진 속 제품': '준비됨', '비슷한 내 옷': '준비됨', '핏 확인': '핏 확인', '기장 확인': '기장 확인', '확인 필요': '모양 확인', '신발 확인': '신발 직접 고르기', '구매 필요': '구매 필요', '보유 여부 확인': '보유 여부 확인'};
+const rowSt = w => w.c === 'sub' ? (/^산 /.test(w.t) ? '산 옷으로 변형' : '내 옷으로 변형') : ROWST[w.bd] || w.bd;
+const RELN = {'사진 속 제품': '사진 속 제품과 같은 제품', '비슷한 내 옷': '사진 속 옷과 같은 종류·색'};
+const partsN = a => Object.keys(RN).filter(r => a.some(y => y.role === r)).map(r => RN[r]).join('·');
+const chkNs = s => [...new Set(s.chk.map(y => y.state.lv === -1 ? '신발 직접 고르기' : `${FN2[y.state.k] || '옷 모양'} 확인`))];
+// 사진 옆 카드 맨 위 상태 줄: 입을 수 있는지(준비됨 · 변형 · 확인) → 살 것(구매 필요 · 보유 여부 확인 · 추가 구매 없음 · 확인된 살 옷 없음) → 사진 속 제품 그대로 → 옆 단계 사진.
+//   변형은 v40처럼 '추가 구매 없음'보다 앞. 수(구매 N개·보유 여부 확인 N개)와 '추가 구매 없음'의 조건은 recipeOf와 같음
+function stTags(o, R){
+  const g = [];
+  if (hasOwn()) {
+    const s = R.s, vm = s.vari.filter(y => y.state.sub), vp = s.vari.filter(y => !y.state.sub);
+    if (s.ready) g.push({c: 'own', t: '준비됨'});
+    if (vm.length) g.push({c: 'sub', t: `내 옷으로 변형 · ${partsN(vm)}`});
+    if (vp.length) g.push({c: 'sub', t: `산 옷으로 변형 · ${partsN(vp)}`});
+    chkNs(s).forEach(t => g.push({c: 'chk', t}));
+    if (R.nB) g.push({c: 'buy', t: `구매 필요 ${R.nB}개`});
+    if (R.nU) g.push({c: 'unl', t: `보유 여부 확인 ${R.nU}개`});
+    if (!R.nB && !R.nU) g.push(s.chk.length ? {c: 'chk0', t: '확인된 살 옷 없음'} : {c: 'own', t: '추가 구매 없음'});
+    if (s.exact) g.push({c: 'own', t: '사진 속 제품 그대로'});
+  }
+  if (o.adj) g.push({c: 'adj', t: `${LEVELS[o.adj].name} 단계 사진`});
+  return g;
+}
+// v28: 모아보기·TOP 3 카드의 작은 배지. v41: 이름을 사진 옆 카드와 같게(준비됨 · 내 옷으로 변형 · 핏·기장 확인 · 보유 여부 확인 N개 · 구매 필요 N개 · ○○ 단계 사진)
 function cardTags(o, R, noAdj, vs){
   if (!hasOwn()) return '';
   const s = R.s, g = [];
   if (s.ready) g.push(['own', '준비됨']);
-  [...new Set(s.chk.map(y => y.state.lv === -1 ? '신발' : FN2[y.state.k] || '옷 모양'))].forEach(k => g.push(['chk', k + ' 확인']));
-  // v40: TOP 3 카드에선 어느 칸이 변형인지(예: '상의·신발 변형', 검토 v39 5번 ⓪). 모아보기 카드는 그대로 '변형'
-  if (s.vari.length) g.push(['sub', vs ? Object.keys(RN).filter(r => s.vari.some(y => y.role === r)).map(r => RN[r]).join('·') + ' 변형' : '변형']);
-  if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
+  // v40: TOP 3 카드에선 어느 칸이 변형인지(예: '내 옷으로 변형 · 상의·신발', 검토 v39 5번 ⓪). 모아보기 카드는 '내 옷으로 변형'만
+  if (s.vari.length) { const vm = s.vari.filter(y => y.state.sub), vp = s.vari.filter(y => !y.state.sub);
+    if (vm.length) g.push(['sub', vs ? `내 옷으로 변형 · ${partsN(vm)}` : '내 옷으로 변형']);
+    if (vp.length) g.push(['sub', vs ? `산 옷으로 변형 · ${partsN(vp)}` : '산 옷으로 변형']); }
+  chkNs(s).forEach(t => g.push(['chk', t]));
   if (R.nB) g.push(['buy', `구매 필요 ${R.nB}개`]);
+  if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
   // v29: 모아보기 사진 위에 이미 '○○ 단계 사진'이 있으면 아래 배지는 안 겹치게(noAdj)
-  if (o.adj && !noAdj) g.push(['adj', '옆 단계 사진']);
+  if (o.adj && !noAdj) g.push(['adj', `${LEVELS[o.adj].name} 단계 사진`]);
   return `<span class="ctg">${g.map(([c, t]) => `<span class="tg sm ${c}">${esc(t)}</span>`).join('')}</span>`;
 }
 const RBTN = {fit: '핏 고르기', len: '기장 고르기', own: '가진 옷 적기'};
@@ -4034,25 +4252,52 @@ function mirHTML(L, os){
   const m = mirOf(L, os); if (!m) return '';
   return `<p class="mir"><b>거울 앞에서 확인할 한 가지</b><span class="mk">${MIRN[m.k]}</span>${esc(m.t)}${m.why ? `<span class="cn">${esc(m.why)}</span>` : ''}</p>`;
 }
+// v41: 칸 한 줄 = [부위] [입을 옷] [상태]. 둘째 줄 = 사진 속 옷과의 관계(같은 제품 · 같은 종류·색 · ○○ 대신)와 핵심.
+//      셋째 줄(있을 때만) = 펼쳐 보는 것(확인할 점 '확인' 표시 + 무엇을 · 사진과 다른 점)과 늘 보이는 것(사진 속 색 이름 · 바꿔 입기)을 한 줄에 모음.
+//      긴 설명은 접어도 지우지 않음. 확인할 것은 접어도 '확인' 표시와 무엇을 확인할지가 늘 보임.
+//      가린 상의 태그·확정 못 한 점·핏 고르기·살 옷 가격·10만원 넘는 겨울 옷 접기는 v40처럼 둘째 줄 아래에 보임
+const HIDN = '겉옷에 가려 거의 안 보이는 칸';
+function rowHTML(w){
+  const chip = sh => `<span class="chip" style="background:${sh.hex}" aria-hidden="true"></span>`, vis = [], fold = [];
+  w.n.forEach((t, i) => {
+    if (t && t.fold) { vis.push(t); return; }
+    if (t === HIDN) return;
+    if (w.pil && i === 1) { fold.push({s: '사진과 다른 점', b: esc(t), w: 1}); return; }
+    const m = (w.c === 'own' || w.c === 'chk') && /^(.{1,12}?) 확인: (.+)$/.exec(t);
+    if (m) { fold.push({s: m[1], b: esc(m[2]), w: 1}); return; }
+    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t)) {
+      const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push({s: '사진 속 타스만과 다른 점', b: esc(t), w: 1, tas: 1}); return; }
+    vis.push(esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
+  });
+  // 관계: 같은 제품(lv 4) · 같은 종류·색(lv 3, 핏·기장 모름 포함) · 종류를 확정 못 한 칸은 같은 색 · 겉옷에 가린 상의
+  const unc = w.n.some(t => typeof t === 'string' && /확정 못 해서/.test(t));
+  const rel = w.n.includes(HIDN) ? HIDN : w.c === 'own' ? (unc && w.bd === '비슷한 내 옷' ? '사진 속 옷과 같은 색' : RELN[w.bd]) : w.c === 'chk' ? '사진 속 옷과 같은 종류·색' : '';
+  if (rel) { if (typeof vis[0] === 'string') vis[0] = `${rel} · ${vis[0]}`; else vis.unshift(rel); }
+  // 사진 속 색 이름은 접지 않고 셋째 줄에 보임(v40처럼 늘 보임)
+  const shd = w.sh && !w.shIn ? `<span class="shd"><span class="al">사진 속 색</span> ${chip(w.sh)}${esc(w.sh.nm)} · ${esc(w.sh.t)}</span>` : '';
+  // 줄 끝 버튼(핏 고르기 · 기장 고르기 · 가진 옷 적기)은 접는 줄이 아닌 마지막 보이는 줄에
+  const lsi = vis.map(h => typeof h === 'string').lastIndexOf(true);
+  if (w.act && lsi >= 0) vis[lsi] += ` <button type="button" class="lnk" data-rowact="${w.act}">${RBTN[w.act]}</button>`;
+  const alt = w.alt && w.alt.length ? `<span class="alts"><span class="al">바꿔 입기</span>${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join('')}</span>` : '';
+  // 첫 줄: 입을 옷 이름 바로 옆에 사진 속 옷과의 관계(짧으면 한 줄로 끝남). 나머지 보이는 줄은 그 아래
+  const v0 = typeof vis[0] === 'string' ? vis.shift() : '';
+  return `<li class="${w.c}"><div class="s1"><span class="sr">${w.r}</span><span class="sm"><b class="sn">${esc(w.t)}</b>${v0 ? `<span class="rl">${v0}</span>` : ''}</span>${w.bd ? `<span class="st ${w.c}">${esc(rowSt(w))}</span>` : ''}</div>`
+    + vis.map(h => typeof h === 'string' ? `<p class="s2">${h}</p>` : `<details class="s2 ovf"><summary>${esc(h.fold)}</summary><span class="ovd">${esc(h.det)}</span></details>`).join('')
+    + (fold.length || shd || alt ? `<div class="s3">${fold.map(f => `<details class="f41${f.w ? ' w' : ''}"><summary>${esc(f.s)}</summary><span class="ovd">${f.b}</span></details>`).join('')}${shd}${alt}</div>` : '') + `</li>`;
+}
+// v41: 사진 옆 카드 순서 = 상태 줄(무엇으로 입는지 + 상태) → 제목 → 사진 속 코디 한 줄 → 내가 입을 옷(칸마다 한 줄) → 거울 앞에서 확인할 한 가지.
+//      제목은 v40처럼 내가 입을 옷 이름. 아래 한 줄은 사진 설명이라 '사진 속 코디'라고 붙여 둠(사진 속 제품과 같은 옷으로 읽히지 않게)
 function recipeHTML(o, R){
-  const tags = R.tags.slice();
-  // v28: 옆 단계 설명은 태그 하나로(예: '적당히 꾸민 단계 사진'). 사진 위에도 같은 이름
-  if (o.adj) tags.push({c: 'adj', t: `${LEVELS[o.adj].name} 단계 사진`});
-  const chip = sh => `<span class="chip" style="background:${sh.hex}" aria-hidden="true"></span>`;
-  return `<div class="box rcp">` + (tags.length ? `<p class="rtags">${tags.map(g => `<span class="tg ${g.c}">${esc(g.t)}</span>`).join('')}</p>` : '')
-    + `<p class="rt">${esc(R.title)}</p><p class="rd">${R.rows.some(w => w.pil) ? '사진 속 코디 · ' : ''}${esc(coreOf(o.L))}</p>` + mirHTML(o.L)
-    + `<ul class="slots" aria-label="칸마다 입을 옷">${R.rows.map(w => {
-      // v36: 접는 줄({fold, det})은 details로 그림. 줄 끝 버튼은 접는 줄이 아닌 마지막 줄에 붙임
-      const ln = w.n.map((t, i) => t && t.fold ? t : esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
-      if (w.sh && !w.shIn) ln.push(`${chip(w.sh)}사진 속 색 ${esc(w.sh.nm)} · ${esc(w.sh.t)}`);
-      const lsi = ln.map(h => typeof h === 'string').lastIndexOf(true);
-      if (w.act && lsi >= 0) ln[lsi] += ` <button type="button" class="lnk" data-rowact="${w.act}">${RBTN[w.act]}</button>`;
-      return `<li class="${w.c}"><div class="s1"><span class="sr">${w.r}</span><b class="sn">${esc(w.t)}</b>${w.bd ? `<span class="st ${w.c}">${esc(w.bd)}</span>` : ''}</div>`
-        + ln.map(h => typeof h === 'string' ? `<p class="s2">${h}</p>` : `<details class="s2 ovf"><summary>${esc(h.fold)}</summary><span class="ovd">${esc(h.det)}</span></details>`).join('')
-        + (w.alt && w.alt.length ? `<p class="alts"><span class="al">바꿔 입기</span>${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join('')}</p>` : '') + `</li>`; }).join('')}</ul>`
-    + (hasOwn() ? '' : `<p class="cn" style="margin:10px 0 0">가진 옷을 적으면 <b>내 옷으로 입어볼 코디</b>부터 보여 주고, 칸마다 내 옷 중 뭘 입을지·뭘 사야 하는지 알려 줘 <button type="button" class="plain sm" data-ownedit>가진 옷 적기</button></p>`)
+  const own = hasOwn(), tags = stTags(o, R);
+  const kick = !own ? '사진 속 코디' : R.nB || R.nU ? '내 옷 + 확인·구매할 옷' : '내 옷으로 입기';
+  return `<div class="box rcp"><p class="rtags"><span class="rk">${kick}</span>${tags.map(g => `<span class="tg ${g.c}">${esc(g.t)}</span>`).join('')}</p>`
+    + `<p class="rt">${esc(R.title)}</p><p class="rd">${own ? '<b class="rdl">사진 속 코디</b>' : ''}${esc(coreOf(o.L))}</p>`
+    + `<p class="slh">${own ? '내가 입을 옷' : '사진 속 옷'}</p><ul class="slots" aria-label="칸마다 입을 옷">${R.rows.map(rowHTML).join('')}</ul>`
+    + mirHTML(o.L)
+    + (own ? '' : `<p class="cn" style="margin:10px 0 0">가진 옷을 적으면 <b>내 옷으로 입어볼 코디</b>부터 보여 주고, 칸마다 내 옷 중 뭘 입을지·뭘 사야 하는지 알려 줘 <button type="button" class="plain sm" data-ownedit>가진 옷 적기</button></p>`)
     + '</div>';
 }
+
 // v26: 이 날씨 세 벌. 겉옷(내 옷장이면 실제로 입을 겉옷, 아니면 사진 속 겉옷 칸)이 겹치지 않게 목록 순서대로 고르고, 모자라면 순서대로 채움(검토 v25 지시 3).
 //      v25는 앞 세 벌을 그대로 써서 1·2위가 둘 다 검정 숏패딩이고 가진 블루 그레이 라이트 패딩 코디는 4위라 안 보였음
 // v27: 고르는 건 lookList(divHead)가 사진 순서에서 이미 함. 여기선 날씨 맞는 앞 세 벌 그대로(TOP 3 순위 = 사진 번호)
@@ -4065,9 +4310,12 @@ function top3HTML(){
   if (st.grid) return '';
   const g = top3Of();
   if (g.length < 2) return '';
-  const os = ownedSlots(), own = hasOwn();
-  return `<div class="box t3"><p class="bh">이 날씨 베스트 조합 TOP ${g.length}${ownOn ? ' · 내 옷으로' : ''}<span class="cn" style="display:block;font-weight:400;margin-top:2px">사진 1~${g.length}번과 같은 순서${g.mixed ? ' · 준비 상태가 같은 코디 중에서 겉옷이 겹치지 않게 앞에 둠' : ''}</span></p><div class="t3w">` + g.map((o, i) => { const R = recipeOf(o.L, os), n = curOrder.indexOf(o);
-    return `<button type="button" class="t3c${n === st.lookN ? ' cur' : ''}" data-t3="${n}" aria-label="${i + 1}위 코디 보기"><span class="gk">${imgTag(o.L, 9, 1)}<i>${i + 1}</i></span>`
+  const os = ownedSlots(), own = hasOwn(), ns = g.map(o => curOrder.indexOf(o)), ci = ns.indexOf(st.lookN);
+  // v41: 지금 보는 코디와의 관계(검토 v41 2번). TOP 순위 = 큰 사진 번호(v27부터 같음)를 머리말에 적고, 지금 보는 카드는 굵은 테두리 + '보는 중'. TOP 밖 사진을 보는 중이면 그렇다고 적음
+  return `<div class="box t3"><p class="bh">이 날씨 베스트 조합 TOP ${g.length}${ownOn ? ' · 내 옷으로' : ''}</p>`
+    + `<p class="t3s">큰 사진 ${ns.map(n => n + 1).join('·')}번과 같은 순서 · ${ci >= 0 ? `<b>지금 보는 코디는 ${ci + 1}위</b>` : `<b>지금 보는 코디는 사진 ${st.lookN + 1}번(TOP ${g.length} 밖)</b>`}${g.mixed ? ' · 준비 상태가 같은 코디 중에서 겉옷이 겹치지 않게 앞에 둠' : ''}</p><div class="t3w">`
+    + g.map((o, i) => { const R = recipeOf(o.L, os), n = ns[i], cur = n === st.lookN;
+    return `<button type="button" class="t3c${cur ? ' cur' : ''}" data-t3="${n}" aria-label="${i + 1}위 코디 보기${cur ? ' · 지금 보는 코디' : ''}"${cur ? ' aria-current="true"' : ''}><span class="gk">${imgTag(o.L, 9, 1)}<i>${i + 1}위</i>${cur ? '<b class="nowb">보는 중</b>' : ''}</span>`
       + (own ? cardTags(o, R, false, true) : '') + `<span class="gl">${esc(R.title)}</span></button>`; }).join('') + '</div></div>';
 }
 // 내 옷장 줄(사진 위)
@@ -4391,11 +4639,17 @@ function drawBelow(){
   //      누른 내용(이렇게 입기·착용 제품)은 그 줄 바로 아래 펼침. TOP 3 → 오늘 바꿀 점 → 모아보기·국밥템 → 접는 메뉴는 한 상자에
   // v29: 버튼 줄을 세 무리로(검토 v29 지시 2-2). 사진 넘기기(‹ 1 / 3 ›, 옅은 알약) · 주요 행동(이렇게 입기 · 착용 제품, 청록 테두리) · 보조(저장 · 내 취향 아님, 글자 버튼, 오른쪽 끝)
   //      결과 영역 맨 위엔 '내 옷으로 입어볼 코디 / 전체 코디' 보기 전환. 모아보기 땐 모아보기 머리줄에 있어서 여기선 뺌
+  // v41: 사진 넘기기(‹ 번호 ›)는 사진 위로(검토 v41 2번: 사진 가까이). 버튼은 만들 때 한 번만 묶고, 번호만 바꿈(넘길 때 키보드 초점이 안 사라지게)
+  const nav = $('#lkNav');
+  if (nav && nav.dataset.n !== String(N)) { nav.dataset.n = N;
+    nav.innerHTML = `<span class="cnt" aria-live="polite"></span>` + (N > 1 ? `<button class="nb" type="button" id="prevLook" aria-label="이전 코디" title="이전 코디">‹</button><button class="nb" type="button" id="nextLook" aria-label="다음 코디" title="다음 코디">›</button>` : '');
+    const go = d => { if (st.grid) setGrid(false); const car = $('#car'); if (car) car.scrollTo({left: ((st.lookN + d + N) % N) * car.clientWidth, behavior: 'smooth'}); };
+    const pb = $('#prevLook'), nb = $('#nextLook'); if (pb) pb.addEventListener('click', () => go(-1)); if (nb) nb.addEventListener('click', () => go(1)); }
+  if (nav) nav.querySelector('.cnt').textContent = `${st.lookN + 1} / ${N}`;
+  // v41: 버튼 줄은 주요 행동(이렇게 입기 = 검정 채움 · 착용 제품 = 테두리)과 보조(저장 · 내 취향 아님 = 글자 버튼)만
   box.innerHTML = (st.grid ? '' : resBarHTML()) + recipeHTML(o, recipeOf(L))
-    + `<div class="lkbar"><span class="nav" role="group" aria-label="사진 넘기기">${N > 1 ? `<button class="nb" type="button" id="prevLook" aria-label="이전 코디">‹</button>` : ''}<span class="cnt">${st.lookN + 1} / ${N}</span>`
-    + (N > 1 ? `<button class="nb" type="button" id="nextLook" aria-label="다음 코디">›</button>` : '') + `</span>`
-    + `<span class="lka"><button class="pb" type="button" id="howBtn" aria-pressed="${!!st.how}">이렇게 입기</button>`
-    + `<button class="pb" type="button" id="showBtn" aria-pressed="${st.show}">착용 제품</button></span>`
+    + `<div class="lkbar"><span class="lka"><button class="pb" type="button" id="howBtn" aria-pressed="${!!st.how}" title="입는 법과 확인할 점을 이 아래에 펼쳐">이렇게 입기</button>`
+    + `<button class="pb" type="button" id="showBtn" aria-pressed="${st.show}" title="사진 속 상품 목록과 사진 위 점을 보여 줘">착용 제품</button></span>`
     + `<span class="subs">` + tasteBtns(L) + `</span></div>` + tasteBar(L)
     + (st.how ? howHTML(L, undefined, true) : '') + (st.show ? itemsHTML(L) : '')
     + top3HTML() + ref + lvStripHTML(L) + whyLine(o) + (P ? abHTML(P) : '')
@@ -4410,10 +4664,7 @@ function drawBelow(){
   box.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.jump)));
   bindOwn(box, reorder);
   $('#showBtn').addEventListener('click', () => { st.show = !st.show; $('#look').classList.toggle('show', st.show); if (!st.show) closeSheet(); drawBelow(); });
-  const nl = $('#nextLook');
-  if (nl) nl.addEventListener('click', () => { if (st.grid) setGrid(false); const car = $('#car'); car.scrollTo({left: ((st.lookN + 1) % N) * car.clientWidth, behavior: 'smooth'}); });
-  const pv = $('#prevLook');
-  if (pv) pv.addEventListener('click', () => { if (st.grid) setGrid(false); const car = $('#car'); car.scrollTo({left: ((st.lookN - 1 + N) % N) * car.clientWidth, behavior: 'smooth'}); });
+  // v41: 이전·다음 버튼은 사진 위(#lkNav)를 만들 때 한 번만 묶음(위)
   const tg = (m, other) => { const k = L.key;
     if (TS[m][k]) { delete TS[m][k]; delete TS.why[k]; } else { TS[m][k] = Date.now(); delete TS[other][k]; TS.why[k] = []; }
     saveT(); reorder(); };
