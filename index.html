@@ -1280,6 +1280,18 @@ const LOOKS = [
    un:[{role:'top', kind:'긴팔티', col:'화이트', also:['반팔티|화이트'], nm:'흰 티', what:'흰 티(태그 없음. 패딩 밑단 아래로 밑단이 나와 있고, 소매가 가려 반팔인지 긴팔인지 확인 못 함)'},
      {role:'pants', kind:'데님', col:'블랙', fit:'와이드', what:'회색빛으로 바랜 검정 와이드 데님(태그 없음, 밑단이 운동화 위에 쌓임)'}],
    spots:[{id:'3378514', label:'패딩', x:.45, y:.36}, {id:'1213655', label:'후드 집업', x:.645, y:.25}]},
+  // ---- v38: 무신사 스냅 둘째 사진(검토 v38 2번 D). 원본이 목 아래부터 찍혀 얼굴이 없어서 y0 0(위를 안 자름). 다른 사람 없음.
+  //      태그는 올린 사람이 단 패딩 3378514(M) 하나. 회색 상의·데님·구두는 태그 없음.
+  //      회색 상의는 목이 둥근 긴소매(손목에 소매가 나옴)인데 패딩에 가려 맨투맨인지 긴팔티인지 모름 → u.vary: 가진 옷이 후보 종류여도 '됨'이 아니라 늘 '내 옷으로 바꿔 입는 변형'
+  //      기온 -3~3: A 사진(s-1461916137)과 같은 근거. 숏패딩 -15~3과 비기모 데님 -3~22가 겹치는 구간. 데님 기모 여부·찍은 날 기온은 모름
+  //      단계 L2: 같은 패딩 + 바랜 검정 데님 + 러닝화인 A 사진은 편하게(L1). 이 사진은 워싱 거의 없는 진한 생지 데님 + 검정 가죽 구두라 한 단계 정돈돼 보임.
+  //      구두·생지 데님이어도 패딩 + 와이드 데님 바탕이라 적당히 꾸민(L3)까진 안 올림. 같은 패딩 + 데님인 l2-g도 L2
+  {key:'s-1431954044', level:'L2', lo:-3, hi:3, tip:'pad', snap:{id:'1431954044444024019', d:'2025.10.26', nf:1, note:'올린 사람이 글에 #광고를 달았고, 패딩은 M 사이즈를 입었다고 적었어'}, img:'snap/images/2025/10/26/6ae87f665b0d42959534e10114463f50.jpg', w:2224, h:2668, cx:.50, y0:0, cut:0, model:'180cm · 75kg',
+   un:[{role:'top', kind:'맨투맨', col:'그레이', vary:['맨투맨|그레이', '긴팔티|그레이'], vlab:'상의 종류 미확인', nm:'회색 긴소매 상의',
+       vwhy:'사진 속 회색 상의는 패딩에 가려 맨투맨인지 긴팔티인지 확인 못 함. 목이 둥근 회색 긴소매라 패딩 가운데와 손목에 보이는 색은 같음. 내 옷이 두툼하면 목둘레·소매 끝이 사진보다 굵어 보일 수 있음',
+       what:'회색 긴소매 상의(태그 없음. 목이 둥글고 손목에 소매가 나옴. 패딩에 가려 맨투맨인지 긴팔티인지 확인 못 함)'},
+     {role:'pants', kind:'데님', col:'진청', fit:'와이드', what:'워싱이 거의 없는 진한 남색 생지 와이드 데님(태그 없음, 밑단이 구두 위에 쌓임)'}],
+   spots:[{id:'3378514', label:'패딩', x:.37, y:.20}]},
   {key:'n-3435630', level:'L2', lo:11, hi:18, tip:'knit', img:'prd_img/20230731/3435630/detail_3435630_17531521172985_big.jpg', cx:.50, y0:.14,
    page:'3435630', cut:0, model:'180cm · 57kg, 이 사진이 실린 니트 L',
    spots:[{id:'3435630', label:'니트', x:.51, y:.34}, {id:'1575842', label:'바지', x:.50, y:.72, pants:1}]},
@@ -1398,6 +1410,7 @@ const FEAT = {
   'n-4209302': {ot:'코트', ol:'롱', pf:'와이드', pm:'데님', pc:'블랙', sh:'', tone:'흑백', mood:'클래식'},
   'n-5304023': {ot:'패딩', ol:'엉덩이', pf:'와이드', pm:'스웨트', pc:'그레이', sh:'스니커즈', tone:'흑백', mood:'캐주얼'},
   's-1461916137': {ot:'패딩', ol:'짧음', pf:'와이드', pm:'데님', pc:'블랙', sh:'스니커즈', tone:'흑백', mood:'캐주얼'},
+  's-1431954044': {ot:'패딩', ol:'짧음', pf:'와이드', pm:'데님', pc:'네이비', sh:'', tone:'어두운 톤', mood:'깔끔'},
   'n-3435630': {ot:'겉옷 없음', ol:'', pf:'와이드', pm:'슬랙스', pc:'베이지', sh:'스니커즈', tone:'밝은 톤', mood:'깔끔'},
   'n-1558671': {ot:'블레이저', ol:'엉덩이', pf:'와이드', pm:'슬랙스', pc:'차콜', sh:'', tone:'어두운 톤', mood:'클래식'},
   'n-1628945': {ot:'겉옷 없음', ol:'', pf:'와이드', pm:'데님', pc:'네이비', sh:'스니커즈', tone:'밝은 톤', mood:'캐주얼'},
@@ -1648,6 +1661,18 @@ const STY = {
     chk:['내 회색 후드 집업 기장: 사진 속 집업은 크롭 기장이라 패딩 아래로 안 보여. 내 집업 총장은 아직 모름',
       '내 검정 데님 색·워싱: 사진은 회색빛으로 바랜 검정. 내 데님 색 농도는 아직 모름',
       '사진 속 흰 티가 반팔인지 긴팔인지(소매가 패딩에 가려 안 보임)']},
+  // v38: D 사진. 신발은 가죽 신발 칸(더비·로퍼 확정 못 함) → 검정 운동화를 가졌으면 SHOE_SUB로 '사진보다 캐주얼한 변형'
+  's-1431954044': {shoe:{kind:'가죽 신발', col:'블랙', nm:'검정 가죽 구두'}, base:2, sit:'등교, 친구 약속', pal:['검정','회색','남색'],
+    core:'검정 숏패딩 앞을 열어 회색 긴소매 상의를 가운데로 보이고, 워싱 없는 진한 생지 와이드 데님에 검정 가죽 구두. 같은 패딩의 운동화 코디보다 아래가 정돈돼 보임',
+    how:[['겉옷', '패딩 지퍼를 열고 칼라는 세운 채 둠. 밑단이 바지 허리선 바로 위에서 끝나는 짧은 기장'],
+      ['상의', '회색 긴소매 상의(태그 없음). 목이 둥글고, 패딩 소매 끝 밖으로 회색 소매가 나와 손목을 덮음. 패딩에 가려 맨투맨인지 긴팔티인지는 확인 못 함'],
+      ['바지', '워싱이 거의 없는 진한 남색 생지 와이드 데님(태그 없음). 밑단이 구두 위에 접히며 쌓이는 길이'],
+      ['신발', '검정 가죽 구두(태그 없음). 바지 밑단이 발등을 덮어서 끈이 있는 더비인지 로퍼인지는 모름']],
+    rchk:[{role:'pants', slot:'데님|진청', t:'색·워싱 확인: 사진은 워싱이 거의 없는 진한 생지 데님이야. 내 진청 데님이 더 밝거나 워싱이 있으면 아래가 가볍고 캐주얼해 보여'}],
+    chk:['사진 속 회색 상의가 맨투맨인지 긴팔티인지(패딩에 가려 몸판이 거의 안 보임)',
+      '내 진청 데님 색·워싱: 사진은 워싱이 거의 없는 생지. 내 데님 색 농도는 아직 모름',
+      '사진 속 구두가 더비인지 로퍼인지(바지 밑단에 발등이 가림)',
+      '사진을 찍은 날 기온(올린 사람이 안 적음). 기온 범위는 옷 종류로만 정함']},
   'n-5304023': {shoe:{kind:'스니커즈', col:'화이트'}, opt:['4387517'], base:2, sit:'등교, 동네 약속', pal:['검정','회색','흰색'],
     core:'검정 하이넥 패딩을 목까지 잠그고 회색 기모 와이드 스웨트 팬츠에 흰 운동화. 안에 입은 건 안 보여서 가진 상의 아무거나 됨',
     how:[['겉옷', '하이넥 패딩 지퍼를 목 끝까지 올려서 안 옷이 안 보이게. 엉덩이를 살짝 덮는 기장이라 바지 허리선이 가려짐. 다른 편하게 패딩 코디와 같은 검정 패딩 칸이라 패딩 한 벌로 번갈아 입을 수 있음'],
@@ -2783,6 +2808,8 @@ const PILOT33 = {
 // v26: 대신 입을 수 있는 가진 옷 전부(첫 번째가 칸에 들어가고 나머지는 '바꿔 입기'로 보여 줌)
 const subFor = (x, os) => subsFor(x, os)[0] || null;
 function subsFor(x, os){
+  // v38: 종류 미확인 칸(x.vary, D 사진 회색 상의). 후보 종류의 가진 옷은 전부 '내 옷으로 바꿔 입는 변형'(검토 v38 2번)
+  if (x.vary) return x.vary.filter(k => os.has(k) && !OWN.x[x.slot + '>' + k]).map(k => ({k, why: x.vwhy || '', lab: `${x.vlab || '종류 미확인'} · 내 ${wro(slotName(k))} 변형`, pilot: 1}));
   if (!x.slot || x.anyTop || x.anyKind) return [];
   // v27: 사진 바지가 멜란지여도 대신 입기는 막지 않음(검토 v27 지시 2: 코디를 지우지 말고 '사진과 다른 단정한 변형 코디'로 밝힘). 다른 점은 칸 줄·배지에 적음
   const [kd, c] = x.slot.split('|'), cand = [];
@@ -2819,7 +2846,8 @@ function partsOf(L){
   // v13: 사진에 보이지만 태그가 없는 옷(L.un). 사진 속 제품은 모르니 보이는 종류·색 칸으로만 잇고, 겉옷 기장처럼 사진으로 보이는 특징만 붙임
   // v14: u.alts = 같은 종류·색이 10만원 아래로 없을 때 살 대안 제품(altUn)
   // v37: u.also = 사진으로 종류를 확정 못 한 칸의 다른 후보(흰 티 반팔·긴팔), u.nm = 화면에 쓸 사진 속 이름(종류를 단정하지 않게)
-  (L.un || []).forEach(u => out.push({id: null, role: u.role, slot: u.kind + '|' + u.col, also: u.also, nm: u.nm, need: 'req', col: u.col, untagged: true, what: u.what, alts: u.alts, altIds: u.alts,
+  // v38: u.vary = 사진으로 종류를 확인 못 해서 '됨'으로 안 보는 칸의 후보(가진 후보는 변형으로), u.vlab·u.vwhy = 그 변형 이름 앞부분·설명
+  (L.un || []).forEach(u => out.push({id: null, role: u.role, slot: u.kind + '|' + u.col, also: u.also, vary: u.vary, vlab: u.vlab, vwhy: u.vwhy, nm: u.nm, need: 'req', col: u.col, untagged: true, what: u.what, alts: u.alts, altIds: u.alts,
     ft: u.role === 'outer' ? {len: u.len || ''} : u.role === 'pants' ? {fit: u.fit || ''} : {}}));
   if (!out.some(x => x.role === 'shoes')) {
     const sh = S.shoe;
@@ -2827,7 +2855,8 @@ function partsOf(L){
     // v14: 모양이 안 보이는 신발도 살 칸을 정함(편하게·꾸안꾸는 스니커즈, 적당히 꾸민·꾸꾸꾸는 더비). v13까진 칸이 없어서 다른 날 신발을 안 사면 살 옷 목록에서 신발이 빠졌음.
     //      가진 옷 판정은 그대로 같은 색 신발이면 아무 종류나 됨
     else if (sh.kind === '*') out.push({id: null, role: 'shoes', slot: null, need: 'req', col: sh.col, anyKind: true, untagged: true, buy: (L.level === 'L1' || L.level === 'L2' ? '스니커즈|' : '더비|') + sh.col, what: `${CN[sh.col] || sh.col} 신발(밑단에 가려 모양은 안 보임)`});
-    else if (sh.kind === '가죽 신발') out.push({id: null, role: 'shoes', slot: '더비|' + sh.col, also: ['로퍼|' + sh.col, '옥스포드|' + sh.col], need: 'req', col: sh.col, untagged: true, what: `${CN[sh.col] || sh.col} 가죽 신발(태그 없음, 더비·로퍼 어느 쪽인지는 사진으로 확정 못 함)`});
+    // v38: sh.nm = 화면에 쓸 사진 속 신발 이름(D: '검정 가죽 구두'. 칸 이름 '더비'로 단정하지 않게). 없으면 v37과 같음
+    else if (sh.kind === '가죽 신발') out.push({id: null, role: 'shoes', slot: '더비|' + sh.col, also: ['로퍼|' + sh.col, '옥스포드|' + sh.col], nm: sh.nm, need: 'req', col: sh.col, untagged: true, what: `${CN[sh.col] || sh.col} 가죽 신발(태그 없음, 더비·로퍼 어느 쪽인지는 사진으로 확정 못 함)`});
     else out.push({id: null, role: 'shoes', slot: sh.kind + '|' + sh.col, need: 'req', col: sh.col, untagged: true, alts: sh.alts, altIds: sh.alts});
   }
   if (!out.some(x => x.role === 'top' && x.need === 'req')) {
@@ -2861,6 +2890,10 @@ function partState(x, os){
     const no = !hit && !!OWN.s && Object.keys(OWN.s).some(k => roleOfSlot(k) === r && OWN.s[k] === 'no');
     return hit ? {lv: 3, t: `가진 ${wro(slotName(hit))} 됨`} : {lv: 0, t: no ? '없음' : '모름', no};
   }
+  // v38: 종류 미확인 칸은 같은 종류를 가져도 '됨'(lv 3)으로 안 봄. 가진 후보가 있으면 변형(lv 2), 없으면 후보를 전부 '없음'으로 적었을 때만 없음(하나라도 안 적었으면 모름)
+  //      일주일 상세 칸 줄도 이 글을 쓰니 변형 이름('상의 종류 미확인 · 내 회색 맨투맨으로 변형')을 앞에 둠
+  if (x.vary) { const sb = subFor(x, os); if (sb) return {lv: 2, t: `${sb.lab} · ${sb.why}`, sub: sb.k};
+    const no = x.vary.every(k => OWN.s[k] === 'no'); return {lv: 0, t: no ? '없음' : '모름', no}; }
   const slots = [x.slot].concat(x.also || []), hit = slots.find(k => os.has(k));
   if (hit) {
     if (x.also && hit !== x.slot) return {lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
@@ -3213,7 +3246,9 @@ function srcHTML(L){
   // v37: 무신사 스냅. 키·몸무게는 올린 사람이 적은 값이라 참고만(같은 핏이 난다는 뜻 아님). 앱은 얼굴 위를 잘라 보여 주지만 원본 링크엔 얼굴이 나옴
   if (L.snap) return `<details class="lkm"><summary>올린 사람·사진 출처</summary><p>무신사 스냅(일반 사용자가 올린 착용 사진, ${esc(L.snap.d)}). 올린 사람이 이 사진에 태그한 제품만 연결함`
     + `${L.model ? ` · 올린 사람이 적은 키·몸무게 ${esc(L.model)}(참고만. 키·몸무게가 비슷해도 같은 핏이 난다는 뜻은 아님)` : ''}</p>`
-    + `<p>앱에선 사진 윗부분을 턱 아래에서 잘라 얼굴이 안 보이게 했어. 아래 링크를 열면 원본 사진이 얼굴까지 그대로 보여</p>`
+    // v38: nf = 원본도 얼굴 없이 찍힌 사진(D). note = 올린 사람이 글에 적은 것(광고 표시·입은 사이즈)
+    + (L.snap.nf ? `<p>원본 사진도 목 아래부터 찍혀 있어 얼굴은 안 나와</p>` : `<p>앱에선 사진 윗부분을 턱 아래에서 잘라 얼굴이 안 보이게 했어. 아래 링크를 열면 원본 사진이 얼굴까지 그대로 보여</p>`)
+    + (L.snap.note ? `<p>${esc(L.snap.note)}</p>` : '')
     + `<p><a href="https://www.musinsa.com/snap/${esc(L.snap.id)}" target="_blank" rel="noopener noreferrer">사진이 실린 스냅 ↗</a></p></details>`;
   if (L.mag) { const m = MAG[L.mag];
     return `<details class="lkm"><summary>사진 출처</summary><p>무신사 매거진 「${esc(m.t)}」(${esc(m.d)}) 사진. 무신사가 이 사진 아래 붙여 둔 상품만 연결함 · 모델 키·몸무게는 안 적혀 있음</p>`
@@ -3776,7 +3811,7 @@ function recipeOf(L, os){
     // v27: 확인·변형·사야 함·안 적음을 한 숫자로 합치지 않음. v28: 태그 하나로 묶지 않고 상태마다 따로
     const nB = buyN.length, nU = unlN.length, nC = s.chk.length, nV = s.vari.length;
     const cl = [...new Set(s.chk.map(y => y.state.lv === -1 ? '신발' : FN2[y.state.k] || '옷 모양'))];
-    const vl = [...new Set(s.vari.map(y => `${RN[y.role]} ${VSH[varNm(y, os)] || '변형'}`))];
+    const vl = [...new Set(s.vari.map(y => { const v = varNm(y, os); return `${RN[y.role]} ${VSH[v] || (/종류 미확인/.test(v) ? '종류 미확인 변형' : '변형')}`; }))];
     if (!nB && !nU) tags.push(nC ? {c: 'chk0', t: '확인된 살 옷 없음'} : {c: 'own', t: '추가 구매 없음'});
     if (nB) tags.push({c: 'buy', t: `구매 필요 ${nB}개`});
     if (nU) tags.push({c: 'unl', t: `보유 여부 확인 ${nU}개`});
@@ -3977,18 +4012,19 @@ function gukbap(os){
   const rep = k => reps[k] = reps[k] || repOf(k, scope);
   scope.forEach(L => {
     const s = lookStatus(L, os), M = s.miss.concat(s.unk), w = L.level === st.level ? 1 : .7;
-    M.forEach(x => { const k = x.slot || x.buy; if (!k || os.has(k) || k.endsWith('|?')) return;
+    M.forEach(x => { const k = x.slot || x.buy; if (!k || x.vary || os.has(k) || k.endsWith('|?')) return;
       const b = get(k), p = rep(k).p;
       if (p && Object.keys(x.ft || {}).some(f => x.ft[f]) && !fitsPart(p, x).ok) { b.ref.push(L); return; }
       b.g += w / M.length;
       const e = {L, s, other: M.filter(y => y !== x)};
       (M.length === 1 ? b.unlock : M.length === 2 ? b.near : b.far).push(e); });
     // 대신 입는 칸은 그 코디가 지금 살 옷 없이 될 때만(다른 옷이 빠졌으면 이 옷을 사도 더 가까워지지 않음)
-    if (!M.length) s.soft.filter(x => x.state.sub && x.slot && !os.has(x.slot)).forEach(x => { const b = get(x.slot); rep(x.slot); b.g += w * .4; b.upg.push({L, s, x}); });
+    // v38: 종류 미확인 칸(x.vary)은 사도 사진대로 안 되니(그 칸은 늘 변형) 위 살 옷 셈에서 빼고, 그런 칸이 있는 코디는 여기도 안 넣음(D 사진: 검정 구두를 사도 상의는 변형)
+    if (!M.length && !s.soft.some(x => x.vary)) s.soft.filter(x => x.state.sub && x.slot && !os.has(x.slot)).forEach(x => { const b = get(x.slot); rep(x.slot); b.g += w * .4; b.upg.push({L, s, x}); });
   });
   // v27: app = 이 칸이 나오는 사진 수(가진 옷과 상관없이), done = 이것 하나만 사면 사진대로 되는 코디(새로 입게 되는 unlock + 대신 입던 게 사진대로 되는 upg)
   const list = Object.values(by).map(b => Object.assign(b, {r: rep(b.k), n: new Set(b.unlock.concat(b.near, b.far, b.upg).map(e => e.L)).size,
-    app: scope.filter(L => partsOf(L).some(x => x.need === 'req' && (x.slot === b.k || x.buy === b.k))).length, done: b.unlock.length + b.upg.length})).filter(b => b.n);
+    app: scope.filter(L => partsOf(L).some(x => x.need === 'req' && !x.vary && (x.slot === b.k || x.buy === b.k))).length, done: b.unlock.length + b.upg.length})).filter(b => b.n);
   // v26: 같은 종류를 다른 색으로 이미 가졌으면 0.6배(검토 v25 지시 4②). 회색 후드 집업이 있는데 검정 후드 집업을 2위로 올렸음.
   //      같은 자리에 한 벌씩만 입으니 두 번째 색은 새로 입게 되는 날이 적음. 아예 없는 종류(더비·터틀넥)가 먼저 오게
   list.forEach(b => { const kd = b.k.split('|')[0]; b.have = [...os].filter(k => k.split('|')[0] === kd); b.g0 = b.g; if (b.have.length) b.g *= .6; });
@@ -4573,7 +4609,11 @@ function linkPart(x, k, d, os, d0){
 //   aba 이틀 전과 같은 코디 감점(v12 1.5) · outer2 두 번째 겉옷을 사는 코디 감점(v12 .8)
 //   back 뒤 날짜 구매와 연결 · oldRot v12 방식 상의 바꾸기 판정(테스트 사본 비교용)
 //   v14: rep2 전날과 같은 코디 감점 · rep3 상의도 못 바꾸는 사흘째 감점 · reuse 이번 주 산 옷을 다시 쓰는 코디 점수(역할별) · outer3 세 번째 겉옷 감점(null이면 outer2×벌수)
-const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false, rep2: 4, rep3: 12, reuse: {outer: .35, top: .35, pants: .35, shoes: .35}, outer3: null, gap: 3, gapThrift: 1.2, abaThrift: 1, shoe1: 2.5, adj: .4, adjBuy: 2, fresh: 1.2, adjFresh: 1}, window.__PW || {});
+const PW = Object.assign({use: 1.5, useThrift: 0, useReady: .5, target: 3, aba: 2, outer2: 1.6, back: true, oldRot: false, rep2: 4, rep3: 12, reuse: {outer: .35, top: .35, pants: .35, shoes: .35}, outer3: null, gap: 3, gapThrift: 1.2, abaThrift: 1, shoe1: 2.5, adj: .4, adjBuy: 2, fresh: 1.2, adjFresh: 1, ownTop: true, ownRep2: true}, window.__PW || {});
+// v38: ownTop = '살 옷 적게'에서 그날 날씨·단계에 맞고 가진 옷만으로 되는 코디가, 전날과 같은 상의라서 받은 감점(gap) 때문에 새 옷을 사는 코디에 밀리면 가진 옷 코디를 고름(검토 v38 1번).
+//      v37은 옷장 A 편하게 한 주에서 A 사진(흰 티) 다음 날 가진 옷 코디(n-1180665, 흰 긴팔티)가 감점 3을 받아 87,890원 바지를 사는 코디가 올라왔음
+//      ownRep2 = 전날과 같은 코디를 다시 입는 감점(rep2)도 같은 상의를 이틀 입는 것이라 같은 규칙에 넣음. 사흘째(rep3)·이틀 전 코디(aba)·이번 주 쓴 횟수(use·fresh) 감점은 안 넣음
+//      '다양하게'(WK.vary, 가진 옷 우선이 아닐 때)는 이 규칙을 안 씀. 날씨 판정(dd ≤ 2)과 '모름'·'없음' 판정은 그대로(가진 옷 = 그날 칸이 ok·soft·eta)
 // v32: fresh = 이번 주에 이미 입은 사진을 또 고를 때, 그날 날씨·옷장에 맞는 아직 안 쓴 사진이 있으면 쓴 횟수만큼 더 뺌(검토 v32 Part 1-4).
 //      v31은 뒷날까지 쳐서 가진 옷 코디가 target(3)벌이 되면 반복 감점을 아예 안 해서, 꾸안꾸 한 주(옷장 26벌)가 사진 4장으로 7일을 돌림
 //      adjFresh = 그날 같은 단계 사진 중 가진 옷만으로 되고 아직 안 쓴 게 있으면 옆 단계 사진을 더 뺌. v31은 꾸안꾸 n-5215580(가진 옷으로 됨)을 한 번도 안 쓰고 7일 중 6일을 옆 단계 사진으로 채웠음
@@ -4606,7 +4646,31 @@ const linkTop = (x, bought, avoid) => { const ks = Object.keys(bought).filter(k 
   if (!(WK.gap && x.anyTop)) return ks[0] || null; return ks.find(k => !avoid.includes(k)) || null; };
 // 한 주 짜기: 날짜마다 따로 고르지 않고, 앞 날짜에서 쓰거나 사기로 한 옷을 다시 쓰면 점수를 더함(살 옷을 줄임)
 // 고정한 날, 전에 고른 코디가 아직 그날 날씨·단계에 맞는 날은 그대로 둠(예보가 바뀌어 안 맞게 된 날만 다시 고름)
+// v38: '살 옷 적게'(또는 가진 옷 우선)면 아래 규칙(PW.ownTop·ownRep2)을 쓴 한 주와 안 쓴 한 주를 둘 다 짜 보고,
+//      규칙을 쓴 쪽이 이번 주 살 옷 금액을 실제로 줄일 때만 그쪽을 씀. 날마다 앞에서부터 고르다 보니, 하루를 가진 옷 코디로 바꿔도
+//      뒷날에 같은 옷을 결국 사면 살 옷은 그대로이고 같은 코디만 이틀 이어졌음(옷장 A 적당히 꾸민 11/12·11/15 시험).
+//      '다양하게'면 규칙도, 두 번 짜기도 안 함(v37과 같음). 바꾼 날이 하나도 없으면 한 번만 짬
+// v38: '가진 옷 우선으로 다시 짜기'(WK.thrift)로 새로 짤 때(force)는 가진 옷 우선 계획과 보통 계획을 둘 다 짜 보고, 가진 옷 우선 계획이 살 옷 금액이 더 많으면 보통 계획을 씀.
+//      날마다 앞에서부터 고르다 보니 오늘(11/11) 예보 · 시나리오 검사 옷장 9벌 · 꾸안꾸에선 가진 옷 우선으로 다시 짠 주가 158,860원 → 172,170원으로 늘었고
+//      화면엔 '살 옷이 그대로야'라고 나왔음(시나리오 검사 W20, v37도 같음). 금액이 같으면 가진 옷 우선 계획을 그대로 씀
 function planWeek(force){
+  if (!WK.thrift || !force || planWeek.th) return planWeekOwn(force);
+  const d0 = JSON.stringify(WK.days), b = planWeekOwn(true), sb = weekBuy(b), d1 = JSON.stringify(WK.days);
+  WK.days = JSON.parse(d0); WK.thrift = false; planWeek.th = true; let a, sa;
+  try { a = planWeekOwn(true); sa = weekBuy(a); } finally { WK.thrift = true; planWeek.th = false; }
+  if (sa.sumTodo < sb.sumTodo) { saveW(); a.thriftKept = sb.sumTodo - sa.sumTodo; return a; }
+  WK.days = JSON.parse(d1); saveW(); return b;
+}
+function planWeekOwn(force){
+  if ((WK.vary && !WK.thrift) || !(PW.ownTop || PW.ownRep2)) return planWeekCore(force, false);
+  const d0 = JSON.stringify(WK.days);
+  planWeekCore.sw = 0; const b = planWeekCore(force, true); if (!planWeekCore.sw) return b;
+  const d1 = JSON.stringify(WK.days), sb = weekBuy(b);
+  WK.days = JSON.parse(d0); const a = planWeekCore(force, false), sa = weekBuy(a);
+  if (sb.sumTodo < sa.sumTodo || (sb.sumTodo === sa.sumTodo && sb.none.length < sa.none.length)) { WK.days = JSON.parse(d1); saveW(); b.ownKept = sa.sumTodo - sb.sumTodo; return b; }
+  a.ownTried = sb.sumTodo - sa.sumTodo; return a;
+}
+function planWeekCore(force, own){
   // v14: '코디 다양하게'면 PWV로(가진 옷 우선으로 다시 짤 땐 금액이 먼저라 안 씀)
   const Q = WK.vary && !WK.thrift ? Object.assign({}, PW, PWV) : WK.thrift ? Object.assign({}, PW, {gap: PW.gapThrift, aba: PW.abaThrift}) : PW;
   const ds = weekDates(), os = ownedSlots(), bought = {}, boughtP = {}, bRole = {}, out = [], t0 = localNow(wx).date;
@@ -4648,11 +4712,11 @@ function planWeek(force){
     const anyFresh = wearC.some(fresh), sameFresh = wearC.some(c => !c.adj && fresh(c));
     let pick = null, why = '';
     const prev = D.key && cand.find(o => o.L.key === D.key), PL = D.pin && D.key && LOOKS.find(L => L.key === D.key);
-    if (PL) { pick = prev || {L: PL, dd: dist(PL, A.tOuter), sc: 0}; why = pick.dd > 2 ? `고정한 코디인데 사진은 체감 ${PL.lo}°~${PL.hi}°용이라 이날 날씨와 차이가 있음` : ''; }
+    if (PL) { pick = prev || {L: PL, dd: dist(PL, A.tOuter), sc: 0}; why = pick.dd > 2 ? `고정한 코디인데 사진은 체감 ${PL.lo}°~${PL.hi}°용이라 이날 날씨와 차이가 있음` : ''; delete D.ko; }
     else if (prev && !force && prev.dd <= 2 && D.lvAt === lv) pick = prev;
     else {
-      let bv = -1e9;
-      cand.forEach(o => { let v = o.sc - (o.adj ? Q.adj : 0);
+      let bv = -1e9; const RW = []; delete D.ko;
+      cand.forEach(o => { let v = o.sc - (o.adj ? Q.adj : 0), g = 0;
         const pt = out.length ? out[out.length - 1].topK : null; let buys = 0, dead = 0, canRot = false, mine = 0, nq = 0;
         partsOf(o.L).filter(x => x.need === 'req').forEach(x => { const s = dayPart(x, d, os); nq++;
           // v13: 가진 상의 중 전날과 다른 게 있을 때만 '상의를 바꿔 입을 수 있음'으로 침.
@@ -4661,7 +4725,7 @@ function planWeek(force){
           if (x.role === 'top' && ((Q.oldRot && x.anyTop) || (!x.anyTop && s.free && s.free.some(k => k !== pt)))) canRot = true;
           // v17: 감점 1.2 → Q.gap. 1.2는 새 상의 한 벌 값보다 작아서 꾸안꾸 추운 주에 검정 니트 한 벌로 7일을 채웠음(검토 v16 지시 1).
           //      겉옷에 가린 상의(anyTop)는 아래에서 전날과 다른 상의로 잇거나 '가진 상의 아무거나'로 두니 감점 안 함
-          if (WK.gap && pt && x.role === 'top' && !sameLook(out[out.length - 1].L, o.L) && (x.slot ? x.slot === pt && x.slot === innerTop(o.L) : s.free && s.free.length && s.free.every(k => k === pt))) v -= Q.gap;
+          if (WK.gap && pt && x.role === 'top' && !sameLook(out[out.length - 1].L, o.L) && (x.slot ? x.slot === pt && x.slot === innerTop(o.L) : s.free && s.free.length && s.free.every(k => k === pt))) { v -= Q.gap; g += Q.gap; }
           // v12: 모양이 안 보이는 신발·겉옷에 가린 상의를 가진 옷에서 못 찾았어도, 이번 주 앞 날짜에 사기로 한 같은 역할·색 옷이 있으면 그걸로 같이 입는 걸로 침
           if (s.code === 'ok') { v += .5; mine++; } else if (s.code === 'soft') { v += .3; mine++; } else if (s.code === 'eta') { v += .2; mine++; }
           else if ((x.anyTop || x.anyKind) && (s.code === 'info' || !x.slot) && (x.anyTop ? linkTop(x, bought, [pt]) : linkOf(x, bought))) v += Q.reuse[x.role] || .35;
@@ -4692,7 +4756,8 @@ function planWeek(force){
         //      연달아 나온 날은 아래 spreadWeek가 날짜를 바꿔 떼어 놓음. 빈 옷장에선 가진 옷만으로 되는 코디가 없어서 결과가 같음
         const rdy = !WK.vary && nq && mine === nq ? Q.useReady : 1;
         // v17: 같은 코디 판정은 키가 아니라 옷 조합으로(sameLook)
-        if (p1 && sameLook(p1.L, o.L)) v -= (p2 && sameLook(p2.L, o.L) && !canRot) ? Q.rep3 : Q.rep2 * rdy; else if (p2 && sameLook(p2.L, o.L)) v -= Q.aba * rdy;
+        let g2 = 0;
+        if (p1 && sameLook(p1.L, o.L)) { if (p2 && sameLook(p2.L, o.L) && !canRot) v -= Q.rep3; else { v -= Q.rep2 * rdy; g2 = Q.rep2 * rdy; } } else if (p2 && sameLook(p2.L, o.L)) v -= Q.aba * rdy;
         // v13: 이번 주에 이미 입은 횟수만큼 뺌. 산 옷 재사용 점수가 커서 두 코디가 A-B-A-B로 번갈아 나오던 문제(검토 문서 지시 1).
         //      산 옷을 같이 쓰는 다른 코디는 재사용 점수를 그대로 받으니, 살 옷을 크게 늘리지 않고 다른 코디로 넘어감
         //      단 가진 옷만으로 다 되는 코디는 감점을 줄임(Q.useReady). 감점을 똑같이 주면 가진 옷으로 되는 코디를 두고 새로 사야 하는 코디를 골라서,
@@ -4708,8 +4773,13 @@ function planWeek(force){
         // v32: 위 PW.fresh · adjFresh 설명
         if (used && anyFresh && !buys && !dead) v -= used * Q.fresh;
         if (o.adj && sameFresh) v -= Q.adjFresh;
-        if (window.__PWDBG) window.__PWDBG.push({d, k: o.L.key, sc: o.sc, v, buys, dead, used});
+        if (window.__PWDBG) window.__PWDBG.push({d, k: o.L.key, sc: o.sc, v, g, g2, buys, dead, used});
+        RW.push({o, v, g: (Q.ownTop ? g : 0) + (Q.ownRep2 ? g2 : 0), buys, dead});
         if (v > bv) { bv = v; pick = o; } });
+      // v38: 위 PW.ownTop·ownRep2. 고른 코디가 새 옷(살 수 없는 칸 포함)이 필요하면, 가진 옷만으로 되는 코디 중 상의 반복 감점만 빼면 점수가 같거나 높은 것으로 바꿈
+      if (own && pick) { const pr = RW.find(r => r.o === pick);
+        if (pr && (pr.buys || pr.dead)) { const w = RW.filter(r => r !== pr && !r.buys && !r.dead && r.g > 0 && r.v + r.g >= pr.v && wear(r.o, d)).sort((a, b) => b.v - a.v)[0];
+          if (w) { pick = w.o; bv = w.v; D.ko = w.o.L.key + '>' + pr.o.L.key; planWeekCore.sw = (planWeekCore.sw || 0) + 1; if (window.__PWDBG) window.__PWDBG.push({d, k: w.o.L.key, ko: pr.o.L.key, v: w.v, g: w.g, over: pr.v}); } } }
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
       else delete D.why;
     }
@@ -4732,7 +4802,9 @@ function planWeek(force){
     if (at) { const k = at.ds.free.find(k => !WK.gap || k !== pT) || at.ds.free[0]; rot = !!(WK.gap && pT && k !== pT && at.ds.free.includes(pT));
       at.ds.pick = k; at.ds.t = `가진 ${wro(slotName(k))} 됨${rot ? ' · 전날과 다른 상의로 고름' : ''}`; topK = k; }
     else { const ax = status.req.find(x => x.anyTop && x.ds.link); topK = innerTop(pick.L) || (ax ? ax.ds.link : null); }
-    out.push({d, A, lv, L: pick.L, o: pick, status, why, cand, topK, same: !!(prv && sameLook(prv.L, pick.L)), rot});
+    // v38: D.ko = '고른 코디>밀어낸 살 옷 코디'. 아래 spreadWeek가 날짜를 바꾸면 그날 코디가 달라지니 고른 코디가 같을 때만 씀
+    const ko = D.ko && D.ko.split('>')[0] === pick.L.key ? D.ko.split('>')[1] : null;
+    out.push({d, A, lv, L: pick.L, o: pick, status, why, cand, topK, same: !!(prv && sameLook(prv.L, pick.L)), rot, ko});
   });
   // v13: 모양이 안 보이는 신발·가린 상의를 뒤 날짜에 사기로 한 같은 역할·색 옷과도 연결(v12는 앞 날짜 것만 봐서 앞날은 '가진 옷 확인 필요'로 남았음).
   //      연결하면 그 옷이 처음 필요한 날을 그날로 앞당기고, 연결 문구도 앞당긴 날로 다시 씀
@@ -4765,7 +4837,7 @@ function planWeek(force){
   // v15: 같은 코디가 이틀 연달아 나오면 이번 주에 고른 코디끼리 날짜만 바꿔서 떼어 놓음(검토 v14 지시 1).
   //      날마다 앞에서부터 고르다 보니 새로 사야 하는 코디를 하루 미뤄서 A-A-B-B가 됐음. 고른 코디 묶음은 그대로라 살 옷은 안 늘어남.
   //      바꾼 날짜에도 날씨·단계가 맞는 코디(그날 후보, 체감 ±2°)만 옮기고, 고정한 날은 안 건드림. 바꾼 뒤 한 번 더 짜서 그날 칸·살 옷 날짜를 다시 셈
-  if (!planWeek.re && spreadWeek(out)) { planWeek.re = true; try { return planWeek(false); } finally { planWeek.re = false; } }
+  if (!planWeekCore.re && spreadWeek(out)) { planWeekCore.re = true; try { return planWeekCore(false, own); } finally { planWeekCore.re = false; } }
   // v17: '같은 상의 이틀 연달아 피하기'인데도 못 피한 날은 숨기지 않고 표시
   out.forEach((p, i) => { p.sameTop = !!(WK.gap && i && p.topK && out[i - 1].topK === p.topK && !p.same); });
   return out;
@@ -4999,7 +5071,7 @@ function dayDetail(p, os){
     // v24: 옆 단계 사진으로 고른 날
     + (p.L.level !== p.lv ? `<p class="reft"><b>${esc(LEVELS[p.L.level].name)} 사진</b>${D.pin ? `직접 고른 ${esc(LEVELS[p.L.level].name)} 사진이야` : `이날 날씨에 맞는 ${esc(LEVELS[p.lv].name)} 사진은 전부 새 옷이 있어야 해서, 가진 옷만으로 되는 옆 단계 사진을 골랐어`}. ${esc(LEVELS[p.lv].name)} 사진으로 보려면 '다른 코디로', 늘 ${esc(LEVELS[p.lv].name)} 사진만 쓰려면 위 '옆 단계 코디 · 안 쓰기'</p>` : '')
     + (p.same ? `<p class="reft"><b>전날과 같은 코디</b>새로 살 옷을 늘리지 않으려고 이어서 골랐어${p.rot ? '. 안에 입는 상의만 다른 걸로 골랐어' : ''}. 다른 사진으로 바꾸려면 '다른 코디로'</p>` : '')
-    + (p.sameTop ? `<p class="reft"><b>전날과 같은 상의</b>이틀 이어서 ${esc(slotName(p.topK))}. 이 날씨·단계에 상의가 다른 코디가 적어서 그래. 다른 상의를 가졌으면 그걸로 입거나 '다른 코디로'</p>` : '')
+    + (p.sameTop ? `<p class="reft"><b>전날과 같은 상의</b>이틀 이어서 ${esc(slotName(p.topK))}. ${p.ko ? '상의가 다른 코디는 이날 새 옷을 사야 해서, 가진 옷만으로 되는 이 코디를 골랐어' : '이 날씨·단계에 상의가 다른 코디가 적어서 그래'}. 다른 상의를 가졌으면 그걸로 입거나 '다른 코디로'</p>` : '')
     + (notes.length ? `<p class="reft"><b>${p.o && p.o.dd > 2 ? '참고 코디' : '이날 바꿀 점'}</b>${notes.map(esc).join('<br>')}</p>` : '')
     + `<div class="wbt"><button type="button" class="plain" id="wpin" aria-pressed="${!!D.pin}">${D.pin ? '고정됨 · 풀기' : '이날 코디 고정'}</button>`
     // v13: 후보 코디를 앞뒤로 넘기고 몇 번째인지 보여 줌(검토 지시 3)
