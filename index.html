@@ -2806,8 +2806,8 @@ function bkClean(o){
   const r = {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}; if (!isObj(o)) return r;
   if (isObj(o.s)) for (const k in o.s) if (okSlot(k) && (o.s[k] === 'similar' || o.s[k] === 'no')) r.s[k] = o.s[k];
   if (isObj(o.f)) for (const k in o.f) if (okSlot(k) && isObj(o.f[k])) { const y = {}; for (const f in FOPT) if (FOPT[f].includes(o.f[k][f])) y[f] = o.f[k][f]; if (Object.keys(y).length) r.f[k] = y; }
-  if (isObj(o.p)) for (const k in o.p) if (isPK(k) && isStr(o.p[k], 8)) r.p[k] = o.p[k];
-  if (isObj(o.d)) for (const k in o.d) if ((isPK(k) || okSlot(k)) && isObj(o.d[k]) && isStr(o.d[k].st, 10)) { const v = o.d[k], y = {st: v.st};
+  if (isObj(o.p)) for (const k in o.p) if (isPK(k) && o.p[k] === 'own') r.p[k] = 'own';
+  if (isObj(o.d)) for (const k in o.d) if ((isPK(k) || okSlot(k)) && isObj(o.d[k]) && ['plan', 'ordered', 'got'].includes(o.d[k].st)) { const v = o.d[k], y = {st: v.st};
     if (isStr(v.slot, 30)) y.slot = v.slot; if (Array.isArray(v.slots)) y.slots = v.slots.filter(z => isStr(z, 30)).slice(0, 20);
     if (isD(v.at)) y.at = v.at; if (isD(v.eta)) y.eta = v.eta; r.d[k] = y; }
   if (isObj(o.w)) for (const k in o.w) if ((okSlot(k) || isPK(k)) && Array.isArray(o.w[k])) { const a = o.w[k].filter(isD).slice(0, 30); if (a.length) r.w[k] = a; }
