@@ -722,6 +722,21 @@ ul.slots li.sub,ul.slots li.buy{margin:0}
 ul.slots .s2,ul.slots .alts{margin-left:40px}
 .wdb ul.wparts.slots{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+/* v40 */
+#svFail{position:fixed;left:12px;right:12px;bottom:12px;z-index:40;max-width:620px;margin:0 auto;background:#7a1f1a;color:#fff;padding:8px 12px;font-size:13.5px;line-height:1.5;border-radius:3px}
+#syncB{position:fixed;left:12px;right:12px;top:12px;z-index:41;max-width:620px;margin:0 auto;background:#fff;border:2px solid var(--ink);box-shadow:0 6px 24px rgba(0,0,0,.18);padding:12px 14px;font-size:14px;line-height:1.55}
+#syncB p{margin:0 0 8px}
+#syncB button{margin:2px 6px 0 0}
+#syncB .go,.clrq .go{background:var(--ink);color:#fff;border:0;border-radius:3px;padding:7px 14px;cursor:pointer}
+#syncN{position:fixed;left:50%;transform:translateX(-50%);top:12px;z-index:39;margin:0;background:var(--ink);color:#fff;padding:6px 12px;font-size:13px;border-radius:3px}
+.clrq{margin-top:8px;border:1px solid var(--line);padding:10px 12px;font-size:14px;line-height:1.55}
+.clrq p{margin:0 0 8px}
+.bkup{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.bkup textarea{width:100%;height:64px;font-size:12px;font-family:Consolas,monospace;margin-top:6px;box-sizing:border-box}
+.bkup label{display:block;margin:4px 0;font-size:13.5px}
+.bkt{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 8px}
+.bkt td,.bkt th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
+.noq{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
 </style>
 </head>
 <body>
@@ -1926,7 +1941,17 @@ if (!LEVELS[st.level]) st.level = 'L2';
 // show: '착용 제품 보기'를 켰는지. 사진은 늘 깨끗한 상태로 시작하게 저장하지 않는다
 st.shuffle = 0; st.peek = false; st.lookN = 0; st.show = false;
 let wx = null, lastFetch = 0, fetching = false;
-const save = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; try { localStorage.setItem(KEY, JSON.stringify(rest)); } catch(e){} };
+// v40: 저장이 실패하면 한 줄로 알림(검토 v39 4번. 전엔 조용히 넘어가서 새로고침하면 바꾼 게 사라졌음).
+//      HELD: 다른 탭이 바꾼 기록과 이 탭의 저장 안 된 입력이 부딪혀 고르는 중인 키. 고를 때까지 그 키는 저장 안 함(탭끼리 맞추기)
+const SVF = new Set(), HELD = new Set();
+function svNote(){ let n = document.getElementById('svFail');
+  if (!SVF.size) { if (n) n.remove(); return; }
+  if (!n) { n = document.createElement('p'); n.id = 'svFail'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
+  n.textContent = '방금 바꾼 기록이 저장되지 않았어. 이 기기의 저장 공간이 꽉 찼을 수 있어. 새로고침하면 이번 변경은 사라져'; }
+function put(k, v){ if (HELD.has(k)) return false;
+  try { localStorage.setItem(k, v); SVF.delete(k); svNote(); return true; } catch(e){ SVF.add(k); svNote(); return false; } }
+const SESS = ['shuffle', 'peek', 'lookN', 'show', 'grid', 'how', 'buy'];
+const save = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; put(KEY, JSON.stringify(rest)); };
 
 /* ---------- 컨트롤 ---------- */
 function buildCity(){
@@ -2568,7 +2593,7 @@ const FK = ['ot', 'ol', 'pf', 'pm', 'pc', 'sh', 'tone', 'mood'];
 const WHY = [['pf', '바지 핏'], ['pc', '바지 색'], ['tone', '색 조합'], ['ol', '겉옷 기장'], ['ot', '겉옷 종류'], ['sh', '신발'], ['mood', '전체 분위기']];
 const TS = (() => { let t = {}; try { t = JSON.parse(localStorage.getItem(TKEY)) || {}; } catch(e){}
   return Object.assign({like:{}, nope:{}, why:{}, ab:[], asked:{}, seen:{}}, t); })();
-const saveT = () => { try { localStorage.setItem(TKEY, JSON.stringify(TS)); } catch(e){} };
+const saveT = () => { put(TKEY, JSON.stringify(TS)); };
 const hasTaste = () => Object.keys(TS.like).length + Object.keys(TS.nope).length + TS.ab.length > 0;
 function tasteW(){
   const w = {};
@@ -2693,7 +2718,7 @@ const OKEY = KEY + '-own';
 const OWN = (() => { let o = {}; try { o = JSON.parse(localStorage.getItem(OKEY)) || {}; } catch(e){} return Object.assign({p:{}, s:{}, f:{}, d:{}, w:{}, x:{}}, o); })();
 // v9 기록(제품번호만)은 그 제품 이름에 붙은 색으로 옮김
 for (const k of Object.keys(OWN.p)) if (!k.includes('|')) { const p = PID[k]; if (p) OWN.p[k + '|' + (colOf(p) || '?')] = OWN.p[k]; delete OWN.p[k]; }
-const saveO = () => { try { localStorage.setItem(OKEY, JSON.stringify(OWN)); } catch(e){} };
+const saveO = () => { put(OKEY, JSON.stringify(OWN)); };
 const pk = (id, col) => id + '|' + (col || '?');
 const hasOwn = () => Object.keys(OWN.p).length + Object.values(OWN.s).filter(v => v === 'similar').length + Object.values(OWN.d).filter(v => v.st === 'got').length > 0;
 // v18: 가진 옷 목록을 링크 하나로 넣기. 주소 # 뒤(#own=종류|색,종류|색…)는 브라우저 밖으로 안 나가서 사이트(깃허브)에도 안 남음.
@@ -2729,6 +2754,10 @@ const impFRows = ks => { const r = ks.map(k => { const rl = roleOfSlot(k), f = r
   const all = pn.length >= 2 ? `<div class="ownf"><span><b>바지 ${pn.length}벌 전부</b></span>${FOPT.fit.concat(['모름']).map(v => `<button type="button" data-ownall="fit" data-v="${esc(v)}" aria-pressed="${same === v}">${esc(v)}</button>`).join('')}</div>` : '';
   return r ? `<p class="cn" style="margin-top:10px"><b>바지 핏·겉옷 기장도 골라 줘.</b> 고르면 사진 속 옷과 모양이 같은 코디만 '됨'으로 봐. 바지 핏이 다 같으면 '전부'에서 한 번에 고르고, 다른 것만 아래에서 바꿔. 모르면 그냥 닫아도 돼(그 코디는 '확인할 것'으로 남음). 고른 건 이 기기에 남아</p>${all}${r}` : ''; };
 function showOwnImport(list, add){
+  // v40: '없음'으로 적어 둔 옷이 링크에 있으면 바로 '있음'으로 바꾸지 않고 따로 물음(검토 v39 4번)
+  const addNo = add.filter(k => OWN.s[k] === 'no'); add = add.filter(k => OWN.s[k] !== 'no');
+  const noQ = () => addNo.length ? `<div class="noq"><p><b>'없음'으로 적어 둔 옷 ${addNo.length}개도 링크에 있어. 있음으로 바꿀까?</b></p><p class="cn">${addNo.map(k => esc(slotName(k))).join(', ')}</p><button type="button" class="go" data-nook>있음으로 바꾸기</button><button type="button" class="plain" data-nokeep>없음 그대로 두기</button></div>` : '';
+  const yesL = () => list.filter(k => OWN.s[k] !== 'no');
   const old = document.getElementById('ownImp'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '가진 옷 적기');
   // v23: 닫기를 창 맨 아래에 붙여 둠. 창은 v20부터 화면 70%에서 스크롤되는데, 옷이 많으면 닫기가 스크롤 끝에 있어서 안 보였음(검토 v22)
@@ -2737,9 +2766,9 @@ function showOwnImport(list, add){
   // v23: 바지 통·기장을 고르면 뒤 화면도 바로 바꿈(전엔 닫을 때만 바뀜)
   const live = () => { saveO(); dirty = true; if (typeof wx !== 'undefined' && wx) render(); };
   d.innerHTML = !list.length ? `<p>링크에서 읽을 수 있는 옷이 없어. 링크가 중간에 잘렸을 수 있어</p>${close}`
-    : !add.length ? `<p>링크의 옷 ${list.length}개는 이 기기에 이미 다 적혀 있어</p>${impFRows(list)}${close}`
+    : !add.length ? (addNo.length ? `<p>링크의 옷 ${list.length}개 중 ${list.length - addNo.length}개는 이 기기에 이미 적혀 있어</p>${noQ()}${impFRows(yesL())}${close}` : `<p>링크의 옷 ${list.length}개는 이 기기에 이미 다 적혀 있어</p>${impFRows(list)}${close}`)
     : `<p><b>가진 옷 ${add.length}개를 이 기기에 적을까?</b></p><p class="cn">${add.map(k => esc(slotName(k))).join(', ')}</p>`
-      + `<p class="cn">지금 적어 둔 건 그대로 두고 더하기만 해. 이 폰(브라우저)에만 저장되고 어디로도 안 보냄</p><button type="button" class="go" data-ok>적기</button><button type="button" class="plain" data-x>안 적기</button>`;
+      + `<p class="cn">지금 적어 둔 건 그대로 두고 더하기만 해. 이 폰(브라우저)에만 저장되고 어디로도 안 보냄</p>${addNo.length ? `<p class="cn">'없음'으로 적어 둔 옷 ${addNo.length}개(${addNo.map(k => esc(slotName(k))).join(", ")})는 적기를 누른 뒤 따로 물어볼게</p>` : ""}<button type="button" class="go" data-ok>적기</button><button type="button" class="plain" data-x>안 적기</button>`;
   d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.ownf) { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
       OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v;
@@ -2748,11 +2777,105 @@ function showOwnImport(list, add){
       list.filter(k => roleOfSlot(k) === 'pants').forEach(k => { OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v;
         d.querySelectorAll(`[data-ownf][data-f="${f}"]`).forEach(o => { if (o.dataset.ownf === k) o.setAttribute('aria-pressed', String(o.dataset.v === v)); }); });
       b.parentElement.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); live(); return; }
+    if (b.hasAttribute('data-nook') || b.hasAttribute('data-nokeep')) { const q = b.closest('.noq'), yes = b.hasAttribute('data-nook');
+      if (yes) { addNo.forEach(k => { OWN.s[k] = 'similar'; }); saveO(); }
+      if (q) q.innerHTML = `<p>${yes ? `${addNo.length}개를 있음으로 바꿨어` : `${addNo.length}개는 없음 그대로 뒀어`}</p>`;
+      if (yes && typeof wx !== 'undefined' && wx) render(); return; }
     if (b.hasAttribute('data-ok')) { add.forEach(k => { OWN.s[k] = 'similar'; }); saveO();
       // v30: v28 때 이름('가진 ○○로 됨' · '국밥템 추천' · 7일 준비 · '내 옷 목록·수정')을 지금 화면 이름으로
-      d.innerHTML = `<p><b>${add.length}개 적었어.</b> 사진 속 옷과 종류·색이 같은 칸은 '내 ○○'로 보이고, 그런 코디를 '내 옷으로 입어볼 코디'에서 먼저 보여 줘. '무엇을 살까'와 '일주일 코디'에도 바로 반영돼. 맨 위 '내 옷장'에서 하나씩 지울 수 있어</p>${impFRows(list)}${close}`;
+      d.innerHTML = `<p><b>${add.length}개 적었어.</b> 사진 속 옷과 종류·색이 같은 칸은 '내 ○○'로 보이고, 그런 코디를 '내 옷으로 입어볼 코디'에서 먼저 보여 줘. '무엇을 살까'와 '일주일 코디'에도 바로 반영돼. 맨 위 '내 옷장'에서 하나씩 지울 수 있어</p>${noQ()}${impFRows(yesL())}${close}`;
       if (typeof wx !== 'undefined' && wx) render(); return; }
     d.remove(); if (dirty && typeof wx !== 'undefined' && wx) render(); });
+  document.body.appendChild(d);
+}
+/* ----- v40: 백업 링크(검토 v39 1번) -----
+   공유 링크(#o=)는 지금처럼 종류·색만. 백업 링크(#b=)는 옷장 기록 전부(있음·없음·핏·기장·제품·대신 입기 제외·산 옷 상태·못 쓰는 날) + 체크했을 때만 몸 치수.
+   주소 # 뒤라 서버(깃허브)로 안 감. 읽자마자 주소에서 지움. 암호가 아니라 글자를 바꿔 적은 거라서 링크를 가진 사람은 풀어 볼 수 있음 → '나만 보관'으로 안내.
+   적용 전에 담긴 것과 지금 기록을 보여 주고 '바꾸기 / 없는 것만 더하기'를 고르게 함. 링크에서 읽은 값은 앱이 쓰는 모양만 남기고 버림 */
+const BODYK = ['bh', 'bw', 'bf', 'pl', 'pw', 'pf'];
+const BODYN = {bh: '키', bw: '몸무게', bf: '발 크기', pl: '바지 총장', pw: '바지 허리단면', pf: '좋아하는 바지 핏'};
+const BODYU = {bh: 'cm', bw: 'kg', bf: 'mm', pl: 'cm', pw: 'cm', pf: ''};
+const b64e = s => { const u = new TextEncoder().encode(s); let b = ''; for (let i = 0; i < u.length; i++) b += String.fromCharCode(u[i]); return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const b64d = s => { const b = atob(String(s).replace(/-/g, '+').replace(/_/g, '/')); const u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return new TextDecoder('utf-8', {fatal: true}).decode(u); };
+const isD = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+const isPK = k => /^\d{1,12}\|[^|<>"&]{1,12}$/.test(k);
+const isXK = k => { const a = String(k).split('>'); return a.length === 2 && okSlot(a[0]) && okSlot(a[1]); };
+const isStr = (v, n) => typeof v === 'string' && v.length <= n && !/[<>"&]/.test(v);
+const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
+function bkClean(o){
+  const r = {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}; if (!isObj(o)) return r;
+  if (isObj(o.s)) for (const k in o.s) if (okSlot(k) && (o.s[k] === 'similar' || o.s[k] === 'no')) r.s[k] = o.s[k];
+  if (isObj(o.f)) for (const k in o.f) if (okSlot(k) && isObj(o.f[k])) { const y = {}; for (const f in FOPT) if (FOPT[f].includes(o.f[k][f])) y[f] = o.f[k][f]; if (Object.keys(y).length) r.f[k] = y; }
+  if (isObj(o.p)) for (const k in o.p) if (isPK(k) && isStr(o.p[k], 8)) r.p[k] = o.p[k];
+  if (isObj(o.d)) for (const k in o.d) if ((isPK(k) || okSlot(k)) && isObj(o.d[k]) && isStr(o.d[k].st, 10)) { const v = o.d[k], y = {st: v.st};
+    if (isStr(v.slot, 30)) y.slot = v.slot; if (Array.isArray(v.slots)) y.slots = v.slots.filter(z => isStr(z, 30)).slice(0, 20);
+    if (isD(v.at)) y.at = v.at; if (isD(v.eta)) y.eta = v.eta; r.d[k] = y; }
+  if (isObj(o.w)) for (const k in o.w) if ((okSlot(k) || isPK(k)) && Array.isArray(o.w[k])) { const a = o.w[k].filter(isD).slice(0, 30); if (a.length) r.w[k] = a; }
+  if (isObj(o.x)) for (const k in o.x) if (isXK(k)) r.x[k] = 1;
+  return r;
+}
+function bkBody(b){ if (!isObj(b)) return null; const r = {};
+  Object.keys(BODY).forEach(k => { const v = b[k]; if (v === null || (typeof v === 'number' && v >= BODY[k][0] && v <= BODY[k][1])) r[k] = v; });
+  if (b.pf === '' || FITS[b.pf]) r.pf = b.pf;
+  return Object.keys(r).length ? r : null; }
+const ownCount = o => { const v = Object.values(o.s || {}); return {yes: v.filter(x => x === 'similar').length, no: v.filter(x => x === 'no').length,
+  f: Object.values(o.f || {}).reduce((n, y) => n + Object.keys(y || {}).length, 0), p: Object.keys(o.p || {}).length, x: Object.keys(o.x || {}).length,
+  d: Object.keys(o.d || {}).length, w: Object.keys(o.w || {}).length}; };
+const cntText = (c, all) => [`있음 ${c.yes}벌`, `없음 ${c.no}벌`, `핏·기장 ${c.f}칸`, c.p ? `제품 그대로 ${c.p}개` : '', c.x ? `대신 입기 제외 ${c.x}개` : '',
+  all && c.d ? `산 옷 상태 ${c.d}개` : '', all && c.w ? `못 쓰는 날 ${c.w}개` : ''].filter(Boolean).join(' · ');
+const bodyText = b => BODYK.filter(k => b && b[k] != null && b[k] !== '').map(k => `${BODYN[k]} ${k === 'pf' ? FITS[b[k]] || b[k] : b[k] + BODYU[k]}`).join(' · ') || '빈 칸';
+function bkLink(withBody){
+  const o = {v: 1, t: today(), o: bkClean(OWN)};
+  if (withBody) { const b = {}; BODYK.forEach(k => { b[k] = st[k] == null ? (k === 'pf' ? '' : null) : st[k]; }); o.b = b; }
+  return location.origin + location.pathname + '#b=' + b64e(JSON.stringify(o));
+}
+const bkHTML = () => `<div class="bkup"><p><b>백업 링크</b> <span class="cn">옷장 기록 전부(있음·없음·핏·기장·제품·대신 입기 제외·산 옷 상태·못 쓰는 날)를 링크 하나에 담아. 이 기기 저장소가 지워졌을 때 이 링크를 열면 다시 넣을 수 있어. 만든 뒤에 바꾼 건 안 담기니 바꿀 때마다 새로 만들어</span></p>`
+  + `<p class="cn"><b>나만 보관하고 남에게 보내지 마.</b> 암호가 아니라서 링크를 가진 사람은 내용을 풀어 볼 수 있어</p>`
+  + `<label><input type="checkbox" class="bkB"> 키·몸무게·발 크기·바지 실측·좋아하는 핏도 넣기</label>`
+  + `<button type="button" class="plain" data-bkmk>백업 링크 만들기</button><div class="bkout"></div></div>`;
+function bkApply(o, b, mode){
+  let nb = 0;
+  if (mode === 'rep') { ['p', 's', 'f', 'd', 'w', 'x'].forEach(k => { OWN[k] = JSON.parse(JSON.stringify(o[k])); });
+    if (b) BODYK.forEach(k => { if (k in b && st[k] !== b[k]) { st[k] = b[k]; nb++; } }); }
+  else {
+    for (const k in o.s) if (!(k in OWN.s)) OWN.s[k] = o.s[k];
+    for (const k in o.f) { const y = OWN.f[k] = OWN.f[k] || {}; for (const f in o.f[k]) if (y[f] == null) y[f] = o.f[k][f]; }
+    ['p', 'd', 'x'].forEach(s => { for (const k in o[s]) if (!(k in OWN[s])) OWN[s][k] = JSON.parse(JSON.stringify(o[s][k])); });
+    for (const k in o.w) OWN.w[k] = [...new Set((OWN.w[k] || []).concat(o.w[k]))].sort();
+    if (b) BODYK.forEach(k => { if (k in b && b[k] != null && b[k] !== '' && (st[k] == null || st[k] === '')) { st[k] = b[k]; nb++; } });
+  }
+  saveO(); if (nb) { st.lookN = 0; save(); }
+  return nb;
+}
+function importBackupFromHash(){
+  const h = location.hash || ''; if (!/^#b=/.test(h)) return false;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+  let L = null; try { L = JSON.parse(b64d(h.slice(3))); } catch(e){}
+  showBackupImport(isObj(L) && L.v === 1 && isObj(L.o) ? L : null);
+  return true;
+}
+function showBackupImport(L){
+  const old = document.getElementById('ownImp'); if (old) old.remove();
+  const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '백업 링크 적용');
+  const close = '<div class="impx"><button type="button" class="plain" data-x>닫기</button></div>';
+  if (!L) { d.innerHTML = `<p><b>백업 링크를 읽지 못했어.</b> 링크가 중간에 잘렸거나 다른 링크일 수 있어. 지금 기록은 하나도 안 바꿨어</p>${close}`; d.addEventListener('click', e => { if (e.target.closest('[data-x]')) d.remove(); }); document.body.appendChild(d); return; }
+  const o = bkClean(L.o), b = bkBody(L.b), c = ownCount(o), cur = ownCount(OWN), curB = {};
+  BODYK.forEach(k => { curB[k] = st[k]; });
+  const empty = !(cur.yes + cur.no + cur.f + cur.p + cur.x + cur.d + cur.w);
+  d.innerHTML = `<p><b>백업 링크를 읽었어${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 기록)` : ''}.</b> 아직 아무것도 안 바꿨어</p>`
+    + `<table class="bkt"><tr><th></th><th>링크에 담긴 것</th><th>지금 이 기기</th></tr>`
+    + `<tr><td>옷장</td><td>${esc(cntText(c, true))}</td><td>${esc(cntText(cur, true))}</td></tr>`
+    + `<tr><td>몸 치수</td><td>${b ? esc(bodyText(b)) : '안 담김'}</td><td>${esc(bodyText(curB))}</td></tr></table>`
+    + `<p class="cn">일주일 코디 설정·취향·지역·외출 시간은 백업 링크에 안 담겨서 그대로야</p>`
+    + `<p><button type="button" class="go" data-bk="rep">이 링크로 바꾸기</button> 지금 옷장 기록을 지우고 링크 내용으로 바꿔${b ? '. 몸 치수도 링크 값으로 바꿔' : '. 몸 치수는 링크에 없어서 그대로 둬'}</p>`
+    + `<p><button type="button" class="plain" data-bk="add">없는 것만 더하기</button> 지금 기록은 그대로 두고 이 기기에 없는 칸만 더해. 이미 적은 칸(있음·없음·핏·기장)은 안 바꿔${b ? '. 몸 치수는 빈 칸만 채워' : ''}</p>`
+    + (empty ? '<p class="cn">지금 이 기기 옷장이 비어 있어서 두 방법 결과가 같아</p>' : '')
+    + `<div class="impx"><button type="button" class="plain" data-x>안 적기</button></div>`;
+  d.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.bk) { const rep = t.dataset.bk === 'rep', nb = bkApply(o, b, t.dataset.bk);
+      d.innerHTML = `<p><b>${rep ? '링크 내용으로 바꿨어' : '없는 칸만 더했어'}.</b> 지금 옷장: ${esc(cntText(ownCount(OWN), true))}${nb ? ` · 몸 치수 ${nb}칸 바뀜` : ''}</p>${close}`;
+      buildBody(); drawHead(); if (typeof wx !== 'undefined' && wx) render(); return; }
+    if (t.hasAttribute('data-x')) d.remove(); });
   document.body.appendChild(d);
 }
 // v18: 가진 옷으로 대신 입기. 칸이 똑같진 않아도 겉으로 비슷한 것만, 한 단계만(종류만 바꾸거나 색만 바꾸거나).
@@ -3666,7 +3789,14 @@ function bindOwn(box, after){
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); after(); }));
   box.querySelectorAll('[data-ownx]').forEach(b => b.addEventListener('click', () => { ownDel(b.dataset.ownx); after(); }));
-  const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; saveO(); after(); });
+  // v40: 지우기 전에 확인(검토 v39 2번). 브라우저 confirm()은 앱 안 브라우저에서 막힐 수 있어 화면 안 상자로. 지운 뒤 머리글도 바로 고침(전엔 새로고침 전까지 'N벌')
+  const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => {
+    const q = document.createElement('div'); q.className = 'clrq'; q.setAttribute('role', 'alertdialog');
+    q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p><button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
+    oc.replaceWith(q);
+    q.addEventListener('click', e => { const y = e.target.closest('[data-clr]'); if (!y) return;
+      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; saveO(); drawHead(); after(); } else q.replaceWith(oc); });
+  });
   const og = box.querySelector('.oaGo'); if (og) og.addEventListener('click', () => { const k = box.querySelector('.oaK').value + '|' + box.querySelector('.oaC').value;
     if (okSlot(k)) { OWN.s[k] = 'similar'; saveO(); after(); } });
 }
@@ -3819,6 +3949,8 @@ function recipeOf(L, os){
     vl.forEach(v => tags.push({c: 'sub', t: v}));
     // '사진 그대로'는 칸이 전부 사진 속 같은 제품일 때만(검토 v28 원칙 1)
     if (s.exact) tags.push({c: 'own', t: '사진 속 제품 그대로'});
+    // v40: 변형 칸이 있으면 그 배지를 '추가 구매 없음'('확인된 살 옷 없음')보다 앞에(검토 v39 5번 ⓪). 배지 내용·계산은 그대로, 순서만
+    if (nV && !nB && !nU) tags = tags.filter(g => g.c === 'sub').concat(tags.filter(g => g.c !== 'sub'));
     bc = nB || nU ? 'buy' : nC ? 'chk' : nV ? 'sub' : 'own';
     bl = tags.map(g => g.t).join(' · ');
     bs = nB || nU ? [nB ? `구매 필요 ${nB}` : '', nU ? `보유 여부 확인 ${nU}` : ''].filter(Boolean).join(' · ') : bc === 'own' ? '준비됨' : bc === 'chk' ? `${cl[0]} 확인` : '변형';
@@ -3826,12 +3958,13 @@ function recipeOf(L, os){
   return {s, rows, tags, title: tt.join(' + ') || coreOf(L), bc, bl, bs, nB: buyN.length, nU: unlN.length};
 }
 // v28: 모아보기·TOP 3 카드의 작은 배지(검토 v28 지시 2). 준비됨 / 바지 핏 확인 / 변형 / 옆 단계 사진 / 보유 여부 확인 N개 / 구매 필요 N개를 따로
-function cardTags(o, R, noAdj){
+function cardTags(o, R, noAdj, vs){
   if (!hasOwn()) return '';
   const s = R.s, g = [];
   if (s.ready) g.push(['own', '준비됨']);
   [...new Set(s.chk.map(y => y.state.lv === -1 ? '신발' : FN2[y.state.k] || '옷 모양'))].forEach(k => g.push(['chk', k + ' 확인']));
-  if (s.vari.length) g.push(['sub', '변형']);
+  // v40: TOP 3 카드에선 어느 칸이 변형인지(예: '상의·신발 변형', 검토 v39 5번 ⓪). 모아보기 카드는 그대로 '변형'
+  if (s.vari.length) g.push(['sub', vs ? Object.keys(RN).filter(r => s.vari.some(y => y.role === r)).map(r => RN[r]).join('·') + ' 변형' : '변형']);
   if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
   if (R.nB) g.push(['buy', `구매 필요 ${R.nB}개`]);
   // v29: 모아보기 사진 위에 이미 '○○ 단계 사진'이 있으면 아래 배지는 안 겹치게(noAdj)
@@ -3935,7 +4068,7 @@ function top3HTML(){
   const os = ownedSlots(), own = hasOwn();
   return `<div class="box t3"><p class="bh">이 날씨 베스트 조합 TOP ${g.length}${ownOn ? ' · 내 옷으로' : ''}<span class="cn" style="display:block;font-weight:400;margin-top:2px">사진 1~${g.length}번과 같은 순서${g.mixed ? ' · 준비 상태가 같은 코디 중에서 겉옷이 겹치지 않게 앞에 둠' : ''}</span></p><div class="t3w">` + g.map((o, i) => { const R = recipeOf(o.L, os), n = curOrder.indexOf(o);
     return `<button type="button" class="t3c${n === st.lookN ? ' cur' : ''}" data-t3="${n}" aria-label="${i + 1}위 코디 보기"><span class="gk">${imgTag(o.L, 9, 1)}<i>${i + 1}</i></span>`
-      + (own ? cardTags(o, R) : '') + `<span class="gl">${esc(R.title)}</span></button>`; }).join('') + '</div></div>';
+      + (own ? cardTags(o, R, false, true) : '') + `<span class="gl">${esc(R.title)}</span></button>`; }).join('') + '</div></div>';
 }
 // 내 옷장 줄(사진 위)
 // v29: 코디 결과 영역 안의 보기 전환(검토 v29 지시 1-4). 사진 옆 카드 위(폰은 사진 바로 아래), 모아보기에선 모아보기 머리줄에.
@@ -3989,7 +4122,7 @@ function showOwnEdit(focus){
   const body = () => { const os = [...ownedSlots()];
     const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg"><span class="k">${RN[r]} ${ks.length}</span>${ks.map(k => `<button type="button" class="plain sm" data-oex="${esc(k)}" aria-label="${esc(ownNm(k))} 지우기">${esc(ownNm(k))} ✕</button>`).join('')}</div>` : ''; }).join('');
     return `<p><b>내 옷장 ${os.length}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}${impFRows(os)}`; };
-  d.innerHTML = `<div class="oeb">${body()}</div><div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`;
+  d.innerHTML = `<div class="oeb">${body()}</div>${bkHTML()}<div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`; d._ref = () => { const x = d.querySelector('.oeb'); if (x) x.innerHTML = body(); };
   const live = () => { saveO(); const sc = d.scrollTop; d.querySelector('.oeb').innerHTML = body(); d.scrollTop = sc; if (typeof wx !== 'undefined' && wx) render(); };
   d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.oex) { ownDelSlot(b.dataset.oex); live(); return; }
@@ -3997,6 +4130,11 @@ function showOwnEdit(focus){
     if (b.dataset.ownall) { const f = b.dataset.ownall, v = b.dataset.v;
       [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; }); live(); return; }
     if (b.classList.contains('oaGo')) { const k = d.querySelector('.oaK').value + '|' + d.querySelector('.oaC').value; if (okSlot(k)) { OWN.s[k] = 'similar'; live(); } return; }
+    if (b.hasAttribute('data-bkmk')) { const wb = d.querySelector('.bkB').checked, url = bkLink(wb), out = d.querySelector('.bkout');
+      out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · ${esc(cntText(ownCount(OWN), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'}</p><textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
+      out.querySelector('.bkT').value = url; return; }
+    if (b.hasAttribute('data-bkcp')) { const ta = d.querySelector('.bkT'), m = d.querySelector('.bkm'), sel = () => { ta.focus(); ta.select(); m.textContent = '자동 복사가 안 돼서 링크 글자를 골라 뒀어. Ctrl+C(폰은 길게 눌러 복사)로 복사해 줘'; };
+      try { navigator.clipboard.writeText(ta.value).then(() => { m.textContent = '복사했어. 나만 보는 곳(메모 등)에 붙여 둬'; }, sel); } catch(e){ sel(); } return; }
     if (b.hasAttribute('data-x')) d.remove(); });
   document.body.appendChild(d);
   if (focus === 'fit') { const r = d.querySelector('[data-ownall], [data-ownf][data-f="fit"]'); if (r) r.scrollIntoView({block: 'center'}); }
@@ -4521,7 +4659,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet
    계획·배송 기록은 이 기기에만 저장(KEY-week, 가진 옷 기록 OWN.d·OWN.w). 판매처 배송일은 읽어 오지 않고 주문 후 직접 넣은 날짜만 씀 */
 const WKEY = KEY + '-week';
 const WK = (() => { let w = {}; try { w = JSON.parse(localStorage.getItem(WKEY)) || {}; } catch(e){} return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false},w); })();
-const saveW = () => { try { localStorage.setItem(WKEY, JSON.stringify(WK)); } catch(e){} };
+const saveW = () => { put(WKEY, JSON.stringify(WK)); };
 const dLab = d => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}/${x.getDate()}(${DOW[x.getDay()]})`; };
 function weekDates(){
   const t = localNow(wx).date, s = WK.start && WK.start > t ? WK.start : t;
@@ -5173,9 +5311,70 @@ function bindWeek(){
   });
 }
 
+/* ---------- v40: 탭끼리 맞추기(검토 v39 3번) ----------
+   다른 탭이 저장하면 이 탭의 기록도 그 값으로 바꾸고 다시 그림(오래 열어 둔 탭이 예전 기록으로 덮어쓰던 것).
+   이 탭에 아직 저장 안 된 입력(치수·예산·도착일 칸에 치는 중, 저장 실패한 변경)이 있으면 조용히 덮지 않고 위에 묻는 상자를 띄움.
+   고를 때까지 이 탭은 그 기록을 저장하지 않음. 보는 화면(오늘·일주일, 오늘·내일)은 탭마다 그대로 둠 */
+const SYNC = {[KEY]: '설정·몸 치수', [OKEY]: '옷장', [TKEY]: '취향', [WKEY]: '일주일 코디'};
+const INK = el => el && el.matches ? (el.matches('#bh,#bw,#bf,#pl,#pw') ? KEY : el.matches('#wbud,#wdate') ? WKEY : el.matches('[data-eta]') ? OKEY : '') : '';
+// 치는 중일 때 다른 칸(취향 등) 기록이 와도 바로 다시 그리지 않고(그러면 치던 글자가 지워짐) 다 친 뒤에 불러옴
+let typing = null, syncGone = false;
+const PEND = new Set();
+function typed(){ const ks = [...PEND].filter(k => !HELD.has(k)); PEND.clear(); if (!ks.length) return;
+  adopt(ks); const shown = ks.filter(k => k !== TKEY); if (shown.length) syncNote(`다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어`); }
+document.addEventListener('input', e => { if (INK(e.target)) typing = e.target; }, true);
+document.addEventListener('change', e => { if (e.target === typing) { typing = null; setTimeout(typed, 0); } }, true);
+document.addEventListener('focusout', e => { const x = e.target; if (x === typing) setTimeout(() => { if (typing === x && document.activeElement !== x) { typing = null; typed(); } }, 0); }, true);
+const unsaved = k => SVF.has(k) || HELD.has(k) || (!!typing && INK(typing) === k);
+const SAVER = {[KEY]: () => save(), [OKEY]: () => saveO(), [TKEY]: () => saveT(), [WKEY]: () => saveW()};
+function syncRead(k){ let v = null; try { v = JSON.parse(localStorage.getItem(k)); } catch(e){} return isObj(v) ? v : {}; }
+const refill = (obj, def, v) => { Object.keys(obj).forEach(x => delete obj[x]); Object.assign(obj, JSON.parse(JSON.stringify(def)), v); };
+function adopt(keys){
+  let reload = false;
+  keys.forEach(k => { const v = syncRead(k);
+    if (k === KEY) { const keep = {}; SESS.concat(['mode', 'day']).forEach(x => { keep[x] = st[x]; }); const c0 = st.lat + ',' + st.lon;
+      refill(st, S0, v); delete st.mood; if (!LEVELS[st.level]) st.level = 'L2'; Object.assign(st, keep); reload = c0 !== st.lat + ',' + st.lon; }
+    else if (k === OKEY) refill(OWN, {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}, v);
+    else if (k === TKEY) refill(TS, {like: {}, nope: {}, why: {}, ab: [], asked: {}, seen: {}}, v);
+    else if (k === WKEY) refill(WK, {start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false}, v); });
+  if (keys.includes(KEY)) { buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); applyFont(); }
+  const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref();
+  drawHead();
+  if (reload) load(true); else if (typeof wx !== 'undefined' && wx) render();
+}
+function syncNote(m){ let n = document.getElementById('syncN'); if (!n) { n = document.createElement('p'); n.id = 'syncN'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
+  n.textContent = m; clearTimeout(syncNote.t); syncNote.t = setTimeout(() => { const x = document.getElementById('syncN'); if (x) x.remove(); }, 4000); }
+function hold(keys, gone){
+  keys.forEach(k => HELD.add(k)); syncGone = syncGone || gone;
+  let b = document.getElementById('syncB');
+  if (!b) { b = document.createElement('div'); b.id = 'syncB'; b.setAttribute('role', 'alertdialog'); document.body.appendChild(b);
+    b.addEventListener('click', e => { const x = e.target.closest('[data-sync]'); if (x) syncPick(x.dataset.sync); }); }
+  const nm = [...HELD].map(k => SYNC[k]).join('·');
+  const why = [...new Set([...HELD].map(k => SVF.has(k) ? '저장 실패한 변경' : typing && INK(typing) === k ? '치는 중인 칸' : '').filter(Boolean))].join(', ');
+  b.innerHTML = syncGone
+    ? `<p><b>다른 탭(또는 다른 곳)에서 ${nm} 기록이 지워졌어.</b> 이 탭 화면에는 아직 남아 있어. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아</p><button type="button" class="go" data-sync="mine">이 탭 기록 다시 저장</button><button type="button" class="plain" data-sync="theirs">지워진 상태 따르기</button>`
+    : `<p><b>다른 탭에서 ${nm} 기록이 바뀌었어.</b> 이 탭에 아직 저장 안 된 입력(${why || '바꾼 내용'})이 있어서 바로 덮지 않았어. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아</p><button type="button" class="go" data-sync="theirs">다른 탭 기록 불러오기 (이 탭 입력 버림)</button><button type="button" class="plain" data-sync="mine">이 탭 기록 저장 (다른 탭 기록 덮음)</button>`;
+}
+function syncPick(v){
+  const keys = [...HELD], b = document.getElementById('syncB'); if (b) b.remove();
+  if (v === 'theirs') { if (typing) { const x = typing; typing = null; x.blur(); }
+    const g = syncGone; HELD.clear(); syncGone = false; keys.forEach(k => SVF.delete(k)); svNote(); const all = [...new Set(keys.concat([...PEND]))]; PEND.clear(); adopt(all); syncNote(g ? '지워진 상태를 따랐어' : '다른 탭 기록을 불러왔어'); }
+  else { HELD.clear(); syncGone = false; if (typing && keys.includes(INK(typing))) typing.dispatchEvent(new Event('change', {bubbles: true}));
+    keys.forEach(k => SAVER[k]()); syncNote('이 탭 기록을 저장했어'); }
+}
+addEventListener('storage', e => {
+  if (e.storageArea && e.storageArea !== localStorage) return;
+  const ks = e.key == null ? Object.keys(SYNC) : SYNC[e.key] ? [e.key] : []; if (!ks.length) return;
+  const gone = e.key == null || e.newValue == null, hk = ks.filter(k => gone || unsaved(k)), rest = ks.filter(k => !hk.includes(k));
+  if (typing) rest.forEach(k => PEND.add(k));
+  const ok = typing ? [] : rest;
+  if (ok.length) { adopt(ok); const shown = ok.filter(k => k !== TKEY); if (shown.length) syncNote(`다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어`); }
+  if (hk.length) hold(hk, gone);
+});
+
 /* ---------- 시작 ---------- */
-importOwnFromHash();
-addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); });
+importOwnFromHash() || importBackupFromHash();
+addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); else if (/^#b=/.test(location.hash)) importBackupFromHash(); });
 buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncTabs(); applyFont(); bindWeek();
 load(true);
 })();
