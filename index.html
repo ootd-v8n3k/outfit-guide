@@ -1014,6 +1014,29 @@ details.lkm p{font-size:14.5px;color:var(--ink2)}
 .dh1{font-size:28px}
 .tips42.two{grid-template-columns:minmax(0,1fr)}
 }
+/* ===== v43: 문구·표시 정리(검토 v43) ===== */
+/* 3) 저녁 띠를 얇게, 띠가 있을 땐 갤러리 머리말 위 여백을 줄임. 아래 막대는 첫 줄 카드 글을 가리면 숨김(.hid) */
+#pastN:not([hidden]){padding:7px 16px;margin:8px 0 0}
+body.haspast .ghero{margin-top:12px}
+/* 띠와 '내 옷 코디 없음' 안내가 같이 있으면 1366×768에서 첫 줄 상태 줄이 첫 화면 밖(782px)이라 안내·구간 위아래 여백만 줄임(사진 크기 그대로) */
+body.haspast .ghero .hnote{margin-top:8px;padding:7px 14px}
+body.haspast .ghero:has(.hnote){margin-bottom:10px}
+body.haspast .ghero:has(.hnote) + .gsec42{margin-top:0;margin-bottom:10px}
+.gbar42{transition:opacity .15s}
+.gbar42.hid{visibility:hidden;opacity:0}
+/* 4) 참고할 점(회색): 확인 필요(주황)와 구분 */
+.dsum b.ref{color:var(--ink2)}
+.wk42.ref{color:var(--sub2)}
+.rs .wk42 + .wk42{margin-left:8px}
+.r42 .rp .fd.r .lb{color:var(--sub2);background:var(--soft)}
+.g.ref::before{background:#8B95A1!important}
+/* 5) 사진 위 표시: 작게, 가장자리에 */
+.pin42.pt{margin-top:-13px;max-width:34%;padding:5px 10px 5px 8px;font-size:12.5px;line-height:1.3;word-break:keep-all}
+.pin42.pt::before{width:6px;height:6px;margin-right:5px;box-shadow:none}
+.pin42.pt.r{right:8px}
+.pin42.pt.l{left:8px}
+/* 7) 아래 섹션(TOP 3 · 꾸밈 단계를 바꾸면 · 둘 중 고르기)의 '사진 못 불러옴'도 갤러리와 같은 크기 */
+.t3c .gk .noimg,.lvc .gk .noimg,.pair .gk .noimg,.abc .gk .noimg{font-size:14px;color:var(--sub2)}
 </style>
 </head>
 <body>
@@ -2631,7 +2654,7 @@ function render(){
     + `<p class="src">사진은 제품마다 무신사 상품 페이지 대표 사진이라 모델이 다름</p>`;
   // 넣어 둔 제품이 겨울용이라, 그보다 따뜻한 날엔 그렇다고 적는다
   const topHi = Math.max(...M.top.map(i => i.hi));
-  const warm = A.tTop > topHi + 2 ? `<p class="note">넣어 둔 제품은 겨울용이라 오늘 낮 체감 ${ft}엔 두꺼울 수 있음</p>` : '';
+  const warm = A.tTop > topHi + 2 ? `<p class="note">넣어 둔 제품은 겨울용이라 ${dwA(A)} 낮 체감 ${ft}엔 두꺼울 수 있음</p>` : '';
   const dates = [...new Set(PRODUCTS.map(p => p.checked))];
   const dTxt = dates.length === 1 ? `${+dates[0].slice(5, 7)}월 ${+dates[0].slice(8, 10)}일` : '제품마다 다른 날짜에 확인한';
   const needBody = (!st.bh || !st.bw || !st.bf) ? ` · <button class="plain" type="button" id="toSet" style="padding:1px 7px;font-size:12px">키·몸무게·발 넣기</button> 넣으면 내 사이즈가 나옴` : '';
@@ -3381,8 +3404,8 @@ function reasonsOf(o){
   // 취향 근거는 앞쪽에(이유는 세 개까지만 보여서 뒤에 두면 잘림)
   const h = (o.t && o.t.hits || []).filter(x => x[2] > 0).sort((a, b) => b[2] - a[2]).slice(0, 1);
   if (h.length && !TS.like[L.key]) r.push(`내가 고른 ${FNAME[h[0][0]]}(${h[0][1]})`);
-  if (o.dd === 0) r.push(`${A.pv ? '미리보기' : '오늘'} 체감 ${deg(A.tOuter)}에 맞는 두께`);
-  else if (o.dd <= 2) r.push(A.tOuter < L.lo && noOut(L) ? `사진은 겉옷 없는 차림(체감 ${L.lo}° 위)이라 오늘은 가벼운 겉옷을 더해야 함` : `사진(체감 ${L.lo}~${L.hi}°)보다 ${A.tOuter < L.lo ? '조금 추운' : '조금 따뜻한'} 날이라 아래 '오늘 바꿀 점'만 챙기면 됨`);
+  if (o.dd === 0) r.push(`${A.pv ? '미리보기' : dwA(A)} 체감 ${deg(A.tOuter)}에 맞는 두께`);
+  else if (o.dd <= 2) r.push(A.tOuter < L.lo && noOut(L) ? `사진은 겉옷 없는 차림(체감 ${L.lo}° 위)이라 ${A.pv ? '이 날씨엔' : dwA(A) + '은'} 가벼운 겉옷을 더해야 함` : `사진(체감 ${L.lo}~${L.hi}°)보다 ${A.tOuter < L.lo ? '조금 추운' : '조금 따뜻한'} 날이라 아래 '${chgNm()}'만 챙기면 됨`);
   // v37: 사진에서 종류를 확정 못 한 칸(x.nm: 반팔·긴팔 모르는 '흰 티')은 종류 대신 그 이름으로
   if (S.base === 2) { const kd = [...new Set(partsOf(L).filter(x => x.need === 'req' && x.slot).map(x => x.nm || x.slot.split('|')[0]))].slice(0, 3); r.push(kd.length ? `${kd.join('·')}처럼 흔한 기본템으로 완성` : '흔한 기본템으로 완성'); }
   if (S.pal && S.pal.length <= 3) r.push(`${S.pal.join('·')} ${S.pal.length}색`);
@@ -3628,11 +3651,13 @@ const wetProne = p => p && /스웨이드|캔버스|어센틱|메쉬|어그|타�
 // v10: 겉옷 없이 입은 사진(후드 니트·셔츠 한 벌 등)
 const noOut = L => !partsOf(L).some(x => x.role === 'outer');
 // 그날 날씨와 사진이 다를 때 바꿀 점. 사진 속 제품은 그대로 두고 말로만 적는다
-function changeNotes(L, A){
+function changeNotes(L, A, dw){
+  // v43: dw = 보는 날. 오늘의 코디에서 내일을 보면 '내일'(검토 v43 2번). 일주일 코디는 넘기지 않아 예전처럼 '오늘'
+  dw = dw || '오늘';
   const n = [], T = TIP[L.tip] || TIP.coat;
-  if (A.tOuter < L.lo - 2) n.push(`사진은 체감 ${L.lo}°~${L.hi}°용이라 오늘 ${deg(A.tOuter)}엔 추워. ${T.cold}`);
-  else if (A.tOuter > L.hi + 2) n.push(`사진은 체감 ${L.lo}°~${L.hi}°용이라 오늘 ${deg(A.tOuter)}엔 더워. ${T.warm}`);
-  else if (A.tOuter < L.lo) n.push(noOut(L) ? `사진은 겉옷 없이 체감 ${L.lo}° 위에서 입는 차림이야. 오늘 ${deg(A.tOuter)}면 아침저녁엔 쌀쌀하니 위에 블루종·MA-1·라이트 패딩 같은 가벼운 겉옷을 걸치고 낮에 더우면 벗어` : `사진보다 조금 추운 날(${deg(A.tOuter)}). 안에 얇은 한 겹 더`);
+  if (A.tOuter < L.lo - 2) n.push(`사진은 체감 ${L.lo}°~${L.hi}°용이라 ${dw} ${deg(A.tOuter)}엔 추워. ${T.cold}`);
+  else if (A.tOuter > L.hi + 2) n.push(`사진은 체감 ${L.lo}°~${L.hi}°용이라 ${dw} ${deg(A.tOuter)}엔 더워. ${T.warm}`);
+  else if (A.tOuter < L.lo) n.push(noOut(L) ? `사진은 겉옷 없이 체감 ${L.lo}° 위에서 입는 차림이야. ${dw} ${deg(A.tOuter)}면 아침저녁엔 쌀쌀하니 위에 블루종·MA-1·라이트 패딩 같은 가벼운 겉옷을 걸치고 낮에 더우면 벗어` : `사진보다 조금 추운 날(${deg(A.tOuter)}). 안에 얇은 한 겹 더`);
   else if (A.tOuter > L.hi) n.push(`사진보다 조금 따뜻한 날(${deg(A.tOuter)}). 겉옷 앞을 열거나 안을 얇게`);
   if (A.tOuter <= -10) n.push('한파라 사진 그대로는 추워. 발열 내의, 장갑, 귀까지 덮는 모자');
   const sh = L.spots.map(s => PID[s.id]).find(p => p && ROLE[p.id] === 'shoes');
@@ -3697,7 +3722,7 @@ function abPair(){
 }
 function abHTML(P){
   const cell = (o, s) => `<button type="button" class="abc" data-ab="${s}"><span class="gk">${imgTag(o.L, 9, 1)}</span><span class="gl">${esc(lbl(o.L))}</span></button>`;
-  return `<div class="ab"><p class="k">둘 다 오늘 날씨에 맞아. 더 끌리는 쪽 하나만 골라줘(다음 추천에 씀)</p><div class="abw">${cell(P[0], 0)}${cell(P[1], 1)}</div>`
+  return `<div class="ab"><p class="k">둘 다 ${dwOf() === '이 날씨' ? '이' : dwOf()} 날씨에 맞아. 더 끌리는 쪽 하나만 골라줘(다음 추천에 씀)</p><div class="abw">${cell(P[0], 0)}${cell(P[1], 1)}</div>`
     + `<button type="button" class="plain" id="abSkip" style="font-size:12.5px;padding:3px 9px;margin-top:6px">둘 다 비슷해, 넘기기</button></div>`;
 }
 const lbl = L => { const F = FEAT[L.key]; return F ? `${F.ot} · ${F.pf} ${F.pc} ${F.pm}` : L.spots.map(s => s.label).join(' · '); };
@@ -3732,6 +3757,10 @@ const KO1 = n => n === 1 ? '하나' : `${['', '', '두', '세', '네', '다섯']
 const KO2 = n => `${['', '한', '두', '세', '네', '다섯'][n] || n} 군데`;
 const KO3 = n => `${['', '한', '두', '세', '네', '다섯', '여섯'][n] || n} 벌`;
 const dwOf = () => curA && curA.pv ? '이 날씨' : curA && wx && curA.date === localNow(wx).date ? '오늘' : '내일';
+// v43: 보는 날짜에 맞춘 말(검토 v43 2번). A를 받는 곳(사진 없이 제품 추천 칸)은 dwA, 바꿀 점 카드 이름은 chgNm, 참고 코디 구간 설명은 farK43
+const dwA = A => A && A.pv ? '이 날씨' : A && wx && A.date === localNow(wx).date ? '오늘' : '내일';
+const chgNm = () => { const d = dwOf(); return d === '이 날씨' ? '이 날씨에 바꿀 점' : d + ' 바꿀 점'; };
+const farK43 = () => `사진 속 기온이 ${dwOf()} 체감과 2° 넘게 달라요`;
 // 코디 하나의 상태. 판정·수는 recipeOf·lookStatus 그대로(v41 stTags와 같은 조건), 이름만 v42 말로.
 //   사진 위엔 가장 급한 것 하나(main): 구매 필요 → 보유 여부 확인 → 핏·기장 확인 → 대신 입기 → 내 옷으로 준비됨. 나머지는 사진 아래(list)
 function st42(o, R){
@@ -3744,6 +3773,8 @@ function st42(o, R){
   if (vm.length) g.push({c: 'sub', t: `대신 입기 · ${partsN(vm)}`});
   if (vp.length) g.push({c: 'sub', t: `산 옷으로 대신 입기 · ${partsN(vp)}`});
   if (s.ready) g.push({c: 'ok', t: s.exact ? '사진 속 제품으로 준비됨' : '내 옷으로 준비됨'});
+  // v43: 판정은 준비됨인 칸의 '사진과 다를 수 있는 점'(STY rchk: 집업 기장·데님 워싱, 타스만과 다른 점)은 확인 필요(주황)가 아니라 '참고할 점'으로 따로(검토 v43 4번)
+  const nR = refN43(R); if (nR) g.push({c: 'ref', t: `참고할 점 ${nR}`});
   if (!R.nB && !R.nU) g.push({c: 'nb', t: s.chk.length ? '확인된 살 옷 없음' : '추가 구매 없음'});
   const nV = s.vari.length;
   out.main = R.nB ? g[0] : R.nU ? g.find(x => x.c === 'unl') : ch.length ? {c: 'chk', t: ch[0] + (ch.length > 1 ? ` 외 ${ch.length - 1}` : '')}
@@ -3794,7 +3825,7 @@ function bindProx(root){
 }
 function heroHTML(){
   const N = curOrder.length, near = curOrder.filter(o => o.dd <= 2).length, dw = dwOf(), pv = dw === '이 날씨', px = proxHTML();
-  const h = ownOn ? `${pv ? '이 날씨에' : dw} 내 옷으로 입을 수 있는 코디 <b>${N}벌</b>`
+  const h = ownOn ? `${pv ? '이 날씨에' : dw} 내 옷으로 입어볼 코디 <b>${N}벌</b>`
     : near ? `${pv ? '이' : dw} 날씨에 맞는 ${hasOwn() ? '전체 ' : ''}코디 <b>${near}벌</b>` : `${pv ? '이' : dw} 날씨에 딱 맞는 코디는 없어요`;
   const sw = hasOwn() ? `<div class="vseg" role="group" aria-label="코디 목록"><button type="button" data-rv="own" aria-pressed="${ownOn}"${ownN ? '' : ' disabled'}>내 옷으로 입어볼 코디 <b>${ownN}</b></button><button type="button" data-rv="all" aria-pressed="${!ownOn}">전체 코디 <b>${allN}</b></button></div>` : '';
   const note = hasOwn() && !ownN ? `<p class="hnote">이 날씨엔 가진 옷만으로 입을 수 있는 코디가 없어서 전체 코디를 보여 줘요. 뭘 사면 되는지는 <button type="button" class="lnk" data-rv="buy">무엇을 살까</button>에서 볼 수 있어요.</p>`
@@ -3815,8 +3846,8 @@ function galBar(os){
 function galHTML(){
   const os = ownedSlots(), G = galGroups();
   const body = G.map((g, gi) => {
-    const nm = g.sc ? GS42[g.sc] : ownOn ? '내 옷으로 입을 수 있는 코디' : '날씨에 맞는 코디';
-    const k = g.sc ? GSK42[g.sc] : !G.split && hasOwn() && !ownOn && !gi ? '준비 상태로 묶으면 추천 순서가 바뀌어서, 순서대로 두고 카드마다 상태를 적었어요' : '';
+    const nm = g.sc ? GS42[g.sc] : ownOn ? '내 옷으로 입어볼 코디' : '날씨에 맞는 코디';
+    const k = g.sc === 'far' ? farK43() : g.sc ? GSK42[g.sc] : !G.split && hasOwn() && !ownOn && !gi ? '준비 상태로 묶으면 추천 순서가 바뀌어서, 순서대로 두고 카드마다 상태를 적었어요' : '';
     return (G.length > 1 ? `<div class="gsec42"><h2>${esc(nm)} <span>${g.ns.length}벌</span></h2>${k ? `<p>${esc(k)}</p>` : ''}</div>` : '')
       + `<div class="gw42">${g.ns.map(n => galCard(curOrder[n], n, os)).join('')}</div>`;
   }).join('');
@@ -3829,7 +3860,7 @@ function openDet(n){
 function bindGal(g){
   g.querySelectorAll('.gc[data-n]').forEach(b => b.addEventListener('click', () => openDet(+b.dataset.n)));
   const go = $('#galGo'); if (go) go.addEventListener('click', () => openDet(+go.dataset.n));
-  bindRBar(g); bindProx(g);
+  bindRBar(g); bindProx(g); galFit43();
   g.querySelectorAll('[data-ownedit]').forEach(b => b.addEventListener('click', () => showOwnEdit()));
   // 사진이 안 열리면: 상세 사진처럼 한 번은 원본 주소로 다시, 그래도 안 되면 안내(얼굴 자르기 스타일은 그대로 둠)
   g.querySelectorAll('.gph img').forEach(im => { const c = im.closest('.gc'), L = c && curOrder[+c.dataset.n] && curOrder[+c.dataset.n].L;
@@ -3837,6 +3868,18 @@ function bindGal(g){
       if (L && im.dataset.tried !== '1') { im.dataset.tried = '1'; im.removeAttribute('srcset'); im.src = L.mag || L.snap ? 'https://image.msscdn.net/' + L.img : IMG + L.img; return; }
       im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진을 못 불러왔어요'})); }); });
 }
+// v43: 아래 막대가 첫 줄 카드의 제목·상태 줄을 가리면 그동안만 숨김(저녁 띠·빈 옷장 안내·구간 제목으로 카드가 내려온 경우, 검토 v43 3번). 조금 내리면 다시 보임.
+//      '사진 체감' 줄만 걸치는 경우(낮·내 옷 코디)는 v42처럼 막대를 보여 줌(1위 추천 이유를 첫 화면에)
+function galFit43(){
+  const bar = document.querySelector('#grid .gbar42'); if (!bar) return;
+  const cs = [...document.querySelectorAll('#grid .gw42 .gc')]; if (!cs.length) { bar.classList.remove('hid'); return; }
+  const t0 = cs[0].getBoundingClientRect().top, row = cs.filter(c => Math.abs(c.getBoundingClientRect().top - t0) < 4);
+  const b = bar.getBoundingClientRect();
+  const cover = row.flatMap(c => [...c.querySelectorAll('.gt, .gs')]).some(e => { const r = e.getBoundingClientRect(); return r.bottom > b.top + 1 && r.top < b.bottom - 1; });
+  bar.classList.toggle('hid', cover);
+}
+if (!window.__gf43) { window.__gf43 = 1; const f = () => { const g = document.getElementById('grid'); if (g && !g.hidden) galFit43(); };
+  addEventListener('scroll', f, {passive: true}); addEventListener('resize', f); }
 function setGrid(on){
   st.grid = on;
   const g = $('#grid'), d = $('#det'), car = $('#car');
@@ -3864,18 +3907,54 @@ function h1Of(o, R){
   const s0 = (m0 ? '내 ' : '') + nm(x[0]), s1 = x[1] ? (mine(x[1]) && !m0 ? '내 ' : '') + nm(x[1]) : '';
   return esc(`${lead} ${s0}${s1 ? '에 ' + s1 : ''} 어때요?`);
 }
+// v43: 같은 목록 안에서 결론 문장이 같은 코디를 구별(검토 v43 6번).
+//      내가 입을 옷이 다른 칸을 하나 더 넣음(상의 → 신발 → 바지 → 겉옷 순, 상의가 두 벌이면 겉에 입는 것부터).
+//      그런 칸이 없으면(내 옷 조합이 정말 같으면) 문장은 그대로 두고 위 표시로 'N번 코디와 같은 옷 조합 · 다른 사진'
+const H1OK = w => w && w.c !== 'none' && w.c !== 'info' && !w.n.includes(HIDN) && !w.n.includes('겉옷에 가려 거의 안 보임') && !/^안에 입을 상의/.test(w.t);
+const H1NM = w => w.t.replace(/^(내|산) /, '');
+const H1RO = {'겉옷': 0, '상의': 1, '바지': 2, '신발': 3}, H1PR = {'상의': 0, '신발': 1, '바지': 2, '겉옷': 3};
+const LAYRK = t => /집업|가디건|카디건/.test(t) ? 3 : /플리스|후드|니트|맨투맨|스웨트|스웨터|베스트/.test(t) ? 2 : /셔츠/.test(t) ? 1 : 0;
+const h1Base = R => { const pick = r => R.rows.find(w => w.r === r && H1OK(w)); return [pick('겉옷') || pick('상의'), pick('바지') || pick('신발')].filter(Boolean); };
+const h1Names = R => R.rows.filter(H1OK).map(w => w.r + '|' + H1NM(w)).sort();
+let H43 = {ord: null, sig: '', m: null};
+function h1Map(){
+  const sig = JSON.stringify(OWN) + '|' + dwOf() + '|' + st.level;
+  if (H43.ord === curOrder && H43.sig === sig) return H43.m;
+  const os = ownedSlots(), R = curOrder.map(o => recipeOf(o.L, os)), base = curOrder.map((o, n) => h1Of(o, R[n])), m = new Map();
+  curOrder.forEach((o, n) => {
+    const g = base.map((h, j) => j).filter(j => j !== n && base[j] === base[n]); if (!g.length) return;
+    const x = h1Base(R[n]), oth = new Set(g.flatMap(j => h1Names(R[j])));
+    const c = R[n].rows.filter(w => H1OK(w) && !x.includes(w) && !oth.has(w.r + '|' + H1NM(w))).sort((a, b) => (H1PR[a.r] - H1PR[b.r]) || (LAYRK(b.t) - LAYRK(a.t)))[0];
+    if (c) {
+      const it = x.concat([c]).sort((a, b) => H1RO[a.r] - H1RO[b.r]), dw = dwOf(), lead = dw === '이 날씨' ? '이 날씨엔' : dw + '은';
+      let my = false; const nm = it.map(w => { const k = hasOwn() && /^(own|sub|chk)$/.test(w.c) && !my; if (k) my = true; return (k ? '내 ' : '') + H1NM(w); });
+      m.set(n, {h: esc(`${lead} ${nm[0]}에 ${nm.slice(1).join(', ')} 어때요?`), by: c.r + ' ' + H1NM(c)});
+    } else {
+      const same = g.filter(j => h1Names(R[j]).join() === h1Names(R[n]).join()).map(j => j + 1);
+      if (same.length) m.set(n, {same});
+    }
+  });
+  H43 = {ord: curOrder, sig, m}; return m;
+}
 // 한 줄 요약: 여러 가지가 겹치면 빠뜨리지 않고 급한 것부터(살 옷 → 보유 여부 확인 → 확인 → 사진과 다른 곳)
 const CHKF = /^(.{1,12}?) 확인: (.+)$/;
+// v43: 타스만과 다른 점 메모(칸 줄에선 한 칸으로 묶음)
+const TASF43 = t => /^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t);
+// v43: 준비된 칸(own)의 참고할 점 수 = 칸 줄의 '참고할 점 N'을 모두 더한 수(확인 메모 하나씩 + 타스만 메모는 칸마다 하나)
+const refN43 = R => R.rows.filter(w => w.c === 'own').reduce((s, w) => { const a = w.n.filter(t => typeof t === 'string' && t !== HIDN);
+  return s + a.filter(t => CHKF.test(t)).length + (a.some(TASF43) ? 1 : 0); }, 0);
 function sum42(o, R){
   if (!hasOwn()) return `가진 옷을 적으면 칸마다 내 옷 중 뭘 입을지 알려 줘요 <button type="button" class="lnk" data-ownedit>가진 옷 적기</button>`;
   const rows = R.rows.filter(w => w.c !== 'none');
-  const nC = rows.filter(w => w.c === 'chk' || w.c === 'info' || (w.c === 'own' && w.n.some(t => typeof t === 'string' && CHKF.test(t)))).length;
+  // v43: '확인할 게'(주황) = 판정상 확인이 남은 칸(핏·기장 확인 · 신발 직접 고르기)만. 준비된 칸의 사진과 다른 점은 '참고할 점'으로 따로 셈(검토 v43 4번)
+  const nC = rows.filter(w => w.c === 'chk' || w.c === 'info').length, nR = refN43(R);
   const nV = rows.filter(w => w.c === 'sub').length, p = [];
   if (R.nB) p.push(`<b class="buy">살 옷이 ${KO1(R.nB)}</b>`);
   if (R.nU) p.push(`<b class="unl">있는지 확인할 옷이 ${KO1(R.nU)}</b>`);
   if (nC) p.push(`<b class="chk">확인할 게 ${KO1(nC)}</b>`);
   if (nV) p.push(`<b class="sub">사진과 다른 곳이 ${KO2(nV)}</b>`);
-  return p.length ? p.join(', ') + ' 있어요' : `${KO3(rows.length)} 모두 ${R.s.exact ? '사진 속 제품으로' : '내 옷으로'} 준비됐어요`;
+  if (p.length) return p.join(', ') + (nR ? `, <b class="ref">참고할 점이 ${KO1(nR)}</b>` : '') + ' 있어요';
+  return `${KO3(rows.length)} 모두 ${R.s.exact ? '사진 속 제품으로' : '내 옷으로'} 준비됐어요` + (nR ? `. 입을 때 <b class="ref">참고할 점이 ${KO1(nR)}</b> 있어요` : '');
 }
 function detTopHTML(o, R){
   const N = curOrder.length, px = proxHTML();
@@ -3888,8 +3967,10 @@ function detTopHTML(o, R){
   if (baseOf(o.L) === 0) tg.push('포인트 코디');
   if (o.explore) tg.push('다른 분위기도 하나 섞어 봄');
   if (TS.like[o.L.key]) tg.push('저장한 코디');
+  const e43 = h1Map().get(curOrder.indexOf(o));
+  if (e43 && e43.same) tg.push(`${e43.same.join('·')}번 코디와 같은 옷 조합 · 다른 사진`);
   return `<div class="rbar dtop">${back}<div class="ctl">${px.day}${px.lv}</div></div>`
-    + `<p class="kick">${$('#where').innerHTML}${tg.map(t => `<span class="ktg">${esc(t)}</span>`).join('')}</p><h1 class="dh1" tabindex="-1">${h1Of(o, R)}</h1>`
+    + `<p class="kick">${$('#where').innerHTML}${tg.map(t => `<span class="ktg">${esc(t)}</span>`).join('')}</p><h1 class="dh1" tabindex="-1">${e43 && e43.h ? e43.h : h1Of(o, R)}</h1>`
     + `<p class="dsum">${sum42(o, R)}</p>`;
 }
 // 칸 한 줄 = [칸 이름] [내 옷 이름 + 한 줄] [상태]. 누르면 그 칸의 자세한 내용(v41 칸 줄의 모든 문구)이 펼쳐짐. 확인할 점은 접힌 상태에서도 표시
@@ -3901,9 +3982,9 @@ function rowHTML42(w, i, lay, key){
     if (t === HIDN) return;
     if (w.pil && j === 1) { fold.push({s: '사진과 다른 점', b: esc(t), w: 1, pil: 1}); return; }
     const m = (w.c === 'own' || w.c === 'chk') && CHKF.exec(t);
-    if (m) { fold.push({s: m[1] + ' 확인', b: esc(m[2]), w: 1}); return; }
+    if (m) { fold.push(w.c === 'own' ? {s: m[1] + ' 참고', b: esc(m[2]), r: 1} : {s: m[1] + ' 확인', b: esc(m[2]), w: 1}); return; }
     if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t)) {
-      const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push({s: '사진 속 타스만과 다른 점', b: esc(t), w: 1, tas: 1}); return; }
+      const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push(Object.assign({s: '사진 속 타스만과 다른 점', b: esc(t), tas: 1}, w.c === 'own' ? {r: 1} : {w: 1})); return; }
     vis.push(esc(t) + (j === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
   });
   const unc = w.n.some(t => typeof t === 'string' && /확정 못 해서/.test(t)), hid = w.n.includes(HIDN);
@@ -3919,17 +4000,17 @@ function rowHTML42(w, i, lay, key){
   const lab = w.c === 'own' ? (unc && w.bd === '비슷한 내 옷' ? '같은 색 내 옷' : w.bd) : '';
   const stH = w.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(lab)}</span>`
     : w.c === 'sub' ? `<span class="cp sub">${/^산 /.test(w.t) ? '대신 입기 · 산 옷' : '대신 입기'}</span>` : w.bd ? `<span class="cp ${w.c}">${esc(rowSt(w))}</span>` : '';
-  const nw = fold.filter(f => f.w && !f.pil).length;
+  const nw = fold.filter(f => f.w && !f.pil).length, nr = fold.filter(f => f.r).length;
   const shd = w.sh && !w.shIn ? `<p class="shd"><span class="lb">사진 속 색</span> ${chip(w.sh)}${esc(w.sh.nm)} · ${esc(w.sh.t)}</p>` : '';
   const alt = w.alt && w.alt.length ? `<p class="alts"><span class="lb">바꿔 입기</span> ${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join(' ')}</p>` : '';
   const exH = (rel ? `<p class="rl">${esc(rel)}</p>` : '')
     + exV.map(h => typeof h === 'string' ? `<p>${h}</p>` : `<p class="fd"><span class="lb">${esc(h.fold)}</span> ${esc(h.det)}</p>`).join('')
-    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + shd + alt;
+    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + shd + alt;
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
   return `<li class="r42 ${w.c}${op ? ' open' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
     + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}</div>`
-    + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}</div>`
+    + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
 }
@@ -3958,22 +4039,37 @@ function pins42(o, R, os){
   return {P, all};
 }
 function drawPins(o, pn){
-  document.querySelectorAll('#car .pin42').forEach(e => e.remove());
+  document.querySelectorAll('#car .pin42').forEach(e => e.remove()); drawPins.a = [o, pn];
+  // v43: 표시가 옷을 가리지 않게(검토 v43 5번). 옷 위치의 점은 빼고, 작은 표시를 사진 가장자리에만 붙임.
+  //      팔·소매가 걸치는 윗몸 높이(사진 위에서 55%까지)는 표시 없이 사진 아래 '사진과 다른 곳' 글만.
+  //      표시 안쪽 끝이 그 옷 위치에서 사진 폭 10% 안으로 들어오면 그 표시도 빼고 글만
   const lk = document.querySelector(`#car .slide[data-n="${st.lookN}"] .lk`), used = {l: [], r: []};
-  if (lk) pn.P.slice().sort((a, b) => a.py - b.py).forEach(p => {
-    const side = p.px > .5 ? 'r' : 'l'; let y = p.py;
-    if (Math.abs(y - .5) < .075) y = y < .5 ? .425 : .575;   // 사진 넘기기 버튼(가운데 높이)과 안 겹치게
-    used[side].forEach(u => { if (Math.abs(u - y) < .065) y = u + .065; });
-    used[side].push(y);
-    lk.insertAdjacentHTML('beforeend', `<span class="pin42 pd" style="left:${pct(p.px)};top:${pct(p.py)}" aria-hidden="true"></span><span class="pin42 pt ${side}" style="top:${pct(Math.min(.95, y))}">${esc(p.t)}</span>`);
-  });
+  if (lk && lk.clientWidth) { const W = lk.clientWidth;
+    pn.P.slice().sort((a, b) => a.py - b.py).forEach(p => {
+      if (p.py < PIN43.yMin) return;
+      const side = p.px > .5 ? 'r' : 'l'; let y = p.py;
+      if (Math.abs(y - .5) < .075) y = y < .5 ? .425 : .575;   // 사진 넘기기 버튼(가운데 높이)과 안 겹치게
+      used[side].forEach(u => { if (Math.abs(u - y) < .065) y = u + .065; });
+      const el = document.createElement('span'); el.className = `pin42 pt ${side}`; el.style.top = pct(Math.min(.95, y)); el.textContent = p.t; el.setAttribute('aria-hidden', 'true');
+      lk.appendChild(el);
+      const r = el.getBoundingClientRect(), b = lk.getBoundingClientRect();
+      const gap = side === 'l' ? p.px * W - (r.right - b.left) : (r.left - b.left) - p.px * W;
+      if (gap < W * PIN43.gap) { el.remove(); return; }
+      used[side].push(y);
+    });
+  }
   const cap = $('#dcap');
   if (cap) cap.innerHTML = (pn.all.length ? `<b>사진과 다른 곳: ${pn.all.map(esc).join(' · ')}</b>` : '<span></span>') + `<span>사진 체감 ${o.L.lo}~${o.L.hi}°</span>`;
 }
+const PIN43 = {yMin: .55, gap: .1};
+// v43: 표시 폭은 글꼴에 따라 달라서(글꼴이 늦게 열리면 처음엔 다른 글꼴로 잼) 글꼴을 다 연 뒤·창 크기가 바뀐 뒤 같은 코디면 다시 잼
+const pinRe43 = () => { const a = drawPins.a, c = curOrder[st.lookN]; if (a && !galOn() && c && c.L === a[0].L) drawPins(a[0], a[1]); };
+if (document.fonts && document.fonts.addEventListener) { document.fonts.addEventListener('loadingdone', pinRe43); document.fonts.ready.then(pinRe43); }
+window.addEventListener('resize', pinRe43);
 // 오늘 바꿀 점(사진과 날씨가 다를 때)과 거울 앞에서 확인할 한 가지: 옷 목록 바로 아래 카드
 function tipsHTML(o, notes){
   const m = mirOf(o.L);
-  const a = notes.length ? `<div class="tip42 chg reft"><span class="ti" aria-hidden="true">🌡</span><div><p class="tl">${o.dd > 2 ? '참고 코디' : '오늘 바꿀 점'}</p>${notes.map(t => `<p class="tx">${esc(t)}</p>`).join('')}</div></div>` : '';
+  const a = notes.length ? `<div class="tip42 chg reft"><span class="ti" aria-hidden="true">🌡</span><div><p class="tl">${o.dd > 2 ? '참고 코디' : chgNm()}</p>${notes.map(t => `<p class="tx">${esc(t)}</p>`).join('')}</div></div>` : '';
   const b = m ? `<div class="tip42 mir"><span class="ti" aria-hidden="true">👀</span><div><p class="tl">거울 앞에서 확인할 한 가지<span class="mk">${MIRN[m.k]}</span></p><p class="tx">${esc(m.t)}</p>${m.why ? `<p class="tw">${esc(m.why)}</p>` : ''}</div></div>` : '';
   return a || b ? `<div class="tips42${a && b ? ' two' : ''}">${a}${b}</div>` : '';
 }
@@ -4675,7 +4771,7 @@ function drawBuyV(){
   bv.innerHTML = gukbapHTML();
   bv.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { st.mode = b.dataset.tab === 'week' ? 'week' : 'today'; bview = false; save(); window.scrollTo(0, 0); render(); }));
   bv.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.jump)));
-  bindOwn(bv, () => { reorder(); drawBuyV(); });
+  bindOwn(bv, () => { reorder(); drawBuyV(); drawHead(); }); // v43: 머리글 내 옷장 N벌·바지 핏 모름도 바로(검토 v43 7번)
   imgFail(bv);
 }
 const ownAddHTML = () => `<div class="owna"><span class="k">위에 없는 가진 옷 적기</span><select class="oaK" aria-label="옷 종류">${Object.entries(OWN_KIND).map(([r, a]) => `<optgroup label="${RN[r]}">${a.map(k => `<option value="${esc(k)}">${esc(k === '스웨트' ? '스웨트 팬츠' : k)}</option>`).join('')}</optgroup>`).join('')}</select>`
@@ -4948,8 +5044,8 @@ function drawBelow(){
   const L = o.L, A = curA, N = curOrder.length;
   curLook = L;
   if (galOn()) { box.innerHTML = ''; drawTasteSet(); return; }
-  const notes = changeNotes(L, A);
-  const ref = notes.length ? `<p class="reft"><b>${o.dd > 2 ? '참고 코디' : '오늘 바꿀 점'}</b>${notes.map(esc).join('<br>')}</p>` : '';
+  const notes = changeNotes(L, A, dwOf());
+  const ref = notes.length ? `<p class="reft"><b>${o.dd > 2 ? '참고 코디' : chgNm()}</b>${notes.map(esc).join('<br>')}</p>` : '';
   const P = abPair();
   // 많이 오는 비·눈일 때만 바꿔 신을 신발을 접어서. 사진 속 신발이 아님을 적는다
   const wet = A.snowy ? ['눈', PBY['S.snow'] && PBY['S.snow'].main] : A.rainy && (A.precSum >= 3 || A.pMax >= 80) ? ['비', PBY['S.rain'] && PBY['S.rain'].main] : null;
@@ -5021,6 +5117,12 @@ function drawBelow(){
   box.querySelectorAll('ul.lki [data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
     if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; } else OWN.s[k0] = 'similar'; saveO(); reorder(); }));
   box.querySelectorAll('.abc img').forEach(im => im.addEventListener('error', () => im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})), {once: true}));
+  // v43: TOP 3·꾸밈 단계·비교 사진도 갤러리처럼 한 번은 원래 주소로 다시, 그래도 안 되면 '사진 못 불러옴'(검토 v43 7번)
+  box.querySelectorAll('.t3c .gk img, .lvc .gk img, .pair .gk img').forEach(im => { const b = im.closest('[data-t3],[data-jump]');
+    const L = b && (b.dataset.t3 != null ? (curOrder[+b.dataset.t3] || {}).L : LOOKS.find(x => x.key === b.dataset.jump));
+    im.addEventListener('error', () => {
+      if (L && im.dataset.tried !== '1') { im.dataset.tried = '1'; im.removeAttribute('srcset'); im.src = L.mag || L.snap ? 'https://image.msscdn.net/' + L.img : IMG + L.img; return; }
+      im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})); }); });
   imgFail(box);
   box.querySelectorAll('[data-toset]').forEach(b => b.addEventListener('click', () => toSet(b.dataset.toset)));
   clearTimeout(drawBelow.t); drawBelow.t = setTimeout(() => { if (curLook === L && !galOn()) markSeen(L); }, 2000);
