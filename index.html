@@ -737,195 +737,283 @@ ul.slots .s2,ul.slots .alts{margin-left:40px}
 .bkt{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 8px}
 .bkt td,.bkt th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
 .noq{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
-/* ===== v41: PC 화면 재디자인 1단계 · 오늘의 코디 + 공통 스타일(검토 v41).
-   흰 바탕 · 검정 글씨 · 굵은 제목 · 얇은 선. 모서리는 거의 각지게, 그림자·둥근 상자는 최소. 색은 상태 구분에만
-   (준비됨 검정 · 변형 파랑 · 확인 호박 · 구매 빨강, 흰 바탕 대비 4.5:1 이상). 추천·계산·문구 판정은 그대로, 배치와 모양만 ===== */
-:root{--ink:#111;--sub:#555;--line:#e5e5e5;--acc:#111;--soft:#f5f5f5;--tint:#f2f2f2;--track:#f2f2f2;--bd:#cfcfcf;--var:#1d4ed8;--chk:#a55a00;--buy:#c0262d}
-a{color:#111;text-underline-offset:2px}
-/* 1) 글씨: PC 본문 16px. 보조 글씨도 13.5px 아래로 내리지 않음 */
+/* ===== v42: 오늘의 코디 = 갤러리(시안 B) → 상세(시안 A) + 공통 스타일(검토 v42).
+   연회색 바탕(#F2F4F6) 위 흰 둥근 카드, 선 대신 여백으로 나눔. 파랑(#3182F6)은 주요 버튼 하나와 '사진과 다른 곳'에만.
+   확인 = 주황 · 살 것 = 빨강 · 준비됨 = 초록 체크. 작은 글씨 색은 흰 바탕 대비 4.5:1 이상. 갤러리는 흰 바탕에 사진이 주인공.
+   v41의 흑백·각진 모양은 걷어냄. 추천·계산·문구 판정은 그대로, 배치와 모양만 ===== */
+:root{--ink:#191F28;--ink2:#333D4B;--sub:#6B7684;--sub2:#4E5968;--line:#E5E8EB;--acc:#333D4B;--soft:#F2F4F6;--tint:#F2F4F6;--track:#E5E8EB;--bd:#D1D6DB;
+  --blue:#3182F6;--blueT:#1B64DA;--blueBg:#E8F3FF;--var:#1B64DA;--chk:#A65300;--chkBg:#FFF3E0;--buy:#CC1F2D;--buyBg:#FFEEEE;--ok:#03B26C;--okBg:#E5F8EF;--okT:#027A48;--bg:#F2F4F6;
+  --phw:min(430px,calc((100vh - 136px) * .56));--phc:calc(var(--phw) + 20px)}
+html,body{background:var(--bg);color:var(--ink);letter-spacing:-.01em}
+html:has(#look:not([hidden]) > #grid:not([hidden])),html:has(#look:not([hidden]) > #grid:not([hidden])) body{background:#fff}
+html.fpret,html.fpret body{font-family:"Pretendard Variable",Pretendard,"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif}
 @media (min-width:1024px){html,body{font-size:16px}}
+a{color:var(--ink2);text-underline-offset:2px}
 .cn{font-size:13.5px;color:var(--sub)}
 .k{font-size:14px;color:var(--sub)}
-.sub,.hint,.sortn,.hid,.note{font-size:13.5px}
-.msg{font-size:15px}
-/* 2) 버튼: 주요 = 검정 채움 · 보조 = 테두리만 · 글자 버튼. 마우스 오버 · 키보드 초점 · 선택 상태가 다 보이게 */
-.plain,.hb,.gtog,.pb,.shh button,.ownc button,.mtc button,.ownf button,.chips button,.cact .plain,.buy,#ownImp .go,#syncB .go,.clrq .go,select,input[type=text],input[type=number],.eta input,.wtop input[type=date]{border-radius:2px}
-.plain{border-color:#bdbdbd}
-.plain:hover,.hb:hover,.gtog:hover,.mtc button:hover,.ownf button:hover,.ownc button:hover,.chips button:hover{border-color:#111;background:#f7f7f7}
-.seg button[aria-pressed=true],.chips button[aria-pressed=true],.mtc button[aria-pressed=true],.ownf button[aria-pressed=true],.plain[aria-pressed=true],.plain[aria-expanded=true],.cact .plain[aria-pressed=true]{background:#111;color:#fff;border-color:#111;font-weight:700;box-shadow:none}
-button:focus-visible,summary:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #111;outline-offset:2px;box-shadow:0 0 0 4px #fff}
-#ownImp .go,#syncB .go,.clrq .go{background:#111}
-.buy{border-color:#111;color:#111}
-.lnk{color:#111}
-/* 3) 고르는 칸(오늘/내일 · 꾸밈 단계 · 설정 칸 · 일주일 '이날 꾸밈 정도'): 검정 테두리 한 줄, 고른 칸은 검정 채움 + 흰 굵은 글씨 */
-.seg,.seg.dseg,.lvg,#wlv{display:inline-flex;flex-wrap:wrap;border:1px solid #111;border-radius:0;background:#fff;padding:0;gap:0;overflow:hidden}
-.seg button,.seg.dseg button,.seg.dseg button:last-child,.lvg button,#wlv button{border:0;border-right:1px solid #111;border-radius:0;background:#fff;color:#111;padding:6px 14px;font-size:15px;line-height:1.35;box-shadow:none;font-weight:400}
-.seg button:last-child,.seg.dseg button:last-child,.lvg button:last-child,#wlv button:last-child{border-right:0}
-.seg button[aria-pressed=true],.seg.dseg button[aria-pressed=true],.lvg button[aria-pressed=true],#wlv button[aria-pressed=true]{background:#111;color:#fff;font-weight:700;box-shadow:none;border-color:#111}
-.seg button:hover:not([aria-pressed=true]),.seg.dseg button:hover:not([aria-pressed=true]),.lvg button:hover:not([aria-pressed=true]),#wlv button:hover:not([aria-pressed=true]){background:#efefef;color:#111}
-/* 4) 맨 위: 사이트 이름 · 화면 탭(지금 화면 = 검정 굵은 밑줄) · 내 옷장 · 설정. 아래 검정 선 한 줄 */
-.hd{border-bottom:1px solid #111;gap:0 10px}
-.logo{font-size:21px;font-weight:800;letter-spacing:-.8px;margin-right:20px}
-.tabs button{font-size:16px;color:#555;padding:13px 0 11px;margin:0 13px;border-bottom:3px solid transparent}
-.tabs button:hover{color:#111;border-bottom-color:#cfcfcf}
-.tabs button[aria-current=page]{color:#111;font-weight:800;border-bottom-color:#111}
-.hb{border:1px solid #cfcfcf;border-radius:2px;padding:6px 12px;font-size:14.5px;background:#fff;color:#111}
-.hb b{color:#111}
-.hb.fitb{background:#fff;border-color:var(--chk);color:var(--chk);font-size:14px;font-weight:700}
-#setBtn[aria-expanded=true]{background:#111;border-color:#111;color:#fff;font-weight:700}
-/* 5) 날짜·날씨 · 오늘/내일 · 꾸밈 단계 */
-.cbar{gap:10px 22px;padding:12px 0 12px}
-.cbar #where{font-size:16px;color:#111}
-#where em{color:#111;font-weight:800}
-#where .s{color:#555}
-.clv .q{font-size:14.5px;font-weight:700;color:#111}
-/* 6) 상태 표시: 한 모양(네모 테두리 + 굵은 글씨), 색은 뜻마다 하나. 보유 여부 확인은 점선(있는지 모름) */
-.tg,ul.slots .st,.bdg{display:inline-block;border-radius:2px;background:#fff;box-shadow:none;border:1px solid currentColor;font-weight:700;line-height:1.4;padding:2px 8px;color:#111}
-.tg,.tg.sub,.tg.own,.tg.buy,.tg.unl,.tg.chk,.tg.chk0,.tg.adj{font-size:13.5px}
-.tg.sm,.tg.sm.sub{font-size:13.5px;padding:1px 6px}
-.tg.own,ul.slots .st.own,.bdg.own{background:#fff;color:#111}
-.tg.sub,ul.slots .st.sub,.bdg.sub{background:#fff;color:var(--var)}
-.tg.chk,ul.slots .st.chk,ul.slots .st.info,.bdg.chk{background:#fff;color:var(--chk)}
-.tg.unl,ul.slots .st.unl{background:#fff;color:var(--chk);border-style:dashed;box-shadow:none}
-.tg.buy,ul.slots .st.buy,.bdg.buy{background:#fff;color:var(--buy)}
-.tg.chk0,.tg.adj{background:#fff;color:#555;border-color:#bdbdbd;box-shadow:none}
-.tg.adj{font-weight:400}
-/* 7) 모서리·그림자 줄이기(일주일·무엇을 살까는 배치 그대로, 모양만) */
-.box,.obar,.gb .gbc,.gbp,.lvc,.walt,.wd,details.wsetd,details.wsetd[open],.gk,.t3c .gk,.gb .gk,.unk,.mir,#sheet,#ownImp,#syncB,#svFail,#syncN,.clrq,.gbp .ai,.cap{border-radius:0}
-.wd.on{border-color:#111;box-shadow:0 0 0 1px #111}
-.gc.cur .gk{outline:2px solid #111;outline-offset:-2px}
-/* 8) 거울 앞에서 확인할 한 가지: 따라 할 행동이 먼저 읽히게 */
-.mir{margin:12px 0 0;padding:10px 14px 11px;background:#f5f5f5;border-left:3px solid #111;font-size:16px;line-height:1.6;color:#111}
-.mir b{display:inline;font-size:14.5px;color:#111;margin:0 10px 0 0}
-.mir .mk{border-radius:0;background:#111;color:#fff;box-shadow:none;font-size:13.5px;padding:1px 8px;margin-right:8px;vertical-align:1px}
-.mir .cn{font-size:14px;color:#555;margin-top:4px}
-/* 9) 사진: 사진 넘기기(‹ ›)와 번호는 사진 위에. 단계 이름표는 검정 네모 */
-.phw{position:relative}
-.phw:has(> #car[hidden]){display:none}
+.sub,.hint,.sortn,.hid,.note{font-size:13.5px;color:var(--sub)}
+.msg{font-size:15px;color:var(--sub2)}
+section{border-top:0}
+footer{border-top:0;color:var(--sub);font-size:12.5px;padding:28px 0 0}
+/* 1) 버튼·입력 칸: 둥근 모서리. 주요(파랑)는 화면마다 하나, 나머지는 회색·흰색으로 조용하게 */
+.plain,.hb,.gtog,.pb,.shh button,.ownc button,.mtc button,.ownf button,.chips button,.cact .plain,.buy,#ownImp .go,#syncB .go,.clrq .go,select,input[type=text],input[type=number],.eta input,.wtop input[type=date]{border-radius:10px}
+.plain{border:1px solid var(--bd);background:#fff;color:var(--ink2)}
+.plain:hover,.gtog:hover,.mtc button:hover,.ownf button:hover,.ownc button:hover,.chips button:hover{background:var(--soft);border-color:#B0B8C1}
+.chips button[aria-pressed=true],.mtc button[aria-pressed=true],.ownf button[aria-pressed=true],.plain[aria-pressed=true],.plain[aria-expanded=true],.cact .plain[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700;box-shadow:none}
+button:focus-visible,summary:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#ownImp .go,#syncB .go,.clrq .go{background:var(--ink);border-color:var(--ink);color:#fff}
+.buy{border-color:var(--bd);color:var(--ink2)}
+.lnk{color:var(--ink2);font-size:14px;font-weight:600}
+select,input[type=text],input[type=number]{border:1px solid var(--bd);background:#fff}
+.pri{border:0;border-radius:16px;background:var(--blue);color:#fff;font-size:19px;font-weight:700;height:56px;padding:0 24px;cursor:pointer;white-space:nowrap}
+.pri:hover{background:var(--blueT)}
+/* 2) 고르는 칸(오늘/내일 · 꾸밈 단계 · 내 옷으로/전체 · 설정 칸): 회색 홈 안에서 고른 칸만 흰색 */
+.seg,.seg.dseg,.lvg,#wlv,.vseg{display:inline-flex;flex-wrap:wrap;border:0;border-radius:12px;background:var(--track);padding:3px;gap:2px;overflow:visible;box-shadow:none}
+.seg button,.seg.dseg button,.seg.dseg button:last-child,.lvg button,#wlv button,.vseg button{border:0;border-right:0;border-radius:9px;background:transparent;color:var(--sub);padding:6px 13px;font-size:14.5px;font-weight:600;line-height:1.4;box-shadow:none;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed=true],.seg.dseg button[aria-pressed=true],.lvg button[aria-pressed=true],#wlv button[aria-pressed=true],.vseg button[aria-pressed=true]{background:#fff;color:var(--ink);font-weight:700;border-color:transparent;box-shadow:0 1px 3px rgba(0,27,55,.14)}
+.seg button:hover:not([aria-pressed=true]),.lvg button:hover:not([aria-pressed=true]),#wlv button:hover:not([aria-pressed=true]),.vseg button:hover:not([disabled]):not([aria-pressed=true]){background:rgba(255,255,255,.55);color:var(--ink)}
+.vseg button b{margin-left:4px;font-weight:700}
+.vseg button[disabled]{opacity:.45;cursor:default}
+/* 3) 상태 표시(일주일 코디·무엇을 살까·TOP 3에 쓰는 작은 표시): 둥근 칩, 뜻마다 색 하나 */
+.tg,ul.slots .st,.bdg{display:inline-block;border:0;border-radius:8px;box-shadow:none;font-size:13px;font-weight:700;line-height:1.4;padding:3px 8px;background:var(--soft);color:var(--sub2)}
+.tg.own,ul.slots .st.own,.bdg.own{background:var(--okBg);color:var(--okT)}
+.tg.sub,ul.slots .st.sub,.bdg.sub{background:var(--blueBg);color:var(--blueT)}
+.tg.chk,ul.slots .st.chk,ul.slots .st.info,.bdg.chk{background:var(--chkBg);color:var(--chk)}
+.tg.unl,ul.slots .st.unl{background:#fff;color:var(--chk);box-shadow:inset 0 0 0 1px #F0B969}
+.tg.buy,ul.slots .st.buy,.bdg.buy{background:var(--buyBg);color:var(--buy)}
+.tg.chk0,.tg.adj{background:#fff;color:var(--sub);box-shadow:inset 0 0 0 1px var(--line);font-weight:600}
+.tg.sm,.tg.sm.sub{font-size:12.5px;padding:2px 7px}
+/* 4) 맨 위: 사이트 이름 · 화면 탭 · 내 옷장 · 설정(흰 알약). 선 없이 */
+.hd{border-bottom:0;gap:0 8px;min-height:64px;padding:4px 0}
+html:has(#look:not([hidden]) > #grid:not([hidden])) .hd{border-bottom:1px solid #F0F1F3}
+.logo{font-size:21px;font-weight:800;letter-spacing:-.04em;margin-right:22px;color:var(--ink)}
+.tabs button{font-size:16px;font-weight:600;color:var(--sub);padding:10px 0;margin:0 12px;border-bottom:0;border-radius:0;background:none}
+.tabs button:hover{color:var(--ink);border-bottom:0}
+.tabs button[aria-current=page]{color:var(--ink);font-weight:800;border-bottom:0}
+.hb{border:0;border-radius:999px;background:#fff;padding:8px 15px;font-size:14px;font-weight:600;color:var(--sub2);box-shadow:0 1px 2px rgba(0,27,55,.08)}
+html:has(#look:not([hidden]) > #grid:not([hidden])) .hb{background:var(--soft);box-shadow:none}
+.hb:hover{color:var(--ink);box-shadow:0 1px 5px rgba(0,27,55,.16)}
+.hb b{color:var(--ink);font-weight:700}
+.hb.fitb{background:var(--chkBg);color:var(--chk);font-weight:700;font-size:14px}
+#setBtn[aria-expanded=true]{background:var(--ink);color:#fff}
+/* 5) 날짜·날씨 줄(일주일 코디·무엇을 살까에서만 보임. 오늘의 코디는 화면 안 머리말로) */
+.cbar{gap:10px 20px;padding:8px 0 12px}
+.cbar #where{font-size:15.5px;color:var(--sub2)}
+#where em,.kick em{font-style:normal;color:var(--ink);font-weight:700}
+#where .s,.kick .s{color:var(--sub)}
+.clv .q{font-size:14.5px;font-weight:700;color:var(--ink2)}
+main:has(> #look:not([hidden])) > .cbar{display:none}
+#set:not([hidden]){background:#fff;border-radius:24px;padding:10px 22px;margin:4px 0 14px;border-top:0}
+#pastN:not([hidden]),.wxn{color:var(--chk)}
+#pastN:not([hidden]){background:#fff;border-radius:16px;padding:10px 16px;margin:12px 0 0;font-size:15px}
+#week:not([hidden]),#buyV:not([hidden]){background:#fff;border-radius:24px;padding:16px 24px 22px;margin-top:6px;border-top:0}
+.box{border-radius:16px}
+.mir{border-radius:12px;background:var(--soft);border-left:0}
+#sheet{border:0;border-radius:20px;box-shadow:0 12px 40px rgba(0,27,55,.2)}
+@media (min-width:1024px){
+main{max-width:1360px;display:block;padding:0 40px 40px}
+}
+/* 6) 갤러리(첫 화면): 머리말(날짜·날씨 · 큰 제목 · 고르는 칸) → 사진 카드 → 아래 고정 줄(1위 바로 보기) */
+#look{border-top:0;padding:0}
+#grid:not([hidden]){display:block}
+.ghero,#below .rbar.dtop{display:block;margin:22px 0 18px;padding:0;background:none;border:0}
+#below .rbar.dtop{display:flex;margin:12px 0 0}
+.gh-top,.gh-mid{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px}
+.gh-mid{align-items:flex-end;margin-top:6px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.kick{margin:0;font-size:15px;color:var(--sub);line-height:1.5}
+.gh1{margin:0;font-size:42px;font-weight:800;line-height:1.22;letter-spacing:-.04em;color:var(--ink);word-break:keep-all}
+.gh1 b{font-weight:800}
+.gh1:focus,.dh1:focus{outline:none}
+.hnote{margin:14px 0 0;font-size:15px;line-height:1.55;color:var(--sub2);background:var(--soft);border-radius:14px;padding:10px 14px}
+.hnote .lnk{font-size:15px}
+.gsec42{margin:34px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
+.ghero + .gsec42{margin-top:8px}
+.gsec42 h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.gsec42 h2 span{color:var(--sub);font-weight:700;margin-left:2px}
+.gsec42 p{margin:0;font-size:14px;color:var(--sub)}
+.gw42{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px}
+@media (max-width:1199px){.gw42{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:699px){.gw42{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}}
+.g42{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;width:100%;min-width:0;border:0;background:none;padding:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.g42 .gph{position:relative;display:block;width:100%;aspect-ratio:.78;border-radius:22px;overflow:hidden;background:var(--soft)}
+.g42 .noimg{font-size:14px;color:var(--sub2)}
+.g42 .gph img{position:absolute;display:block;height:auto;max-width:none;transition:transform .25s ease}
+.g42:hover .gph img{transform:scale(1.025)}
+.g42.cur .gph{box-shadow:0 0 0 3px var(--ink)}
+.g42:focus-visible{outline:none}
+.g42:focus-visible .gph{outline:3px solid var(--ink);outline-offset:3px}
+.g42.no .gph{opacity:.5}
+.g42 .rk{position:absolute;left:12px;top:12px;min-width:30px;height:30px;padding:0 9px;border-radius:999px;background:rgba(17,17,17,.78);color:#fff;font-size:13.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.g42 .gref,.g42 .gsv{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.95);border-radius:999px;padding:5px 10px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.g42 .gref + .gsv{top:46px}
+.g42 .gp{position:absolute;left:12px;bottom:12px;max-width:calc(100% - 24px);display:block;background:rgba(255,255,255,.96);border-radius:999px;padding:7px 12px 7px 10px;font-size:13.5px;font-weight:700;color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.12);}
+.g42 .gp::before,.g42 .gs .g::before,.gb42s .g::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#B0B8C1;margin-right:6px;vertical-align:1px}
+.g42 .gs .g::before,.gb42s .g::before{width:6px;height:6px;margin-right:5px}
+.gp.ok::before,.g.ok::before{background:var(--ok)!important}
+.gp.sub::before,.g.sub::before{background:var(--blue)!important}
+.gp.chk::before,.gp.unl::before,.g.chk::before,.g.unl::before{background:#F08C00!important}
+.gp.buy::before,.g.buy::before{background:#F04452!important}
+.g42 .gt{display:block;margin-top:12px;font-size:16.5px;font-weight:700;line-height:1.4;color:var(--ink);word-break:keep-all}
+.g42 .gs,.gb42s{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:5px;font-size:14px;line-height:1.45;color:var(--sub2)}
+.g.sub{color:var(--blueT)}
+.g.chk,.g.unl{color:var(--chk)}
+.g.buy{color:var(--buy)}
+.g42 .gx{display:block;margin-top:3px;font-size:13.5px;color:var(--sub)}
+.gbar42{position:sticky;bottom:12px;z-index:6;margin:32px 0 0;display:flex;align-items:center;gap:14px 24px;background:rgba(247,248,250,.97);border-radius:20px;padding:10px 12px 10px 22px;box-shadow:0 6px 24px rgba(0,27,55,.14)}
+.gbar42 .gb42i{flex:1;min-width:0}
+.gb42t{margin:0;font-size:17.5px;font-weight:700;color:var(--ink);line-height:1.4}
+.gb42k{font-size:13.5px;font-weight:700;color:var(--sub);margin-right:10px}
+.gb42s{display:inline-flex;margin:0 0 0 12px;vertical-align:1px;font-weight:400;font-size:14px}
+.gbar42 .pri{height:52px;font-size:19px}
+.gb42r{margin:3px 0 0;font-size:14px;line-height:1.45;color:var(--sub)}
+.gb42r b{color:var(--sub2);margin-right:4px}
+/* 7) 상세(시안 A): 왼쪽 큰 사진 카드(고정) · 오른쪽 결론 → 요약 → 칸마다 입을 옷 → 오늘 바꿀 점·거울 → 버튼 → 아래 카드들 */
+@media (min-width:1024px){
+main:has(> #look:not([hidden]) > #det:not([hidden])){display:grid;grid-template-columns:var(--phc) minmax(0,1fr);column-gap:32px;align-items:start}
+main:has(> #look:not([hidden]) > #det:not([hidden])) > *{grid-column:1/-1}
+main:has(> #look:not([hidden]) > #det:not([hidden])) > #cond,main:has(> #look:not([hidden]) > #det:not([hidden])) > #outfit{grid-column:2;min-width:0}
+#det:not([hidden]){display:contents}
+#det > .dph{grid-column:1;grid-row:span 30;position:sticky;top:12px;align-self:start;margin-top:12px}
+#det > .dright{grid-column:2;min-width:0}
+}
+.dph{background:#fff;border-radius:28px;padding:10px;box-shadow:0 2px 12px rgba(0,27,55,.06);width:var(--phc);max-width:100%}
+.dpi{position:relative;border-radius:20px;overflow:hidden;background:#E5E8EB}
+.dph .slide{display:block}
+.dph .lk{width:100%;aspect-ratio:.56;background:#E5E8EB}
+.dcap{margin:8px 6px 1px;font-size:14px;color:var(--sub);display:flex;flex-wrap:wrap;gap:2px 10px;justify-content:space-between;line-height:1.45;min-height:20px}
+.dcap b{color:var(--blueT);font-weight:700}
 .lknav{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
-.lknav .nb{pointer-events:auto;position:absolute;top:50%;margin-top:-23px;width:46px;height:46px;border:1px solid #111;background:rgba(255,255,255,.94);color:#111;font-size:28px;line-height:1;border-radius:0;padding:0 0 4px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.lknav #prevLook{left:10px}
-.lknav #nextLook{right:10px}
-.lknav .nb:hover{background:#111;color:#fff}
-.lknav .cnt{position:absolute;right:10px;top:10px;background:rgba(17,17,17,.86);color:#fff;font-size:14px;font-weight:700;line-height:1;padding:7px 10px;font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.lk{background:#f2f2f2}
-.lk .ref{left:10px;top:10px;border-radius:0;background:#111;color:#fff;font-size:13.5px;font-weight:700;padding:5px 9px}
-/* 10) 오늘의 코디 오른쪽: 보기 전환(글자 탭) → 상태 → 제목 → 사진 설명 → 내가 입을 옷 → 거울 앞 한 가지 → 버튼 */
-.vseg{background:none;border-radius:0;padding:0;gap:0 18px}
-.vseg button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:6px 0 5px;font-size:15px;color:#555;box-shadow:none}
-.vseg button b{margin-left:3px}
-.vseg button[aria-pressed=true]{background:none;color:#111;font-weight:700;border-bottom-color:#111;box-shadow:none}
-.vseg button:hover:not([disabled]):not([aria-pressed=true]){background:none;color:#111}
-.gtog{border:1px solid #cfcfcf;padding:6px 12px;font-size:14px;color:#111}
-.gtog::before{color:#111}
-#below .rbar{margin:0 0 4px;gap:6px 16px}
-#below .box.rcp{margin-top:8px}
-.rk{margin:0;font-size:14px;font-weight:700;color:#555}
-#below .rtags{align-items:center;gap:6px;margin:6px 0 0}
-#below .rtags .rk{margin-right:6px}
-#below .rcp .rt{font-size:26px;font-weight:800;line-height:1.3;letter-spacing:-.7px;margin:8px 0 0;word-break:keep-all}
-#below .rcp .rd{font-size:15.5px;color:#333;line-height:1.6;margin:6px 0 0}
-.rdl{font-weight:700;color:#111;margin-right:8px;font-size:14px}
-.slh{margin:14px 0 0;padding-bottom:6px;border-bottom:2px solid #111;font-size:15px;font-weight:800;color:#111}
-#below ul.slots{display:block;margin:0;border-top:0;padding:0}
-#below ul.slots li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;column-gap:14px;align-items:start;background:none;border:0;border-bottom:1px solid #e5e5e5;border-radius:0;padding:8px 0 9px;margin:0;box-shadow:none;color:#111;font-size:15px}
-#below ul.slots .s1{display:contents}
-#below ul.slots .s1 .sr{grid-column:1;grid-row:1;flex:none;font-size:14px;color:#555;padding-top:3px}
-#below ul.slots .s1 .sm{grid-column:2;grid-row:1;min-width:0;line-height:1.5}
-#below ul.slots li b.sn{display:inline;font-size:17px;line-height:1.45;font-weight:700;color:#111;margin-right:10px}
-#below ul.slots li.none b.sn{font-weight:400;color:#555;font-size:15px}
-#below ul.slots .s1 .rl{font-size:15px;color:#444}
-#below ul.slots .s1 .rl .lnk{font-size:14px;margin-left:6px}
-#below ul.slots .st{grid-column:3;grid-row:1;margin:1px 0 0;font-size:13.5px;padding:2px 9px;white-space:nowrap}
-#below ul.slots .s2,#below ul.slots .alts{grid-column:2 / -1;margin:3px 0 0;font-size:15px;line-height:1.55;color:#333}
-#below ul.slots .s2 .lnk{font-size:14px;margin-left:6px}
-#below ul.slots .alts{gap:5px}
-#below ul.slots .alts .al{font-size:14px;color:#555}
-/* 칸 셋째 줄: 펼쳐 보는 것(확인할 점 · 사진과 다른 점 · 사진 속 색)과 바꿔 입기를 한 줄에. 펼치면 그 줄 전체 너비 */
-#below ul.slots .s3{grid-column:2 / -1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:4px 0 0;font-size:14.5px;line-height:1.55;color:#333}
-#below ul.slots .s3 .alts{margin:0;display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:5px}
-#below ul.slots .s3 details.f41[open]{flex-basis:100%}
-#below .cap{background:#f2f2f2;color:#111;font-size:14px;padding:2px 8px}
-#below ul.slots details.ovf summary,#below details.f41 summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-size:14.5px;color:#111}
-#below details.f41 summary::-webkit-details-marker{display:none}
-#below details.f41 summary::after{content:"▾";font-size:13px;color:#111;margin-left:1px}
-#below details.f41[open] summary::after{content:"▴"}
-#below details.f41 summary::before{content:"참고";font-size:13px;font-weight:700;color:#555;border:1px solid #bdbdbd;border-radius:2px;padding:0 5px;line-height:1.5}
-#below details.f41.w summary::before{content:"확인";color:var(--chk);border-color:var(--chk)}
-#below details.f41 .ovd{display:block;margin:4px 0 2px;color:#333}
-#below .lkbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px}
-#below .lkbar .lka{display:inline-flex;gap:8px}
-#below .lkbar .pb,#howBtn,#showBtn{height:46px;padding:0 22px;border-radius:0;font-size:16px;font-weight:700}
-#howBtn{background:#111;border:1px solid #111;color:#fff}
-#howBtn:hover{background:#333;border-color:#333}
-#howBtn[aria-pressed=true]{background:#111;border-color:#111;color:#fff;box-shadow:none}
-#showBtn{background:#fff;border:1px solid #111;color:#111}
-#showBtn:hover{background:#f2f2f2}
-#showBtn[aria-pressed=true]{background:#fff;border-color:#111;color:#111}
-#below .lkbar .subs{margin-left:auto;display:inline-flex;gap:4px}
-.sb2{font-size:15px;color:#333;border-radius:0;padding:8px 10px}
-.sb2:hover{background:#f2f2f2;color:#111}
-.sb2[aria-pressed=true]{color:#111;font-weight:700}
-/* 11) TOP 3: 큰 사진 1~3번과 같은 코디. 지금 보는 코디는 굵은 검정 테두리 + '보는 중' */
-#below .t3{background:none;border-radius:0;margin-top:32px;border-top:2px solid #111;padding:12px 0 0}
-#below .t3 .bh{font-size:17px;font-weight:800;margin:0}
-.t3s{margin:4px 0 12px;font-size:14px;color:#555;line-height:1.5}
-.t3s b{color:#111}
-#below .t3w{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.t3c .gk{background:#f2f2f2}
-.t3c .gk i{left:0;top:0;border-radius:0;background:#111;color:#fff;font-size:13.5px;font-weight:700;padding:3px 8px}
-.t3c .gk b.nowb{right:0;top:0;left:auto;border-radius:0;background:#fff;color:#111;font-size:13.5px;font-weight:800;padding:2px 7px;border:1px solid #111}
-.t3c.cur .gk{outline:3px solid #111;outline-offset:-3px}
-.t3c:hover .gk{outline:1px solid #111;outline-offset:-1px}
-.t3c.cur:hover .gk{outline:3px solid #111;outline-offset:-3px}
-.t3c .ctg{margin-top:8px}
-.t3c .gl{font-size:14px;color:#111;line-height:1.45;margin-top:5px}
-/* 12) 아래 섹션: 오늘 바꿀 점 · 꾸밈 단계를 바꾸면 · 접는 메뉴 */
-#below .reft{font-size:15px;line-height:1.55;margin-top:22px}
-.reft b{color:#111;margin-right:8px}
-#below .lvs{margin-top:26px}
-#below .lvs > .k{font-size:15px;font-weight:800;color:#111;margin:0 0 10px}
-.lvc{background:#fff;border:1px solid #e5e5e5;padding:10px}
+.lknav .nb{pointer-events:auto;position:absolute;top:50%;margin-top:-22px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.94);color:var(--ink2);font-size:26px;line-height:1;padding:0 0 4px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.lknav #prevLook{left:12px}
+.lknav #nextLook{right:12px}
+.lknav .nb:hover{background:#fff;color:var(--ink)}
+.lknav .cnt{position:absolute;left:12px;top:12px;background:rgba(25,31,40,.62);color:#fff;font-size:13.5px;font-weight:700;line-height:1;padding:7px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+.dph .lk .ref{left:auto;right:12px;top:12px;border-radius:999px;background:rgba(255,255,255,.95);color:var(--ink);font-size:13.5px;font-weight:700;padding:6px 11px}
+.pin42.pd{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px rgba(255,255,255,.95),0 0 0 6px rgba(49,130,246,.28);pointer-events:none}
+.pin42.pt{position:absolute;margin-top:-17px;max-width:62%;white-space:normal;background:rgba(255,255,255,.96);border-radius:999px;padding:8px 13px 8px 10px;font-size:13.5px;font-weight:700;line-height:1.3;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.16);pointer-events:none}
+.pin42.pt::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px rgba(49,130,246,.2);margin-right:7px;vertical-align:1px}
+.pin42.pt.r{right:10px}
+.pin42.pt.l{left:10px}
+.dtop{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin:12px 0 0}
+.dtop .ctl{margin-left:auto}
+.back42{border:0;background:#fff;border-radius:999px;padding:9px 16px 9px 12px;font-size:14.5px;font-weight:700;color:var(--ink2);cursor:pointer;box-shadow:0 1px 2px rgba(0,27,55,.08);white-space:nowrap}
+.back42 span{font-size:18px;line-height:1;margin-right:2px}
+.back42:hover{color:var(--ink);box-shadow:0 1px 6px rgba(0,27,55,.18)}
+.dright > .kick{margin-top:10px}
+.dh1{margin:8px 0 0;font-size:38px;font-weight:800;line-height:1.28;letter-spacing:-.035em;color:var(--ink);word-break:keep-all}
+.dsum{margin:6px 0 0;font-size:17px;color:var(--sub2);line-height:1.5}
+.dsum b{font-weight:700}
+.dsum b.sub{color:var(--blueT)}
+.dsum b.chk,.dsum b.unl{color:var(--chk)}
+.dsum b.buy{color:var(--buy)}
+.dsum .lnk{font-size:15px;margin-left:6px}
+.kick .ktg{display:inline-block;margin-left:8px;font-size:13.5px;font-weight:600;color:var(--sub2);background:#fff;border-radius:8px;padding:1px 8px;vertical-align:1px}
+body.haspast{--phw:min(430px,calc((100vh - 196px) * .56))}
+/* 칸마다 한 줄: [칸 이름 타일] [내 옷 이름 + 한 줄] [상태] [펼치기]. 펼친 내용은 회색 상자 */
+.l42{list-style:none;margin:14px 0 0;padding:2px 22px;background:#fff;border-radius:24px}
+.r42 + .r42{border-top:1px solid var(--soft)}
+.r42 .rw{display:grid;grid-template-columns:46px minmax(0,1fr) auto 24px;column-gap:14px;align-items:center;padding:9px 0}
+.r42 .rw[data-tg]{cursor:pointer}
+.r42 .tile{width:46px;height:46px;border-radius:15px;background:var(--soft);color:var(--sub);font-size:13.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;text-align:center}
+.r42 .tile small{font-size:13.5px;font-weight:800;margin-top:2px;color:var(--ink2)}
+.r42.sub .tile{background:var(--blueBg);color:var(--blueT)}
+.r42.sub .tile small{color:var(--blueT)}
+.r42 .rm{min-width:0}
+.r42 .rn{margin:0;font-size:18px;font-weight:700;line-height:1.4;color:var(--ink);word-break:keep-all}
+.r42.none .rn{font-weight:500;color:var(--sub);font-size:16px}
+.r42 .rd{margin:2px 0 0;font-size:14.5px;font-weight:500;color:var(--sub);line-height:1.45}
+.r42 .rd.ovs{color:var(--sub2)}
+.r42 .rs{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.cp{display:inline-block;border-radius:9px;padding:6px 10px;font-size:13.5px;font-weight:700;line-height:1.3;white-space:nowrap}
+.cp.sub{background:var(--blueBg);color:var(--blueT)}
+.cp.chk,.cp.info{background:var(--chkBg);color:var(--chk)}
+.cp.unl{background:#fff;color:var(--chk);box-shadow:inset 0 0 0 1.5px #F0B969}
+.cp.buy{background:var(--buyBg);color:var(--buy)}
+.ok42{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--sub);white-space:nowrap}
+.ok42 .ck{width:26px;height:26px;border-radius:50%;background:var(--okBg);position:relative;flex:none}
+.ok42 .ck::after{content:"";position:absolute;left:9.5px;top:6px;width:6px;height:11px;border:solid var(--ok);border-width:0 2.4px 2.4px 0;transform:rotate(45deg)}
+.wk42{font-size:13.5px;font-weight:700;color:var(--chk);white-space:nowrap}
+.r42 .rx{width:24px;height:24px;border:0;background:none;padding:0;cursor:pointer;color:#8B95A1;position:relative;border-radius:6px}
+.r42 .rx::before{content:"";position:absolute;left:8px;top:5px;width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.r42.open .rx::before{top:10px;transform:rotate(-135deg)}
+.r42 .rw:hover .rx{color:var(--ink2)}
+.r42 .rp{margin:0 0 12px 60px;padding:12px 16px;background:var(--soft);border-radius:14px;font-size:15px;line-height:1.6;color:var(--ink2)}
+.r42 .rp p{margin:0}
+.r42 .rp p + p{margin-top:6px}
+.r42 .rp .lb{display:inline-block;font-size:13.5px;font-weight:700;color:var(--sub2);background:#fff;border-radius:6px;padding:1px 7px;margin-right:3px;vertical-align:1px}
+.r42 .rp .fd.w .lb{color:var(--chk);background:var(--chkBg)}
+.r42 .rp .rl{font-weight:700;color:var(--ink)}
+.r42 .rp .cap{display:inline-block;background:#fff;border-radius:7px;padding:2px 9px;margin:2px 6px 2px 0;font-size:14px}
+.r42 .chip{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.lnk42{border:0;background:var(--soft);border-radius:8px;padding:3px 9px;margin-left:8px;font-size:13.5px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap;vertical-align:1px}
+.lnk42:hover{background:var(--track);color:var(--ink)}
+/* 오늘 바꿀 점 · 거울 앞에서 확인할 한 가지 */
+.tips42{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:10px}
+.tips42.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tip42,.tip42.mir,.tip42.reft{display:flex;gap:12px;align-items:flex-start;background:#fff;border:0;border-radius:20px;padding:12px 16px;margin:0;font-size:15.5px;color:var(--ink2);line-height:1.5}
+.tip42 .ti{flex:none;width:36px;height:36px;border-radius:12px;background:#FFF1D6;display:flex;align-items:center;justify-content:center;font-size:19px}
+.tip42.chg .ti{background:var(--soft)}
+.tip42 .tl{margin:0;font-size:13.5px;font-weight:700;color:var(--chk)}
+.tip42.chg .tl{color:var(--ink2)}
+.tip42 .tx{margin:3px 0 0;font-size:15.5px;font-weight:600;line-height:1.5;color:var(--ink2)}
+.tip42 .tw{margin:4px 0 0;font-size:14px;color:var(--sub);line-height:1.5}
+.tip42 .mk{display:inline-block;margin-left:7px;font-size:13.5px;font-weight:700;color:var(--sub2);background:var(--soft);border-radius:6px;padding:0 6px}
+/* 버튼: 이렇게 입기만 파랑, 사진 속 제품 · 저장 · 내 취향 아님은 회색 */
+.cta42{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+#below .cta42 #howBtn{flex:1 1 220px;height:58px;border:0;border-radius:18px;background:var(--blue);color:#fff;font-size:19px;font-weight:700;cursor:pointer;padding:0 20px}
+#below .cta42 #howBtn:hover,#below .cta42 #howBtn[aria-pressed=true]{background:var(--blueT)}
+#howBtn::after{content:"  ▾";font-size:13px}
+#howBtn[aria-pressed=true]::after{content:"  ▴"}
+#below .cta42 #showBtn,#below .cta42 .sb2{height:58px;border:0;border-radius:18px;background:var(--track);color:var(--sub2);font-size:16.5px;font-weight:700;padding:0 18px;cursor:pointer;white-space:nowrap}
+#below .cta42 #showBtn:hover,#below .cta42 .sb2:hover{background:#D9DEE3;color:var(--ink)}
+#below .cta42 #showBtn[aria-pressed=true]{background:var(--ink2);color:#fff}
+#below .cta42 .sb2[aria-pressed=true]{background:#D9DEE3;color:var(--ink)}
+#below .why{margin-top:10px;background:#fff;border-radius:16px;padding:10px 14px}
+.why span{font-size:14px;color:var(--sub2)}
+.why button{border-radius:9px;font-size:14px}
+.why button[aria-pressed=true]{border-color:var(--ink);color:var(--ink);font-weight:700}
+.card42{background:#fff;border-radius:24px;padding:16px 22px;margin-top:12px}
+.howp li{font-size:15.5px}
+.howp li b{color:var(--ink);font-size:14.5px}
+.act i,.howp i.pk{border-radius:6px;font-size:13px}
+/* 아래 카드들: TOP 3 · 꾸밈 단계를 바꾸면 · 둘 중 고르기 · 첫 장인 이유·출처 · 날씨 메모 · 사진 없이 제품 추천 */
+#below .box,#below .lvs,#below .ab,#below .aux{background:#fff;border-radius:24px;padding:18px 22px;margin-top:14px;border:0;box-shadow:none}
+#below .t3 .bh,#below .lvs > .k{font-size:17px;font-weight:800;color:var(--ink);margin:0}
+#below .lvs > .k{margin-bottom:10px}
+.t3s{margin:4px 0 12px;font-size:14px;color:var(--sub);line-height:1.5}
+.t3s b{color:var(--ink2)}
+#below .t3w{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.t3c .gk{border-radius:16px;background:var(--soft)}
+.t3c .gk i{left:8px;top:8px;border-radius:999px;background:rgba(25,31,40,.72);color:#fff;font-size:12.5px;font-weight:700;padding:3px 9px}
+.t3c .gk b.nowb{right:8px;top:8px;left:auto;border-radius:999px;background:#fff;color:var(--ink);font-size:12.5px;font-weight:800;padding:3px 9px}
+.t3c.cur .gk{outline:3px solid var(--ink);outline-offset:-3px}
+.t3c:hover .gk{outline:1px solid var(--bd);outline-offset:-1px}
+.t3c.cur:hover .gk{outline:3px solid var(--ink);outline-offset:-3px}
+.t3c .ctg{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.t3c .gl{font-size:14px;color:var(--ink);line-height:1.45;margin-top:6px;font-weight:600}
+.lvc{background:var(--soft);border:0;border-radius:16px;padding:10px}
+.lvc .gk{border-radius:10px}
 .lvc p{font-size:14.5px}
 .lvc p b{font-size:15px}
-.aux{border-radius:0;background:#f5f5f5;margin-top:26px}
-#look:not([hidden]) + #cond{border-radius:0;background:#f5f5f5}
-details.lkm,details.hw{font-size:14.5px}
-details.lkm summary,details.hw summary,details.recs > summary{color:#111;font-size:15px}
-details.lkm p{font-size:14.5px;color:#333}
-.howp li{font-size:15.5px}
-.howp li b{color:#111;font-size:14.5px}
-.act i{color:#111;border-color:#111;border-radius:0;font-size:13.5px}
-.howp i.pk{border-radius:0;font-size:13.5px}
-.howp details.pmd summary{font-size:14px}
-.unk{font-size:14.5px;background:#f5f5f5}
-.unk b{font-size:13.5px;color:#555}
-ul.lki .lt b{font-size:15px}
-ul.lki .lt span{font-size:13.5px}
-ul.lki .go{color:#111;font-size:14px;text-decoration:underline}
-.why span{font-size:14px}
-.why button{border-radius:2px;font-size:14px}
-.why button[aria-pressed=true]{border-color:#111;color:#111}
-/* 13) 제품 카드(오른쪽 위에 뜨는 창) */
-#sheet{border:1px solid #111;box-shadow:0 8px 28px rgba(0,0,0,.14)}
-.shh button{border-color:#111}
-.cardm .sz,.pd .sz{color:#111}
-/* 14) PC 오늘의 코디: 사진은 머리줄 바로 아래부터 화면 높이만큼(사진 줄이 보일 때만). 날씨·단계·설명은 오른쪽 칸.
-       일주일 코디 · 무엇을 살까 · 한눈에 보기는 v40 배치 그대로 */
-@media (min-width:1024px){
-main:has(> #look:not([hidden]) > .phw > #car:not([hidden])){grid-template-columns:minmax(0,min(600px,calc((100vh - 132px) * .56))) minmax(0,1fr);column-gap:40px}
-main:has(> #look:not([hidden]) > .phw > #car:not([hidden])) > :not(.hd):not(footer):not(#look):not(.cbar){grid-column:2}
-/* 날짜·날씨 · 오늘/내일 · 꾸밈 단계는 사진과 설명 위 한 줄(화면 전체에 걸리는 조건이라). 아래 얇은 선 */
-main:has(> #look:not([hidden]) > .phw > #car:not([hidden])) > .cbar{grid-column:1 / -1;grid-row:2;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e5e5;padding:8px 0 9px}
-#look > .phw{grid-column:1;grid-row:3 / span 40;position:sticky;top:10px;align-self:start;margin-top:10px}
-#look > .phw .lk{width:100%}
+#below .ab .k{margin-top:0;color:var(--ink2);font-size:15px}
+.abc .gk{border-radius:14px}
+#below .aux{padding:4px 22px}
+.aux details.lkm{border-top:0;margin:0;padding:12px 0;font-size:14.5px}
+.aux > * + *{border-top:1px solid var(--soft)}
+details.lkm summary,details.hw summary,details.recs > summary{color:var(--ink2);font-size:15px;font-weight:600}
+details.lkm summary::before,details.hw summary::before,details.recs > summary::before{color:var(--sub)}
+details.lkm p{font-size:14.5px;color:var(--ink2)}
+#look:not([hidden]) ~ #cond:not([hidden]),#look:not([hidden]) ~ #outfit:not([hidden]){background:#fff;border-radius:24px;padding:8px 22px 12px;margin-top:14px;border:0}
+#look:not([hidden]) ~ #cond details.hw{margin:0;padding:8px 0}
+#look:not([hidden]) ~ #cond .key1{margin:8px 0 0}
+#look:not([hidden]) ~ #outfit details.recs{padding:6px 0}
+@media (max-width:1023px){
+.dph{width:auto;max-width:min(100%,calc((100vh - 190px) * .56 + 20px));margin:10px auto 0}
+.gh1{font-size:30px}
+.dh1{font-size:28px}
+.tips42.two{grid-template-columns:minmax(0,1fr)}
 }
-/* 15) 칸 셋째 줄의 사진 속 색(늘 보임) */
-#below ul.slots .s3 .shd{display:inline;color:#333}
-#below ul.slots .s3 .shd .chip{vertical-align:-1px;margin:0 4px 0 2px}
-#below ul.slots .s3 .shd .al,#below ul.slots .s3 .alts .al{font-size:14px;color:#555}
-/* 16) 칸 상태: 준비됨은 테두리 없는 굵은 검정 글자(칸마다 같은 네모가 반복되지 않게). 변형·확인·구매·보유 여부 확인만 색 테두리로 눈에 띄게 */
-#below ul.slots .st.own{border-color:transparent;padding-left:4px;padding-right:0}
 </style>
 </head>
 <body>
@@ -951,7 +1039,7 @@ main:has(> #look:not([hidden]) > .phw > #car:not([hidden])) > .cbar{grid-column:
   <div class="field"><span class="lb">몸</span><span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bh" data-d="-1" aria-label="키 10cm 줄이기">−</button><input type="number" id="bh" inputmode="numeric" min="140" max="210" step="any" placeholder="키" aria-label="키 cm"><button type="button" class="sb" data-stp="bh" data-d="1" aria-label="키 10cm 늘리기">+</button></span>cm</span> <span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bw" data-d="-1" aria-label="몸무게 5kg 줄이기">−</button><input type="number" id="bw" inputmode="numeric" min="35" max="150" step="any" placeholder="몸무게" aria-label="몸무게 kg"><button type="button" class="sb" data-stp="bw" data-d="1" aria-label="몸무게 5kg 늘리기">+</button></span>kg</span> </div>
   <div class="field"><span class="lb">신발</span><span class="nw"><span class="stp"><button type="button" class="sb" data-stp="bf" data-d="-1" aria-label="신발 10mm 줄이기">−</button><input type="number" id="bf" inputmode="numeric" min="220" max="320" step="any" placeholder="사이즈" aria-label="평소 신는 운동화 사이즈 mm"><button type="button" class="sb" data-stp="bf" data-d="1" aria-label="신발 10mm 늘리기">+</button></span>mm</span> </div>
   <div class="field"><span class="lb">바지</span>잘 맞는 바지 실측 <input type="number" id="pl" inputmode="decimal" min="80" max="125" step="0.5" placeholder="총장" aria-label="잘 맞는 바지 총장 cm">cm <input type="number" id="pw" inputmode="decimal" min="25" max="60" step="0.5" placeholder="허리단면" aria-label="잘 맞는 바지 허리단면 cm">cm</div>
-  <div class="field"><span class="lb">글꼴</span><div class="seg" id="font" role="group" aria-label="글꼴 비교"><button type="button" data-v="">맑은 고딕</button><button type="button" data-v="p">Pretendard</button></div> <span class="hint">비교용. Pretendard는 고를 때만 jsDelivr에서 글꼴을 받아 와(그때 이 기기 IP가 jsDelivr에 보임). 못 받으면 맑은 고딕으로 보임</span></div>
+  <div class="field"><span class="lb">글꼴</span><div class="seg" id="font" role="group" aria-label="글꼴"><button type="button" data-v="p">Pretendard(기본)</button><button type="button" data-v="m">맑은 고딕</button></div> <span class="hint">기본은 Pretendard예요. 처음 열 때 외부 사이트 jsDelivr에서 글꼴을 받아 와요(이때 이 기기 IP가 jsDelivr에 보여요). 못 받으면 맑은 고딕으로 보여요. 외부에서 받지 않으려면 맑은 고딕을 고르면 돼요</span></div>
   <div class="field"><span class="lb">핏</span><select id="pf" aria-label="좋아하는 바지 핏"><option value="">상관없음</option><option value="straight">스트레이트</option><option value="wide">와이드</option><option value="tapered">테이퍼드</option><option value="balloon">벌룬</option><option value="flare">플레어</option></select> <span class="hint">키·몸무게·발·바지 실측은 이 폰에만 저장되고 사이트에는 안 올라감</span></div>
 <div class="field" id="tasteSet"></div>
 </div>
@@ -2179,13 +2267,13 @@ function drawHead(){
   fb.hidden = !pu; fb.textContent = pu ? `바지 핏 모름 ${pu}` : '';
   syncTabs();
 }
-// v29: 글꼴 비교. 기본은 맑은 고딕(그대로). Pretendard는 고를 때만 jsDelivr에서 받음(SRI로 내용 고정). 못 받으면 맑은 고딕으로 보임
+// v42: 기본 글꼴 Pretendard(검토 v42 1번). 맑은 고딕을 고르면(st.font = 'm') 외부에서 안 받음. v29 메모: 기본은 맑은 고딕(그대로). Pretendard는 고를 때만 jsDelivr에서 받음(SRI로 내용 고정). 못 받으면 맑은 고딕으로 보임
 const PRET = {href: 'https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css', sri: 'sha384-uR1wgObmx89ZQ4VVXHdzjbDJZ1PvBK01K+E3GebmaBKdZ87qRJvBWPoPbzWeEd5T'};
 function applyFont(){
-  const p = st.font === 'p';
+  const p = st.font !== 'm';
   if (p && !document.getElementById('pretCss')) { const l = document.createElement('link'); l.id = 'pretCss'; l.rel = 'stylesheet'; l.href = PRET.href; l.integrity = PRET.sri; l.crossOrigin = 'anonymous'; l.referrerPolicy = 'no-referrer'; document.head.appendChild(l); }
   document.documentElement.classList.toggle('fpret', p);
-  syncSeg('font', p ? 'p' : '');
+  syncSeg('font', p ? 'p' : 'm');
 }
 
 $('#setBtn').addEventListener('click', e => { const open = $('#set').hidden; $('#set').hidden = !open; e.currentTarget.setAttribute('aria-expanded', String(open)); });
@@ -2244,13 +2332,13 @@ $('#tabs').addEventListener('click', e => { const b = e.target.closest('button')
 $('#closetB').addEventListener('click', () => showOwnEdit());
 $('#fitB').addEventListener('click', () => showOwnEdit('fit'));
 $('#font').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.font = b.dataset.v || ''; save(); applyFont(); });
-$('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; st.shuffle = 0; PV = null; st.lookN = 0; save(); syncSeg('day', st.day); render(); });
+$('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; save(); syncSeg('day', st.day); render(); });
 $('#sens').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.sens = +b.dataset.v; save(); syncSeg('sens', st.sens); render(); });
 $('#start').addEventListener('change', e => { st.start = +e.target.value; if (st.end < st.start) { st.end = st.start; $('#end').value = st.end; } save(); render(); });
 $('#end').addEventListener('change', e => { st.end = +e.target.value; if (st.end < st.start) { st.start = st.end; $('#start').value = st.start; } save(); render(); });
 $('#lv').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  st.level = b.dataset.k; st.shuffle = 0; st.peek = false; st.lookN = 0; save();
+  st.level = b.dataset.k; st.shuffle = 0; st.peek = false; st.lookN = 0; st.grid = undefined; save();
   // 자주 고르는 단계(하루 한 번만 셈): '먼저 살 옷'에서 그 단계 코디를 조금 더 무겁게 셈
   try { const d = today(); TS.lvd = TS.lvd || {}; if (TS.lvd[st.level] !== d) { TS.lvd[st.level] = d; TS.lv = TS.lv || {}; TS.lv[st.level] = (TS.lv[st.level] || 0) + 1; saveT(); } } catch(e){}
   document.querySelectorAll('#lv button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
@@ -2575,8 +2663,7 @@ function render(){
   $('#look').hidden = false;
   const car = $('#car');
   if (car && Math.round(car.scrollLeft / Math.max(1, car.clientWidth)) !== st.lookN) car.scrollLeft = st.lookN * car.clientWidth;
-  drawBelow();
-  if (st.grid) setGrid(true);
+  setGrid(st.grid);
   drawBuyV();
   if (prevI != null && curLook && curLook.key === prevKey && curLook.spots[prevI]) openSheet(prevI, true); else closeSheet();
   $('#outfit').hidden = !!bview;
@@ -3495,22 +3582,21 @@ function slideHTML(o, n){
 }
 const carSig = () => curOrder.map(o => o.L.key + (o.dd > 2 ? '*' : '')).join(',');
 function carHTML(){
-  // v41: 사진 넘기기(‹ 번호 ›)를 사진 위에 얹으려고 사진 줄과 한 틀(.phw)로 묶음. #car·#grid·#below는 그대로
-  return `<div class="phw" id="phw"><div class="car" id="car" data-sig="${esc(carSig())}" aria-label="코디 사진. 옆으로 밀면 다음 코디">`
-    + curOrder.map((o, n) => slideHTML(o, n)).join('') + `</div><div class="lknav" id="lkNav"></div></div><div id="grid" hidden></div><div id="below"></div>`;
+  // v42: 갤러리(#grid, 첫 화면)와 상세(#det = 왼쪽 사진 카드 .dph + 오른쪽 #below). 사진 줄 #car·사진 넘기기 #lkNav는 그대로 사진 카드 안에
+  return `<div id="grid" hidden></div><div id="det"><div class="dph" id="phw"><div class="dpi"><div class="car" id="car" data-sig="${esc(carSig())}" aria-label="코디 사진. 옆으로 밀면 다음 코디">`
+    + curOrder.map((o, n) => slideHTML(o, n)).join('') + `</div><div class="lknav" id="lkNav"></div></div><p class="dcap" id="dcap"></p></div><div class="dright" id="below"></div></div>`;
 }
 function rebuildCar(){
   $('#look').innerHTML = carHTML();
   bindLook();
   $('#look').classList.toggle('show', st.show);
-  const car = $('#car'); if (car) car.scrollLeft = st.lookN * car.clientWidth;
-  drawBelow();
+  setGrid(st.grid);
 }
 // 취향을 누른 뒤: 지금 보고 있는 사진까지는 그대로, 다음 사진부터 새 순서
 function reorder(){
   if (!curA) return;
   curOrder = keepHead(lookList(curA), st.lookN);
-  if ($('#car') && $('#car').dataset.sig === carSig()) { drawBelow(); return; }
+  if ($('#car') && $('#car').dataset.sig === carSig()) { setGrid(st.grid); return; }
   rebuildCar();
 }
 
@@ -3624,36 +3710,274 @@ const SECK = {mine: '준비됨 · 내 옷으로 변형 · 핏·기장 확인을 
 const GSN = {mine: '내 옷으로 입어볼', one: '1개 확인·구매', more: '2개 이상 확인·구매', near: '오늘 날씨에 맞음', far: '참고 · 날씨 차이'};
 function secRuns(list){ const ids = list.map(secOf), runs = ids.filter((x, i) => !i || x !== ids[i - 1]); return {ids, ok: new Set(runs).size === runs.length, n: k => ids.filter(x => x === k).length}; }
 let secOK = true;
-function gridHTML(){
-  const os = ownedSlots(), own = hasOwn(), S = secRuns(curOrder), useSec = !ownOn && S.ok && new Set(S.ids).size > 1;
+/* ===== v42: 오늘의 코디 = 갤러리(시안 B) → 상세(시안 A) (검토 v42 2·3번).
+   코디 순서·상태 판정(lookList·recipeOf·lookStatus)은 그대로 쓰고, 보여 주는 구조·모양과 새 문장만 바꿈.
+   st.grid: undefined = 자동(코디가 2벌 이상이면 갤러리, 1벌이면 바로 상세) · true = 갤러리 · false = 상세 ===== */
+const galOn = () => curOrder.length > 1 && st.grid !== false;
+// 사진 칸 비율만 바꿔 자름. 얼굴을 자르는 선(L.y0)은 그대로 지키고, 사진 폭이 모자라면 아래(신발)를 기준으로 위를 더 자름
+function crop42(L, ar){
+  const r = (L.h || 1800) / (L.w || 1500);
+  let y0 = L.y0, H = 1 - y0, W = ar * H * r;
+  if (W > 1) { W = 1; H = 1 / (ar * r); y0 = 1 - H; }
+  const x0 = Math.min(Math.max(0, L.cx - W / 2), 1 - W);
+  return {x0, y0, W, H};
+}
+function img42(L, n, ar){
+  const c = crop42(L, ar), src = L.mag || L.snap ? MIMG(L.img) : THUMB(L.img, 640);
+  const ss = L.mag || L.snap ? '' : ` srcset="${esc([640, 1000].map(w => THUMB(L.img, w) + ' ' + w + 'w').join(', '))}" sizes="(min-width:1024px) 420px, 60vw"`;
+  return `<img src="${esc(src)}"${ss} alt="코디 사진: ${esc(L.spots.map(s => s.label).join(', '))}" referrerpolicy="no-referrer" decoding="async"${n > 3 ? ' loading="lazy"' : ''} style="width:${pct(1 / c.W)};left:${pct(-c.x0 / c.W)};top:${pct(-c.y0 / c.H)}">`;
+}
+// 새 문장용 수 읽기: 살 옷이 하나 · 두 개 / 한 군데 · 두 군데 / 네 벌
+const KO1 = n => n === 1 ? '하나' : `${['', '', '두', '세', '네', '다섯'][n] || n} 개`;
+const KO2 = n => `${['', '한', '두', '세', '네', '다섯'][n] || n} 군데`;
+const KO3 = n => `${['', '한', '두', '세', '네', '다섯', '여섯'][n] || n} 벌`;
+const dwOf = () => curA && curA.pv ? '이 날씨' : curA && wx && curA.date === localNow(wx).date ? '오늘' : '내일';
+// 코디 하나의 상태. 판정·수는 recipeOf·lookStatus 그대로(v41 stTags와 같은 조건), 이름만 v42 말로.
+//   사진 위엔 가장 급한 것 하나(main): 구매 필요 → 보유 여부 확인 → 핏·기장 확인 → 대신 입기 → 내 옷으로 준비됨. 나머지는 사진 아래(list)
+function st42(o, R){
+  const out = {main: null, list: []};
+  if (!hasOwn()) return out;
+  const s = R.s, vm = s.vari.filter(y => y.state.sub), vp = s.vari.filter(y => !y.state.sub), ch = chkNs(s), g = [];
+  if (R.nB) g.push({c: 'buy', t: `구매 필요 ${R.nB}개`});
+  if (R.nU) g.push({c: 'unl', t: `보유 여부 확인 ${R.nU}개`});
+  ch.forEach(t => g.push({c: 'chk', t}));
+  if (vm.length) g.push({c: 'sub', t: `대신 입기 · ${partsN(vm)}`});
+  if (vp.length) g.push({c: 'sub', t: `산 옷으로 대신 입기 · ${partsN(vp)}`});
+  if (s.ready) g.push({c: 'ok', t: s.exact ? '사진 속 제품으로 준비됨' : '내 옷으로 준비됨'});
+  if (!R.nB && !R.nU) g.push({c: 'nb', t: s.chk.length ? '확인된 살 옷 없음' : '추가 구매 없음'});
+  const nV = s.vari.length;
+  out.main = R.nB ? g[0] : R.nU ? g.find(x => x.c === 'unl') : ch.length ? {c: 'chk', t: ch[0] + (ch.length > 1 ? ` 외 ${ch.length - 1}` : '')}
+    : nV ? {c: 'sub', t: `${nV}곳 대신 입기`} : s.ready ? g.find(x => x.c === 'ok') : null;
+  out.list = g.filter(x => !out.main || (x.t !== out.main.t && !(out.main.c === 'chk' && x.t === ch[0])));
+  return out;
+}
+/* ----- 갤러리 ----- */
+const GS42 = {mine: '내 옷으로 입어볼 코디', one: '옷 1개를 확인하거나 사야 하는 코디', more: '옷 2개 이상을 확인하거나 사야 하는 코디', near: '날씨에 맞는 코디', far: '날씨가 달라 참고만 하는 코디'};
+const GSK42 = {mine: '사지 않고 가진 옷으로 입어요. 대신 입기·확인할 점은 카드마다 적었어요', one: '보유 여부 확인은 옷장에 안 적은 옷, 구매 필요는 없다고 적은 옷이에요', more: '', near: '', far: '사진 속 기온이 오늘 체감과 2° 넘게 달라요'};
+// 구간: 순서(lookList)는 그대로 두고, 같은 구간이 끊기지 않고 이어질 때만 구간 제목. 끊기면 제목 없이 카드마다 상태만.
+//       날씨가 먼 참고 코디는 늘 맨 뒤라 따로 묶음(맨 뒤가 아니면 묶지 않고 사진 위 '참고 코디' 표시만)
+function galGroups(){
+  const S = secRuns(curOrder), ids = S.ids;
   secOK = S.ok;
-  // v32: 구간 제목을 한 줄 전체로 끼우면 PC 4칸 격자 첫 줄이 1칸만 차고 비어서(검토 v32 Part 2-2), 순서는 그대로 두고
-  //      구간 이름·벌 수는 격자 위 한 줄 범례로, 각 구간 첫 카드 위에 짧은 이름(점 색 = 구간)을 붙임. 격자는 끊김 없이 이어짐
-  const secs = useSec ? S.ids.filter((x, i) => !i || x !== S.ids[i - 1]) : [];
-  const leg = useSec ? `<p class="gleg" aria-label="코디 순서">${secs.map(sc => `<span class="s-${sc}"><b>${SECN[sc]}</b> ${S.n(sc)}벌</span>`).join('')}</p>`
-    + (secs.some(sc => SECK[sc]) ? `<p class="cn gleg2">${secs.filter(sc => SECK[sc]).map(sc => esc(SECK[sc])).join(' · ')}</p>` : '') : '';
-  return leg + `<div class="gw">` + curOrder.map((o, n) => { const k = o.L.key, R = recipeOf(o.L, os), sc = S.ids[n];
-    const hd = useSec ? (!n || S.ids[n - 1] !== sc ? `<span class="gsl s-${sc}">${GSN[sc]} ${S.n(sc)}벌</span>` : '<span class="gsl e" aria-hidden="true">·</span>') : '';
-    return `<button type="button" class="gc${useSec ? ' s-' + sc : ''}${TS.nope[k] ? ' no' : ''}${n === st.lookN ? ' cur' : ''}" data-n="${n}">${hd}<span class="gk">${imgTag(o.L, n + 2, 1)}${o.dd > 2 ? '<i>참고</i>' : o.adj ? `<i>${esc(LEVELS[o.adj].name)} 단계 사진</i>` : ''}${TS.like[k] ? '<b>저장</b>' : ''}</span>`
-      + (own ? cardTags(o, R, o.dd <= 2) : '') + `<span class="gl"><b>${esc(R.title)}</b> <span class="gt">${o.L.lo}~${o.L.hi}°</span></span></button>`; }).join('') + '</div>';
+  const useSec = !ownOn && S.ok && new Set(ids).size > 1;
+  const fi = curOrder.findIndex(o => o.dd > 2), farTail = fi > 0 && curOrder.slice(fi).every(o => o.dd > 2);
+  const G = [];
+  curOrder.forEach((o, n) => {
+    const sc = useSec ? ids[n] : farTail && n >= fi ? 'far' : '';
+    if (!G.length || G[G.length - 1].sc !== sc) G.push({sc, ns: []});
+    G[G.length - 1].ns.push(n);
+  });
+  G.useSec = useSec; G.split = S.ok;
+  return G;
+}
+function galCard(o, n, os){
+  const L = o.L, k = L.key, R = recipeOf(L, os), S = st42(o, R), m = S.main;
+  const ref = o.dd > 2 ? '참고 코디' : o.adj ? `${LEVELS[o.adj].name} 단계 사진` : baseOf(L) === 0 ? '포인트 코디' : '';
+  return `<button type="button" class="gc g42${n === st.lookN ? ' cur' : ''}${TS.nope[k] ? ' no' : ''}" data-n="${n}">`
+    + `<span class="gph">${img42(L, n, .78)}<span class="rk">${n + 1}</span>`
+    + (ref ? `<span class="gref">${esc(ref)}</span>` : '') + (TS.like[k] ? '<span class="gsv">♥ 저장</span>' : TS.nope[k] ? '<span class="gsv">내 취향 아님</span>' : '')
+    + (m ? `<span class="gp ${m.c}">${esc(m.t)}</span>` : '') + `</span>`
+    + `<span class="gt">${esc(R.title)}</span>`
+    + (S.list.length ? `<span class="gs">${S.list.map(g => `<span class="g ${g.c}">${esc(g.t)}</span>`).join('')}</span>` : '')
+    + `<span class="gx">사진 체감 ${L.lo}~${L.hi}°</span></button>`;
+}
+// 오늘/내일 · 꾸밈 단계: 원래 버튼(#day·#lv, 머리줄 아래에 숨김)을 그대로 눌러서 바꿈(계산·저장은 원래 처리 그대로)
+function proxHTML(){
+  const d = [...document.querySelectorAll('#day button')].map(b => `<button type="button" data-pday="${esc(b.dataset.v)}" aria-pressed="${b.getAttribute('aria-pressed') === 'true'}">${esc(b.textContent)}</button>`).join('');
+  const l = [...document.querySelectorAll('#lv button')].map(b => `<button type="button" data-plv="${esc(b.dataset.k)}" aria-pressed="${b.getAttribute('aria-pressed') === 'true'}">${esc(b.textContent)}</button>`).join('');
+  return { day: `<div class="seg" role="group" aria-label="날짜">${d}</div>`, lv: `<div class="seg lv42" role="group" aria-label="꾸밈 단계">${l}</div>` };
+}
+function bindProx(root){
+  const vis = s => [...document.querySelectorAll(s)].find(x => x.offsetParent);
+  root.querySelectorAll('[data-pday]').forEach(b => b.addEventListener('click', () => { const v = b.dataset.pday, r = $(`#day button[data-v="${v}"]`); if (!r) return; r.click(); const n = vis(`[data-pday="${v}"]`); if (n) n.focus(); }));
+  root.querySelectorAll('[data-plv]').forEach(b => b.addEventListener('click', () => { const v = b.dataset.plv, r = $(`#lv button[data-k="${v}"]`); if (!r) return; r.click(); const n = vis(`[data-plv="${v}"]`); if (n) n.focus(); }));
+}
+function heroHTML(){
+  const N = curOrder.length, near = curOrder.filter(o => o.dd <= 2).length, dw = dwOf(), pv = dw === '이 날씨', px = proxHTML();
+  const h = ownOn ? `${pv ? '이 날씨에' : dw} 내 옷으로 입을 수 있는 코디 <b>${N}벌</b>`
+    : near ? `${pv ? '이' : dw} 날씨에 맞는 ${hasOwn() ? '전체 ' : ''}코디 <b>${near}벌</b>` : `${pv ? '이' : dw} 날씨에 딱 맞는 코디는 없어요`;
+  const sw = hasOwn() ? `<div class="vseg" role="group" aria-label="코디 목록"><button type="button" data-rv="own" aria-pressed="${ownOn}"${ownN ? '' : ' disabled'}>내 옷으로 입어볼 코디 <b>${ownN}</b></button><button type="button" data-rv="all" aria-pressed="${!ownOn}">전체 코디 <b>${allN}</b></button></div>` : '';
+  const note = hasOwn() && !ownN ? `<p class="hnote">이 날씨엔 가진 옷만으로 입을 수 있는 코디가 없어서 전체 코디를 보여 줘요. 뭘 사면 되는지는 <button type="button" class="lnk" data-rv="buy">무엇을 살까</button>에서 볼 수 있어요.</p>`
+    : !hasOwn() ? `<p class="hnote">가진 옷을 적으면 내 옷으로 입을 수 있는 코디부터 보여 줘요. <button type="button" class="lnk" data-ownedit>가진 옷 적기</button></p>` : '';
+  return `<div class="ghero rbar"><div class="gh-top"><p class="kick">${$('#where').innerHTML}</p><div class="ctl">${sw}${px.day}</div></div>`
+    + `<div class="gh-mid"><h1 class="gh1" tabindex="-1">${h}</h1><div class="ctl">${px.lv}</div></div>${note}</div>`;
+}
+// 갤러리 아래 고정 줄: 1위(또는 방금 본) 코디의 상태·추천 이유와 '자세히 보기'(바쁜 날 한 번에 열게)
+function galBar(os){
+  const n = Math.max(0, Math.min(st.lookN || 0, curOrder.length - 1)), o = curOrder[n]; if (!o) return '';
+  // 두 줄로(1366×768에서 첫 줄 카드의 상태 글자를 가리지 않게): 이름표·코디 이름·상태 / 추천 이유 첫째(나머지 이유는 상세의 '첫 장인 이유')
+  const R = recipeOf(o.L, os), S = st42(o, R), rs = o.dd > 2 ? [] : reasonsOf(o).slice(0, 1), all = (S.main ? [S.main] : []).concat(S.list);
+  const lab = n === 0 ? (o.dd > 2 ? '맨 앞 코디 · 1번' : `${dwOf()} 1위 추천 · 1번`) : `방금 본 코디 · ${n + 1}번`;
+  return `<div class="gbar42" role="region" aria-label="추천 코디 바로 보기"><div class="gb42i"><p class="gb42t"><span class="gb42k">${esc(lab)}</span>${esc(R.title)} `
+    + `<span class="gb42s">${all.map(g => `<span class="g ${g.c}">${esc(g.t)}</span>`).join(' ')}</span></p>${rs.length ? `<p class="gb42r"><b>추천 이유</b> ${rs.map(esc).join(' · ')}</p>` : ''}</div>`
+    + `<button type="button" class="pri" id="galGo" data-n="${n}">${n + 1}번 코디 자세히 보기</button></div>`;
+}
+function galHTML(){
+  const os = ownedSlots(), G = galGroups();
+  const body = G.map((g, gi) => {
+    const nm = g.sc ? GS42[g.sc] : ownOn ? '내 옷으로 입을 수 있는 코디' : '날씨에 맞는 코디';
+    const k = g.sc ? GSK42[g.sc] : !G.split && hasOwn() && !ownOn && !gi ? '준비 상태로 묶으면 추천 순서가 바뀌어서, 순서대로 두고 카드마다 상태를 적었어요' : '';
+    return (G.length > 1 ? `<div class="gsec42"><h2>${esc(nm)} <span>${g.ns.length}벌</span></h2>${k ? `<p>${esc(k)}</p>` : ''}</div>` : '')
+      + `<div class="gw42">${g.ns.map(n => galCard(curOrder[n], n, os)).join('')}</div>`;
+  }).join('');
+  return heroHTML() + body + galBar(os);
+}
+function openDet(n){
+  st.lookN = n; setGrid(false); window.scrollTo(0, 0);
+  const h = $('#below .dh1'); if (h) h.focus({preventScroll: true});
+}
+function bindGal(g){
+  g.querySelectorAll('.gc[data-n]').forEach(b => b.addEventListener('click', () => openDet(+b.dataset.n)));
+  const go = $('#galGo'); if (go) go.addEventListener('click', () => openDet(+go.dataset.n));
+  bindRBar(g); bindProx(g);
+  g.querySelectorAll('[data-ownedit]').forEach(b => b.addEventListener('click', () => showOwnEdit()));
+  // 사진이 안 열리면: 상세 사진처럼 한 번은 원본 주소로 다시, 그래도 안 되면 안내(얼굴 자르기 스타일은 그대로 둠)
+  g.querySelectorAll('.gph img').forEach(im => { const c = im.closest('.gc'), L = c && curOrder[+c.dataset.n] && curOrder[+c.dataset.n].L;
+    im.addEventListener('error', () => {
+      if (L && im.dataset.tried !== '1') { im.dataset.tried = '1'; im.removeAttribute('srcset'); im.src = L.mag || L.snap ? 'https://image.msscdn.net/' + L.img : IMG + L.img; return; }
+      im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진을 못 불러왔어요'})); }); });
 }
 function setGrid(on){
   st.grid = on;
-  const g = $('#grid'), car = $('#car');
-  if (!g || !car) return;
-  g.hidden = !on; car.hidden = on;
-  if (on) {
-    const nA = curOrder.filter(o => o.adj).length;
-    // v28: 긴 정렬 규칙 설명은 빼고 한 줄(검토 v28 지시 2-1). 순서는 아래 구간 제목으로 보임
-    // v29: 모아보기 머리줄에도 같은 보기 전환(결과 영역 안). 그 아래 한 줄은 지금 목록 이름·벌 수
-    g.innerHTML = resBarHTML() + `<p class="k gh">${ownOn && nA ? `옆 단계 사진 ${nA}벌 포함 · ` : ''}사진을 누르면 크게 보여 줘</p>`
-      + gridHTML();
-    bindRBar(g);
-    g.querySelectorAll('.gc').forEach(b => b.addEventListener('click', () => { st.lookN = +b.dataset.n; setGrid(false); }));
-    g.querySelectorAll('img').forEach(im => im.addEventListener('error', () => { im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})); }, {once: true}));
-  } else { car.scrollLeft = st.lookN * car.clientWidth; }
+  const g = $('#grid'), d = $('#det'), car = $('#car');
+  if (!g || !d || !car) return;
+  const gal = galOn();
+  g.hidden = !gal; d.hidden = gal; car.hidden = gal;
+  if (gal) { g.innerHTML = galHTML(); bindGal(g); }
+  else { g.innerHTML = ''; car.scrollLeft = st.lookN * car.clientWidth; }
   drawBelow();
 }
+function backToGal(){
+  setGrid(true);
+  const c = $('#grid .gc.cur') || $('#grid .gc');
+  if (c) { c.scrollIntoView({block: 'center'}); c.focus({preventScroll: true}); }
+}
+/* ----- 상세 ----- */
+// 결론 한 문장: 내가 입을 옷 이름으로(사진 속 제품 이름이 아니라). 가진 옷이면 '내'를 한 번 붙임. 살 옷·보유 여부 확인 칸은 사진 속 이름 그대로
+function h1Of(o, R){
+  const own = hasOwn(), dw = dwOf(), lead = dw === '이 날씨' ? '이 날씨엔' : dw + '은';
+  const ok = w => w && w.c !== 'none' && w.c !== 'info' && !w.n.includes(HIDN) && !w.n.includes('겉옷에 가려 거의 안 보임') && !/^안에 입을 상의/.test(w.t);
+  const pick = r => R.rows.find(w => w.r === r && ok(w));
+  const x = [pick('겉옷') || pick('상의'), pick('바지') || pick('신발')].filter(Boolean);
+  if (!x.length) return `${lead} 이 코디 어때요?`;
+  const mine = w => own && /^(own|sub|chk)$/.test(w.c), nm = w => w.t.replace(/^(내|산) /, ''), m0 = mine(x[0]);
+  const s0 = (m0 ? '내 ' : '') + nm(x[0]), s1 = x[1] ? (mine(x[1]) && !m0 ? '내 ' : '') + nm(x[1]) : '';
+  return esc(`${lead} ${s0}${s1 ? '에 ' + s1 : ''} 어때요?`);
+}
+// 한 줄 요약: 여러 가지가 겹치면 빠뜨리지 않고 급한 것부터(살 옷 → 보유 여부 확인 → 확인 → 사진과 다른 곳)
+const CHKF = /^(.{1,12}?) 확인: (.+)$/;
+function sum42(o, R){
+  if (!hasOwn()) return `가진 옷을 적으면 칸마다 내 옷 중 뭘 입을지 알려 줘요 <button type="button" class="lnk" data-ownedit>가진 옷 적기</button>`;
+  const rows = R.rows.filter(w => w.c !== 'none');
+  const nC = rows.filter(w => w.c === 'chk' || w.c === 'info' || (w.c === 'own' && w.n.some(t => typeof t === 'string' && CHKF.test(t)))).length;
+  const nV = rows.filter(w => w.c === 'sub').length, p = [];
+  if (R.nB) p.push(`<b class="buy">살 옷이 ${KO1(R.nB)}</b>`);
+  if (R.nU) p.push(`<b class="unl">있는지 확인할 옷이 ${KO1(R.nU)}</b>`);
+  if (nC) p.push(`<b class="chk">확인할 게 ${KO1(nC)}</b>`);
+  if (nV) p.push(`<b class="sub">사진과 다른 곳이 ${KO2(nV)}</b>`);
+  return p.length ? p.join(', ') + ' 있어요' : `${KO3(rows.length)} 모두 ${R.s.exact ? '사진 속 제품으로' : '내 옷으로'} 준비됐어요`;
+}
+function detTopHTML(o, R){
+  const N = curOrder.length, px = proxHTML();
+  const back = N > 1 ? `<button type="button" class="back42" id="toGal"><span aria-hidden="true">‹</span> 코디 ${N}벌 모아보기</button>`
+    : ownOn && allN > 1 ? `<button type="button" class="back42" data-rv="all">전체 코디 ${allN}벌 보기</button>` : '<span></span>';
+  const tg = [];
+  if (st.lookN === 0 && o.dd <= 2) tg.push(`${dwOf()} 1위 추천`);
+  if (o.dd > 2) tg.push('날씨가 달라 참고만 하는 코디');
+  if (o.adj) tg.push(`${LEVELS[o.adj].name} 단계 사진`);
+  if (baseOf(o.L) === 0) tg.push('포인트 코디');
+  if (o.explore) tg.push('다른 분위기도 하나 섞어 봄');
+  if (TS.like[o.L.key]) tg.push('저장한 코디');
+  return `<div class="rbar dtop">${back}<div class="ctl">${px.day}${px.lv}</div></div>`
+    + `<p class="kick">${$('#where').innerHTML}${tg.map(t => `<span class="ktg">${esc(t)}</span>`).join('')}</p><h1 class="dh1" tabindex="-1">${h1Of(o, R)}</h1>`
+    + `<p class="dsum">${sum42(o, R)}</p>`;
+}
+// 칸 한 줄 = [칸 이름] [내 옷 이름 + 한 줄] [상태]. 누르면 그 칸의 자세한 내용(v41 칸 줄의 모든 문구)이 펼쳐짐. 확인할 점은 접힌 상태에서도 표시
+const OPEN42 = new Set();
+function rowHTML42(w, i, lay, key){
+  const chip = sh => `<span class="chip" style="background:${sh.hex}" aria-hidden="true"></span>`, vis = [], fold = [];
+  w.n.forEach((t, j) => {
+    if (t && t.fold) { vis.push(t); return; }
+    if (t === HIDN) return;
+    if (w.pil && j === 1) { fold.push({s: '사진과 다른 점', b: esc(t), w: 1, pil: 1}); return; }
+    const m = (w.c === 'own' || w.c === 'chk') && CHKF.exec(t);
+    if (m) { fold.push({s: m[1] + ' 확인', b: esc(m[2]), w: 1}); return; }
+    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t)) {
+      const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push({s: '사진 속 타스만과 다른 점', b: esc(t), w: 1, tas: 1}); return; }
+    vis.push(esc(t) + (j === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
+  });
+  const unc = w.n.some(t => typeof t === 'string' && /확정 못 해서/.test(t)), hid = w.n.includes(HIDN);
+  const rel = hid ? HIDN : w.c === 'own' ? (unc && w.bd === '비슷한 내 옷' ? '사진 속 옷과 같은 색' : RELN[w.bd]) : w.c === 'chk' ? '사진 속 옷과 같은 종류·색' : '';
+  // 접힌 줄에 보일 한 줄(나머지는 펼쳐서)
+  const di = w.c === 'sub' || w.c === 'info' || w.c === 'unl' || w.c === 'ph' ? 0 : w.c === 'chk' ? vis.findIndex(h => typeof h === 'string' && /확인 필요$/.test(h)) : w.c === 'buy' ? 1 : -1;
+  const d = di >= 0 && typeof vis[di] === 'string' ? vis[di] : w.c === 'own' && hid ? esc(HIDN) : '';
+  const ovf = vis.find(h => typeof h !== 'string');
+  // 늘 보여야 하는 주의 줄(종류·색을 확정 못 한 점 · 가린 상의 태그 · 가격)은 접힌 줄에도 그대로(v41 기준과 같음)
+  const mk = vis.map((h, k) => k).filter(k => k !== di && typeof vis[k] === 'string' && /확정 못 해서|만 원|원 \(|태그/.test(vis[k]));
+  const exV = vis.filter((h, k) => k !== di && !mk.includes(k));
+  const act = w.act ? `<button type="button" class="lnk42" data-rowact="${w.act}">${RBTN[w.act]}</button>` : '';
+  const lab = w.c === 'own' ? (unc && w.bd === '비슷한 내 옷' ? '같은 색 내 옷' : w.bd) : '';
+  const stH = w.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(lab)}</span>`
+    : w.c === 'sub' ? `<span class="cp sub">${/^산 /.test(w.t) ? '대신 입기 · 산 옷' : '대신 입기'}</span>` : w.bd ? `<span class="cp ${w.c}">${esc(rowSt(w))}</span>` : '';
+  const nw = fold.filter(f => f.w && !f.pil).length;
+  const shd = w.sh && !w.shIn ? `<p class="shd"><span class="lb">사진 속 색</span> ${chip(w.sh)}${esc(w.sh.nm)} · ${esc(w.sh.t)}</p>` : '';
+  const alt = w.alt && w.alt.length ? `<p class="alts"><span class="lb">바꿔 입기</span> ${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join(' ')}</p>` : '';
+  const exH = (rel ? `<p class="rl">${esc(rel)}</p>` : '')
+    + exV.map(h => typeof h === 'string' ? `<p>${h}</p>` : `<p class="fd"><span class="lb">${esc(h.fold)}</span> ${esc(h.det)}</p>`).join('')
+    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + shd + alt;
+  const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
+  return `<li class="r42 ${w.c}${op ? ' open' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
+    + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
+    + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}</div>`
+    + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}</div>`
+    + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
+    + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
+}
+// 상의가 두 벌이면 겉에 입는 것과 안에 입는 것을 구분(입는 순서: 집업·가디건 > 플리스·니트·맨투맨·후드 > 셔츠 > 티·터틀넥)
+function listHTML42(R, L){
+  const ti = R.rows.map((w, i) => i).filter(i => R.rows[i].r === '상의' && R.rows[i].c !== 'none'), lay = {};
+  if (ti.length >= 2) {
+    const xs = R.s.req.filter(x => x.role === 'top');
+    const rk = (w, x) => { const t = [w.t, x && x.s && x.s.label, x && x.nm, x && x.slot].filter(Boolean).join(' ');
+      return /집업|가디건|카디건/.test(t) ? 3 : /플리스|후드|니트|맨투맨|스웨트|스웨터|베스트/.test(t) ? 2 : /셔츠/.test(t) ? 1 : 0; };
+    const rs = ti.map((i, k) => rk(R.rows[i], xs[k])), hi = Math.max(...rs), lo = Math.min(...rs);
+    if (hi > lo) ti.forEach((i, k) => { lay[i] = rs[k] === hi ? '겉' : rs[k] === lo ? '안' : ''; });
+  }
+  return `<ul class="l42" aria-label="칸마다 입을 옷">${R.rows.map((w, i) => rowHTML42(w, i, lay[i] || '', L.key)).join('')}</ul>`;
+}
+// 사진 위 '내 블루종으로' 표시: 대신 입기 칸 중 사진 속 위치가 있고, 지금 자른 사진 안쪽에 들어오는 것만. 나머지는 사진 아래 줄로
+function pins42(o, R, os){
+  const c = crop(o.L), P = [], all = [];
+  if (!hasOwn()) return {P, all};
+  R.s.req.forEach(x => { if (!(x.state && x.state.lv >= 2 && (x.state.sub || x.state.pick))) return;
+    if (!all.includes(RN[x.role])) all.push(RN[x.role]);
+    const w = wearOf(x, os), t = (x.state.sub ? '내 ' : '산 ') + (w ? w.nm : photoNm(x)), s = x.s;
+    if (!s || s.x == null || s.y == null) return;
+    const px = (s.x - c.x0) / c.W, py = (s.y - c.y0) / c.H;
+    if (px >= .06 && px <= .94 && py >= .06 && py <= .94) P.push({px, py, t: wro(t)}); });
+  return {P, all};
+}
+function drawPins(o, pn){
+  document.querySelectorAll('#car .pin42').forEach(e => e.remove());
+  const lk = document.querySelector(`#car .slide[data-n="${st.lookN}"] .lk`), used = {l: [], r: []};
+  if (lk) pn.P.slice().sort((a, b) => a.py - b.py).forEach(p => {
+    const side = p.px > .5 ? 'r' : 'l'; let y = p.py;
+    if (Math.abs(y - .5) < .075) y = y < .5 ? .425 : .575;   // 사진 넘기기 버튼(가운데 높이)과 안 겹치게
+    used[side].forEach(u => { if (Math.abs(u - y) < .065) y = u + .065; });
+    used[side].push(y);
+    lk.insertAdjacentHTML('beforeend', `<span class="pin42 pd" style="left:${pct(p.px)};top:${pct(p.py)}" aria-hidden="true"></span><span class="pin42 pt ${side}" style="top:${pct(Math.min(.95, y))}">${esc(p.t)}</span>`);
+  });
+  const cap = $('#dcap');
+  if (cap) cap.innerHTML = (pn.all.length ? `<b>사진과 다른 곳: ${pn.all.map(esc).join(' · ')}</b>` : '<span></span>') + `<span>사진 체감 ${o.L.lo}~${o.L.hi}°</span>`;
+}
+// 오늘 바꿀 점(사진과 날씨가 다를 때)과 거울 앞에서 확인할 한 가지: 옷 목록 바로 아래 카드
+function tipsHTML(o, notes){
+  const m = mirOf(o.L);
+  const a = notes.length ? `<div class="tip42 chg reft"><span class="ti" aria-hidden="true">🌡</span><div><p class="tl">${o.dd > 2 ? '참고 코디' : '오늘 바꿀 점'}</p>${notes.map(t => `<p class="tx">${esc(t)}</p>`).join('')}</div></div>` : '';
+  const b = m ? `<div class="tip42 mir"><span class="ti" aria-hidden="true">👀</span><div><p class="tl">거울 앞에서 확인할 한 가지<span class="mk">${MIRN[m.k]}</span></p><p class="tx">${esc(m.t)}</p>${m.why ? `<p class="tw">${esc(m.why)}</p>` : ''}</div></div>` : '';
+  return a || b ? `<div class="tips42${a && b ? ' two' : ''}">${a}${b}</div>` : '';
+}
+
 /* ---------- v9: 사진 아래 한 줄 · 이렇게 입기 · 먼저 살 옷 ---------- */
 const coreOf = L => (STY[L.key] && STY[L.key].core) || lbl(L);
 function whyHTML(o){
@@ -3999,7 +4323,7 @@ function jumpTo(key){
   if (i < 0 && st.level !== L.level) { st.level = L.level; save(); document.querySelectorAll('#lv button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.k === st.level))); st.lookN = 0; curOrder = []; render(); i = curOrder.findIndex(o => o.L.key === key); }
   if (i < 0 && ownOn) { st.own = 'all'; save(); st.lookN = 0; curOrder = []; render(); i = curOrder.findIndex(o => o.L.key === key); }
   if (i < 0) return;
-  st.lookN = i; if (st.grid) setGrid(false);
+  st.lookN = i; setGrid(false);
   const car = $('#car'); if (car) car.scrollLeft = i * car.clientWidth;
   drawBelow(); window.scrollTo({top: $('#look').offsetTop - 8, behavior: 'smooth'});
 }
@@ -4173,19 +4497,18 @@ function stTags(o, R){
   if (o.adj) g.push({c: 'adj', t: `${LEVELS[o.adj].name} 단계 사진`});
   return g;
 }
-// v28: 모아보기·TOP 3 카드의 작은 배지. v41: 이름을 사진 옆 카드와 같게(준비됨 · 내 옷으로 변형 · 핏·기장 확인 · 보유 여부 확인 N개 · 구매 필요 N개 · ○○ 단계 사진)
+// v42: TOP 3 카드의 작은 상태 표시. 이름을 갤러리·상세와 같게(내 옷으로 준비됨 · 대신 입기 · 핏·기장 확인 · 구매 필요 N개 · 보유 여부 확인 N개 · ○○ 단계 사진).
+//      나오는 조건과 수는 v41 그대로(lookStatus·recipeOf). '대신 입기'(사진과 다른 내 옷)와 '준비됨'(사진 속 제품·비슷한 내 옷)은 따로
 function cardTags(o, R, noAdj, vs){
   if (!hasOwn()) return '';
   const s = R.s, g = [];
-  if (s.ready) g.push(['own', '준비됨']);
-  // v40: TOP 3 카드에선 어느 칸이 변형인지(예: '내 옷으로 변형 · 상의·신발', 검토 v39 5번 ⓪). 모아보기 카드는 '내 옷으로 변형'만
+  if (s.ready) g.push(['own', s.exact ? '사진 속 제품으로 준비됨' : '내 옷으로 준비됨']);
   if (s.vari.length) { const vm = s.vari.filter(y => y.state.sub), vp = s.vari.filter(y => !y.state.sub);
-    if (vm.length) g.push(['sub', vs ? `내 옷으로 변형 · ${partsN(vm)}` : '내 옷으로 변형']);
-    if (vp.length) g.push(['sub', vs ? `산 옷으로 변형 · ${partsN(vp)}` : '산 옷으로 변형']); }
+    if (vm.length) g.push(['sub', vs ? `대신 입기 · ${partsN(vm)}` : '대신 입기']);
+    if (vp.length) g.push(['sub', vs ? `산 옷으로 대신 입기 · ${partsN(vp)}` : '산 옷으로 대신 입기']); }
   chkNs(s).forEach(t => g.push(['chk', t]));
   if (R.nB) g.push(['buy', `구매 필요 ${R.nB}개`]);
   if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
-  // v29: 모아보기 사진 위에 이미 '○○ 단계 사진'이 있으면 아래 배지는 안 겹치게(noAdj)
   if (o.adj && !noAdj) g.push(['adj', `${LEVELS[o.adj].name} 단계 사진`]);
   return `<span class="ctg">${g.map(([c, t]) => `<span class="tg sm ${c}">${esc(t)}</span>`).join('')}</span>`;
 }
@@ -4333,7 +4656,7 @@ function bindRBar(box){
   box.querySelectorAll('.rbar [data-rv]').forEach(b => b.addEventListener('click', () => { if (b.disabled) return; const v = b.dataset.rv;
     if (v === 'buy') { openBuyV(); return; }
     if (v === 'grid') { setGrid(!st.grid); return; }
-    bview = false; st.own = v; save(); st.lookN = 0; st.grid = v === 'all'; render(); }));
+    bview = false; st.own = v; save(); st.lookN = 0; st.grid = undefined; render(); }));
 }
 // v26: 국밥템 보기. 사진 칸 자리에 국밥템 TOP 3를 바로 보여 줌. v29: 맨 위 '무엇을 살까' 탭과 같은 화면
 function openBuyV(){
@@ -4624,6 +4947,7 @@ function drawBelow(){
   if (!o) { box.innerHTML = ''; return; }
   const L = o.L, A = curA, N = curOrder.length;
   curLook = L;
+  if (galOn()) { box.innerHTML = ''; drawTasteSet(); return; }
   const notes = changeNotes(L, A);
   const ref = notes.length ? `<p class="reft"><b>${o.dd > 2 ? '참고 코디' : '오늘 바꿀 점'}</b>${notes.map(esc).join('<br>')}</p>` : '';
   const P = abPair();
@@ -4646,14 +4970,23 @@ function drawBelow(){
     const go = d => { if (st.grid) setGrid(false); const car = $('#car'); if (car) car.scrollTo({left: ((st.lookN + d + N) % N) * car.clientWidth, behavior: 'smooth'}); };
     const pb = $('#prevLook'), nb = $('#nextLook'); if (pb) pb.addEventListener('click', () => go(-1)); if (nb) nb.addEventListener('click', () => go(1)); }
   if (nav) nav.querySelector('.cnt').textContent = `${st.lookN + 1} / ${N}`;
-  // v41: 버튼 줄은 주요 행동(이렇게 입기 = 검정 채움 · 착용 제품 = 테두리)과 보조(저장 · 내 취향 아님 = 글자 버튼)만
-  box.innerHTML = (st.grid ? '' : resBarHTML()) + recipeHTML(o, recipeOf(L))
-    + `<div class="lkbar"><span class="lka"><button class="pb" type="button" id="howBtn" aria-pressed="${!!st.how}" title="입는 법과 확인할 점을 이 아래에 펼쳐">이렇게 입기</button>`
-    + `<button class="pb" type="button" id="showBtn" aria-pressed="${st.show}" title="사진 속 상품 목록과 사진 위 점을 보여 줘">착용 제품</button></span>`
-    + `<span class="subs">` + tasteBtns(L) + `</span></div>` + tasteBar(L)
-    + (st.how ? howHTML(L, undefined, true) : '') + (st.show ? itemsHTML(L) : '')
-    + top3HTML() + ref + lvStripHTML(L) + whyLine(o) + (P ? abHTML(P) : '')
+  // v42: 상세 오른쪽 = 맨 위 줄(모아보기로 · 오늘/내일 · 꾸밈 단계) → 날짜·날씨 → 결론 한 문장 → 한 줄 요약 → 칸마다 입을 옷 → 오늘 바꿀 점·거울 앞 한 가지 → 버튼(이렇게 입기만 파랑).
+  //      그 아래는 v41 내용 그대로 카드로: 펼친 이렇게 입기·사진 속 제품 · TOP 3 · 꾸밈 단계를 바꾸면 · 둘 중 고르기 · 첫 장인 이유·출처·비 오는 날 신발. 날씨 메모·사진 없이 제품 추천은 #cond·#outfit
+  //      v41의 '오늘 바꿀 점'(ref)은 옷 목록 바로 아래 카드로, whyLine(다른 분위기 섞음 · 저장한 코디)은 결론 위 작은 표시로 옮김
+  const os42 = ownedSlots(), R42 = recipeOf(L, os42);
+  drawPins(o, pins42(o, R42, os42));
+  box.innerHTML = detTopHTML(o, R42) + listHTML42(R42, L) + tipsHTML(o, notes)
+    + `<div class="cta42 lkbar"><button class="pri" type="button" id="howBtn" aria-pressed="${!!st.how}" title="입는 법과 확인할 점을 이 아래에 펼쳐요">이렇게 입기</button>`
+    + `<button class="qb" type="button" id="showBtn" aria-pressed="${st.show}" title="사진 속 상품 목록과 사진 위 점을 보여 줘요">사진 속 제품</button>` + tasteBtns(L) + `</div>` + tasteBar(L)
+    + (st.how ? `<div class="card42 how42">${howHTML(L, undefined, true)}</div>` : '') + (st.show ? `<div class="card42 it42">${itemsHTML(L)}</div>` : '')
+    + top3HTML() + lvStripHTML(L) + (P ? abHTML(P) : '')
     + `<div class="aux">` + (why ? `<details class="lkm"><summary>${o === curOrder[0] ? '첫 장인 이유' : '고른 이유'} · 어울리는 날</summary>${why}</details>` : '') + srcHTML(L) + alt1 + `</div>`;
+  const tgB = $('#toGal'); if (tgB) tgB.addEventListener('click', backToGal);
+  bindProx(box);
+  box.querySelectorAll('.r42 .rw[data-tg]').forEach(rw => rw.addEventListener('click', e => { if (e.target.closest('[data-rowact],a')) return;
+    const p = document.getElementById(rw.dataset.tg), bt = rw.querySelector('.rx'), on = p.hidden;
+    p.hidden = !on; bt.setAttribute('aria-expanded', String(on)); rw.parentNode.classList.toggle('open', on);
+    if (on) OPEN42.add(rw.dataset.ok); else OPEN42.delete(rw.dataset.ok); }));
   $('#howBtn').addEventListener('click', () => { st.how = !st.how; drawBelow(); });
   box.querySelectorAll('[data-t3]').forEach(b => b.addEventListener('click', () => { const n = +b.dataset.t3; if (st.grid) setGrid(false); const car = $('#car');
     if (car) car.scrollTo({left: n * car.clientWidth, behavior: 'smooth'}); if (n !== st.lookN) { st.lookN = n; drawBelow(); } }));
@@ -4690,7 +5023,7 @@ function drawBelow(){
   box.querySelectorAll('.abc img').forEach(im => im.addEventListener('error', () => im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})), {once: true}));
   imgFail(box);
   box.querySelectorAll('[data-toset]').forEach(b => b.addEventListener('click', () => toSet(b.dataset.toset)));
-  clearTimeout(drawBelow.t); drawBelow.t = setTimeout(() => { if (curLook === L && !st.grid) markSeen(L); }, 2000);
+  clearTimeout(drawBelow.t); drawBelow.t = setTimeout(() => { if (curLook === L && !galOn()) markSeen(L); }, 2000);
   drawTasteSet();
 }
 // 설정 안: 취향 기록 보기·지우기
