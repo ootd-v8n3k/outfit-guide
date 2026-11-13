@@ -2663,18 +2663,19 @@ function drawWxSt(){
   document.querySelectorAll('.wsn47').forEach(e => { e.textContent = noteTxt47(); });
 }
 // v47: 아래 설명 줄의 '다시 받기' 버튼. 버튼으로 다시 받는 중이면 다시 그려도(탭 바꿈 등) '받는 중…'으로 둠. 자동 다시 받기 중에는 v46처럼 누를 수 있음
-const rbHTML47 = () => { const b = !!wxReq && wxReq.retry && sameLL(wxReq, {lat: st.lat, lon: st.lon}); return `<button class="plain sm" type="button" id="retry"${b ? ' disabled' : ''}>${b ? '받는 중…' : '다시 받기'}</button>`; };
+// v48: 내일이 받아 둔 예보 범위 밖일 때 안내의 버튼도 이 함수로 그림(누르면 '받는 중…' · 다시 그려도 유지). 크기는 그 안내 원래대로 'plain'
+const rbHTML47 = (cl = 'plain sm') => { const b = !!wxReq && wxReq.retry && sameLL(wxReq, {lat: st.lat, lon: st.lon}); return `<button class="${cl}" type="button" id="retry"${b ? ' disabled' : ''}>${b ? '받는 중…' : '다시 받기'}</button>`; };
 const srcWarn = () => wxSrc === 'cache' || wxSrc === 'est' ? ' · 실제 예보와 다를 수 있음' : '';
 // 날씨를 기다리는 동안: 세 탭은 눌리고 무엇을 기다리는지 보여 줌. 날씨 없이 되는 것(머리줄 내 옷장 창 · 설정 · 구매 화면의 옷장 관리)은 그대로 씀
 function drawWait(){
   const v = st.mode === 'week' ? 'week' : bview ? 'buy' : 'today';
   drawHead();
-  $('#where').innerHTML = `${esc(st.city)} <em>날씨 불러오는 중…</em> <span class="s">${WAIT_MS / 1000}초 넘게 안 오면 받아 둔 지난 예보나 참고 기온으로 먼저 보여 줌</span>`;
+  $('#where').innerHTML = `${esc(st.city)} <em>날씨 불러오는 중…</em> <span class="s">${WAIT_MS / 1000}초 넘게 안 오면 받아 둔 지난 예보나 참고 기온으로 먼저 보여 줘요</span>`; // v48: 기다리는 화면 문장은 해요체(뜻 그대로)
   $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
   const pn = $('#pastN'); if (pn) pn.hidden = true; document.body.classList.remove('haspast');
   document.body.classList.toggle('wk', v === 'week'); $('#day').hidden = v === 'week';
-  $('#cond').hidden = v !== 'today'; $('#cond').innerHTML = '<p class="msg">날씨 불러오는 중… 오늘의 코디는 날씨를 받은 뒤에 골라</p>';
-  const wk = $('#week'); wk.hidden = v !== 'week'; if (v === 'week') wk.innerHTML = '<p class="msg wait46">날씨 불러오는 중… 일주일 계획은 7일 날씨로 짜서 날씨를 받은 뒤에 보여 줘</p>';
+  $('#cond').hidden = v !== 'today'; $('#cond').innerHTML = '<p class="msg">날씨 불러오는 중… 오늘의 코디는 날씨를 받은 뒤에 골라요</p>';
+  const wk = $('#week'); wk.hidden = v !== 'week'; if (v === 'week') wk.innerHTML = '<p class="msg wait46">날씨 불러오는 중… 일주일 계획은 7일 날씨로 짜서 날씨를 받은 뒤에 보여 줘요</p>';
   let bv = $('#buyV'); if (!bv) { bv = document.createElement('div'); bv.id = 'buyV'; $('#look').before(bv); }
   bv.hidden = v !== 'buy'; bv.innerHTML = v === 'buy' ? waitBuyHTML() : '';
   if (v === 'buy') { bindOwn(bv, () => { drawHead(); render(); }); bv.querySelectorAll('[data-ownedit]').forEach(b => b.addEventListener('click', () => showOwnEdit())); }
@@ -2682,7 +2683,7 @@ function drawWait(){
 }
 function waitBuyHTML(){
   const os = ownedSlots(), rec = Object.keys(OWN.p).length + Object.keys(OWN.s).length + Object.keys(OWN.x).length;
-  return `<div class="bwait46"><p class="msg wait46">날씨 불러오는 중… 국밥템 순위는 그날 날씨에 맞는 코디로 세서 날씨를 받은 뒤에 보여 줘</p>`
+  return `<div class="bwait46"><p class="msg wait46">날씨 불러오는 중… 국밥템 순위는 그날 날씨에 맞는 코디로 세서 날씨를 받은 뒤에 보여 줘요</p>`
     + `<div class="own46"><p class="k">내 옷장 관리 <span class="cn">날씨 없이도 돼 · 이 기기에만 저장</span></p>`
     + `<p class="cn">내 옷장 ${os.size}벌 <button type="button" class="plain sm" data-ownedit>내 옷장 창 열기(핏·기장·백업)</button></p>`
     + ownAddHTML() + ownListHTML() + (rec ? '<button type="button" class="plain sm" id="ownClr" style="margin-top:6px">가진 옷 기록 지우기</button>' : '') + '</div></div>';
@@ -2700,7 +2701,7 @@ function arrCmp(){
   const nm = wxSrc === 'cache' ? `${wxAtTxt(wx.got)}에 받은 지난 예보` : st.mt != null ? `직접 고른 체감 ${st.mt}°` : '참고 기온';
   const nP = localNow(P), nC = localNow(wx), ok = A0 && !A0.past && !A0.nofc && nP.date === nC.date && nP.h === nC.h;
   const f = ok ? feelWin(P, A0.date, A0.s, A0.e) : null;
-  if (!f) return {nw: '', cur: `${nm}${wxSrc === 'est' && st.mt == null ? '으로' : '로'}`, basis: `실제 예보는 ${st.city} 것. 지금 보는 기준과 날짜·외출 시간을 맞춰 비교할 수 없어서 두 기온을 나란히 두지 않았어`};
+  if (!f) return {nw: '', cur: `${nm}${wxSrc === 'est' && st.mt == null ? '으로' : '로'}`, basis: `실제 예보는 ${st.city} 것. 지금 보는 기준과 날짜·외출 시간을 맞춰 비교할 수 없어서 두 기온을 나란히 두지 않았어요`}; // v48: 도착 알림 안 문장 해요체
   const d = new Date(A0.date + 'T12:00:00'), dl = `${d.getMonth() + 1}월 ${d.getDate()}일(${DOW[d.getDay()]})`, win = `${A0.fromNow ? '지금' : A0.s}~${A0.e}시`;
   const cur = st.mt != null && wxSrc === 'est' ? `${nm}로` : `${nm}${wxSrc === 'cache' ? ' 체감' : ''} ${rng(A0.feelMinRaw, A0.feelMaxRaw)}로`;
   return {nw: rng(f[0], f[1]), cur, basis: `두 기온 모두 ${st.city} · ${dl} ${win} 외출 시간 체감(체질 반영 전)`};
@@ -2711,7 +2712,7 @@ function drawArr(){
   if (!n) { n = document.createElement('div'); n.id = 'wxArr'; n.setAttribute('role', 'status'); $('.cbar').after(n); }
   const c = arrCmp();
   n.innerHTML = `<p class="a1"><b>실제 예보${c.nw ? ` 체감 ${c.nw}` : ''} 도착</b> · 지금은 ${esc(c.cur)} 보는 중 <button type="button" class="go" id="wxApply">예보 적용</button></p>`
-    + `<p class="cn">${esc(c.basis)}. 누르면 오늘의 코디·일주일 코디·무엇을 살까를 이 예보로 다시 골라. 누르기 전엔 지금 화면 그대로야</p>`;
+    + `<p class="cn">${esc(c.basis)}. 누르면 오늘의 코디·일주일 코디·무엇을 살까를 이 예보로 다시 골라요. 누르기 전엔 지금 화면 그대로예요</p>`;
   $('#wxApply').addEventListener('click', applyPend);
 }
 function applyPend(){
@@ -2845,7 +2846,7 @@ function render(){
 
   if (A.nofc) {
     $('#where').innerHTML = srcTag() + esc(`${st.city} · ${dLabel}`);
-    $('#cond').innerHTML = `<p class="msg">${esc(dLabel)}은 받아 둔 예보 범위 밖이야. 오늘로 보거나 예보를 다시 받아 줘. <button class="plain" type="button" id="retry">다시 받기</button></p>`;
+    $('#cond').innerHTML = `<p class="msg">${esc(dLabel)}은 받아 둔 예보 범위 밖이에요. 오늘로 보거나 예보를 다시 받아 주세요. ${rbHTML47('plain')}</p>`; // v48: 해요체 + 버튼은 v47 버튼 표시(rbHTML47)
     $('#retry').addEventListener('click', retryWx);
     $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
     return;
@@ -2913,7 +2914,7 @@ function render(){
   const first = pts.length ? pts[0] : key;
   // 제일 중요한 것은 한 줄만 남긴다
   // v10: 예보를 못 받으면 '예보 확인 불가'로 분명히 말하고, 비·눈은 모른다고 함. 기온은 이달 흔한 값 또는 직접 고른 값
-  const estN = wxNote === 'est' ? `<p class="wxn"><span class="wsn47">${esc(noteTxt47())}</span> 지금 코디는 ${A.date.slice(5, 7) * 1}월에 흔한 기온(서울 기준 대략값, 예보 아님)으로 고른 참고 코디야. 비·눈이 올지는 모르니까 나가기 전에 예보를 꼭 확인해. ${rbHTML47()}</p>`
+  const estN = wxNote === 'est' ? `<p class="wxn"><span class="wsn47">${esc(noteTxt47())}</span> 지금 코디는 ${A.date.slice(5, 7) * 1}월에 흔한 기온(서울 기준 대략값, 예보 아님)으로 고른 참고 코디예요. 비·눈이 올지는 모르니까 나가기 전에 예보를 꼭 확인하세요. ${rbHTML47()}</p>`
     + `<div class="mtc"><span>기온 직접 고르기</span>${MT.map(([v, t]) => `<button type="button" data-mt="${v}" aria-pressed="${st.mt === v}">${t}</button>`).join('')}${st.mt != null ? '<button type="button" data-mt="">이달 흔한 값</button>' : ''}</div>` : '';
   const keyL = A.unkRain ? `<p class="key1"><b>비·눈 모름</b>예보를 못 받아서 우산이 필요한지 몰라</p>` : `<p class="key1"><b>${esc(first[0])}</b>${esc(first[1])}</p>`;
   // v25: 비·눈·우산·더위·예보 모름만 늘 보이게. 발열 내의·일교차·단계 팁은 시간별 날씨와 같이 접어 둠(검토 v24 지시 2)
