@@ -1207,6 +1207,64 @@ body.haspast #grid .ghero:has(.hnote) + .gsec42{margin-bottom:8px}
 .wst47.arr{color:#744600;font-weight:700}
 .bwait46 .own46{margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
 .bwait46 .own46 .k{margin:0 0 4px}
+/* v49: 내 옷 사진. 칸 줄은 사진이 있을 때만 작은 사진 칸이 하나 더 생김(없으면 v48 그대로) */
+.r42.ph49r .rw{grid-template-columns:46px 46px minmax(0,1fr) auto 24px}
+.ph49s{width:46px;height:46px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ph49s img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.ph49b{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.ph49b figure{margin:0;background:#fff;border-radius:12px;padding:8px;display:flex;flex-direction:column;align-items:center}
+.ph49b img{display:block;max-height:230px;max-width:250px;object-fit:contain;border-radius:6px}
+.ph49b figcaption{font-size:13.5px;color:var(--ink2);margin-top:5px;min-height:1.2em;max-width:250px;text-align:center;word-break:keep-all}
+.ph49b figcaption b{font-size:12px;color:#fff;background:var(--ink);border-radius:6px;padding:1px 6px;margin-right:2px}
+.r42 .rp p.ph49m{margin:0 0 8px}
+.r42 .rp p.ph49m .lnk42{margin-left:0}
+.oe49{display:inline-flex;align-items:center;gap:4px}
+#ownImp .oe49 button{margin:0}
+.ph49c{width:34px;height:34px;padding:0;border:1px solid var(--bd);border-radius:8px;background:#fff;cursor:pointer;position:relative;flex:none;font:inherit;font-size:11px;color:var(--sub2)}
+.ph49c.add{border-style:dashed;color:var(--sub)}
+.ph49c img{display:block;width:100%;height:100%;object-fit:contain;border-radius:7px}
+.ph49c i{position:absolute;right:-6px;bottom:-6px;font-style:normal;font-size:11px;line-height:16px;min-width:16px;background:var(--ink);color:#fff;border-radius:8px;padding:0 3px;text-align:center}
+.ph49q{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid #d9ad3c;background:#fff8e1;border-radius:10px;padding:6px 10px;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.ph49q button{margin:0!important}
+.ph49q .go{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:5px 12px;cursor:pointer}
+.ph49x{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.ph49x .plain{margin:2px 6px 0 0}
+.ph49x .phfm{margin-top:6px;font-size:13.5px;color:var(--ink2)}
+.ph49x .phfm.bad,#phDlg .phst.bad{color:#8a1f1a;font-weight:700}
+#phDlg{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:35;width:min(660px,calc(100vw - 32px));max-height:86vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 36px rgba(0,27,55,.25);padding:16px 20px 0;font-size:14px;line-height:1.55}
+#phDlg p{margin:0 0 8px}
+#phDlg .ph49h b{font-size:17px}
+#phDlg .phst{min-height:1.4em;font-size:13.5px;color:var(--ink2);margin-top:6px}
+#phDlg .go{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:7px 16px;cursor:pointer}
+#phDlg .impx{position:sticky;bottom:0;margin:8px -20px 0;padding:10px 20px 14px;background:#fff;border-top:1px solid var(--line)}
+.ph49l{list-style:none;margin:0 0 10px;padding:0}
+.ph49l li{display:grid;grid-template-columns:140px minmax(0,1fr);gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.ph49l figure{margin:0;width:140px;height:150px;background:var(--soft);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.ph49l figure img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.ph49l .rep{position:absolute;left:6px;top:6px;background:var(--ink);color:#fff;font-size:12px;border-radius:6px;padding:1px 6px}
+.ph49e label{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--sub2)}
+.ph49e input{flex:1;min-width:0;height:34px;padding:0 10px;border:1px solid var(--bd);font:inherit;font-size:14px}
+.ph49a{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ph49a .plain{margin:0}
+.ph49a .plain:disabled{opacity:.4;cursor:default}
+#crop49{position:fixed;inset:0;z-index:37;background:rgba(25,31,40,.5);display:flex;align-items:center;justify-content:center}
+#crop49 .cb{background:#fff;border-radius:16px;padding:16px 20px;max-width:min(920px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;font-size:14px;line-height:1.55;box-shadow:0 10px 36px rgba(0,0,0,.3)}
+#crop49 p{margin:0 0 8px}
+#crop49 .cs{position:relative;margin:8px auto;overflow:hidden;user-select:none;touch-action:none;background:#000}
+#crop49 .cs img{display:block}
+#crop49 .cr{position:absolute;box-sizing:border-box;border:2px solid #fff;outline:1px solid rgba(0,0,0,.6);box-shadow:0 0 0 9999px rgba(0,0,0,.5);cursor:move}
+#crop49 .ch{position:absolute;width:18px;height:18px;box-sizing:border-box;background:#fff;border:2px solid var(--ink);border-radius:4px}
+#crop49 .ch.nw{left:-10px;top:-10px;cursor:nwse-resize}
+#crop49 .ch.ne{right:-10px;top:-10px;cursor:nesw-resize}
+#crop49 .ch.sw{left:-10px;bottom:-10px;cursor:nesw-resize}
+#crop49 .ch.se{right:-10px;bottom:-10px;cursor:nwse-resize}
+#crop49 .cnm{display:flex;align-items:center;gap:8px;margin:4px 0 8px;font-size:13.5px;color:var(--sub2)}
+#crop49 .cnm input{width:260px;height:34px;padding:0 10px;border:1px solid var(--bd);border-radius:10px;font:inherit;font-size:14px}
+#crop49 .cbt{display:flex;gap:8px;flex-wrap:wrap}
+#crop49 .go{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:8px 18px;cursor:pointer;font:inherit;font-weight:700}
+#phN{position:fixed;left:12px;right:12px;bottom:12px;z-index:42;max-width:620px;margin:0 auto;background:#7a1f1a;color:#fff;padding:8px 12px;font-size:13.5px;line-height:1.5;border-radius:10px;display:flex;gap:10px;align-items:center}
+#phN p{margin:0;flex:1}
+#phN .plain{flex:none}
 </style>
 </head>
 <body>
@@ -3429,6 +3487,7 @@ function bkLink(withBody){
 }
 const bkHTML = () => `<div class="bkup"><p><b>백업 링크</b> <span class="cn">옷장 기록 전부(있음·없음·핏·기장·제품·대신 입기 제외·산 옷 상태·못 쓰는 날)를 링크 하나에 담아. 이 기기 저장소가 지워졌을 때 이 링크를 열면 다시 넣을 수 있어. 만든 뒤에 바꾼 건 안 담기니 바꿀 때마다 새로 만들어</span></p>`
   + `<p class="cn"><b>나만 보관하고 남에게 보내지 마.</b> 암호가 아니라서 링크를 가진 사람은 내용을 풀어 볼 수 있어</p>`
+  + `<p class="cn">옷 사진은 백업 링크에 안 담겨요. 사진은 아래 '옷 사진 파일'로 따로 내려받아 두세요.</p>` // v49
   + `<label><input type="checkbox" class="bkB"> 키·몸무게·발 크기·바지 실측·좋아하는 핏도 넣기</label>`
   + `<button type="button" class="plain" data-bkmk>백업 링크 만들기</button><div class="bkout"></div></div>`;
 function bkApply(o, b, mode){
@@ -3465,6 +3524,7 @@ function showBackupImport(L){
     + `<tr><td>옷장</td><td>${esc(cntText(c, true))}</td><td>${esc(cntText(cur, true))}</td></tr>`
     + `<tr><td>몸 치수</td><td>${b ? esc(bodyText(b)) : '안 담김'}</td><td>${esc(bodyText(curB))}</td></tr></table>`
     + `<p class="cn">일주일 코디 설정·취향·지역·외출 시간은 백업 링크에 안 담겨서 그대로야</p>`
+    + `<p class="cn">옷 사진도 이 링크엔 없어요. 내려받아 둔 옷 사진 파일이 있으면 '내 옷장' 창 아래 '옷 사진 파일'에서 다시 넣어 주세요.</p>` // v49
     + `<p><button type="button" class="go" data-bk="rep">이 링크로 바꾸기</button> 지금 옷장 기록을 지우고 링크 내용으로 바꿔${b ? '. 몸 치수도 링크 값으로 바꿔' : '. 몸 치수는 링크에 없어서 그대로 둬'}</p>`
     + `<p><button type="button" class="plain" data-bk="add">없는 것만 더하기</button> 지금 기록은 그대로 두고 이 기기에 없는 칸만 더해. 이미 적은 칸(있음·없음·핏·기장)은 안 바꿔${b ? '. 몸 치수는 빈 칸만 채워' : ''}</p>`
     + (empty ? '<p class="cn">지금 이 기기 옷장이 비어 있어서 두 방법 결과가 같아</p>' : '')
@@ -4302,13 +4362,15 @@ function rowHTML42(w, i, lay, key){
   const nw = fold.filter(f => f.w && !f.pil).length, nr = fold.filter(f => f.r).length;
   const shd = w.sh && !w.shIn ? `<p class="shd"><span class="lb">사진 속 색</span> ${chip(w.sh)}${esc(w.sh.nm)} · ${esc(w.sh.t)}</p>` : '';
   const alt = w.alt && w.alt.length ? `<p class="alts"><span class="lb">바꿔 입기</span> ${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join(' ')}</p>` : '';
-  const exH = (rel ? `<p class="rl">${esc(rel)}</p>` : '')
+  // v49: '내 ○○' 줄에 그 옷 사진이 있으면 접힌 줄엔 대표 사진 하나, 펼치면 전부 크게(사진 없으면 v48 그대로)
+  const pk49 = PHK49.get(w), ph49 = pk49 ? phBlock(pk49) : '';
+  const exH = ph49 + (rel ? `<p class="rl">${esc(rel)}</p>` : '')
     + exV.map(h => typeof h === 'string' ? `<p>${h}</p>` : `<p class="fd"><span class="lb">${esc(h.fold)}</span> ${esc(h.det)}</p>`).join('')
     + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + shd + alt;
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
-  return `<li class="r42 ${w.c}${op ? ' open' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
+  return `<li class="r42 ${w.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}</div>`
+    + (ph49 ? phT(pk49, 'ph49s') : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}</div>`
     + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
@@ -4683,28 +4745,31 @@ function ownListHTML(skip){
   if (!a.length) return '';
   return `<div class="ownl"><span class="k">적어 둔 가진 옷 ${a.length}개 · 누르면 그 기록만 지움</span>` + a.map(([k, t]) => `<button type="button" class="plain sm" data-ownx="${esc(k)}">${esc(t)} ✕</button>`).join('') + '</div>';
 }
-function ownDel(k){
+// v49: 저장 없이 기록만 바꾸는 부분(ownDel0)을 따로 둠. 사진이 같이 지워지는지 먼저 셀 때 씀
+function ownDel0(k){
   const t = k.slice(0, 1), key = k.slice(2);
   if (t === 's') { delete OWN.s[key]; delete OWN.f[key]; } else if (t === 'x') delete OWN.x[key]; else { delete OWN.p[key]; if (OWN.d[key] && OWN.d[key].st === 'got') delete OWN.d[key]; }
-  saveO();
 }
+function ownDel(k){ ownDel0(k); saveO(); }
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
   box.querySelectorAll('[data-own]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.own, v = b.dataset.v;
-    if (v === '모름') OWN.s[k] = 'similar';
+    const mut = () => { if (v === '모름') OWN.s[k] = 'similar';
     else if (v === '있음') { OWN.s[k] = 'no'; delete OWN.f[k]; for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; } }
-    else delete OWN.s[k];
-    saveO(); after(); }));
+    else delete OWN.s[k]; };
+    // v49: 있음 → 없음으로 바꿔 그 칸 사진이 지워지면 먼저 물어봄(사진이 없으면 전처럼 바로)
+    phGuard(b, [k], mut, `'${slotName(k)}' 칸을 없음으로 바꾸면`, '없음으로 바꾸기', () => { saveO(); after(); }); }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); after(); }));
-  box.querySelectorAll('[data-ownx]').forEach(b => b.addEventListener('click', () => { ownDel(b.dataset.ownx); after(); }));
+  box.querySelectorAll('[data-ownx]').forEach(b => b.addEventListener('click', () => { const x = b.dataset.ownx, sk = ownxSlot(x);
+    phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); after(); }); }));
   // v40: 지우기 전에 확인(검토 v39 2번). 브라우저 confirm()은 앱 안 브라우저에서 막힐 수 있어 화면 안 상자로. 지운 뒤 머리글도 바로 고침(전엔 새로고침 전까지 'N벌')
   const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => {
     const q = document.createElement('div'); q.className = 'clrq'; q.setAttribute('role', 'alertdialog');
-    q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p><button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
+    q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p>${phAllN() ? `<p>옷 사진 ${phAllN()}장도 같이 지워져요. '내 옷장' 창 아래 '옷 사진 파일'로 먼저 내려받아 두면 다시 넣을 수 있어요.</p>` : ''}<button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
     oc.replaceWith(q);
     q.addEventListener('click', e => { const y = e.target.closest('[data-clr]'); if (!y) return;
-      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; saveO(); drawHead(); after(); } else q.replaceWith(oc); });
+      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; saveO(); if (phAllN()) phDelAll(); drawHead(); after(); } else q.replaceWith(oc); });
   });
   const og = box.querySelector('.oaGo'); if (og) og.addEventListener('click', () => { const k = box.querySelector('.oaK').value + '|' + box.querySelector('.oaC').value;
     if (okSlot(k)) { OWN.s[k] = 'similar'; saveO(); after(); } });
@@ -4811,10 +4876,10 @@ function recipeOf(L, os){
       const lv = x.state.lv, ph = photoNm(x), inT = !x.anyTop && !x.info && (r !== 'top' || !s.req.some(y => y.role === 'outer'));
       const tgN = x.anyTop && tg ? `태그엔 ${CN[tg.col] || tg.col} ${kindOf(tg.p)}${jongOf(kindOf(tg.p)) ? '이' : '가'} 있지만 사진에선 겉옷에 가려 안 보임` : '';
       // bd: 칸 상태 배지 · n: 둘째 줄부터(한 줄에 하나씩) · shIn: 사진 속 색을 첫 줄에 붙임 · act: 줄 끝 버튼(fit·len 고르기, 가진 옷 적기)
-      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0;
+      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0, k49 = null; // v49: k49 = 이 줄 '내 ○○'의 칸 키(사진 보여 주기만)
       if (!own) { c = 'ph'; t = x.info ? '사진에서 신발 종류·색 확인 못 함' : x.anyTop ? '안에 입을 상의' : ph; if (x.anyTop) n.push('겉옷에 가려 거의 안 보임'); if (tgN) n.push(tgN); }
       else if (lv === -1) { c = 'info'; t = '가진 신발 중 골라 신기'; bd = '신발 확인'; n.push('사진에서 신발 종류·색을 못 봐서 사지 않고 가진 신발 중 골라 신음'); }
-      else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L);
+      else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L); k49 = w && w.k ? w.k : null;
         // v27: 대신 입는 옷과 대신 산 옷은 '변형'(사진과 분위기가 달라짐), 통·기장을 모르는 같은 종류·색은 '확인 필요'
         if (x.state.sub || x.state.pick) { c = 'sub'; t = x.state.sub ? `내 ${nm}` : `산 ${nm}`; bd = '변형 매치'; n.push(`사진 속 ${ph} 대신 · ${varNm(x, os)}`);
           const pw = x.state.sub && subsFor(x, os).find(y => y.k === x.state.sub); if (pw && pw.pilot) { n.push(pw.why); pil = 1; } }
@@ -4841,7 +4906,7 @@ function recipeOf(L, os){
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
       // v37: 내 옷으로 됨·확인 필요 칸이어도 사진과 같다고 확정 못 하는 점(STY rchk, 검토 v37 1: 집업 기장·데님 색·워싱)
       { const rc = own && (c === 'own' || c === 'chk') && ((STY[L.key] || {}).rchk || []).find(y => y.role === r && (!y.slot || y.slot === x.slot)); if (rc) n.push(rc.t); }
-      rows.push(Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {})); // v46: ak = 모양이 안 보이는 신발 칸(표시만)
+      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}); if (k49 && /^내 /.test(t)) PHK49.set(row, k49); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만)
       if (inT) tt.push(nm);
     });
   });
@@ -5092,18 +5157,19 @@ function showOwnEdit(focus){
   const old = document.getElementById('ownImp'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '내 옷장');
   const body = () => { const os = [...ownedSlots()];
-    const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg"><span class="k">${RN[r]} ${ks.length}</span>${ks.map(k => `<button type="button" class="plain sm" data-oex="${esc(k)}" aria-label="${esc(ownNm(k))} 지우기">${esc(ownNm(k))} ✕</button>`).join('')}</div>` : ''; }).join('');
-    return `<p><b>내 옷장 ${os.length}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}${impFRows(os)}`; };
-  d.innerHTML = `<div class="oeb">${body()}</div>${bkHTML()}<div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`; d._ref = () => { const x = d.querySelector('.oeb'); if (x) x.innerHTML = body(); };
+    const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg"><span class="k">${RN[r]} ${ks.length}</span>${ks.map(phChip).join('')}</div>` : ''; }).join('');
+    return `<p><b>내 옷장 ${os.length}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${os.length ? `<p class="cn">옷 이름 왼쪽 네모를 누르면 그 옷 사진을 올리거나 바꿀 수 있어요(한 칸에 ${PHMAX}장까지).</p>` : ''}${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}${impFRows(os)}`; };
+  // v49: 백업 링크 아래 '옷 사진 파일'(내려받기 · 다시 넣기)
+  d.innerHTML = `<div class="oeb">${body()}</div>${bkHTML()}<div class="ph49x">${phFileHTML()}</div><div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`; d._ref = () => { const x = d.querySelector('.oeb'); if (x) x.innerHTML = body(); phRefFile(); };
   const live = () => { saveO(); const sc = d.scrollTop; d.querySelector('.oeb').innerHTML = body(); d.scrollTop = sc; if (typeof wx !== 'undefined' && wx) render(); else drawWait(); };
   d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.oex) { ownDelSlot(b.dataset.oex); live(); return; }
+    if (b.dataset.oex) { const k = b.dataset.oex; phGuard(b.closest('.oe49') || b, [k], () => ownDelSlot(k), `'${ownNm(k)}' 칸을 지우면`, '지우기', live); return; } // v49: 사진도 지워지면 먼저 물어봄
     if (b.dataset.ownf) { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v; OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; live(); return; }
     if (b.dataset.ownall) { const f = b.dataset.ownall, v = b.dataset.v;
       [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; }); live(); return; }
     if (b.classList.contains('oaGo')) { const k = d.querySelector('.oaK').value + '|' + d.querySelector('.oaC').value; if (okSlot(k)) { OWN.s[k] = 'similar'; live(); } return; }
     if (b.hasAttribute('data-bkmk')) { const wb = d.querySelector('.bkB').checked, url = bkLink(wb), out = d.querySelector('.bkout');
-      out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · ${esc(cntText(ownCount(OWN), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'}</p><textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
+      out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · ${esc(cntText(ownCount(OWN), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'} · 옷 사진은 안 담김</p><textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
       out.querySelector('.bkT').value = url; return; }
     if (b.hasAttribute('data-bkcp')) { const ta = d.querySelector('.bkT'), m = d.querySelector('.bkm'), sel = () => { ta.focus(); ta.select(); m.textContent = '자동 복사가 안 돼서 링크 글자를 골라 뒀어. Ctrl+C(폰은 길게 눌러 복사)로 복사해 줘'; };
       try { navigator.clipboard.writeText(ta.value).then(() => { m.textContent = '복사했어. 나만 보는 곳(메모 등)에 붙여 둬'; }, sel); } catch(e){ sel(); } return; }
@@ -6288,17 +6354,19 @@ function partRow(x, p, os, i, lay){
   const wk = washKey(x, os);
   if ((s.code === 'ok' || s.code === 'soft' || s.code === 'wash') && wk) act += `<button type="button" class="plain sm" data-wash="${esc(wk)}" aria-pressed="${s.code === 'wash'}">이날 세탁 중</button>`;
   const ST = wSt45(x), mk = wMk44(x), title = mk ? (W5.my ? (W5.my === 2 ? '산 ' : '내 ') + W5.nm : '내 ' + slotName(mk)) : W5.nm;
+  // v49: '내 ○○' 줄이면 그 옷 사진(오늘의 코디 칸 줄과 같게)
+  const pk49 = /^내 /.test(title) ? wKey49(x, os, mk) : null, ph49 = pk49 ? phBlock(pk49) : '';
   const rc = (s.code === 'ok' || s.code === 'soft') && !s.sub && p && p.L && ((STY[p.L.key] || {}).rchk || []).find(y => y.role === x.role && (!y.slot || y.slot === x.slot));
   const insd = mk && mk !== x.slot && x.slot && !/대신/.test(s.t) ? `사진 속 ${nm} 대신` : '';
   // 접힌 줄에 보일 한 줄: 대신 입기는 '사진 속 ○○ 대신', 준비됨은 없음(펼치면), 나머지는 그날 상태 글
   // v45: 가린 상의 칸은 접힌 줄에도 '겉옷에 가려 거의 안 보이는 칸'(앞뒤 날 상의와 겹치지 않게 골랐으면 그것도)
   const one = wHid45(x) ? HIDN + (/앞뒤 날과 다른 상의로 고름/.test(s.t) ? ' · 앞뒤 날과 다른 상의로 고름' : '') : wAk46(x) ? AKN46 : ST.c === 'own' ? '' : ST.c === 'sub' ? (insd || `사진 속 ${nm} 대신`) : s.t;
-  const exH = (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + (act ? `<p class="ra44">${act}</p>` : '');
+  const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + (act ? `<p class="ra44">${act}</p>` : '');
   const stH = ST.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(ST.t)}</span>` : ST.t ? `<span class="cp ${ST.c}">${esc(ST.t)}</span>` : '';
   const key = `${p.d}|${p.L.key}|${i}`, op = OPEN44.has(key), id = 'wrp' + i;
-  return `<li class="r42 ${ST.c}${op ? ' open' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
+  return `<li class="r42 ${ST.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
     + `<span class="tile${lay ? ' two' : ''}">${RN[x.role]}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}</div>`
+    + (ph49 ? phT(pk49, 'ph49s') : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}</div>`
     + `<div class="rs">${stH}${rc ? '<span class="wk42 ref">참고할 점 1</span>' : ''}</div>`
     + `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(RN[x.role] + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button></div>`
     + `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div></li>`;
@@ -6507,9 +6575,10 @@ function bindWeek(){
       if (c.length > 1) { D.key = c[(i + st1 + c.length) % c.length].L.key; D.pin = true; delete D.why; } saveW(); redraw(true); return; }
     if (b.dataset.swap) { D.key = b.dataset.swap; D.pin = true; delete D.why; saveW(); redraw(true); return; }
     if (b.dataset.have) { OWN.s[b.dataset.have] = 'similar'; saveO(); redraw(true); return; }
-    if (b.dataset.unhave) { delete OWN.s[b.dataset.unhave]; delete OWN.f[b.dataset.unhave]; saveO(); redraw(true); return; }
+    if (b.dataset.unhave) { const k = b.dataset.unhave; phGuard(b, [k], () => { delete OWN.s[k]; delete OWN.f[k]; }, `'${slotName(k)}' 있음을 취소하면`, '있음 취소', () => { saveO(); redraw(true); }); return; }
     if (b.dataset.nosub) { OWN.x[b.dataset.nosub] = 1; saveO(); redraw(true); return; }
-    if (b.dataset.ownx) { const op = !!b.closest('details[open]'); ownDel(b.dataset.ownx); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } return; }
+    if (b.dataset.ownx) { const op = !!b.closest('details[open]'), x = b.dataset.ownx, sk = ownxSlot(x);
+      phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } }); return; }
     if (b.dataset.wash) { const k = b.dataset.wash, a = wDays(k).slice(), j = a.indexOf(sel); if (j >= 0) a.splice(j, 1); else a.push(sel);
       const t0 = localNow(wx).date, keep = a.filter(x => x >= t0).sort(); if (keep.length) OWN.w[k] = keep; else delete OWN.w[k]; saveO(); redraw(true); return; }
     if (b.dataset.bst != null) { const wrap = b.closest('.bact'), k = wrap.dataset.k, v = b.dataset.bst;
@@ -6588,11 +6657,309 @@ addEventListener('storage', e => {
   if (hk.length) hold(hk, gone);
 });
 
+/* ---------- v49: 내 옷 사진 ----------
+   이 브라우저 IndexedDB(KEY + '-ph')에만 저장. 서버·깃허브·링크로 안 나감. 추천·순서·TOP 3·일주일·구매 순위·칸 판정에는 안 씀(보여 주기만).
+   칸(종류|색)마다 최대 4장, 첫 장이 대표. 올릴 때 자르기(안 잘라도 됨) → 긴 쪽 800px 이하 JPEG로 캔버스에 다시 그려 저장해서
+   원본 파일의 위치 정보(EXIF) 같은 부가 정보는 안 따라옴. 백업 링크(#b=)·공유 링크(#o=)엔 안 담김 → 사진 파일 하나로 내려받기·다시 넣기.
+   저장 실패는 화면 아래 빨간 줄로 알림. 사진이 하나도 없으면 DB를 만들지도 않고 화면도 v48 그대로 */
+const PHMAX = 4, PHLONG = 800, PHQ = .85, PHNM = 20, PHDB = KEY + '-ph', PHAPP = 'outfit-guide-photos';
+const PH = {db: null, ok: null, map: new Map(), urls: [], bc: null,
+  // 내려받기(시험본에선 이 함수를 바꿔 파일 내용을 확인)
+  dl: (b, nm) => { const u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = nm; a.hidden = true; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }};
+const PHK49 = new WeakMap(); // 칸 줄(recipeOf rows) → 그 줄의 '내 ○○' 칸 키. 줄 객체엔 아무것도 안 붙임(판정 비교 그대로)
+let PHIMP = null, PHMSG = null;
+function phOpen(){
+  if (PH.ok) return PH.ok;
+  PH.ok = new Promise(res => { let r;
+    try { r = indexedDB.open(PHDB, 1); } catch(e){ PH.ok = null; res(null); return; }
+    r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('ph')) r.result.createObjectStore('ph', {keyPath: 'id'}); };
+    r.onsuccess = () => { const db = r.result; db.onversionchange = () => { db.close(); if (PH.db === db) { PH.db = null; PH.ok = null; } }; PH.db = db; res(db); };
+    r.onerror = () => { PH.ok = null; res(null); };
+  });
+  return PH.ok;
+}
+async function phTx(mode, fn){
+  const db = await phOpen(); if (!db) throw Object.assign(new Error('no db'), {name: 'NoDB'});
+  return new Promise((res, rej) => { let t, out;
+    try { t = db.transaction('ph', mode); out = fn(t.objectStore('ph')); } catch(e){ try { if (t) t.abort(); } catch(_){} rej(e); return; }
+    t.oncomplete = () => res(out); t.onabort = () => rej(t.error || Object.assign(new Error('abort'), {name: 'AbortError'})); });
+}
+async function phLoad(){
+  let all;
+  try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ return false; }
+  const old = PH.urls; PH.urls = []; PH.map = new Map();
+  all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => (a.o - b.o) || (a.t - b.t)).forEach(r => {
+    const u = URL.createObjectURL(r.b); PH.urls.push(u);
+    const a = PH.map.get(r.k) || []; a.push({id: r.id, k: r.k, n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, u, sz: r.b.size}); PH.map.set(r.k, a); });
+  setTimeout(() => old.forEach(u => URL.revokeObjectURL(u)), 5000);
+  return true;
+}
+const phList = k => PH.map.get(k) || [];
+const phN = ks => ks.reduce((n, k) => n + phList(k).length, 0);
+const phAllN = () => [...PH.map.values()].reduce((n, a) => n + a.length, 0);
+const phId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+// 다른 탭에 알림(사진은 안 보냄, 바뀌었다는 신호만). 받은 탭은 자기 저장소에서 다시 읽음
+try { PH.bc = new BroadcastChannel(PHDB); PH.bc.onmessage = () => { phLoad().then(() => phRedraw(true)); }; } catch(e){}
+function phRedraw(other){
+  const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref();
+  const pd = document.getElementById('phDlg'), ae = document.activeElement;
+  if (pd && pd._ref && !(other && ae && pd.contains(ae) && ae.tagName === 'INPUT')) pd._ref();
+  if (typeof wx !== 'undefined' && wx) render();
+}
+const phChanged = () => { try { if (PH.bc) PH.bc.postMessage('ch'); } catch(e){} phRedraw(); };
+function phFail(e, what){
+  const m = `${what} 못했어요. ` + (e && e.name === 'QuotaExceededError' ? '이 브라우저의 저장 공간이 부족해요. 다른 사진을 지우고 다시 해 주세요.'
+    : e && e.name === 'NoDB' ? '이 브라우저에서 사진 저장소를 열 수 없어요(시크릿 창에선 저장이 안 될 수 있어요).' : '잠시 뒤 다시 해 주세요. 그래도 안 되면 사진 파일로 내려받아 두세요.') + ' 사진은 그대로예요.';
+  let n = document.getElementById('phN');
+  if (!n) { n = document.createElement('div'); n.id = 'phN'; n.setAttribute('role', 'alert'); document.body.appendChild(n); }
+  n.innerHTML = `<p>${esc(m)}</p><button type="button" class="plain sm">닫기</button>`; n.querySelector('button').addEventListener('click', () => n.remove());
+  phSay(m, 1);
+}
+function phSay(m, bad){ const s = document.querySelector('#phDlg .phst'); if (s) { s.textContent = m; s.classList.toggle('bad', !!bad); } }
+async function phWrite(what, fn){
+  try { await phTx('readwrite', fn); } catch(e){ phFail(e, what); return false; }
+  await phLoad(); phChanged(); return true;
+}
+const phAdd = (k, r) => phWrite('사진을 저장하지', s => { const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0); s.put({id: phId(), k, n: r.n || '', o, b: r.b, w: r.w, h: r.h, t: Date.now()}); });
+const phUpd = (id, v, what) => phWrite(what, s => { const q = s.get(id); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, v, {t: Date.now()})); }; });
+const phRep = (id, r) => phUpd(id, {b: r.b, w: r.w, h: r.h}, '사진을 바꾸지');
+const phName = (id, n) => phUpd(id, {n}, '사진 이름을 저장하지');
+function phMove(k, id, d){
+  const a = phList(k).map(p => p.id), i = a.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= a.length) return Promise.resolve(false);
+  [a[i], a[j]] = [a[j], a[i]];
+  return phWrite('사진 순서를 바꾸지', s => a.forEach((x, o) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; }));
+}
+const phDel = (ids, what) => ids.length ? phWrite(what || '사진을 지우지', s => ids.forEach(id => s.delete(id))) : Promise.resolve(true);
+const phDelAll = () => phDel([...PH.map.values()].flat().map(p => p.id));
+// 시작: 사진 저장소가 있을 때만 읽음(없으면 만들지 않음). 사진이 있을 때만 다시 그림
+async function phInit(){
+  try { if (indexedDB.databases) { const l = await indexedDB.databases(); if (!l.some(d => d.name === PHDB)) return; } } catch(e){}
+  if (await phLoad() && PH.map.size) phRedraw();
+}
+// 칸 줄의 작은 대표 사진 · 펼친 곳의 큰 사진들
+const phT = (k, cls) => { const a = phList(k); return a.length ? `<span class="${cls}"><img class="ph49i" src="${a[0].u}" alt="" draggable="false"></span>` : ''; };
+function phBlock(k){ const a = phList(k); if (!a.length) return '';
+  return `<div class="ph49b">${a.map((p, i) => `<figure><img class="ph49i" src="${p.u}" alt="${esc(`내 ${ownNm(k)} 사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false"><figcaption>${i ? '' : '<b>대표</b> '}${p.n ? esc(p.n) : i ? `사진 ${i + 1}` : ''}</figcaption></figure>`).join('')}</div>`
+    + `<p class="ph49m"><button type="button" class="lnk42" data-phed="${esc(k)}">사진 관리</button></p>`; }
+// 그림이 깨지면 그 자리를 지움(빈 칸·깨진 그림이 안 보이게)
+document.addEventListener('error', e => { const t = e.target; if (!t || !t.classList || !t.classList.contains('ph49i')) return;
+  const li = t.closest('.ph49r'); if (li) li.classList.remove('ph49r');
+  const w = t.closest('.ph49s, .ph49b figure'); if (w) w.remove(); else t.remove(); }, true);
+// 일주일 칸 줄의 '내 ○○' 칸 키(wNm45와 같은 길)
+function wKey49(x, os, mk){ const s = x.ds; if (s.code !== 'ok' && s.code !== 'soft') return null;
+  if ((x.anyTop || x.anyKind) && s.free && s.pick) return okSlot(s.pick) ? s.pick : null;
+  const w = wearOf(Object.assign({}, x, {state: s}), os || ownedSlots()); if (w) return w.k || null;
+  return mk && okSlot(mk) ? mk : null; }
+// 내 옷장 창: 옷 이름 왼쪽 작은 사진 칸
+const phChip = k => { const a = phList(k), nm = ownNm(k);
+  return `<span class="oe49">` + (a.length ? `<button type="button" class="ph49c" data-phed="${esc(k)}" aria-label="${esc(nm)} 사진 ${a.length}장 보기·바꾸기" title="사진 ${a.length}장"><img class="ph49i" src="${a[0].u}" alt="" draggable="false">${a.length > 1 ? `<i>${a.length}</i>` : ''}</button>`
+    : `<button type="button" class="ph49c add" data-phed="${esc(k)}" aria-label="${esc(nm)} 사진 올리기" title="사진 올리기">사진</button>`)
+    + `<button type="button" class="plain sm" data-oex="${esc(k)}" aria-label="${esc(nm)} 지우기">${esc(nm)} ✕</button></span>`; };
+/* 칸을 지우거나 없음으로 바꿀 때: 바꾼 뒤 그 칸이 더는 '있음'이 아니고 사진이 있으면 먼저 물어봄. 사진이 없으면 바로(v48과 같음).
+   mut은 OWN만 바꾸고 저장은 안 하는 함수. 먼저 복사본에 해 보고(phLost) 사라지는 칸을 셈 */
+function phLost(ks, mut){ const keep = {s: OWN.s, p: OWN.p, d: OWN.d, f: OWN.f, x: OWN.x};
+  Object.keys(keep).forEach(z => { OWN[z] = Object.assign({}, keep[z]); });
+  let lost = []; try { mut(); const os = ownedSlots(); lost = ks.filter(k => !os.has(k)); } finally { Object.assign(OWN, keep); }
+  return lost; }
+function phGuard(el, ks, mut, what, yes, after){
+  const lost = phLost(ks, mut).filter(k => phList(k).length), run = () => { mut(); after(); };
+  if (!lost.length || !el) { run(); return; }
+  const n = phN(lost), ids = lost.flatMap(k => phList(k).map(p => p.id));
+  const q = document.createElement('span'); q.className = 'ph49q'; q.setAttribute('role', 'alertdialog');
+  q.innerHTML = `<span>${esc(what)} 이 칸 사진 ${n}장도 같이 지워져요.</span> <button type="button" class="go">${esc(yes)}</button><button type="button" class="plain sm">그대로 두기</button>`;
+  el.replaceWith(q);
+  const [by, bn] = q.querySelectorAll('button');
+  by.addEventListener('click', e => { e.stopPropagation(); run(); phDel(ids); });
+  bn.addEventListener('click', e => { e.stopPropagation(); q.replaceWith(el); });
+}
+/* 칸 하나의 사진 창: 올리기 · 이름 · 앞으로/뒤로(첫 장이 대표) · 바꾸기 · 지우기 */
+function phEdit(k){
+  if (!okSlot(k)) return;
+  const old = document.getElementById('phDlg'); if (old) old.remove();
+  const d = document.createElement('div'); d.id = 'phDlg'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
+  const fi = Object.assign(document.createElement('input'), {type: 'file', accept: 'image/jpeg,image/png,image/webp', className: 'ph49fi'}); fi.hidden = true;
+  let mode = null;
+  const body = () => { const a = phList(k), nm = ownNm(k);
+    d.setAttribute('aria-label', `내 ${nm} 사진`);
+    return `<div class="phb"><p class="ph49h"><b>내 ${esc(nm)} 사진</b> <span class="cn">${a.length}/${PHMAX}장 · 첫 장이 대표 사진이에요</span></p>`
+      + (a.length ? `<ol class="ph49l">${a.map((p, i) => `<li data-id="${esc(p.id)}"><figure><img class="ph49i" src="${p.u}" alt="${esc(`사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false">${i ? '' : '<b class="rep">대표</b>'}</figure>`
+        + `<div class="ph49e"><label>이름 <input type="text" class="ph49n" maxlength="${PHNM}" value="${esc(p.n)}" placeholder="예: 발목 기장 (안 적어도 돼요)" aria-label="사진 ${i + 1} 이름"></label>`
+        + `<span class="ph49a"><button type="button" class="plain sm" data-phmv="-1"${i ? '' : ' disabled'}>앞으로</button><button type="button" class="plain sm" data-phmv="1"${i < a.length - 1 ? '' : ' disabled'}>뒤로</button>`
+        + `<button type="button" class="plain sm" data-phrp>바꾸기</button><button type="button" class="plain sm" data-phdl>지우기</button></span></div></li>`).join('')}</ol>` : '<p class="cn">아직 올린 사진이 없어요.</p>')
+      + (a.length < PHMAX ? `<p><button type="button" class="go" data-phadd>사진 올리기</button></p>` : `<p class="cn">한 칸에 ${PHMAX}장까지 올릴 수 있어요. 다른 사진으로 하려면 '바꾸기'를 눌러 주세요.</p>`)
+      + `<p class="cn">사진은 이 브라우저에만 저장되고 어디로도 보내지 않아요. 백업 링크에는 안 담기니 '내 옷장' 창 아래 '옷 사진 파일'로 따로 내려받아 두세요.</p>`
+      + `<p class="phst" role="status"></p></div>`; };
+  d.innerHTML = `${body()}<div class="impx"><button type="button" class="plain" data-phx>닫기</button></div>`; d.appendChild(fi);
+  d._ref = () => { const x = d.querySelector('.phb'); if (x) x.outerHTML = body(); };
+  d.addEventListener('click', async e => { const b = e.target.closest('button'); if (!b || b.disabled) return;
+    const li = b.closest('li[data-id]'), id = li && li.dataset.id;
+    if (b.hasAttribute('data-phx')) { d.remove(); return; }
+    if (b.hasAttribute('data-phadd')) { mode = {add: 1}; fi.value = ''; fi.click(); return; }
+    if (b.hasAttribute('data-phrp')) { mode = {rep: id}; fi.value = ''; fi.click(); return; }
+    if (b.dataset.phmv) { if (await phMove(k, id, +b.dataset.phmv)) phSay(+b.dataset.phmv < 0 ? '앞으로 옮겼어요.' : '뒤로 옮겼어요.'); return; }
+    if (b.hasAttribute('data-phdl')) { const q = document.createElement('span'); q.className = 'ph49a ph49q'; q.setAttribute('role', 'alertdialog');
+      q.innerHTML = `<span>이 사진을 지울까요?</span> <button type="button" class="go" data-phdy>지우기</button><button type="button" class="plain sm" data-phdn>취소</button>`; b.parentElement.replaceWith(q); return; }
+    if (b.hasAttribute('data-phdy')) { if (await phDel([id])) phSay('사진을 지웠어요.'); return; }
+    if (b.hasAttribute('data-phdn')) { d._ref(); return; } });
+  d.addEventListener('change', async e => { const t = e.target; if (!t.classList || !t.classList.contains('ph49n')) return;
+    const id = t.closest('li').dataset.id, v = t.value.trim().slice(0, PHNM); if (await phName(id, v)) phSay(v ? '이름을 저장했어요.' : '이름을 지웠어요.'); });
+  fi.addEventListener('change', async () => { const f = fi.files && fi.files[0], m = mode; mode = null; if (!f || !m) return;
+    const r = await phCrop(f, k, !!m.add); if (!r) return;
+    if (m.add) { if (phList(k).length >= PHMAX) { phSay(`한 칸에 ${PHMAX}장까지 올릴 수 있어요.`, 1); return; } if (await phAdd(k, r)) phSay('사진을 올렸어요.'); }
+    else if (await phRep(m.rep, r)) phSay('사진을 바꿨어요.'); });
+  document.body.appendChild(d);
+  const f0 = d.querySelector('[data-phadd]') || d.querySelector('[data-phx]'); if (f0) f0.focus();
+}
+/* 자르기 창: 네 모서리를 끌어 자르고 가운데를 끌어 옮김. 안 자르면 사진 전체. 올리기 → 긴 쪽 800px 이하로 줄여 JPEG로 다시 그림 */
+function phCrop(file, k, withName){
+  return new Promise(async done => {
+    const say = m => phSay(m, 1);
+    if (!file || (!/^image\/(jpeg|png|webp)$/.test(file.type || '') && !/\.(jpe?g|png|webp)$/i.test(file.name || ''))) { say('jpg·png 사진만 올릴 수 있어요.'); done(null); return; }
+    if (file.size > 40 * 1048576) { say('사진 파일이 너무 커요(40MB 넘음). 다른 사진을 골라 주세요.'); done(null); return; }
+    // decode()는 화면이 그려지지 않는 동안(창이 가려졌을 때) 끝나지 않을 수 있어서 load 이벤트로 기다림
+    const u = URL.createObjectURL(file), im = new Image();
+    const okL = await new Promise(r => { im.onload = () => r(true); im.onerror = () => r(false); im.src = u; });
+    if (!okL) { URL.revokeObjectURL(u); say('이 사진은 열 수 없어요. jpg·png 사진을 골라 주세요.'); done(null); return; }
+    const W = im.naturalWidth, H = im.naturalHeight; if (!W || !H) { URL.revokeObjectURL(u); say('이 사진은 열 수 없어요. jpg·png 사진을 골라 주세요.'); done(null); return; }
+    let R = {x: 0, y: 0, w: W, h: H}, sc = 1, drag = null;
+    const MIN = Math.max(16, Math.min(W, H) * .05);
+    const c = document.createElement('div'); c.id = 'crop49'; c.setAttribute('role', 'dialog'); c.setAttribute('aria-modal', 'true'); c.setAttribute('aria-label', `내 ${ownNm(k)} 사진 자르기`);
+    c.innerHTML = `<div class="cb"><p><b>옷만 남게 잘라 주세요</b> <span class="cn">네 모서리를 끌면 잘리고, 가운데를 끌면 옮겨져요. 얼굴이나 방 안 물건·글자가 보이면 잘라 내 주세요. 안 잘라도 돼요.</span></p>`
+      + `<div class="cs"><img alt="" draggable="false"><div class="cr" data-h="move">${['nw', 'ne', 'sw', 'se'].map(h => `<span class="ch ${h}" data-h="${h}"></span>`).join('')}</div></div>`
+      + `<p class="cn csz"></p>` + (withName ? `<label class="cnm">이름 <input type="text" maxlength="${PHNM}" placeholder="예: 발목 기장 (안 적어도 돼요)"></label>` : '')
+      + `<p class="cn">올리면 긴 쪽을 ${PHLONG}px 안팎으로 줄여 다시 저장해요. 원본 파일의 위치 정보 같은 부가 정보는 저장하지 않아요.</p>`
+      + `<div class="cbt"><button type="button" class="go" data-cok>올리기</button><button type="button" class="plain" data-cfull>자르기 처음으로</button><button type="button" class="plain" data-cno>취소</button></div></div>`;
+    document.body.appendChild(c);
+    const img = c.querySelector('.cs img'), cr = c.querySelector('.cr'), cs = c.querySelector('.cs'); img.src = u;
+    const out = () => { const s = Math.min(1, PHLONG / Math.max(R.w, R.h)); return [Math.max(1, Math.round(R.w * s)), Math.max(1, Math.round(R.h * s))]; };
+    const draw = () => { Object.assign(cr.style, {left: R.x * sc + 'px', top: R.y * sc + 'px', width: R.w * sc + 'px', height: R.h * sc + 'px'});
+      const [ow, oh] = out(); c.querySelector('.csz').textContent = (R.x === 0 && R.y === 0 && R.w === W && R.h === H ? '자르지 않음' : `자른 크기 ${Math.round(R.w)}×${Math.round(R.h)}`) + ` · 저장 크기 ${ow}×${oh}`; };
+    const lay = () => { const mw = Math.min(860, innerWidth - 80), mh = Math.max(220, Math.min(520, innerHeight - 290)); sc = Math.min(mw / W, mh / H, 1);
+      const dw = Math.round(W * sc) + 'px', dh = Math.round(H * sc) + 'px'; img.style.width = dw; img.style.height = dh; cs.style.width = dw; cs.style.height = dh; draw(); };
+    cr.addEventListener('pointerdown', e => { const h = e.target.dataset && e.target.dataset.h; if (!h) return; e.preventDefault(); drag = {h, x: e.clientX, y: e.clientY, R: Object.assign({}, R)}; try { cr.setPointerCapture(e.pointerId); } catch(_){} });
+    cr.addEventListener('pointermove', e => { if (!drag) return; const dx = (e.clientX - drag.x) / sc, dy = (e.clientY - drag.y) / sc, o = drag.R; let {x, y, w, h} = o;
+      if (drag.h === 'move') { x = Math.min(Math.max(0, o.x + dx), W - o.w); y = Math.min(Math.max(0, o.y + dy), H - o.h); }
+      else { if (drag.h.includes('w')) { x = Math.min(Math.max(0, o.x + dx), o.x + o.w - MIN); w = o.x + o.w - x; }
+        if (drag.h.includes('e')) w = Math.min(Math.max(MIN, o.w + dx), W - o.x);
+        if (drag.h.includes('n')) { y = Math.min(Math.max(0, o.y + dy), o.y + o.h - MIN); h = o.y + o.h - y; }
+        if (drag.h.includes('s')) h = Math.min(Math.max(MIN, o.h + dy), H - o.y); }
+      R = {x, y, w, h}; draw(); });
+    const up = () => { drag = null; }; cr.addEventListener('pointerup', up); cr.addEventListener('pointercancel', up);
+    const kd = e => { if (e.key === 'Escape') { e.stopPropagation(); fin(false); } };
+    // 두 번 눌러도 한 번만(줄여 저장하는 동안 버튼을 막음)
+    const fin = async ok => { if (c.dataset.fin) return; c.dataset.fin = '1'; c.querySelectorAll('button').forEach(x => { x.disabled = true; });
+      removeEventListener('resize', lay); document.removeEventListener('keydown', kd, true);
+      if (!ok) { c.remove(); URL.revokeObjectURL(u); done(null); return; }
+      const [ow, oh] = out(), cv = document.createElement('canvas'); cv.width = ow; cv.height = oh;
+      const g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, ow, oh); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+      g.drawImage(im, R.x, R.y, R.w, R.h, 0, 0, ow, oh);
+      const b = await new Promise(r => { try { cv.toBlob(r, 'image/jpeg', PHQ); } catch(e){ r(null); } });
+      const ni = c.querySelector('.cnm input'), n = ni ? ni.value.trim().slice(0, PHNM) : '';
+      c.remove(); URL.revokeObjectURL(u);
+      if (!b) { say('사진을 다시 그리지 못했어요. 다른 사진으로 해 주세요.'); done(null); return; }
+      done({b, w: ow, h: oh, n}); };
+    c.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return;
+      if (t.hasAttribute('data-cok')) fin(true); else if (t.hasAttribute('data-cfull')) { R = {x: 0, y: 0, w: W, h: H}; draw(); } else if (t.hasAttribute('data-cno')) fin(false); });
+    addEventListener('resize', lay); document.addEventListener('keydown', kd, true); lay();
+    c.querySelector('[data-cok]').focus();
+  });
+}
+/* 옷 사진 파일: 내려받기(JSON 하나에 사진을 글자로 넣음) · 다시 넣기(이 앱 파일인지, JPEG인지, 칸 이름이 맞는지 보고 부가 정보 조각은 떼고 넣음) */
+const phB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
+const phU8 = s => { const t = atob(s), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u; };
+function phStrip(u){ // JPEG에서 APP1~APP15(EXIF·위치 정보 등)와 설명 조각(COM)을 뺌
+  if (u.length < 4 || u[0] !== 0xFF || u[1] !== 0xD8) return null;
+  const out = [u.subarray(0, 2)]; let i = 2;
+  while (i + 1 < u.length) {
+    if (u[i] !== 0xFF) return null;
+    const m = u[i + 1];
+    if (m === 0xFF) { i++; continue; }
+    if (m === 0xD9) { out.push(u.subarray(i, i + 2)); break; }
+    if (m === 0xDA) { out.push(u.subarray(i)); break; }
+    if ((m >= 0xD0 && m <= 0xD7) || m === 0x01) { out.push(u.subarray(i, i + 2)); i += 2; continue; }
+    if (i + 4 > u.length) return null;
+    const len = (u[i + 2] << 8) | u[i + 3]; if (len < 2 || i + 2 + len > u.length) return null;
+    if (!((m >= 0xE1 && m <= 0xEF) || m === 0xFE)) out.push(u.subarray(i, i + 2 + len));
+    i += 2 + len;
+  }
+  return new Blob(out, {type: 'image/jpeg'});
+}
+function phFileHTML(){
+  const n = phAllN(), os = ownedSlots(), orph = [...PH.map.keys()].filter(k => !os.has(k)), on = phN(orph);
+  let h = `<p><b>옷 사진 파일</b> <span class="cn">올린 사진 ${n}장. 사진은 백업 링크와 공유 링크에 안 담겨요. 브라우저 기록이 지워져도 다시 올리지 않게 파일 하나로 내려받아 두세요. 파일 안에 내 옷 사진이 그대로 들어 있으니 나만 보관해 주세요.</span></p>`;
+  if (on) h += `<p class="cn">'있음'으로 적히지 않은 칸의 사진 ${on}장(${orph.map(k => esc(slotName(k))).join(', ')})도 이 브라우저에 남아 있어요. 그 옷을 다시 '있음'으로 적으면 보여요. <button type="button" class="plain sm" data-phorph>이 사진 지우기</button></p>`;
+  h += `<p>${n ? `<button type="button" class="plain" data-phex>사진 ${n}장 파일로 내려받기</button>` : ''}<button type="button" class="plain" data-phim>사진 파일 넣기</button><input type="file" class="ph49fj" accept=".json,application/json" hidden></p>`;
+  if (PHIMP) h += PHIMP.html;
+  if (PHMSG) h += `<p class="phfm${PHMSG.bad ? ' bad' : ''}" role="status">${esc(PHMSG.t)}</p>`;
+  return h;
+}
+const phRefFile = () => { const x = document.querySelector('#ownImp .ph49x'); if (x) x.innerHTML = phFileHTML(); };
+async function phExport(){
+  let all; try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ PHMSG = {t: '사진을 읽지 못해서 파일을 만들지 못했어요.', bad: 1}; phRefFile(); return null; }
+  all = all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o));
+  if (!all.length) return null;
+  const ph = []; for (const r of all) ph.push({k: r.k, n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, d: await phB64(r.b)});
+  const b = new Blob([JSON.stringify({app: PHAPP, v: 1, t: today(), ph})], {type: 'application/json'}), nm = `옷사진-${today()}.json`;
+  PH.dl(b, nm);
+  PHMSG = {t: `사진 ${ph.length}장을 '${nm}' 파일로 내려받기 시작했어요(${(b.size / 1048576).toFixed(1)}MB). 브라우저의 내려받기 목록에서 확인해 주세요.`}; phRefFile();
+  return b;
+}
+async function phImportRead(file){
+  PHIMP = null;
+  const bad = m => { PHMSG = {t: m, bad: 1}; phRefFile(); return false; };
+  if (!file || file.size > 80 * 1048576) return bad('사진 파일이 너무 커요(80MB 넘음).');
+  let L = null; try { L = JSON.parse(await file.text()); } catch(e){}
+  if (!isObj(L) || L.app !== PHAPP || L.v !== 1 || !Array.isArray(L.ph)) return bad('이 앱에서 내려받은 옷 사진 파일이 아니에요. 아무것도 안 바꿨어요.');
+  const per = {}, list = []; let skip = 0;
+  for (const p of L.ph.slice(0, 400)) {
+    if (!isObj(p) || !okSlot(p.k) || typeof p.d !== 'string' || (per[p.k] || 0) >= PHMAX) { skip++; continue; }
+    let b = null; try { const u = phU8(p.d); if (u.length <= 3 * 1048576) b = phStrip(u); } catch(e){}
+    if (!b) { skip++; continue; }
+    let w = 0, h = 0; try { const bm = await createImageBitmap(b); w = bm.width; h = bm.height; bm.close(); } catch(e){}
+    if (!w || !h || Math.max(w, h) > 1600) { skip++; continue; }
+    per[p.k] = (per[p.k] || 0) + 1;
+    list.push({k: p.k, n: typeof p.n === 'string' ? p.n.slice(0, PHNM) : '', o: Number.isFinite(p.o) ? p.o : 0, b, w, h});
+  }
+  if (!list.length) return bad('이 파일에서 넣을 수 있는 사진을 찾지 못했어요. 아무것도 안 바꿨어요.');
+  list.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o)); const ks = [...new Set(list.map(p => p.k))];
+  ks.forEach(k => list.filter(p => p.k === k).forEach((p, o) => { p.o = o; }));
+  const os = ownedSlots(), rep = ks.filter(k => phList(k).length).length, orp = ks.filter(k => !os.has(k)).length;
+  PHMSG = null;
+  PHIMP = {list, html: `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
+    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
+    + `<button type="button" class="go" data-phimy>넣기</button> <button type="button" class="plain" data-phimn>그만두기</button></div>`};
+  phRefFile(); return true;
+}
+async function phImportApply(){
+  const L = PHIMP && PHIMP.list; PHIMP = null; if (!L) return false;
+  const del = [...new Set(L.map(p => p.k))].flatMap(k => phList(k).map(p => p.id));
+  const ok = await phWrite('사진 파일을 넣지', s => { del.forEach(id => s.delete(id)); L.forEach(p => s.put({id: phId(), k: p.k, n: p.n, o: p.o, b: p.b, w: p.w, h: p.h, t: Date.now()})); });
+  PHMSG = ok ? {t: `사진 ${L.length}장을 넣었어요.`} : {t: '사진 파일을 넣지 못했어요. 지금 사진은 그대로예요.', bad: 1}; phRefFile(); return ok;
+}
+// 사진 버튼들(내 옷장 창 · 칸 줄 펼친 곳). 다른 클릭 처리보다 먼저 받아서 그쪽으로 안 넘김
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-phed],[data-phex],[data-phim],[data-phimy],[data-phimn],[data-phorph],[data-phory],[data-phorn]'); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  if (b.dataset.phed) { phEdit(b.dataset.phed); return; }
+  if (b.hasAttribute('data-phex')) { PHMSG = null; phExport(); return; }
+  if (b.hasAttribute('data-phim')) { const fj = b.parentElement.querySelector('.ph49fj'); if (fj) { fj.value = ''; fj.click(); } return; }
+  if (b.hasAttribute('data-phimy')) { phImportApply(); return; }
+  if (b.hasAttribute('data-phimn')) { PHIMP = null; PHMSG = null; phRefFile(); return; }
+  if (b.hasAttribute('data-phorph')) { const os = ownedSlots(), n = phN([...PH.map.keys()].filter(k => !os.has(k)));
+    b.outerHTML = `<span class="ph49q" role="alertdialog"><span>사진 ${n}장을 지울까요? 되돌릴 수 없어요.</span> <button type="button" class="go" data-phory>지우기</button><button type="button" class="plain sm" data-phorn>취소</button></span>`; return; }
+  if (b.hasAttribute('data-phory')) { const os = ownedSlots(); phDel([...PH.map.keys()].filter(k => !os.has(k)).flatMap(k => phList(k).map(p => p.id))).then(ok => { PHMSG = ok ? {t: '옷장에 없는 칸 사진을 지웠어요.'} : null; phRefFile(); }); return; }
+  if (b.hasAttribute('data-phorn')) { phRefFile(); return; } }, true);
+document.addEventListener('change', e => { const t = e.target; if (!t.classList || !t.classList.contains('ph49fj') || !t.files || !t.files[0]) return;
+  const f = t.files[0]; PHMSG = {t: '사진 파일을 읽는 중이에요…'}; phRefFile(); phImportRead(f); }, true);
+// 가진 옷 기록 한 줄(s: 종류·색 · p: 제품 그대로)이 가리키는 칸
+const ownxSlot = x => { const key = String(x).slice(2); if (x[0] === 's') return okSlot(key) ? key : '';
+  if (x[0] === 'p') { const p = PID[key.split('|')[0]]; return p ? kindOf(p) + '|' + key.split('|')[1] : ''; } return ''; };
+
 /* ---------- 시작 ---------- */
 importOwnFromHash() || importBackupFromHash();
 addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); else if (/^#b=/.test(location.hash)) importBackupFromHash(); });
 buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncTabs(); applyFont(); bindWeek();
 load(true);
+phInit(); // v49: 사진 저장소가 있으면 읽어서 칸 줄에 보여 줌
 })();
 </script>
 </body>
