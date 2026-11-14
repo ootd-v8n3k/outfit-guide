@@ -3109,13 +3109,13 @@ function photo(p, w, lazy){
   const src = 'https://image.msscdn.net/thumbnails/images/' + key + '?w=' + w;
   return `<img data-ph${fc ? ` data-fc="${fc}"` : ''} src="${esc(src)}" alt="${esc(shortName(p.name))}" referrerpolicy="no-referrer"${lazy ? ' loading="lazy"' : ''} decoding="async">`;
 }
-// 자른 부분이 사진 칸 안에 다 들어가게(contain) 맞춤. 맞추기 전에는 사진을 숨김(얼굴이 잠깐도 안 보이게). 칸 크기가 바뀌면(접힌 곳을 펼침 등) 다시 맞춤
+// 자른 부분이 사진 칸 안에 다 들어가게(contain) 맞춤. 자른 선 위쪽은 칸에 빈 곳이 남아도 안 보이게 clip-path로 잘라 냄. 맞추기 전에는 사진을 숨김(얼굴이 잠깐도 안 보이게). 칸 크기가 바뀌면(접힌 곳을 펼침 등) 다시 맞춤
 const FCRO = typeof ResizeObserver === 'function' ? new ResizeObserver(es => es.forEach(e => { const im = e.target.querySelector(':scope > img[data-fc]'); if (im) fcFit(im); })) : null;
 function fcFit(im){ const box = im.parentElement, t = Math.min(90, +im.dataset.fc || 0) / 100; if (!box || !im.naturalWidth || !im.naturalHeight) return;
   if (!box.classList.contains('fc50')) { box.classList.add('fc50'); if (getComputedStyle(box).position === 'static') box.style.position = 'relative'; if (FCRO) FCRO.observe(box); }
   const W = box.clientWidth, H = box.clientHeight; if (!W || !H) return;
   const a = im.naturalWidth / im.naturalHeight, ar = a / (1 - t), rw = ar > W / H ? W : H * ar, rh = rw / ar, ih = rw / a;
-  Object.assign(im.style, {width: rw + 'px', height: ih + 'px', left: (W - rw) / 2 + 'px', top: ((H - rh) / 2 - t * ih) + 'px', visibility: 'visible'}); }
+  Object.assign(im.style, {width: rw + 'px', height: ih + 'px', left: (W - rw) / 2 + 'px', top: ((H - rh) / 2 - t * ih) + 'px', clipPath: 'inset(' + (t * 100) + '% 0 0 0)', visibility: 'visible'}); }
 document.addEventListener('load', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.dataset && im.dataset.fc) fcFit(im); }, true);
 // '무신사 스탠다드(MUSINSA STANDARD) …'처럼 한글 브랜드 뒤에 붙은 영문 브랜드만 뺀다. '(BLACK)' 같은 색은 남긴다
 const shortName = n => n.replace(/^([가-힣]+(?: [가-힣]+)?)\(([A-Z][A-Z0-9 &.'\-]*)\)\s*/, (m, k, e) => /BLACK|WHITE|GR[AE]Y|NAVY|BROWN|BEIGE|IVORY|CHARCOAL|KHAKI|CREAM/.test(e) ? m : k + ' ');
