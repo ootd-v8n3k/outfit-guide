@@ -71,6 +71,9 @@ ol.items li:last-child{border-bottom:0}
 details.more2 p.altp{display:flex;gap:8px;align-items:flex-start}
 .ai{position:relative;flex:none;width:64px;height:64px;border:1px solid var(--line);background:#fff}
 .ai img{width:100%;height:100%;object-fit:contain;display:block}
+img[data-fc]{visibility:hidden}
+.fc50{overflow:hidden}
+.fc50>img[data-fc]{position:absolute;max-width:none;max-height:none;object-fit:fill}
 .ai .noimg{font-size:10.5px;padding:2px}
 .n{width:19px;height:19px;border:1.4px solid var(--ink);border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
 .n.x{border-color:transparent}
@@ -1227,6 +1230,27 @@ body.haspast #grid .ghero:has(.hnote) + .gsec42{margin-bottom:8px}
 .ph49q{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid #d9ad3c;background:#fff8e1;border-radius:10px;padding:6px 10px;font-size:13.5px;line-height:1.45;color:var(--ink)}
 .ph49q button{margin:0!important}
 .ph49q .go{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:5px 12px;cursor:pointer}
+/* v50: 코디 줄의 작은 내 옷 사진을 46px → 52×60px(위아래 -4px씩 겹쳐 줄 높이는 최대 6px만 늘게) */
+.r42.ph49r .rw{grid-template-columns:46px 52px minmax(0,1fr) auto 24px}
+.ph49s{width:52px;height:60px;margin:-4px 0}
+/* v50: 내 옷장 창 — 칸 머리줄 + 벌마다 한 줄 */
+#ownImp{max-width:660px}
+.oe50g{display:block}
+.oe50g .k{display:block;font-weight:700;margin-top:4px}
+.oe50{border-top:1px solid var(--line);padding:7px 0 3px;margin-top:5px}
+.oe50h{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.oe50b{margin-left:auto;display:inline-flex;gap:4px}
+#ownImp .oe50b button,#ownImp .oe50i button{margin:0}
+.oe50l{list-style:none;margin:4px 0 0;padding:0}
+.oe50i{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:3px 0}
+.oe50u{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:3px 0 2px;padding:5px 8px;border:1px solid #d9ad3c;background:#fff8e1;border-radius:8px}
+#ownImp .oe50u button{margin:0}
+.ph50u{border:1px solid #d9ad3c;background:#fff8e1;border-radius:8px;padding:6px 9px}
+.oe50i select{font:inherit;font-size:12.5px;padding:3px 4px;border:1px solid #cfcfcf;background:#fff;max-width:124px}
+.oe50i select:not([data-v50]),.oe50i select:invalid{color:inherit}
+.oe50t{font:inherit;font-size:12.5px;padding:3px 7px;border:1px solid #cfcfcf;width:118px}
+#ownImp .oe50g .ownf{margin:2px 0 4px}
+.r42 .rd.f50{color:var(--chk)}
 .ph49x{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
 .ph49x .plain{margin:2px 6px 0 0}
 .ph49x .phfm{margin-top:6px;font-size:13.5px;color:var(--ink2)}
@@ -1258,6 +1282,14 @@ body.haspast #grid .ghero:has(.hnote) + .gsec42{margin-bottom:8px}
 #crop49 .ch.ne{right:-10px;top:-10px;cursor:nesw-resize}
 #crop49 .ch.sw{left:-10px;bottom:-10px;cursor:nesw-resize}
 #crop49 .ch.se{right:-10px;bottom:-10px;cursor:nwse-resize}
+/* v50: 자르는 칸이 사진 끝에 닿으면(처음엔 네 모서리 다) 손잡이 바깥 3/4가 사진 칸(.cs) 밖이라 잘려서 9×9px만 보이고 눌렸음.
+   손잡이를 자르는 칸 안쪽 모서리로 옮기고, 누르는 자리를 사방 10px 넓힘(사진 밖으로 나간 부분은 그대로 안 눌림) */
+#crop49 .ch{width:20px;height:20px}
+#crop49 .ch.nw{left:-2px;top:-2px}
+#crop49 .ch.ne{right:-2px;top:-2px;left:auto}
+#crop49 .ch.sw{left:-2px;bottom:-2px;top:auto}
+#crop49 .ch.se{right:-2px;bottom:-2px;left:auto;top:auto}
+#crop49 .ch::before{content:'';position:absolute;left:-10px;top:-10px;right:-10px;bottom:-10px}
 #crop49 .cnm{display:flex;align-items:center;gap:8px;margin:4px 0 8px;font-size:13.5px;color:var(--sub2)}
 #crop49 .cnm input{width:260px;height:34px;padding:0 10px;border:1px solid var(--bd);border-radius:10px;font:inherit;font-size:14px}
 #crop49 .cbt{display:flex;gap:8px;flex-wrap:wrap}
@@ -2513,8 +2545,9 @@ function syncTabs(){ const v = st.mode === 'week' ? 'week' : bview ? 'buy' : 'to
 // v29: 머리줄 '내 옷장 N벌' · '바지 핏 모름 N'. 숫자는 이 기기에 적은 옷장 기록에서 셈(코드에 고정한 수 없음)
 function drawHead(){
   const cb = $('#closetB'), fb = $('#fitB'); if (!cb || !fb) return;
-  const os = [...ownedSlots()], pu = os.filter(k => OKR(k) === 'pants' && !ownF(k).fit).length;
-  cb.innerHTML = os.length ? `내 옷장 <b>${os.length}벌</b>` : '내 옷장 적기';
+  // v50: 벌 수로 셈(칸 안에 더한 벌 포함). 핏 모름도 벌마다
+  const os = [...ownedSlots()], nv = os.reduce((n, k) => n + itemN(k), 0), pu = os.filter(k => OKR(k) === 'pants').reduce((n, k) => n + ownItems(k).filter(it => !it.f.fit).length, 0);
+  cb.innerHTML = os.length ? `내 옷장 <b>${nv}벌</b>` : '내 옷장 적기';
   fb.hidden = !pu; fb.textContent = pu ? `바지 핏 모름 ${pu}` : '';
   syncTabs();
 }
@@ -3066,11 +3099,24 @@ const purl = id => `https://www.musinsa.com/products/${encodeURIComponent(id)}`;
 const lnk = (p, t) => `<a href="${purl(p.id)}" target="_blank" rel="noopener noreferrer">${t}</a>`;
 // 사진은 무신사 이미지 서버에서 바로 불러온다(저장소에 안 올림). 상품 페이지에 고른 색만 찍힌 사진이 없으면 빈칸에 그렇게 적는다
 const IMG = 'https://image.msscdn.net/images/';
+const FC50 = {"goods_img/20191105/1213655/1213655_17026028732431_500.jpg":13,"goods_img/20251029/5662157/5662157_17682942064411_500.jpg":34,"goods_img/20230712/3405554/3405554_16957070439666_500.jpg":33,"goods_img/20250513/5107709/5107709_17544708966267_500.jpg":31,"goods_img/20220307/2402829/2402829_17137482121585_500.jpg":10,"goods_img/20250701/5215580/5215580_17604871145761_500.jpg":32,"goods_img/20211214/2268294/2268294_17623224322646_500.jpg":17,"goods_img/20251029/5662153/5662153_17682941898809_500.jpg":33,"goods_img/20220204/2341451/2341451_17502370828437_500.jpg":33,"goods_img/20190327/996498/996498_17507501329837_500.jpg":33,"goods_img/20190327/996497/996497_17507502602097_500.jpg":33,"goods_img/20201028/1666442/1666442_17623267921234_500.jpg":19,"goods_img/20190201/947087/947087_17132486620617_500.jpg":33,"goods_img/20190327/996177/996177_17845258066104_500.jpg":33,"goods_img/20250808/5304023/5304023_17605079022187_500.jpg":31,"goods_img/20230731/3435630/3435630_17531521124027_500.jpg":34,"goods_img/20220923/2815352/2815352_17183548400787_500.jpg":34,"goods_img/20201028/1666444/1666444_17623227820940_500.jpg":19,"goods_img/20200928/1628939/1628939_17509083037775_500.jpg":33,"goods_img/20191008/1180665/1180665_17930841933172_500.jpg":33,"goods_img/20190927/1168906/1168906_17224121763738_500.jpg":19,"goods_img/20240112/3790863/3790863_17224118660917_500.jpg":29,"goods_img/20220427/2518455/2518455_17919374023020_500.jpg":18,"goods_img/20260624/6727208/6727208_17919372438732_500.jpg":28,"goods_img/20260527/6556872/6556872_17871024903674_500.jpg":32,"goods_img/20260306/6092186/6092186_17901327939360_500.jpg":18,"goods_img/20241206/4652856/4652856_17419104318177_500.jpg":31,"goods_img/20200928/1629142/1629142_16957081029262_500.jpg":36,"goods_img/20240701/4225249/4225249_17569520775143_500.jpg":19,"goods_img/20200923/1618313/1618313_17569514851734_500.jpg":20,"goods_img/20250710/5240756/5240756_17569516192735_500.jpg":19,"goods_img/20260630/6752521/6752521_17889228521472_500.jpg":29,"goods_img/20250917/5478710/5478710_17585194355812_500.jpg":34,"goods_img/20240830/4387523/4387523_17436465064575_500.jpg":34,"goods_img/20200407/1388776/1388776_17845260449909_500.jpg":32,"goods_img/20201012/1642904/1642904_17503170317321_500.jpg":34,"goods_img/20230201/3051698/3051698_16875043447733_500.jpg":18,"goods_img/20190905/1144989/1144989_17509081256971_500.jpg":34,"goods_img/20240620/4209339/4209339_17297474685297_500.jpg":33,"goods_img/20200928/1628945/1628945_17531617226503_500.jpg":34,"goods_img/20240620/4210129/4210129_17425207762005_500.jpg":21,"goods_img/20240620/4210119/4210119_17425216803033_500.jpg":20,"goods_img/20240509/4117020/4117020_17248052567484_500.jpg":11,"goods_img/20180910/854339/854339_17829578371552_500.jpg":32,"goods_img/20211202/2254806/2254806_17267990888599_500.jpg":11,"goods_img/20250120/4729708/4729708_17411630833003_500.jpg":30,"goods_img/20240809/4312724/4312724_17241461595785_500.jpg":29,"goods_img/20221212/2978573/2978573_16823820196536_500.jpg":10,"goods_img/20240304/3918531/3918531_17116109426042_500.jpg":9,"goods_img/20240416/4057917/4057917_17775153738661_500.jpg":32,"goods_img/20240807/4306408/4306408_17938482191386_500.jpg":39,"goods_img/20250317/4907753/4907753_17933192178787_500.jpg":36,"goods_img/20230622/3378514/3378514_17800303461768_500.jpg":36,"goods_img/20250805/5294635/5294635_17545634086275_500.jpg":25,"goods_img/20251016/5604609/5604609_17617229160669_500.jpg":37,"goods_img/20250918/5487937/5487937_17585178615091_500.jpg":37,"goods_img/20240822/4356798/4356798_17890957744690_500.jpg":31,"goods_img/20250625/5205819/5205819_17580927845271_500.jpg":33,"goods_img/20250527/5148065/5148065_17585243005812_500.jpg":33,"goods_img/20250822/5354020/5354020_17743322560948_500.jpg":29,"goods_img/20250627/5210212/5210212_17592125218130_500.jpg":20,"goods_img/20250925/5532467/5532467_17875486261088_500.jpg":32,"goods_img/20250701/5215603/5215603_17872900429962_500.jpg":33,"goods_img/20250625/5205729/5205729_17639643078108_500.jpg":32,"goods_img/20250819/5335741/5335741_17574816540164_500.jpg":34,"goods_img/20250625/5205791/5205791_17605073883862_500.jpg":32,"goods_img/20250923/5511714/5511714_17585968235917_500.jpg":35,"goods_img/20250918/5489845/5489845_17639506491608_500.jpg":30,"goods_img/20231215/3758303/3758303_17113298213219_500.jpg":32,"goods_img/20200821/1558671/1558671_17514475628467_500.jpg":32,"goods_img/20190910/1149329/1149329_17775152531848_500.jpg":20,"goods_img/20200820/1558197/1558197_17791521338764_500.jpg":40,"goods_img/20240821/4352411/4352411_17333851962560_500.jpg":20,"goods_img/20240830/4387507/4387507_17330960379558_500.jpg":35,"goods_img/20240830/4387517/4387517_17307850178980_500.jpg":10,"goods_img/20200914/1601468/1601468_16921691327920_500.jpg":32,"prd_img/20240909/4419402/detail_4419402_17261165558083_big.jpg":53,"goods_img/20210105/1736037/1736037_17634470652119_500.jpg":32,"prd_img/20210917/2139132/detail_2139132_17939401060309_big.jpg":53,"goods_img/20170927/645611/645611_16916541203586_500.jpg":38,"goods_img/20201012/1642888/1642888_17024405614143_500.jpg":10,"goods_img/20190917/1155975/1155975_17243899178480_500.jpg":70,"goods_img/20230201/3051700/3051700_16865346886429_500.jpg":18,"prd_img/20230210/3075962/detail_3075962_16944861984292_big.jpg":11,"goods_img/20241007/4492140/4492140_17304504631888_500.jpg":29,"goods_img/20240805/4297600/4297600_17364973040004_500.jpg":34,"goods_img/20191008/1180666/1180666_17930863368443_500.jpg":30,"goods_img/20240905/4407148/4407148_17938462973984_500.jpg":32,"goods_img/20240905/4407566/4407566_17936748385102_500.jpg":53,"goods_img/20251110/5706927/5706927_17645684970848_500.jpg":50,"goods_img/20231123/3731126/3731126_17909138555444_500.jpg":30,"goods_img/20181205/918039/918039_1_500.jpg":28,"goods_img/20201006/1635350/1635350_17637011768993_500.jpg":10,"goods_img/20200305/1336398/1336398_17725205929848_500.jpg":6,"goods_img/20220907/2778674/2778674_17286355662545_500.jpg":11,"goods_img/20211202/2254808/2254808_1_500.jpg":10,"goods_img/20180304/727847/727847_16928548898099_500.jpg":30,"goods_img/20190315/983339/983339_17833270978891_500.jpg":33,"goods_img/20210831/2100452/2100452_17637007787680_500.jpg":11,"goods_img/20250715/5249189/5249189_17538665480247_500.jpg":31,"goods_img/20200928/1629076/1629076_17641185467053_500.jpg":33,"goods_img/20250701/5215502/5215502_17604876140462_500.jpg":32,"goods_img/20250206/4765952/4765952_17459891789694_500.jpg":9,"goods_img/20250715/5248910/5248910_17604976834107_500.jpg":34,"goods_img/20240805/4297613/4297613_17649025630537_500.jpg":32,"goods_img/20250616/5186934/5186934_17544686804334_500.jpg":31,"goods_img/20250715/5249188/5249188_17538665968432_500.jpg":32,"goods_img/20250808/5304024/5304024_17605078299317_500.jpg":32,"goods_img/20240830/4387516/4387516_17328467168538_500.jpg":35,"goods_img/20250625/5205765/5205765_17604945822546_500.jpg":32,"goods_img/20250701/5215594/5215594_17872900004453_500.jpg":35,"goods_img/20201028/1666443/1666443_17623228000831_500.jpg":20,"goods_img/20250701/5215582/5215582_17604870276688_500.jpg":33,"goods_img/20250701/5215649/5215649_17562775890569_500.jpg":33,"goods_img/20240826/4368567/4368567_17333849298769_500.jpg":20,"goods_img/20240620/4209311/4209311_17330963094627_500.jpg":34,"goods_img/20230731/3435624/3435624_16925830907166_500.jpg":12,"goods_img/20250625/5205720/5205720_17593012453863_500.jpg":32,"goods_img/20250701/5215621/5215621_17592159012918_500.jpg":33,"goods_img/20250715/5249190/5249190_17538665296898_500.jpg":32,"goods_img/20211101/2208662/2208662_17623229127604_500.jpg":20,"goods_img/20180921/865864/865864_17657671188817_500.jpg":22,"goods_img/20220427/2518438/2518438_17657671632427_500.jpg":19,"goods_img/20250701/5215636/5215636_17580098181949_500.jpg":32,"goods_img/20231106/3686305/3686305_17109975776348_500.jpg":10,"goods_img/20250625/5205802/5205802_17576657354900_500.jpg":20,"goods_img/20220907/2778675/2778675_16956223718614_500.jpg":33,"goods_img/20210831/2100441/2100441_17636862944768_500.jpg":31,"goods_img/20240620/4209302/4209302_17659593144902_500.jpg":19,"goods_img/20220907/2778676/2778676_1_500.jpg":10,"goods_img/20180830/843276/843276_1_500.jpg":15}, FCX50 = new Set([]);
+// v50: 제품 사진에 모델 얼굴이 나오면 얼굴 아래만 보여 줌. FC50[사진] = 사진 위에서 몇 %까지 자를지(이 PC의 얼굴 찾기로 찾고 눈으로 확인).
+//      FCX50 = 얼굴을 자르면 제품(모자 등)도 같이 잘리는 사진 → 사진 대신 글. 상품 링크·제품 정보는 그대로
 function photo(p, w, lazy){
   if (!p.img || p.img.indexOf(IMG) !== 0) return `<span class="noimg">이 색 사진 없음</span>`;
-  const src = 'https://image.msscdn.net/thumbnails/images/' + p.img.slice(IMG.length) + '?w=' + w;
-  return `<img data-ph src="${esc(src)}" alt="${esc(shortName(p.name))}" referrerpolicy="no-referrer"${lazy ? ' loading="lazy"' : ''} decoding="async">`;
+  const key = p.img.slice(IMG.length), fc = FC50[key];
+  if (FCX50.has(key)) return `<span class="noimg fcx">모델 얼굴이 크게 나온 사진이라 안 보여 줘요</span>`;
+  const src = 'https://image.msscdn.net/thumbnails/images/' + key + '?w=' + w;
+  return `<img data-ph${fc ? ` data-fc="${fc}"` : ''} src="${esc(src)}" alt="${esc(shortName(p.name))}" referrerpolicy="no-referrer"${lazy ? ' loading="lazy"' : ''} decoding="async">`;
 }
+// 자른 부분이 사진 칸 안에 다 들어가게(contain) 맞춤. 맞추기 전에는 사진을 숨김(얼굴이 잠깐도 안 보이게). 칸 크기가 바뀌면(접힌 곳을 펼침 등) 다시 맞춤
+const FCRO = typeof ResizeObserver === 'function' ? new ResizeObserver(es => es.forEach(e => { const im = e.target.querySelector(':scope > img[data-fc]'); if (im) fcFit(im); })) : null;
+function fcFit(im){ const box = im.parentElement, t = Math.min(90, +im.dataset.fc || 0) / 100; if (!box || !im.naturalWidth || !im.naturalHeight) return;
+  if (!box.classList.contains('fc50')) { box.classList.add('fc50'); if (getComputedStyle(box).position === 'static') box.style.position = 'relative'; if (FCRO) FCRO.observe(box); }
+  const W = box.clientWidth, H = box.clientHeight; if (!W || !H) return;
+  const a = im.naturalWidth / im.naturalHeight, ar = a / (1 - t), rw = ar > W / H ? W : H * ar, rh = rw / ar, ih = rw / a;
+  Object.assign(im.style, {width: rw + 'px', height: ih + 'px', left: (W - rw) / 2 + 'px', top: ((H - rh) / 2 - t * ih) + 'px', visibility: 'visible'}); }
+document.addEventListener('load', e => { const im = e.target; if (im && im.tagName === 'IMG' && im.dataset && im.dataset.fc) fcFit(im); }, true);
 // '무신사 스탠다드(MUSINSA STANDARD) …'처럼 한글 브랜드 뒤에 붙은 영문 브랜드만 뺀다. '(BLACK)' 같은 색은 남긴다
 const shortName = n => n.replace(/^([가-힣]+(?: [가-힣]+)?)\(([A-Z][A-Z0-9 &.'\-]*)\)\s*/, (m, k, e) => /BLACK|WHITE|GR[AE]Y|NAVY|BROWN|BEIGE|IVORY|CHARCOAL|KHAKI|CREAM/.test(e) ? m : k + ' ');
 
@@ -3403,6 +3449,96 @@ function importOwnFromHash(){
 // v20: 종류만으로 기장이 정해지는 겉옷(블루종·MA-1은 허리, 하프 코트는 엉덩이 아래 짧은 기장)은 따로 안 골라도 그 기장으로 봄
 const KIND_F = {'블루종': {len: '짧은 기장'}, 'MA-1': {len: '짧은 기장'}, '하프 코트': {len: '짧은 기장'}};
 const ownF = k => Object.assign({}, KIND_F[String(k).split('|')[0]] || {}, OWN.f[k] || {});
+/* ---------- v50: 한 칸 여러 벌 · 두께 · 프린트 ----------
+   OWN.v[칸] = [첫 벌 {n 이름, th 두께, pr 프린트}, 둘째 벌부터 {id, n, fit, len, th, pr}]. 첫 벌의 핏·기장은 v49처럼 OWN.f[칸]에 둠.
+   벌 정보가 하나도 없으면 OWN.v를 안 만들어서 저장 기록·판정·순서가 v49와 같음. 두께·프린트를 안 고르면 '' (모름)이고 판정·순서에 안 씀 */
+const THV = ['얇음', '보통', '두꺼움'], PRV = ['없음', '작은 로고', '큰 프린트'], THN = {얇음: -1, 보통: 0, 두꺼움: 1}, VMAX = 4, VNM = 20;
+const isVid = v => typeof v === 'string' && /^[a-z0-9]{4,8}$/.test(v);
+const has50 = () => !!OWN.v && Object.keys(OWN.v).length > 0;
+function ownItems(k){
+  const v = has50() && Array.isArray(OWN.v[k]) ? OWN.v[k] : [], z = v[0] || {}, kf = KIND_F[String(k).split('|')[0]] || {};
+  const a = [{i: 0, id: '', n: z.n || '', th: z.th || '', pr: z.pr || '', f: ownF(k)}];
+  for (let i = 1; i < v.length; i++) { const y = v[i] || {}, f = Object.assign({}, kf); ['fit', 'len'].forEach(q => { if (y[q]) f[q] = y[q]; });
+    a.push({i, id: y.id || '', n: y.n || '', th: y.th || '', pr: y.pr || '', f}); }
+  return a;
+}
+const itemN = k => ownItems(k).length;
+const itemLab = it => it.n || `${it.i + 1}번째 벌`;
+// 벌이 둘 이상인 칸만 이름 뒤에 어느 벌인지 붙임(한 벌이면 v49 이름 그대로)
+const itemNm = (k, it) => featNm(k, it.f) + (itemN(k) > 1 ? ' · ' + itemLab(it) : '');
+const vNm = (k, s) => s && s.vk === k && s.vi != null && itemN(k) > 1 ? itemNm(k, ownItems(k)[s.vi] || ownItems(k)[0]) : ownNm(k);
+const vId = (k, s) => s && s.vk === k && s.vi != null ? ((ownItems(k)[s.vi] || {}).id || '') : '';
+function delV(k){ if (!OWN.v) return; delete OWN.v[k]; if (!Object.keys(OWN.v).length) delete OWN.v; }
+function tidyV(k){ const a = OWN.v && OWN.v[k]; if (a && a.length === 1 && !Object.keys(a[0] || {}).length) delV(k); }
+// 판정할 때의 날씨·단계. 순서 정하기(orderLooks)·일주일 그날(dayPart)이 잠깐 바꿈. 없으면 지금 보는 날(curA)과 고른 단계
+let CTX50 = null;
+const ctxT = () => CTX50 ? CTX50.t : curA ? curA.tOuter : null;
+const ctxLv = () => CTX50 ? CTX50.lv : st.level;
+function withCtx(c, fn){ const o = CTX50; CTX50 = c; try { return fn(); } finally { CTX50 = o; } }
+// 사진 속 옷 두께: 패딩·다운(경량이면 보통, 아니면 두꺼움) · 무톤 두꺼움 → 상품명·소재(thickOf) → 반팔 얇음 → 보통
+// '라이트 블루'·'라이트 워싱'·'light heather gray'처럼 색 이름의 '라이트'는 두께로 안 봄(thickOf는 v10 그대로 두고 여기서만 걸러 냄)
+const LTCOL = /(라이트|LIGHT)[\s_-]*(블루|그레이|베이지|카키|브라운|네이비|그린|핑크|퍼플|옐로우|인디고|워시|워싱|헤더|멜란지|BLUE|GR[AE]Y|BEIGE|KHAKI|BROWN|NAVY|GREEN|PINK|PURPLE|INDIGO|WASH|HEATHER|MELANGE)/gi;
+const BTDN = /(버튼|BUTTON)[\s_-]*(다운|DOWN)/gi; // 버튼다운 셔츠는 다운(오리털)이 아님
+function photoTh(x){ const kd = String(x.slot || x.buy || '').split('|')[0], nm = x.p ? String(x.p.name || '').replace(LTCOL, '').replace(BTDN, '') : '', n = nm + ' ' + kd;
+  if (/패딩|다운|푸퍼|PADDING|DOWN|PUFFER/i.test(n)) return /라이트|경량|시어|LIGHT/i.test(n) ? 0 : 1;
+  if (/무톤|시어링|MOUTON|SHEARLING/i.test(n)) return 1;
+  const t = x.p ? thickOf({name: nm, mat: String(x.p.mat || '').replace(LTCOL, '')}) : ''; if (t) return THN[t];
+  return /반팔|반소매|SHORT ?SLEEVE/i.test(n) ? -1 : 0; }
+// 두께 한 단계가 사진 체감 범위를 몇 도 옮기는지(겉옷 4° · 겉옷 없이 입는 상의 3° · 겉옷 안 상의 2° · 바지 2°). 범위 폭의 절반을 넘기지 않음
+const TSH = {outer: 4, top: 3, topIn: 2, pants: 2};
+const shOf = x => x.role === 'top' ? (x.ou ? TSH.topIn : TSH.top) : TSH[x.role] || 0;
+const capOf = (x, v) => Math.min(v, Math.max(0, (x.hi - x.lo) / 2));
+const PRRK = {'없음': 0, '': .2, '작은 로고': .5, '큰 프린트': 12};
+const prOn = (x, lv) => (lv === 'L3' || lv === 'L4') && !x.anyTop;
+// 칸 안에서 입을 벌 고르기: 판정(lv)이 높은 벌 → 그날 날씨에 맞는 벌(더위·추위 걸리는 벌은 뒤로, 따뜻한 쪽이면 얇은 벌) → 꾸민 단계면 무지 벌 → 앞 벌
+function itemSc(it, x){
+  let s = 0; const T = ctxT();
+  if (it.th && T != null && x.lo != null) { const d = THN[it.th] - photoTh(x), w = shOf(x);
+    if (w && d > 0 && T > x.hi - capOf(x, w * d)) s += 10;
+    if (w && d < 0 && T < x.lo + capOf(x, -w * d)) s += 10;
+    s += (T - (x.lo + x.hi) / 2) * d * .05; }
+  if (prOn(x, ctxLv())) s += PRRK[it.pr || ''];
+  return s;
+}
+function pickItem(k, x, ev){
+  const its = ownItems(k);
+  if (its.length === 1) return {it: its[0], r: ev ? ev(its[0]) : null};
+  const a = its.map(it => ({it, r: ev ? ev(it) : null, s: itemSc(it, x)}));
+  a.sort((p, q) => ((q.r ? q.r.lv : 0) - (p.r ? p.r.lv : 0)) || (p.s - q.s) || (p.it.i - q.it.i));
+  return a[0];
+}
+const vv50 = (k, x) => itemN(k) > 1 ? {vk: k, vi: pickItem(k, x).it.i} : {};
+// 코디 하나의 두께·프린트 알림. 가진 옷으로 입는 칸(가린 상의·신발·같은 제품·대신 산 옷 빼고)만. 모름은 안 셈
+//   더울 수 있어요: 내 옷이 사진 속 옷보다 두껍고 그날 체감이 (사진 범위 위 끝 − 옮긴 만큼)보다 높을 때(칸마다)
+//   추울 수 있어요: 칸마다 (내 두께 − 사진 두께) × 옮기는 도를 더한 값이 0보다 작고, 그날 체감이 (사진 범위 아래 끝 + 그만큼)보다 낮을 때(코디 하나에 한 번)
+//   큰 프린트: 고른 단계가 적당히 꾸민·꾸꾸꾸이고 겉으로 보이는 칸에 큰 프린트 벌을 입을 때
+const FLN = {hot: '더울 수 있어요', cold: '추울 수 있어요', pr: '덜 단정해 보일 수 있어요'}, FLT = {hot: '더울 수 있어요', cold: '추울 수 있어요', pr: '큰 프린트 보여요'}, FLS = {hot: '내 옷이 사진 속 옷보다 두꺼워요', cold: '사진 속 옷보다 얇은 옷으로 입어요', pr: '큰 프린트가 겉으로 보여요'};
+const flTags = s => [...new Set((s.fl || []).map(f => f.c))].map(c => FLT[c]); // v50: 상세·TOP 3 꼬리표(알림 종류마다 하나)
+const thW = v => v > 0 ? '두꺼움' : v < 0 ? '얇음' : '보통';
+function lookFlags(req, L, stOf, os){
+  const out = []; if (!has50()) return out;
+  const T = ctxT(), lv = ctxLv(), ps = [];
+  req.forEach(x => { const s = stOf(x); if (!s || x.anyTop || x.anyKind || x.info || x.role === 'shoes' || s.pick || s.lv === 4 || !(s.lv >= 2) || s.code === 'wash') return;
+    const w = wearOf(Object.assign({}, x, {state: s}), os); if (!w || !w.k) return;
+    const its = ownItems(w.k); ps.push({x, k: w.k, it: s.vk === w.k && s.vi != null ? its[s.vi] || its[0] : its[0]}); });
+  const tx = `이날 체감 ${deg(T)}, 사진은 체감 ${L.lo}°~${L.hi}°용`;
+  if (T != null) { let D = 0; const thin = [];
+    ps.forEach(({x, k, it}) => { if (!it.th) return; const tp = photoTh(x), d = THN[it.th] - tp, w = shOf(x); if (!w || !d) return; D += w * d;
+      if (d > 0 && T > x.hi - capOf(x, w * d)) out.push({c: 'hot', x, t: `내 ${itemNm(k, it)}${jongOf(itemNm(k, it)) ? '이' : '가'} 사진 속 옷(${thW(tp)})보다 두꺼워요(${it.th}) · ${tx}`});
+      if (d < 0) thin.push(`${itemNm(k, it)}(${it.th})`); });
+    if (D < 0 && thin.length && T < L.lo + capOf(ps[0].x, -D)) { const x0 = ps.find(p => p.it.th && THN[p.it.th] - photoTh(p.x) < 0).x;
+      out.push({c: 'cold', x: x0, t: `사진 속 옷보다 얇은 내 옷: ${thin.join(', ')} · ${tx}`}); } }
+  if (prOn({}, lv)) ps.forEach(({x, k, it}) => { if (prOn(x, lv) && it.pr === '큰 프린트') out.push({c: 'pr', x, t: `내 ${itemNm(k, it)}${jongOf(itemNm(k, it)) ? '은' : '는'} 큰 프린트가 겉으로 보여서 ${LEVELS[lv].name} 코디보다 덜 단정해 보일 수 있어요`}); });
+  out.forEach(f => { (f.x.fl50 = f.x.fl50 || []).push({c: f.c, lab: FLN[f.c], s: FLS[f.c], t: f.t}); });
+  return out;
+}
+// 순서에서 알림 있는 코디를 같은 준비 묶음 안에서 뒤로. 일주일은 고른 코디에 알림이 있을 때, 살 옷이 늘지 않고 점수 차가 이 값 안인 알림 없는 코디로만 바꿈(planWeekCore · planWeekOwn)
+const FL50P = 1;
+// 일주일: 그날 체감(dayA) 캐시. 예보·외출 시간·체감 보정이 바뀌면 다시 계산
+const DAYT50 = new WeakMap();
+function dayT50(d){ if (!wx) return null; let m = DAYT50.get(wx); if (!m) { m = new Map(); DAYT50.set(wx, m); }
+  const key = [d, localNow(wx).date, st.start, st.end, st.sens, st.mt].join('|'); if (!m.has(key)) m.set(key, dayA(d).tOuter); return m.get(key); }
+const dayLv50 = d => (WK.days[d] || {}).lv || st.level;
 // v20: 바지 통·겉옷 기장은 링크에 안 담김(직접 봐야 앎). 적은 바로 아래에서 고르게 해서, 고르면 사진 속 옷과 모양이 같은 코디만 '됨'으로 봄
 // v22: 바지가 둘 이상이면 '바지 전부' 줄을 맨 위에 둠(검토 v21 지시 4). 한 번 고르면 이 기기에 남아서 링크를 다시 열어도 그대로임
 const impFRows = ks => { const r = ks.map(k => { const rl = roleOfSlot(k), f = rl === 'pants' ? 'fit' : rl === 'outer' && !KIND_F[k.split('|')[0]] ? 'len' : ''; return f ? featRows(k, [f]) : ''; }).join('');
@@ -3468,16 +3604,28 @@ function bkClean(o){
     if (isD(v.at)) y.at = v.at; if (isD(v.eta)) y.eta = v.eta; r.d[k] = y; }
   if (isObj(o.w)) for (const k in o.w) if ((okSlot(k) || isPK(k)) && Array.isArray(o.w[k])) { const a = o.w[k].filter(isD).slice(0, 30); if (a.length) r.w[k] = a; }
   if (isObj(o.x)) for (const k in o.x) if (isXK(k)) r.x[k] = 1;
+  // v50: 벌 기록(v). 칸마다 VMAX벌까지, 첫 벌은 {n, th, pr}, 둘째 벌부터 {id, n, fit, len, th, pr}. 모양이 안 맞는 값은 버림. 예전 링크엔 없음(→ 한 칸 한 벌)
+  const v = {};
+  if (isObj(o.v)) for (const k in o.v) if (okSlot(k) && Array.isArray(o.v[k])) { const a = [];
+    o.v[k].slice(0, VMAX).forEach((y, i) => { const z = {};
+      if (i) { if (!isObj(y) || !isVid(y.id) || a.some(q => q.id === y.id)) return; z.id = y.id; for (const f in FOPT) if (FOPT[f].includes(y[f])) z[f] = y[f]; }
+      if (isObj(y)) { if (isStr(y.n, VNM) && y.n.trim()) z.n = y.n.trim(); if (THV.includes(y.th)) z.th = y.th; if (PRV.includes(y.pr)) z.pr = y.pr; }
+      a.push(z); });
+    if (a.length > 1 || Object.keys(a[0] || {}).length) v[k] = a; }
+  if (Object.keys(v).length) r.v = v;
   return r;
 }
 function bkBody(b){ if (!isObj(b)) return null; const r = {};
   Object.keys(BODY).forEach(k => { const v = b[k]; if (v === null || (typeof v === 'number' && v >= BODY[k][0] && v <= BODY[k][1])) r[k] = v; });
   if (b.pf === '' || FITS[b.pf]) r.pf = b.pf;
   return Object.keys(r).length ? r : null; }
-const ownCount = o => { const v = Object.values(o.s || {}); return {yes: v.filter(x => x === 'similar').length, no: v.filter(x => x === 'no').length,
-  f: Object.values(o.f || {}).reduce((n, y) => n + Object.keys(y || {}).length, 0), p: Object.keys(o.p || {}).length, x: Object.keys(o.x || {}).length,
-  d: Object.keys(o.d || {}).length, w: Object.keys(o.w || {}).length}; };
-const cntText = (c, all) => [`있음 ${c.yes}벌`, `없음 ${c.no}벌`, `핏·기장 ${c.f}칸`, c.p ? `제품 그대로 ${c.p}개` : '', c.x ? `대신 입기 제외 ${c.x}개` : '',
+// v50: 있음은 벌 수(칸 안의 둘째 벌부터 더함), 핏·기장은 둘째 벌 것도 셈, tp = 두께·프린트를 고른 수(0이면 안 적음 → v49와 같은 글)
+const ownCount = o => { const v = Object.values(o.s || {}), V = o.v || {}, ex = k => Array.isArray(V[k]) ? Math.max(0, V[k].length - 1) : 0, vs = Object.values(V).filter(Array.isArray);
+  return {yes: Object.keys(o.s || {}).filter(k => o.s[k] === 'similar').reduce((n, k) => n + 1 + ex(k), 0), no: v.filter(x => x === 'no').length,
+  f: Object.values(o.f || {}).reduce((n, y) => n + Object.keys(y || {}).length, 0) + vs.reduce((n, a) => n + a.slice(1).reduce((m, y) => m + ['fit', 'len'].filter(f => y && y[f]).length, 0), 0),
+  p: Object.keys(o.p || {}).length, x: Object.keys(o.x || {}).length,
+  d: Object.keys(o.d || {}).length, w: Object.keys(o.w || {}).length, tp: vs.reduce((n, a) => n + a.reduce((m, y) => m + ['th', 'pr'].filter(f => y && y[f]).length, 0), 0)}; };
+const cntText = (c, all) => [`있음 ${c.yes}벌`, `없음 ${c.no}벌`, `핏·기장 ${c.f}칸`, c.tp ? `두께·프린트 ${c.tp}개` : '', c.p ? `제품 그대로 ${c.p}개` : '', c.x ? `대신 입기 제외 ${c.x}개` : '',
   all && c.d ? `산 옷 상태 ${c.d}개` : '', all && c.w ? `못 쓰는 날 ${c.w}개` : ''].filter(Boolean).join(' · ');
 const bodyText = b => BODYK.filter(k => b && b[k] != null && b[k] !== '').map(k => `${BODYN[k]} ${k === 'pf' ? FITS[b[k]] || b[k] : b[k] + BODYU[k]}`).join(' · ') || '빈 칸';
 function bkLink(withBody){
@@ -3488,17 +3636,23 @@ function bkLink(withBody){
 const bkHTML = () => `<div class="bkup"><p><b>백업 링크</b> <span class="cn">옷장 기록 전부(있음·없음·핏·기장·제품·대신 입기 제외·산 옷 상태·못 쓰는 날)를 링크 하나에 담아. 이 기기 저장소가 지워졌을 때 이 링크를 열면 다시 넣을 수 있어. 만든 뒤에 바꾼 건 안 담기니 바꿀 때마다 새로 만들어</span></p>`
   + `<p class="cn"><b>나만 보관하고 남에게 보내지 마.</b> 암호가 아니라서 링크를 가진 사람은 내용을 풀어 볼 수 있어</p>`
   + `<p class="cn">옷 사진은 백업 링크에 안 담겨요. 사진은 아래 '옷 사진 파일'로 따로 내려받아 두세요.</p>` // v49
+  + `<p class="cn">칸마다 더한 벌과 벌마다 고른 핏·두께·프린트도 같이 담겨요.</p>` // v50
   + `<label><input type="checkbox" class="bkB"> 키·몸무게·발 크기·바지 실측·좋아하는 핏도 넣기</label>`
   + `<button type="button" class="plain" data-bkmk>백업 링크 만들기</button><div class="bkout"></div></div>`;
 function bkApply(o, b, mode){
   let nb = 0;
   if (mode === 'rep') { ['p', 's', 'f', 'd', 'w', 'x'].forEach(k => { OWN[k] = JSON.parse(JSON.stringify(o[k])); });
+    if (o.v) OWN.v = JSON.parse(JSON.stringify(o.v)); else delete OWN.v; // v50: 예전 링크(벌 기록 없음)로 바꾸면 한 칸 한 벌
     if (b) BODYK.forEach(k => { if (k in b && st[k] !== b[k]) { st[k] = b[k]; nb++; } }); }
   else {
     for (const k in o.s) if (!(k in OWN.s)) OWN.s[k] = o.s[k];
     for (const k in o.f) { const y = OWN.f[k] = OWN.f[k] || {}; for (const f in o.f[k]) if (y[f] == null) y[f] = o.f[k][f]; }
     ['p', 'd', 'x'].forEach(s => { for (const k in o[s]) if (!(k in OWN[s])) OWN[s][k] = JSON.parse(JSON.stringify(o[s][k])); });
     for (const k in o.w) OWN.w[k] = [...new Set((OWN.w[k] || []).concat(o.w[k]))].sort();
+    // v50: 벌 기록이 없는 칸은 링크의 벌을 그대로 더함. 이미 벌 기록이 있는 칸은 첫 벌의 빈 이름·두께·프린트만 채움
+    if (o.v) for (const k in o.v) { OWN.v = OWN.v || {};
+      if (!OWN.v[k]) OWN.v[k] = JSON.parse(JSON.stringify(o.v[k]));
+      else { const a = OWN.v[k][0] = OWN.v[k][0] || {}, b0 = o.v[k][0] || {}; ['n', 'th', 'pr'].forEach(q => { if (a[q] == null && b0[q]) a[q] = b0[q]; }); } }
     if (b) BODYK.forEach(k => { if (k in b && b[k] != null && b[k] !== '' && (st[k] == null || st[k] === '')) { st[k] = b[k]; nb++; } });
   }
   saveO(); if (nb) { st.lookN = 0; save(); }
@@ -3590,7 +3744,7 @@ const PILOT33 = {
 const subFor = (x, os) => subsFor(x, os)[0] || null;
 function subsFor(x, os){
   // v38: 종류 미확인 칸(x.vary, D 사진 회색 상의). 후보 종류의 가진 옷은 전부 '내 옷으로 바꿔 입는 변형'(검토 v38 2번)
-  if (x.vary) return x.vary.filter(k => os.has(k) && !OWN.x[x.slot + '>' + k]).map(k => ({k, why: x.vwhy || '', lab: `${x.vlab || '종류 미확인'} · 내 ${wro(slotName(k))} 변형`, pilot: 1}));
+  if (x.vary) return x.vary.filter(k => os.has(k) && !OWN.x[x.slot + '>' + k]).map(k => Object.assign({k, why: x.vwhy || '', lab: `${x.vlab || '종류 미확인'} · 내 ${wro(slotName(k))} 변형`, pilot: 1}, itemN(k) > 1 ? {vi: pickItem(k, x).it.i} : {}));
   if (!x.slot || x.anyTop || x.anyKind) return [];
   // v27: 사진 바지가 멜란지여도 대신 입기는 막지 않음(검토 v27 지시 2: 코디를 지우지 말고 '사진과 다른 단정한 변형 코디'로 밝힘). 다른 점은 칸 줄·배지에 적음
   const [kd, c] = x.slot.split('|'), cand = [];
@@ -3603,8 +3757,11 @@ function subsFor(x, os){
       + (x.lvl === 'L3' && /슬랙스/.test(x.pk || '') ? '. 슬랙스에 운동화라 적당히 꾸민보다 꾸안꾸에 가깝게 보임' : ''), lab: '사진보다 캐주얼한 변형'});
   const pl = PILOT33[x.lk]; if (pl && pl.from === x.slot) cand.push({k: pl.to, why: pl.why, lab: pl.lab, pilot: 1});
   const keys = Object.keys(x.ft || {}).filter(f => x.ft[f]);
-  return cand.filter(o => os.has(o.k) && !OWN.x[x.slot + '>' + o.k] && !keys.some(f => ownF(o.k)[f] && ownF(o.k)[f] !== x.ft[f])
-    && (!o.need || (x.ft && x.ft[o.need] && ownF(o.k)[o.need] === x.ft[o.need])));
+  // v50: 칸에 벌이 여럿이면 그중 하나라도 맞으면 대신 입기 후보(vi = 고른 벌). 한 벌이면 v49와 같은 비교
+  const okF = (o, f) => !keys.some(q => f[q] && f[q] !== x.ft[q]) && (!o.need || (x.ft && x.ft[o.need] && f[o.need] === x.ft[o.need]));
+  return cand.filter(o => { if (!os.has(o.k) || OWN.x[x.slot + '>' + o.k]) return false;
+    if (itemN(o.k) === 1) return okF(o, ownF(o.k));
+    const p = pickItem(o.k, x, it => ({lv: okF(o, it.f) ? 1 : 0})); if (!p.r.lv) return false; o.vi = p.it.i; return true; });
 }
 // 코디를 좌우하는 특징만: 바지 통, 신발 종류(칸에 들어 있음), 겉옷 기장. 모르면 '' (모르는 걸 같다고 치지 않음)
 const PFAM = {wide:'와이드', straight:'스트레이트', tapered:'테이퍼드', balloon:'벌룬', flare:'플레어'};
@@ -3646,7 +3803,9 @@ function partsOf(L){
   }
   // v22: 신발 대신 입기(subFor)가 단계·바지 종류를 봄
   const pk = (out.find(x => x.role === 'pants' && x.slot) || {}).slot;
-  out.forEach(x => { x.lvl = L.level; x.pk = pk ? pk.split('|')[0] : ''; x.lk = L.key; });
+  // v50: lo·hi = 사진 체감 범위, ou = 겉옷 입는 사진(두께 알림·벌 고르기에서 상의가 겉옷 안인지)
+  const ou = out.some(x => x.role === 'outer' && x.need === 'req');
+  out.forEach(x => { x.lvl = L.level; x.pk = pk ? pk.split('|')[0] : ''; x.lk = L.key; x.lo = L.lo; x.hi = L.hi; x.ou = ou; });
   return out;
 }
 function ownedSlots(){ const set = new Set(Object.keys(OWN.s).filter(k => OWN.s[k] === 'similar'));
@@ -3669,32 +3828,34 @@ function partState(x, os){
   if (x.anyTop || x.anyKind) {
     const r = x.anyTop ? 'top' : 'shoes', hit = hidList(x, [...os])[0];
     const no = !hit && !!OWN.s && Object.keys(OWN.s).some(k => roleOfSlot(k) === r && OWN.s[k] === 'no');
-    return hit ? {lv: 3, t: `가진 ${wro(slotName(hit))} 됨`} : {lv: 0, t: no ? '없음' : '모름', no};
+    return hit ? Object.assign({lv: 3, t: `가진 ${wro(slotName(hit))} 됨`}, vv50(hit, x)) : {lv: 0, t: no ? '없음' : '모름', no};
   }
   // v38: 종류 미확인 칸은 같은 종류를 가져도 '됨'(lv 3)으로 안 봄. 가진 후보가 있으면 변형(lv 2), 없으면 후보를 전부 '없음'으로 적었을 때만 없음(하나라도 안 적었으면 모름)
   //      일주일 상세 칸 줄도 이 글을 쓰니 변형 이름('상의 종류 미확인 · 내 회색 맨투맨으로 변형')을 앞에 둠
-  if (x.vary) { const sb = subFor(x, os); if (sb) return {lv: 2, t: `${sb.lab} · ${sb.why}`, sub: sb.k};
+  if (x.vary) { const sb = subFor(x, os); if (sb) return Object.assign({lv: 2, t: `${sb.lab} · ${sb.why}`, sub: sb.k}, sb.vi != null ? {vk: sb.k, vi: sb.vi} : {});
     const no = x.vary.every(k => OWN.s[k] === 'no'); return {lv: 0, t: no ? '없음' : '모름', no}; }
   const slots = [x.slot].concat(x.also || []), hit = slots.find(k => os.has(k));
   if (hit) {
-    if (x.also && hit !== x.slot) return {lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
-      : `가진 ${wro(slotName(hit))} 됨(사진 속 ${x.nm || slotName(x.slot)} 종류를 확정 못 해서 같은 색이면 됨으로 봄)`};
-    const f = ownF(hit), keys = Object.keys(x.ft || {}).filter(k => x.ft[k]);
-    const diff = keys.find(k => f[k] && f[k] !== x.ft[k]), unk = keys.filter(k => !f[k]);
-    if (diff) return {lv: 1, t: `가진 ${weun(slotName(hit))} ${f[diff]}, 사진은 ${x.ft[diff]}`, k: diff};
+    if (x.also && hit !== x.slot) return Object.assign({lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
+      : `가진 ${wro(slotName(hit))} 됨(사진 속 ${x.nm || slotName(x.slot)} 종류를 확정 못 해서 같은 색이면 됨으로 봄)`}, vv50(hit, x));
+    // v50: 칸 안의 벌마다 비교해서 가장 잘 맞는 벌로 판정(하나라도 맞으면 됨). 같은 판정이면 그날 날씨·단계에 맞는 벌. 한 벌이면 v49와 같음
+    const keys = Object.keys(x.ft || {}).filter(k => x.ft[k]);
+    const P = pickItem(hit, x, it => { const g = it.f, d = keys.find(k => g[k] && g[k] !== x.ft[k]), u = keys.filter(k => !g[k]); return {lv: d ? 1 : u.length ? 2 : 3, diff: d, unk: u}; });
+    const m = itemN(hit) > 1, f = P.it.f, diff = P.r.diff, unk = P.r.unk, hn = m ? slotName(hit) + ' ' + itemLab(P.it) : slotName(hit), vv = m ? {vk: hit, vi: P.it.i} : {};
+    if (diff) return Object.assign({lv: 1, t: `가진 ${weun(slotName(hit))} ${m ? [...new Set(ownItems(hit).map(y => y.f[diff]).filter(Boolean))].join('·') : f[diff]}, 사진은 ${x.ft[diff]}`, k: diff}, vv);
     // v14: 이 칸에 맞춰 사서 받은 제품(주요 특징이 사진과 같은 대체품)이면 특징을 따로 안 적어도 됨으로 봄. v13까진 받음을 눌러도 '특징 확인'으로 남았음
     const gp = unk.length && Object.keys(OWN.p).filter(k => OWN.p[k] === 'own').concat(Object.keys(OWN.d).filter(k => OWN.d[k].st === 'got'))
       .find(k => { const q = PID[k.split('|')[0]]; return q && kindOf(q) + '|' + k.split('|')[1] === hit && fitsPart(q, x).ok; });
     if (gp) return {lv: 3, t: `가진 ${wro(shortName(PID[gp.split('|')[0]].name))} 됨(사진과 주요 특징 같음)`};
-    if (unk.length) return {lv: 2, t: `가진 ${wwa(slotName(hit))} 종류·색은 같음. ${unk.map(k => FNM[k]).join('·')}은 아직 모름`, k: unk[0]};
-    return {lv: 3, t: `가진 ${wro(slotName(hit))} 됨${keys.length ? ' (' + keys.map(k => FNM[k] + ' ' + x.ft[k]).join(', ') + ' 같음)' : ''}`};
+    if (unk.length) return Object.assign({lv: 2, t: `가진 ${wwa(hn)} 종류·색은 같음. ${unk.map(k => FNM[k]).join('·')}은 아직 모름`, k: unk[0]}, vv);
+    return Object.assign({lv: 3, t: `가진 ${wro(hn)} 됨${keys.length ? ' (' + keys.map(k => FNM[k] + ' ' + x.ft[k]).join(', ') + ' 같음)' : ''}`}, vv);
   }
   // v12: 이 칸 대신 사서 받은 다른 종류·색 제품(코디에 골라 둔 분위기 바꾸기 대안)도 그 칸을 채운 걸로 봄. 사진과 다른 점은 알림
   const gk = Object.keys(OWN.d).find(k => OWN.d[k].st === 'got' && slots.some(s => recHas(OWN.d[k], s)) && PID[k.split('|')[0]]);
   if (gk) { const q = PID[gk.split('|')[0]], df = x.p && x.s && roleOf(x.p) !== 'pants' ? gate(x.p, q, x.s).why : '';
     return {lv: 2, t: `이 칸 대신 산 ${wro(shortName(q.name))} 입음${df ? ' · 사진과 다른 점: ' + df : ''}`, pick: gk}; }
   const sb = subFor(x, os);
-  if (sb) return {lv: 2, t: `가진 ${wro(slotName(sb.k))} 대신 입음 · ${sb.why}`, sub: sb.k};
+  if (sb) return Object.assign({lv: 2, t: `가진 ${wro(slotName(sb.k) + (sb.vi != null ? ' ' + itemLab(ownItems(sb.k)[sb.vi]) : ''))} 대신 입음 · ${sb.why}`, sub: sb.k}, sb.vi != null ? {vk: sb.k, vi: sb.vi} : {});
   // v20: 사진 바지가 플레어·테이퍼드면 칸 이름에 핏이 붙어서 가진 같은 색 바지와 안 이어짐. '모름' 대신 가진 바지와 통이 다르다고 알려 줌(대신 입음으로는 안 봄).
   //      v19는 l2-g(연청 플레어)에 가진 연청 데님을 두고 대안 제품 색인 진청 데님을 '대신 입음'으로 넣었음
   const fm = x.slot && /^(플레어|테이퍼드) (.+)$/.exec(x.slot.split('|')[0]), fk = fm && fm[2] + '|' + x.slot.split('|')[1];
@@ -3716,8 +3877,10 @@ function lookStatus(L, os){
   const grp = x => { const t = x.state; return t.lv >= 3 ? 'ok' : t.lv === 2 ? (t.sub || t.pick ? 'vari' : 'chk') : t.lv === -1 ? 'chk' : t.lv === 1 || t.no ? 'buy' : 'unl'; };
   req.forEach(x => { x.grp = grp(x); });
   const by = g => req.filter(x => x.grp === g), chk = by('chk'), vari = by('vari'), buy = by('buy'), unl = by('unl');
-  return {parts, req, miss, unk, soft, chk, vari, buy, unl, nb: buy.length + unl.length,
-    ready: !miss.length && !unk.length && !soft.length, maybe: !miss.length && !unk.length && soft.length > 0, exact: req.every(x => x.state.lv === 4)};
+  // v50: 두께·프린트 알림(벌 정보가 없으면 빈 목록이고 결과에 안 붙임)
+  const fl = lookFlags(req, L, x => x.state, os);
+  return Object.assign(fl.length ? {fl, nfl: fl.length} : {}, {parts, req, miss, unk, soft, chk, vari, buy, unl, nb: buy.length + unl.length,
+    ready: !miss.length && !unk.length && !soft.length, maybe: !miss.length && !unk.length && soft.length > 0, exact: req.every(x => x.state.lv === 4)});
 }
 const baseOf = L => (STY[L.key] && STY[L.key].base != null) ? STY[L.key].base : 1;
 
@@ -3843,12 +4006,14 @@ function simPen(a, b){
   return (F.ot === G.ot && F.pc === G.pc ? .5 : F.ot === G.ot ? .2 : 0) + (F.ot === G.ot && F.ol === G.ol ? .3 : 0) + (F.pm === G.pm && F.pc === G.pc ? .25 : 0);
 }
 // 날씨 먼저(체감이 사진 온도 범위에서 2° 안쪽) → 그 안에서 취향·실측·구매 가능·최근 본 것 → 같은 옷·비슷한 조합이 연달아 안 나오게
-function orderLooks(A, lv){
+function orderLooks(A, lv, sel){
   lv = lv || st.level;
   const w = tasteW(), useFit = !!(st.pf || st.pl || st.pw), os = ownedSlots(), useOwn = hasOwn();
+  // v50: 판정할 때 날씨 = 이 순서의 날(A), 단계 = 고른 단계(sel · 옆 단계 사진을 볼 때도 고른 단계로 프린트를 봄)
+  const C50 = {t: A.tOuter, lv: sel || lv};
   // v9: 기본안 점수(base)가 먼저, 취향·실측·가진 옷은 그 안에서 조정. 날씨는 묶음(g0/g1)으로 이미 걸러짐
   const all = LOOKS.filter(L => L.level === lv).map((L, i) => {
-    const t = tasteOf(L, w), f = fitScore(L), b = buyPen(L), sp = seenPen(L), own = useOwn ? lookStatus(L, os) : null;
+    const t = tasteOf(L, w), f = fitScore(L), b = buyPen(L), sp = seenPen(L), own = useOwn ? withCtx(C50, () => lookStatus(L, os)) : null;
     const fit = useFit ? (f.pf ? .8 : 0) + (f.cmp ? .3 - Math.min(.3, f.d / 20) : 0) : 0;
     // v27: 7일 준비 점수(sc)가 v26과 같게 그대로 둠. 오늘 화면 순서는 아래 tier 묶음이 먼저라 이 값은 묶음 안에서만 작용
     const ob = own ? (own.ready ? .6 : own.maybe ? .35 : own.miss.length + own.unk.length === 1 ? .2 : 0) : 0;
@@ -3858,9 +4023,13 @@ function orderLooks(A, lv){
     // wr: 사지 않고 가진 옷으로 입음(확인할 것·변형 포함). nb = 사야 할 옷 + 옷장에 안 적은 옷
     // v27: tier(검토 v27 지시 1) 0 준비 완료 · 1 사지 않고 확인·변형만 · 2 하나(사야 함 또는 안 적음) · 3 둘 이상. 가진 옷을 안 적었으면 전부 0
     const wr = !!own && !own.nb, tier = !own || own.ready ? 0 : !own.nb ? 1 : own.nb === 1 ? 2 : 3;
-    return {L, i, dd, f, t, b, sp, own, wr, tier, sc: s0 - i * .02, so: s0 - i * .002};
+    // v50: fl = 두께·프린트 알림이 있는 코디(1). 같은 준비 묶음 안에서 알림 없는 코디 뒤로.
+    //      일주일 점수(sc)는 v49 그대로 둠(알림 감점을 sc에 넣었더니 알림 있는 가진 옷 코디 대신 새 옷을 사는 코디를 골랐음). 일주일은 planWeekCore에서 살 옷이 늘지 않을 때만 바꿈
+    const fl = own && own.nfl ? 1 : 0, fp = fl ? FL50P : 0;
+    return {L, i, dd, f, t, b, sp, own, wr, tier, fl, sc: s0 - i * .02, so: s0 - i * .002 - fp};
   });
-  let g0 = all.filter(o => o.dd <= 2), g1 = all.filter(o => o.dd > 2).sort((a, b) => a.dd - b.dd || b.sc - a.sc);
+  // v50: 날씨 범위 밖(참고) 묶음도 두께·프린트 알림 있는 코디를 뒤로(알림이 없으면 v49와 같은 거리순)
+  let g0 = all.filter(o => o.dd <= 2), g1 = all.filter(o => o.dd > 2).sort((a, b) => a.fl - b.fl || a.dd - b.dd || b.sc - a.sc);
   // 날씨 범위 안에 포인트 코디(취향이 크게 갈림)밖에 없으면, 범위에서 1° 더 벗어난 기본안도 같은 묶음에서 겨루게 함
   // (예: 꾸꾸꾸 체감 -8°에 무톤·머플러 코디가 첫 장이 되던 것 → 코트 기본안 + '오늘 바꿀 점'이 먼저)
   if (!g0.some(o => baseOf(o.L) >= 1 || TS.like[o.L.key])) {
@@ -3871,7 +4040,7 @@ function orderLooks(A, lv){
   while (rest.length) {
     // v25: 가진 옷을 적었으면 날씨가 맞는 코디 중 가진 옷만으로 되는 것(wr)을 먼저 다 보여 주고 그다음 살 옷이 있는 것
     // v27: 살 옷이 있는 것도 하나만 사면 되는 것 → 둘 이상 순서로(검토 v26 버그 1: 같은 옷 감점이 커서 '2개 사야 함'이 '1개만 사면 됨'보다 앞에 섞였음)
-    const tmin = Math.min(...rest.map(o => o.tier)), pool = rest.filter(o => o.tier === tmin);
+    const tmin = Math.min(...rest.map(o => o.tier)), pool0 = rest.filter(o => o.tier === tmin), fmin = Math.min(...pool0.map(o => o.fl)), pool = pool0.filter(o => o.fl === fmin);
     let bo = pool[0], bv = -1e9;
     pool.forEach(o => { const p1 = out[out.length - 1], p2 = out[out.length - 2]; let v = o.so;
       if (p1) v -= sharePen(o.L, p1.L) + simPen(o.L, p1.L);
@@ -3884,7 +4053,7 @@ function orderLooks(A, lv){
     const m = new Set(out.slice(0, 2).map(o => FEAT[o.L.key] && FEAT[o.L.key].mood));
     // 내가 싫다고 한 특징이 있는 코디(취향 점수가 음수)는 '섞어 보기'로 끌어올리지 않음
     // v25: 가진 옷 코디 사이에 살 옷 있는 코디를 끼워 넣지 않음
-    const j = out.findIndex((o, i) => i >= 3 && FEAT[o.L.key] && !m.has(FEAT[o.L.key].mood) && !TS.nope[o.L.key] && o.t.s >= 0 && baseOf(o.L) >= 1 && o.tier === out[2].tier);
+    const j = out.findIndex((o, i) => i >= 3 && FEAT[o.L.key] && !m.has(FEAT[o.L.key].mood) && !TS.nope[o.L.key] && o.t.s >= 0 && baseOf(o.L) >= 1 && o.tier === out[2].tier && o.fl === out[2].fl);
     if (j > 2) { const [x] = out.splice(j, 1); x.explore = true; out.splice(2, 0, x); }
   }
   return out.concat(g1);
@@ -3906,7 +4075,7 @@ let ownOn = false, ownN = 0, allN = 0, allNear = 0, bview = false;
 function ownLooks(A, all){
   const same = (all || orderLooks(A)).filter(o => o.wr && o.dd <= 2);
   // v27: 옆 단계도 준비 완료 → 확인·변형 순서, 그 안에선 점수
-  const adj = (LVADJ[st.level] || []).flatMap(l2 => orderLooks(A, l2).filter(o => o.wr && o.dd <= 2 && !TS.nope[o.L.key]).map(o => Object.assign({}, o, {adj: l2}))).sort((a, b) => a.tier - b.tier || b.so - a.so);
+  const adj = (LVADJ[st.level] || []).flatMap(l2 => orderLooks(A, l2, st.level).filter(o => o.wr && o.dd <= 2 && !TS.nope[o.L.key]).map(o => Object.assign({}, o, {adj: l2}))).sort((a, b) => a.tier - b.tier || a.fl - b.fl || b.so - a.so);
   return same.concat(adj);
 }
 // v27: 묶음 번호(gp). 고른 단계에서 사지 않고 입는 코디(준비 → 확인·변형) → 옆 단계 내 옷 코디(준비 → 확인·변형) → 고른 단계에서 하나 → 둘 이상 사거나 적어야 하는 코디.
@@ -3932,9 +4101,11 @@ function outerKey(o, os){
   return x.slot || x.buy || '?';
 }
 function divHead(list){
+  // v50: 묶음 안에서 두께·프린트 알림 있는 코디는 반 단계 뒤 묶음으로(겉옷이 안 나왔어도 알림 없는 코디를 앞지르지 않게)
+  const gk = o => gpOf(o) + (o.fl ? .5 : 0);
   const os = ownedSlots(), near = list.filter(o => o.dd <= 2), head = [], seen = new Set();
-  for (const t of [...new Set(near.map(gpOf))].sort((a, b) => a - b)) {
-    const g = near.filter(o => gpOf(o) === t);
+  for (const t of [...new Set(near.map(gk))].sort((a, b) => a - b)) {
+    const g = near.filter(o => gk(o) === t);
     g.forEach(o => { const k = outerKey(o, os); if (head.length < 3 && !seen.has(k)) { seen.add(k); head.push(o); } });
     g.forEach(o => { if (head.length < 3 && !head.includes(o)) head.push(o); });
     if (head.length >= 3) break;
@@ -4363,14 +4534,17 @@ function rowHTML42(w, i, lay, key){
   const shd = w.sh && !w.shIn ? `<p class="shd"><span class="lb">사진 속 색</span> ${chip(w.sh)}${esc(w.sh.nm)} · ${esc(w.sh.t)}</p>` : '';
   const alt = w.alt && w.alt.length ? `<p class="alts"><span class="lb">바꿔 입기</span> ${w.alt.map(a => `<span class="cap">${esc(a)}</span>`).join(' ')}</p>` : '';
   // v49: '내 ○○' 줄에 그 옷 사진이 있으면 접힌 줄엔 대표 사진 하나, 펼치면 전부 크게(사진 없으면 v48 그대로)
-  const pk49 = PHK49.get(w), ph49 = pk49 ? phBlock(pk49) : '';
+  // v50: 벌이 여럿인 칸은 입는 벌(PHV50)의 사진만
+  const pk49 = PHK49.get(w), pv50 = PHV50.get(w) || '', ph49 = pk49 ? phBlock(pk49, pv50) : '';
+  // v50: 두께·프린트 알림. 접힌 줄에 '더울 수 있어요 · …' 한 줄, 펼치면 그날 체감·사진 범위까지
+  const fl50 = FL50.get(w) || [];
   const exH = ph49 + (rel ? `<p class="rl">${esc(rel)}</p>` : '')
     + exV.map(h => typeof h === 'string' ? `<p>${h}</p>` : `<p class="fd"><span class="lb">${esc(h.fold)}</span> ${esc(h.det)}</p>`).join('')
-    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + shd + alt;
+    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + shd + alt;
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
   return `<li class="r42 ${w.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s') : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
@@ -4748,14 +4922,14 @@ function ownListHTML(skip){
 // v49: 저장 없이 기록만 바꾸는 부분(ownDel0)을 따로 둠. 사진이 같이 지워지는지 먼저 셀 때 씀
 function ownDel0(k){
   const t = k.slice(0, 1), key = k.slice(2);
-  if (t === 's') { delete OWN.s[key]; delete OWN.f[key]; } else if (t === 'x') delete OWN.x[key]; else { delete OWN.p[key]; if (OWN.d[key] && OWN.d[key].st === 'got') delete OWN.d[key]; }
+  if (t === 's') { delete OWN.s[key]; delete OWN.f[key]; delV(key); } else if (t === 'x') delete OWN.x[key]; else { delete OWN.p[key]; if (OWN.d[key] && OWN.d[key].st === 'got') delete OWN.d[key]; }
 }
 function ownDel(k){ ownDel0(k); saveO(); }
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
   box.querySelectorAll('[data-own]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.own, v = b.dataset.v;
     const mut = () => { if (v === '모름') OWN.s[k] = 'similar';
-    else if (v === '있음') { OWN.s[k] = 'no'; delete OWN.f[k]; for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; } }
+    else if (v === '있음') { OWN.s[k] = 'no'; delete OWN.f[k]; delV(k); for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; } }
     else delete OWN.s[k]; };
     // v49: 있음 → 없음으로 바꿔 그 칸 사진이 지워지면 먼저 물어봄(사진이 없으면 전처럼 바로)
     phGuard(b, [k], mut, `'${slotName(k)}' 칸을 없음으로 바꾸면`, '없음으로 바꾸기', () => { saveO(); after(); }); }));
@@ -4769,7 +4943,7 @@ function bindOwn(box, after){
     q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p>${phAllN() ? `<p>옷 사진 ${phAllN()}장도 같이 지워져요. '내 옷장' 창 아래 '옷 사진 파일'로 먼저 내려받아 두면 다시 넣을 수 있어요.</p>` : ''}<button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
     oc.replaceWith(q);
     q.addEventListener('click', e => { const y = e.target.closest('[data-clr]'); if (!y) return;
-      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; saveO(); if (phAllN()) phDelAll(); drawHead(); after(); } else q.replaceWith(oc); });
+      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; delete OWN.v; saveO(); if (phAllN()) phDelAll(); drawHead(); after(); } else q.replaceWith(oc); });
   });
   const og = box.querySelector('.oaGo'); if (og) og.addEventListener('click', () => { const k = box.querySelector('.oaK').value + '|' + box.querySelector('.oaC').value;
     if (okSlot(k)) { OWN.s[k] = 'similar'; saveO(); after(); } });
@@ -4804,9 +4978,10 @@ function wearOf(x, os){
   const s = x.state || partState(x, os);
   if (s.lv === 4) return {k: x.slot, nm: shortName(x.p.name)};
   if (s.pick) { const q = PID[s.pick.split('|')[0]]; return {k: null, nm: q ? shortName(q.name) : '산 옷'}; }
-  if (s.sub) return {k: s.sub, nm: ownNm(s.sub)};
+  // v50: 벌이 여럿인 칸이면 판정에서 고른 벌 이름(vNm)과 그 벌 사진 번호(vid). 한 벌이면 v49와 같음
+  if (s.sub) return Object.assign({k: s.sub, nm: vNm(s.sub, s)}, s.vk === s.sub && s.vi != null ? {vid: vId(s.sub, s)} : {});
   const k = x.anyTop || x.anyKind ? hidList(x, [...os])[0] : [x.slot].concat(x.also || []).find(y => y && os.has(y));
-  return k ? {k, nm: ownNm(k)} : null;
+  return k ? Object.assign({k, nm: vNm(k, s)}, s.vk === k && s.vi != null ? {vid: vId(k, s)} : {}) : null;
 }
 // v35: 사진 속 신발이 타스만이면 화면 이름만 '○○ 타스만'(칸 판정은 그대로 ○○ 로퍼)
 const tasNm = x => x && x.p && x.slot && TASM.test(x.p.name || '') ? `${CN[x.slot.split('|')[1]] || x.slot.split('|')[1]} 타스만` : '';
@@ -4876,10 +5051,10 @@ function recipeOf(L, os){
       const lv = x.state.lv, ph = photoNm(x), inT = !x.anyTop && !x.info && (r !== 'top' || !s.req.some(y => y.role === 'outer'));
       const tgN = x.anyTop && tg ? `태그엔 ${CN[tg.col] || tg.col} ${kindOf(tg.p)}${jongOf(kindOf(tg.p)) ? '이' : '가'} 있지만 사진에선 겉옷에 가려 안 보임` : '';
       // bd: 칸 상태 배지 · n: 둘째 줄부터(한 줄에 하나씩) · shIn: 사진 속 색을 첫 줄에 붙임 · act: 줄 끝 버튼(fit·len 고르기, 가진 옷 적기)
-      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0, k49 = null; // v49: k49 = 이 줄 '내 ○○'의 칸 키(사진 보여 주기만)
+      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0, k49 = null, v50 = ''; // v49: k49 = 이 줄 '내 ○○'의 칸 키(사진 보여 주기만) · v50: v50 = 그 칸에서 입는 벌
       if (!own) { c = 'ph'; t = x.info ? '사진에서 신발 종류·색 확인 못 함' : x.anyTop ? '안에 입을 상의' : ph; if (x.anyTop) n.push('겉옷에 가려 거의 안 보임'); if (tgN) n.push(tgN); }
       else if (lv === -1) { c = 'info'; t = '가진 신발 중 골라 신기'; bd = '신발 확인'; n.push('사진에서 신발 종류·색을 못 봐서 사지 않고 가진 신발 중 골라 신음'); }
-      else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L); k49 = w && w.k ? w.k : null;
+      else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L); k49 = w && w.k ? w.k : null; v50 = w && w.vid ? w.vid : '';
         // v27: 대신 입는 옷과 대신 산 옷은 '변형'(사진과 분위기가 달라짐), 통·기장을 모르는 같은 종류·색은 '확인 필요'
         if (x.state.sub || x.state.pick) { c = 'sub'; t = x.state.sub ? `내 ${nm}` : `산 ${nm}`; bd = '변형 매치'; n.push(`사진 속 ${ph} 대신 · ${varNm(x, os)}`);
           const pw = x.state.sub && subsFor(x, os).find(y => y.k === x.state.sub); if (pw && pw.pilot) { n.push(pw.why); pil = 1; } }
@@ -4906,7 +5081,7 @@ function recipeOf(L, os){
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
       // v37: 내 옷으로 됨·확인 필요 칸이어도 사진과 같다고 확정 못 하는 점(STY rchk, 검토 v37 1: 집업 기장·데님 색·워싱)
       { const rc = own && (c === 'own' || c === 'chk') && ((STY[L.key] || {}).rchk || []).find(y => y.role === r && (!y.slot || y.slot === x.slot)); if (rc) n.push(rc.t); }
-      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}); if (k49 && /^내 /.test(t)) PHK49.set(row, k49); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만)
+      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}); if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
       if (inT) tt.push(nm);
     });
   });
@@ -4948,7 +5123,7 @@ function stTags(o, R){
     if (s.ready) g.push({c: 'own', t: '준비됨'});
     if (vm.length) g.push({c: 'sub', t: `내 옷으로 변형 · ${partsN(vm)}`});
     if (vp.length) g.push({c: 'sub', t: `산 옷으로 변형 · ${partsN(vp)}`});
-    chkNs(s).forEach(t => g.push({c: 'chk', t}));
+    chkNs(s).forEach(t => g.push({c: 'chk', t})); flTags(s).forEach(t => g.push({c: 'chk', t}));
     if (R.nB) g.push({c: 'buy', t: `구매 필요 ${R.nB}개`});
     if (R.nU) g.push({c: 'unl', t: `보유 여부 확인 ${R.nU}개`});
     if (!R.nB && !R.nU) g.push(s.chk.length ? {c: 'chk0', t: '확인된 살 옷 없음'} : {c: 'own', t: '추가 구매 없음'});
@@ -4966,7 +5141,7 @@ function cardTags(o, R, noAdj, vs){
   if (s.vari.length) { const vm = s.vari.filter(y => y.state.sub), vp = s.vari.filter(y => !y.state.sub);
     if (vm.length) g.push(['sub', vs ? `대신 입기 · ${partsN(vm)}` : '대신 입기']);
     if (vp.length) g.push(['sub', vs ? `산 옷으로 대신 입기 · ${partsN(vp)}` : '산 옷으로 대신 입기']); }
-  chkNs(s).forEach(t => g.push(['chk', t]));
+  chkNs(s).forEach(t => g.push(['chk', t])); flTags(s).forEach(t => g.push(['chk', t]));
   if (R.nB) g.push(['buy', `구매 필요 ${R.nB}개`]);
   if (R.nU) g.push(['unl', `보유 여부 확인 ${R.nU}개`]);
   if (o.adj && !noAdj) g.push(['adj', `${LEVELS[o.adj].name} 단계 사진`]);
@@ -5148,25 +5323,84 @@ const ownAddHTML = () => `<div class="owna"><span class="k">위에 없는 가진
   + `<select class="oaC" aria-label="색">${Object.keys(CN).map(c => `<option value="${esc(c)}">${esc(CN[c])}</option>`).join('')}</select><button type="button" class="plain sm oaGo">적기</button></div>`;
 // 칸 하나를 지움(종류·색으로 적은 것, 같은 제품으로 적은 것, 산 옷 '받음' 모두)
 function ownDelSlot(k){
-  delete OWN.s[k]; delete OWN.f[k];
+  delete OWN.s[k]; delete OWN.f[k]; delV(k);
   for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; }
   for (const key in OWN.d) { const p = PID[key.split('|')[0]]; if (OWN.d[key].st === 'got' && p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.d[key]; }
 }
+/* ----- v50: 한 칸 여러 벌 고르기 -----
+   칸마다 머리줄(칸 이름 · 벌 수 · 벌 더하기 · 칸 지우기) + 벌마다 한 줄([사진] [이름: 벌이 둘 이상일 때] [바지 핏 · 겉옷 기장] [두께] [프린트] [이 벌 빼기]).
+   안 고르면 '모름'. 첫 벌의 핏·기장은 v49처럼 OWN.f, 나머지는 OWN.v */
+const FFOF = k => { const rl = roleOfSlot(k); return rl === 'pants' ? 'fit' : rl === 'outer' && !KIND_F[k.split('|')[0]] ? 'len' : ''; };
+const vClean = s => String(s || '').replace(/[<>"&]/g, '').trim().slice(0, VNM);
+function setItem50(k, i, f, v){
+  if (i === 0 && (f === 'fit' || f === 'len')) { OWN.f[k] = OWN.f[k] || {}; if (v) OWN.f[k][f] = v; else delete OWN.f[k][f]; return; }
+  if (i > 0 && !(OWN.v && OWN.v[k] && OWN.v[k][i])) return;
+  OWN.v = OWN.v || {}; const a = OWN.v[k] = OWN.v[k] || [{}]; a[0] = a[0] || {}; if (v) a[i][f] = v; else delete a[i][f]; tidyV(k);
+}
+function addItem50(k){ OWN.v = OWN.v || {}; const a = OWN.v[k] = OWN.v[k] || [{}]; if (a.length >= VMAX) return false;
+  let id = ''; while (!isVid(id) || a.some(y => y && y.id === id)) id = Math.random().toString(36).slice(2, 8); a.push({id}); return true; }
+// 벌 빼기. 첫 벌을 빼면 둘째 벌이 첫 벌이 됨(핏·기장은 OWN.f로)
+// v50 검토 반영: 사진은 지우지 않음. 뺀 벌 사진은 '벌을 정하지 않은 사진'으로 남김(둘째 벌부터는 그 벌 번호가 칸에서 없어져서 저절로)
+function delItem50(k, i){
+  const its = ownItems(k), a = OWN.v && OWN.v[k]; if (!a || its.length < 2 || !its[i]) return false;
+  if (i > 0) { a.splice(i, 1); tidyV(k); return true; }
+  const y = a[1] || {}, f = {}, z = {};
+  ['fit', 'len'].forEach(q => { if (y[q]) f[q] = y[q]; }); if (Object.keys(f).length) OWN.f[k] = f; else delete OWN.f[k];
+  ['n', 'th', 'pr'].forEach(q => { if (y[q]) z[q] = y[q]; }); a.splice(0, 2, z); tidyV(k); return true;
+}
+// 첫 벌을 뺄 때만 사진 표시를 바꿈: 첫 벌 사진('0') → '?'(정하지 않은 사진), 둘째 벌 사진(벌 번호) → '0'(새 첫 벌).
+// 한 번에 저장하고, 저장이 된 뒤에 벌을 뺌(사진 저장이 안 되면 벌도 그대로 → 사진이 다른 벌 것처럼 보이는 때가 없음)
+function delPh50(k, i){ const its = ownItems(k); if (i !== 0 || its.length < 2) return null;
+  const q = phListV(k, '').map(p => p.id), z = phListV(k, its[1].id).map(p => p.id); return q.length || z.length ? {q, z} : null; }
+const phApply50 = r => !r ? Promise.resolve(true) : phWrite('벌을 빼지', s => { [[r.q, PVQ], [r.z, PV1]].forEach(([ids, vi]) => ids.forEach(id => { const g = s.get(id); g.onsuccess = () => { if (g.result) s.put(Object.assign(g.result, {vi, t: Date.now()})); }; })); });
+function oeSlot50(k){
+  const its = ownItems(k), m = its.length > 1, ff = FFOF(k), sn = slotName(k);
+  const sel = (it, f, opts, lab, cur) => `<select data-v50="${f}" data-vi="${it.i}" aria-label="${esc(`${sn}${m ? ' ' + itemLab(it) : ''} ${lab}`)}">`
+    + [''].concat(opts).map(v => `<option value="${esc(v)}"${v === (cur || '') ? ' selected' : ''}>${esc(v || lab + ' 모름')}</option>`).join('') + '</select>';
+  const row = it => `<li class="oe50i" data-vi="${it.i}">${phChip50(k, it)}`
+    + (m ? `<input type="text" class="oe50t" data-vi="${it.i}" maxlength="${VNM}" value="${esc(it.n)}" placeholder="${it.i + 1}번째 벌 이름" aria-label="${esc(`${sn} ${it.i + 1}번째 벌 이름(안 적어도 돼요)`)}">` : '')
+    + (ff ? sel(it, ff, FOPT[ff], ff === 'fit' ? '핏' : '기장', it.i ? it.f[ff] : (OWN.f[k] || {})[ff]) : '')
+    + sel(it, 'th', THV, '두께', it.th) + sel(it, 'pr', PRV, '프린트', it.pr)
+    + (m ? `<button type="button" class="plain sm" data-vdel="${it.i}">이 벌 빼기</button>` : '') + '</li>';
+  // v50 검토 반영: 어느 벌 사진인지 정하지 않은 사진이 있으면 칸 아래에 알림 + 정하기 버튼
+  const nu = phUnk(k).length, unl = nu ? `<li class="oe50u"><span class="cn">어느 벌 사진인지 정하지 않은 사진 ${nu}장 · 정하기 전에는 코디 화면에 안 보여요</span> <button type="button" class="plain sm" data-phed="${esc(k)}" data-phv="${PVQ}" aria-label="${esc(sn)} 사진 보고 벌 정하기">사진 보고 벌 정하기</button></li>` : '';
+  return `<div class="oe50" data-k="${esc(k)}"><div class="oe50h"><b>${esc(sn)}</b>${m ? ` <span class="cn">${its.length}벌</span>` : ''}<span class="oe50b">`
+    + (its.length < VMAX ? `<button type="button" class="plain sm" data-vadd>벌 더하기</button>` : '')
+    + `<button type="button" class="plain sm" data-oex="${esc(k)}" aria-label="${esc(sn)} 칸 지우기">칸 지우기 ✕</button></span></div><ul class="oe50l">${its.map(row).join('')}${unl}</ul></div>`;
+}
+// 바지 전부 한 번에(벌마다 다 바꿈)
+const allFit50 = ks => { const its = ks.flatMap(k => ownItems(k)); if (its.length < 2) return '';
+  const fv = its.map(it => it.f.fit || '모름'), same = fv.every(v => v === fv[0]) ? fv[0] : '';
+  return `<div class="ownf"><span><b>바지 ${its.length}벌 전부</b></span>${FOPT.fit.concat(['모름']).map(v => `<button type="button" data-ownall="fit" data-v="${esc(v)}" aria-pressed="${same === v}">${esc(v)}</button>`).join('')}</div>`; };
 // 내 옷 목록·수정 창. 바꿀 때마다 뒤 화면을 다시 그림
 function showOwnEdit(focus){
   const old = document.getElementById('ownImp'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '내 옷장');
-  const body = () => { const os = [...ownedSlots()];
-    const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg"><span class="k">${RN[r]} ${ks.length}</span>${ks.map(phChip).join('')}</div>` : ''; }).join('');
-    return `<p><b>내 옷장 ${os.length}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${os.length ? `<p class="cn">옷 이름 왼쪽 네모를 누르면 그 옷 사진을 올리거나 바꿀 수 있어요(한 칸에 ${PHMAX}장까지).</p>` : ''}${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}${impFRows(os)}`; };
+  const body = () => { const os = [...ownedSlots()], nv = os.reduce((n, k) => n + itemN(k), 0);
+    const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg oe50g"><span class="k">${RN[r]} ${ks.reduce((n, k) => n + itemN(k), 0)}</span>${r === 'pants' ? allFit50(ks) : ''}${ks.map(oeSlot50).join('')}</div>` : ''; }).join('');
+    return `<p><b>내 옷장 ${nv}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${os.length ? `<p class="cn">같은 종류·색 옷이 여러 벌이면 '벌 더하기'로 따로 적어 주세요. 두께·프린트를 '모름'으로 두면 추천에 쓰지 않아요. 바지 핏·겉옷 기장을 고르면 사진 속 옷과 모양이 같은 코디만 '됨'으로 봐요(모름이면 그 코디는 '확인할 것'으로 남아요). 왼쪽 네모를 누르면 그 벌 사진을 올리거나 바꿀 수 있어요(한 벌에 ${PHMAX}장까지).</p>` : ''}${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}`; };
   // v49: 백업 링크 아래 '옷 사진 파일'(내려받기 · 다시 넣기)
   d.innerHTML = `<div class="oeb">${body()}</div>${bkHTML()}<div class="ph49x">${phFileHTML()}</div><div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`; d._ref = () => { const x = d.querySelector('.oeb'); if (x) x.innerHTML = body(); phRefFile(); };
-  const live = () => { saveO(); const sc = d.scrollTop; d.querySelector('.oeb').innerHTML = body(); d.scrollTop = sc; if (typeof wx !== 'undefined' && wx) render(); else drawWait(); };
+  const bg = () => { if (typeof wx !== 'undefined' && wx) render(); else drawWait(); };
+  const live = () => { saveO(); const sc = d.scrollTop; d.querySelector('.oeb').innerHTML = body(); d.scrollTop = sc; bg(); };
+  // v50: 고르기·이름은 창을 다시 그리지 않고 저장 + 뒤 화면만(고르던 칸이 안 사라지게)
+  d.addEventListener('change', e => { const t = e.target, bx = t.closest && t.closest('.oe50'); if (!bx) return; const k = bx.dataset.k, i = +t.dataset.vi;
+    if (t.matches('select[data-v50]')) { setItem50(k, i, t.dataset.v50, t.value); saveO(); drawHead(); bg(); }
+    else if (t.classList.contains('oe50t')) { const v = vClean(t.value); t.value = v; setItem50(k, i, 'n', v); saveO(); bg(); } });
   d.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.oex) { const k = b.dataset.oex; phGuard(b.closest('.oe49') || b, [k], () => ownDelSlot(k), `'${ownNm(k)}' 칸을 지우면`, '지우기', live); return; } // v49: 사진도 지워지면 먼저 물어봄
+    if (b.dataset.oex) { const k = b.dataset.oex; phGuard(b.closest('.oe50b') || b.closest('.oe49') || b, [k], () => ownDelSlot(k), `'${ownNm(k)}' 칸을 지우면`, '지우기', live); return; } // v49: 사진도 지워지면 먼저 물어봄
+    if (b.hasAttribute('data-vadd')) { const k = b.closest('.oe50').dataset.k; if (addItem50(k)) live(); return; }
+    if (b.dataset.vdel) { const k = b.closest('.oe50').dataset.k, i = +b.dataset.vdel, its = ownItems(k); if (!its[i]) return;
+      // v50 검토 반영: 사진은 지우지 않고 '벌을 정하지 않은 사진'으로 남김. 첫 벌을 빼면 사진 표시를 먼저 저장하고 된 뒤에 벌을 뺌
+      const n = phListV(k, its[i].id).length, go = async () => { if (!(await phApply50(delPh50(k, i)))) return; if (delItem50(k, i)) { live(); drawHead(); } };
+      if (!n) { go(); return; }
+      const q = document.createElement('span'); q.className = 'ph49q'; q.setAttribute('role', 'alertdialog');
+      q.innerHTML = `<span>이 벌 사진 ${n}장은 지우지 않고 '어느 벌 사진인지 정하지 않은 사진'으로 남겨요.</span> <button type="button" class="go">빼기</button><button type="button" class="plain sm">그대로 두기</button>`;
+      b.replaceWith(q); const [by, bn] = q.querySelectorAll('button');
+      by.addEventListener('click', ev => { ev.stopPropagation(); go(); }); bn.addEventListener('click', ev => { ev.stopPropagation(); q.replaceWith(b); }); return; }
     if (b.dataset.ownf) { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v; OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; live(); return; }
     if (b.dataset.ownall) { const f = b.dataset.ownall, v = b.dataset.v;
-      [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; }); live(); return; }
+      [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { ownItems(k).forEach(it => setItem50(k, it.i, f, v === '모름' ? '' : v)); }); live(); drawHead(); return; }
     if (b.classList.contains('oaGo')) { const k = d.querySelector('.oaK').value + '|' + d.querySelector('.oaC').value; if (okSlot(k)) { OWN.s[k] = 'similar'; live(); } return; }
     if (b.hasAttribute('data-bkmk')) { const wb = d.querySelector('.bkB').checked, url = bkLink(wb), out = d.querySelector('.bkout');
       out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · ${esc(cntText(ownCount(OWN), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'} · 옷 사진은 안 담김</p><textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
@@ -5175,8 +5409,8 @@ function showOwnEdit(focus){
       try { navigator.clipboard.writeText(ta.value).then(() => { m.textContent = '복사했어. 나만 보는 곳(메모 등)에 붙여 둬'; }, sel); } catch(e){ sel(); } return; }
     if (b.hasAttribute('data-x')) d.remove(); });
   document.body.appendChild(d);
-  if (focus === 'fit') { const r = d.querySelector('[data-ownall], [data-ownf][data-f="fit"]'); if (r) r.scrollIntoView({block: 'center'}); }
-  if (focus === 'len') { const r = d.querySelector('[data-ownf][data-f="len"]'); if (r) r.scrollIntoView({block: 'center'}); }
+  // v50: 핏·기장 고르기로 열면 아직 '모름'인 첫 칸으로(없으면 첫 칸)
+  if (focus === 'fit' || focus === 'len') { const all = [...d.querySelectorAll(`select[data-v50="${focus}"]`)], r = (focus === 'fit' && d.querySelector('[data-ownall]')) || all.find(s => !s.value) || all[0]; if (r) r.scrollIntoView({block: 'center'}); }
 }
 // 국밥템: 가진 옷과 같이 여러 코디에 들어가는 옷(검토 v24 지시 3). 모든 기온·단계 기본 코디에서
 //   코디마다 빠진 옷이 n개면 그 옷마다 1/n점(사면 바로 완성 = 1점), 지금 가진 다른 옷으로 대신 입는 칸을 사진 그대로 바꾸는 옷은 0.4점
@@ -5563,7 +5797,7 @@ function drawBelow(){
   box.querySelectorAll('ul.lki button[data-i]').forEach(b => b.addEventListener('click', () => { lastFocus = b; openSheet(+b.dataset.i); }));
   // v15: 태그 없는 칸의 '비슷한 것 있음'
   box.querySelectorAll('ul.lki [data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
-    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; } else OWN.s[k0] = 'similar'; saveO(); reorder(); }));
+    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; delV(k0); } else OWN.s[k0] = 'similar'; saveO(); reorder(); }));
   box.querySelectorAll('.abc img').forEach(im => im.addEventListener('error', () => im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})), {once: true}));
   // v43: TOP 3·꾸밈 단계·비교 사진도 갤러리처럼 한 번은 원래 주소로 다시, 그래도 안 되면 '사진 못 불러옴'(검토 v43 7번)
   box.querySelectorAll('.t3c .gk img, .lvc .gk img, .pair .gk img').forEach(im => { const b = im.closest('[data-t3],[data-jump]');
@@ -5831,6 +6065,8 @@ const washKey = (x, os) => x.ds && x.ds.pick ? x.ds.pick : x.id && (OWN.p[pk(x.i
 const washed = (x, d, os) => { const k = washKey(x, os); return !!k && wDays(k).includes(d); };
 // 그날 그 조각을 쓸 수 있는지. code: ok 가진 옷 · soft 가진 옷인데 특징 확인 · info 확인 필요 · eta 도착 예정일 뒤(받기 전) · wait 그날까지 못 받음 · wash 세탁 등 · plan 구매 예정 · miss 없음
 function dayPart(x, d, os){
+  // v50: 벌 정보가 있으면 그날 체감·그날 단계로 벌을 고름(없으면 v49와 같음)
+  if (has50() && !(CTX50 && CTX50.d === d)) return withCtx({t: dayT50(d), lv: dayLv50(d), d}, () => dayPart(x, d, os));
   const s = partState(x, os), today = localNow(wx).date;
   if ((x.anyTop || x.anyKind) && s.lv >= 3) {
     const free = hidList(x, [...os]).filter(k => !wDays(k).includes(d));
@@ -5862,8 +6098,11 @@ const dayCode = req => { const c = req.map(x => x.ds.code);
   return c.includes('miss') || c.includes('plan') ? 'buy' : c.includes('wait') ? 'wait' : c.includes('wash') ? 'wash' : c.includes('eta') ? 'eta' : c.includes('info') ? 'info'
     : c.includes('soft') ? (req.some(x => x.ds.code === 'soft' && !x.ds.sub && !x.ds.pick) ? 'soft' : 'sub') : 'ready'; };
 function dayStatus(L, d, os){
+  if (has50() && !(CTX50 && CTX50.d === d)) return withCtx({t: dayT50(d), lv: dayLv50(d), d}, () => dayStatus(L, d, os));
   const parts = partsOf(L).map(x => Object.assign(x, {ds: dayPart(x, d, os)})), req = parts.filter(x => x.need === 'req');
-  return {parts, req, code: dayCode(req)};
+  // v50: 그날 두께·프린트 알림(칸마다 x.fl50). 없으면 결과에 안 붙임
+  const fl = lookFlags(req, L, x => x.ds, os);
+  return Object.assign(fl.length ? {fl} : {}, {parts, req, code: dayCode(req)});
 }
 // v12: 이번 주 앞 날짜에 사기로 한 칸 중 이 조각(모양이 안 보이는 신발·가린 상의)과 역할·색이 같은 것
 const linkOf = (x, bought) => Object.keys(bought).find(k => hidOk(k, x)) || null;
@@ -5933,7 +6172,16 @@ function planWeek(force){
   if (sa.sumTodo < sb.sumTodo) { saveW(); a.thriftKept = sb.sumTodo - sa.sumTodo; return a; }
   WK.days = JSON.parse(d1); saveW(); return b;
 }
+// v50: 두께·프린트 알림 때문에 코디를 바꾼 날이 있으면, 알림을 안 본 계획(v49와 같음)도 짜서 살 옷 수·금액·사진 없는 날이 하나라도 늘었으면 그쪽을 씀
+//      (하루씩만 막으면 바꾼 날 뒤로 같은 코디 감점이 달라져 겨울 꾸꾸꾸 한 주에 살 옷이 5개 → 6개로 늘었음)
 function planWeekOwn(force){
+  const d0 = JSON.stringify(WK.days); planWeekCore.fsw = 0; const b = planWeekOwn0(force); if (!planWeekCore.fsw) return b;
+  const d1 = JSON.stringify(WK.days), sb = weekBuy(b); WK.days = JSON.parse(d0); planWeekCore.nofl = true; let a, sa;
+  try { a = planWeekOwn0(force); sa = weekBuy(a); } finally { planWeekCore.nofl = false; }
+  if (sb.todo.length <= sa.todo.length && sb.sumTodo <= sa.sumTodo && sb.none.length <= sa.none.length) { WK.days = JSON.parse(d1); saveW(); return b; }
+  saveW(); a.flKept = true; return a;
+}
+function planWeekOwn0(force){
   if ((WK.vary && !WK.thrift) || !(PW.ownTop || PW.ownRep2)) return planWeekCore(force, false);
   const d0 = JSON.stringify(WK.days);
   planWeekCore.sw = 0; const b = planWeekCore(force, true); if (!planWeekCore.sw) return b;
@@ -5957,7 +6205,7 @@ function planWeekCore(force, own){
   //      그날 단계를 직접 고른 날(D.lv)과 '옆 단계 코디 안 쓰기'(WK.adj === false)면 안 함. 옆 단계 코디는 Q.adj만큼 빼서, 이번 주에 이미 사기로 한 옷을 다시 쓰는 같은 단계 코디가 있으면 그쪽이 먼저
   const ADJ = ds.map(d => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d);
     if (D.skip || D.lv || WK.adj === false || orderLooks(A, lv).filter(o => wear(o, d)).length >= 2) return [];
-    return (LVADJ[lv] || []).flatMap(l2 => orderLooks(A, l2).filter(o => wear(o, d)).map(o => Object.assign({}, o, {adj: l2}))); });
+    return (LVADJ[lv] || []).flatMap(l2 => orderLooks(A, l2, lv).filter(o => wear(o, d)).map(o => Object.assign({}, o, {adj: l2}))); });
   // v32: POOL = 이번 주 날씨에 가진 옷만으로 되는 사진(같은 단계 · 옆 단계). 일주일 화면 위 한 줄에 그대로 적음
   const POOL = {same: new Set(), adj: new Set()};
   const RDY = ds.map((d, i) => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d), s = new Set(); if (D.skip) return s;
@@ -6052,6 +6300,10 @@ function planWeekCore(force, own){
       if (own && pick) { const pr = RW.find(r => r.o === pick);
         if (pr && (pr.buys || pr.dead)) { const w = RW.filter(r => r !== pr && !r.buys && !r.dead && r.g > 0 && r.v + r.g >= pr.v && wear(r.o, d)).sort((a, b) => b.v - a.v)[0];
           if (w) { pick = w.o; bv = w.v; D.ko = w.o.L.key + '>' + pr.o.L.key; planWeekCore.sw = (planWeekCore.sw || 0) + 1; if (window.__PWDBG) window.__PWDBG.push({d, k: w.o.L.key, ko: pr.o.L.key, v: w.v, g: w.g, over: pr.v}); } } }
+      // v50: 고른 코디에 두께·프린트 알림이 있으면, 살 옷·살 수 없는 칸이 늘지 않는 알림 없는 코디 중 점수 차가 FL50P 안인 것으로 바꿈(알림 때문에 옷을 더 사지 않게)
+      if (pick && pick.fl && !planWeekCore.nofl) { const pr = RW.find(r => r.o === pick);
+        const w = pr && RW.filter(r => !r.o.fl && r.buys <= pr.buys && r.dead <= pr.dead && r.v >= pr.v - FL50P).sort((a, b) => b.v - a.v)[0];
+        if (w) { pick = w.o; bv = w.v; planWeekCore.fsw = (planWeekCore.fsw || 0) + 1; if (window.__PWDBG) window.__PWDBG.push({d, k: w.o.L.key, fl50: pr.o.L.key, v: w.v, over: pr.v}); } }
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
       else delete D.why;
     }
@@ -6224,7 +6476,7 @@ function dayAlts(p, os){
   const ok = ([, s]) => s.code === 'ready' || s.code === 'sub' || s.code === 'soft';
   let looks = pool.map(o => [o, dayStatus(o.L, p.d, os)]).filter(ok).slice(0, 2);
   // v24: 같은 단계에 없으면 옆 단계 사진에서도 찾음('옆 단계 코디 안 쓰기'를 골랐거나 그날 단계를 직접 고른 날도 여기선 보여 줌. 사진 단계를 같이 적음)
-  if (looks.length < 2) looks = looks.concat((LVADJ[p.lv] || []).flatMap(l2 => orderLooks(p.A, l2)).filter(o => o.L !== p.L && o.dd <= 2 && !TS.nope[o.L.key])
+  if (looks.length < 2) looks = looks.concat((LVADJ[p.lv] || []).flatMap(l2 => orderLooks(p.A, l2, p.lv)).filter(o => o.L !== p.L && o.dd <= 2 && !TS.nope[o.L.key])
     .map(o => [o, dayStatus(o.L, p.d, os)]).filter(ok)).slice(0, 2);
   const blocked = p.status.req.filter(x => ['wait', 'wash', 'miss', 'plan', 'eta'].includes(x.ds.code));
   const subs = blocked.map(x => [x, [...os].filter(k => roleOfSlot(k) === x.role && k !== x.slot && !wDays(k).includes(p.d)).slice(0, 2)]).filter(([, a]) => a.length);
@@ -6355,18 +6607,21 @@ function partRow(x, p, os, i, lay){
   if ((s.code === 'ok' || s.code === 'soft' || s.code === 'wash') && wk) act += `<button type="button" class="plain sm" data-wash="${esc(wk)}" aria-pressed="${s.code === 'wash'}">이날 세탁 중</button>`;
   const ST = wSt45(x), mk = wMk44(x), title = mk ? (W5.my ? (W5.my === 2 ? '산 ' : '내 ') + W5.nm : '내 ' + slotName(mk)) : W5.nm;
   // v49: '내 ○○' 줄이면 그 옷 사진(오늘의 코디 칸 줄과 같게)
-  const pk49 = /^내 /.test(title) ? wKey49(x, os, mk) : null, ph49 = pk49 ? phBlock(pk49) : '';
+  // v50: 벌이 여럿인 칸은 그날 입는 벌 사진만(wVid50)
+  const pk49 = /^내 /.test(title) ? wKey49(x, os, mk) : null, pv50 = pk49 ? wVid50(x, os, pk49) : '', ph49 = pk49 ? phBlock(pk49, pv50) : '';
   const rc = (s.code === 'ok' || s.code === 'soft') && !s.sub && p && p.L && ((STY[p.L.key] || {}).rchk || []).find(y => y.role === x.role && (!y.slot || y.slot === x.slot));
   const insd = mk && mk !== x.slot && x.slot && !/대신/.test(s.t) ? `사진 속 ${nm} 대신` : '';
   // 접힌 줄에 보일 한 줄: 대신 입기는 '사진 속 ○○ 대신', 준비됨은 없음(펼치면), 나머지는 그날 상태 글
   // v45: 가린 상의 칸은 접힌 줄에도 '겉옷에 가려 거의 안 보이는 칸'(앞뒤 날 상의와 겹치지 않게 골랐으면 그것도)
   const one = wHid45(x) ? HIDN + (/앞뒤 날과 다른 상의로 고름/.test(s.t) ? ' · 앞뒤 날과 다른 상의로 고름' : '') : wAk46(x) ? AKN46 : ST.c === 'own' ? '' : ST.c === 'sub' ? (insd || `사진 속 ${nm} 대신`) : s.t;
-  const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + (act ? `<p class="ra44">${act}</p>` : '');
+  // v50: 그날 두께·프린트 알림(dayStatus가 x.fl50에 붙임)
+  const fl50 = x.fl50 || [];
+  const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + (act ? `<p class="ra44">${act}</p>` : '');
   const stH = ST.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(ST.t)}</span>` : ST.t ? `<span class="cp ${ST.c}">${esc(ST.t)}</span>` : '';
   const key = `${p.d}|${p.L.key}|${i}`, op = OPEN44.has(key), id = 'wrp' + i;
   return `<li class="r42 ${ST.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
     + `<span class="tile${lay ? ' two' : ''}">${RN[x.role]}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s') : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${rc ? '<span class="wk42 ref">참고할 점 1</span>' : ''}</div>`
     + `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(RN[x.role] + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button></div>`
     + `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div></li>`;
@@ -6575,7 +6830,7 @@ function bindWeek(){
       if (c.length > 1) { D.key = c[(i + st1 + c.length) % c.length].L.key; D.pin = true; delete D.why; } saveW(); redraw(true); return; }
     if (b.dataset.swap) { D.key = b.dataset.swap; D.pin = true; delete D.why; saveW(); redraw(true); return; }
     if (b.dataset.have) { OWN.s[b.dataset.have] = 'similar'; saveO(); redraw(true); return; }
-    if (b.dataset.unhave) { const k = b.dataset.unhave; phGuard(b, [k], () => { delete OWN.s[k]; delete OWN.f[k]; }, `'${slotName(k)}' 있음을 취소하면`, '있음 취소', () => { saveO(); redraw(true); }); return; }
+    if (b.dataset.unhave) { const k = b.dataset.unhave; phGuard(b, [k], () => { delete OWN.s[k]; delete OWN.f[k]; delV(k); }, `'${slotName(k)}' 있음을 취소하면`, '있음 취소', () => { saveO(); redraw(true); }); return; }
     if (b.dataset.nosub) { OWN.x[b.dataset.nosub] = 1; saveO(); redraw(true); return; }
     if (b.dataset.ownx) { const op = !!b.closest('details[open]'), x = b.dataset.ownx, sk = ownxSlot(x);
       phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } }); return; }
@@ -6667,6 +6922,7 @@ const PH = {db: null, ok: null, map: new Map(), urls: [], bc: null,
   // 내려받기(시험본에선 이 함수를 바꿔 파일 내용을 확인)
   dl: (b, nm) => { const u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = nm; a.hidden = true; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }};
 const PHK49 = new WeakMap(); // 칸 줄(recipeOf rows) → 그 줄의 '내 ○○' 칸 키. 줄 객체엔 아무것도 안 붙임(판정 비교 그대로)
+const PHV50 = new WeakMap(), FL50 = new WeakMap(); // v50: 칸 줄 → 입는 벌 번호(첫 벌은 안 넣음) · 두께·프린트 알림
 let PHIMP = null, PHMSG = null;
 function phOpen(){
   if (PH.ok) return PH.ok;
@@ -6690,11 +6946,25 @@ async function phLoad(){
   const old = PH.urls; PH.urls = []; PH.map = new Map();
   all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => (a.o - b.o) || (a.t - b.t)).forEach(r => {
     const u = URL.createObjectURL(r.b); PH.urls.push(u);
-    const a = PH.map.get(r.k) || []; a.push({id: r.id, k: r.k, n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, u, sz: r.b.size}); PH.map.set(r.k, a); });
+    // v50: vi = 그 칸의 어느 벌 사진인지(아래 phVi). v49 사진엔 없음
+    const a = PH.map.get(r.k) || []; a.push({id: r.id, k: r.k, vi: isPvi(r.vi) ? r.vi : '', n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, u, sz: r.b.size}); PH.map.set(r.k, a); });
   setTimeout(() => old.forEach(u => URL.revokeObjectURL(u)), 5000);
   return true;
 }
 const phList = k => PH.map.get(k) || [];
+/* v50 검토 반영: 사진의 벌(vi)
+   없음 = 벌 표시 없는 사진(v49에서 올린 사진 · 한 벌일 때 올린 사진) · '0' = 첫 벌로 정한 사진 · 벌 번호 = 그 벌(둘째 벌부터) · '?' = 벌을 정하지 않은 사진
+   phVi: '' 첫 벌 · 벌 번호 · null = 벌을 정하지 않은 사진(어느 벌 사진으로도 보여 주지 않음)
+   - 벌 표시 없는 사진은 한 벌인 칸이면 그 벌 사진(v49와 같음), 벌이 둘 이상이면 정하지 않은 사진 → 내가 하나씩 보고 옮김(임의로 안 정함)
+   - 지금 칸에 없는 벌의 사진(예전 링크로 바꿔 그 벌이 없어짐 · 벌을 뺌)도 정하지 않은 사진. 그 벌이 다시 생기면(새 백업 링크) 그 벌 사진으로 돌아옴
+   사진은 지우지 않음 */
+const PV1 = '0', PVQ = '?', isPvi = v => v === PV1 || v === PVQ || isVid(v);
+function phVi(k, p){ const its = ownItems(k);
+  if (!p.vi) return its.length > 1 ? null : '';
+  if (p.vi === PV1) return '';
+  return isVid(p.vi) && its.some(it => it.id === p.vi) ? p.vi : null; }
+const phListV = (k, vid) => phList(k).filter(p => phVi(k, p) === (vid || ''));
+const phUnk = k => phList(k).filter(p => phVi(k, p) === null);
 const phN = ks => ks.reduce((n, k) => n + phList(k).length, 0);
 const phAllN = () => [...PH.map.values()].reduce((n, a) => n + a.length, 0);
 const phId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -6720,14 +6990,24 @@ async function phWrite(what, fn){
   try { await phTx('readwrite', fn); } catch(e){ phFail(e, what); return false; }
   await phLoad(); phChanged(); return true;
 }
-const phAdd = (k, r) => phWrite('사진을 저장하지', s => { const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0); s.put({id: phId(), k, n: r.n || '', o, b: r.b, w: r.w, h: r.h, t: Date.now()}); });
+// 벌이 둘 이상인 칸에서 올린 사진은 그 벌로 표시('0' = 첫 벌). 한 벌인 칸은 v49처럼 표시 없이
+const phAdd = (k, r, vid) => phWrite('사진을 저장하지', s => { const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0), vi = itemN(k) > 1 ? vid || PV1 : '';
+  s.put(Object.assign({id: phId(), k}, vi ? {vi} : {}, {n: r.n || '', o, b: r.b, w: r.w, h: r.h, t: Date.now()})); });
+// v50 검토 반영: 같은 칸 안에서 사진을 다른 벌로 옮김(지우고 다시 올리지 않음). 그 벌 사진의 맨 뒤로. 한 번에 저장해서 안 되면 그대로
+function phToItem(k, id, vid){ const it = ownItems(k).find(x => x.id === (vid || ''));
+  if (!it || !phList(k).some(p => p.id === id) || phListV(k, it.id).length >= PHMAX) return Promise.resolve(false);
+  const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0);
+  return phUpd(id, {vi: it.id || PV1, o}, '사진을 옮기지'); }
 const phUpd = (id, v, what) => phWrite(what, s => { const q = s.get(id); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, v, {t: Date.now()})); }; });
 const phRep = (id, r) => phUpd(id, {b: r.b, w: r.w, h: r.h}, '사진을 바꾸지');
 const phName = (id, n) => phUpd(id, {n}, '사진 이름을 저장하지');
-function phMove(k, id, d){
-  const a = phList(k).map(p => p.id), i = a.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= a.length) return Promise.resolve(false);
-  [a[i], a[j]] = [a[j], a[i]];
-  return phWrite('사진 순서를 바꾸지', s => a.forEach((x, o) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; }));
+function phMove(k, id, d, vid){
+  // v50: 벌 하나의 사진끼리만 순서를 바꿈(칸 전체 순서 번호 o는 그대로 두고 두 사진의 번호만 맞바꿈. 한 벌이면 v49와 같은 결과)
+  const all = phList(k), a = phListV(k, vid).map(p => p.id), i = a.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= a.length) return Promise.resolve(false);
+  if (a.length === all.length) { [a[i], a[j]] = [a[j], a[i]];
+    return phWrite('사진 순서를 바꾸지', s => a.forEach((x, o) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; })); }
+  const oi = all.find(p => p.id === a[i]).o, oj = all.find(p => p.id === a[j]).o;
+  return phWrite('사진 순서를 바꾸지', s => [[a[i], oj], [a[j], oi]].forEach(([x, o]) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; }));
 }
 const phDel = (ids, what) => ids.length ? phWrite(what || '사진을 지우지', s => ids.forEach(id => s.delete(id))) : Promise.resolve(true);
 const phDelAll = () => phDel([...PH.map.values()].flat().map(p => p.id));
@@ -6737,10 +7017,12 @@ async function phInit(){
   if (await phLoad() && PH.map.size) phRedraw();
 }
 // 칸 줄의 작은 대표 사진 · 펼친 곳의 큰 사진들
-const phT = (k, cls) => { const a = phList(k); return a.length ? `<span class="${cls}"><img class="ph49i" src="${a[0].u}" alt="" draggable="false"></span>` : ''; };
-function phBlock(k){ const a = phList(k); if (!a.length) return '';
-  return `<div class="ph49b">${a.map((p, i) => `<figure><img class="ph49i" src="${p.u}" alt="${esc(`내 ${ownNm(k)} 사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false"><figcaption>${i ? '' : '<b>대표</b> '}${p.n ? esc(p.n) : i ? `사진 ${i + 1}` : ''}</figcaption></figure>`).join('')}</div>`
-    + `<p class="ph49m"><button type="button" class="lnk42" data-phed="${esc(k)}">사진 관리</button></p>`; }
+// v50: vid = 그 줄에서 입는 벌(없으면 첫 벌). 벌이 여럿인 칸은 그 벌 사진만
+const vItem = (k, vid) => ownItems(k).find(it => it.id === (vid || '')) || ownItems(k)[0];
+const phT = (k, cls, vid) => { const a = phListV(k, vid); return a.length ? `<span class="${cls}"><img class="ph49i" src="${a[0].u}" alt="" draggable="false"></span>` : ''; };
+function phBlock(k, vid){ const a = phListV(k, vid); if (!a.length) return ''; const nm = itemNm(k, vItem(k, vid));
+  return `<div class="ph49b">${a.map((p, i) => `<figure><img class="ph49i" src="${p.u}" alt="${esc(`내 ${nm} 사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false"><figcaption>${i ? '' : '<b>대표</b> '}${p.n ? esc(p.n) : i ? `사진 ${i + 1}` : ''}</figcaption></figure>`).join('')}</div>`
+    + `<p class="ph49m"><button type="button" class="lnk42" data-phed="${esc(k)}"${vid ? ` data-phv="${esc(vid)}"` : ''}>사진 관리</button></p>`; }
 // 그림이 깨지면 그 자리를 지움(빈 칸·깨진 그림이 안 보이게)
 document.addEventListener('error', e => { const t = e.target; if (!t || !t.classList || !t.classList.contains('ph49i')) return;
   const li = t.closest('.ph49r'); if (li) li.classList.remove('ph49r');
@@ -6750,16 +7032,23 @@ function wKey49(x, os, mk){ const s = x.ds; if (s.code !== 'ok' && s.code !== 's
   if ((x.anyTop || x.anyKind) && s.free && s.pick) return okSlot(s.pick) ? s.pick : null;
   const w = wearOf(Object.assign({}, x, {state: s}), os || ownedSlots()); if (w) return w.k || null;
   return mk && okSlot(mk) ? mk : null; }
+// v50: 일주일 칸 줄에서 그 칸의 어느 벌을 입는지(첫 벌이면 '')
+function wVid50(x, os, k){ const s = x.ds; if (!s || (x.anyTop || x.anyKind) && s.free && s.pick) return '';
+  const w = wearOf(Object.assign({}, x, {state: s}), os || ownedSlots()); return w && w.k === k && w.vid ? w.vid : ''; }
 // 내 옷장 창: 옷 이름 왼쪽 작은 사진 칸
 const phChip = k => { const a = phList(k), nm = ownNm(k);
   return `<span class="oe49">` + (a.length ? `<button type="button" class="ph49c" data-phed="${esc(k)}" aria-label="${esc(nm)} 사진 ${a.length}장 보기·바꾸기" title="사진 ${a.length}장"><img class="ph49i" src="${a[0].u}" alt="" draggable="false">${a.length > 1 ? `<i>${a.length}</i>` : ''}</button>`
     : `<button type="button" class="ph49c add" data-phed="${esc(k)}" aria-label="${esc(nm)} 사진 올리기" title="사진 올리기">사진</button>`)
     + `<button type="button" class="plain sm" data-oex="${esc(k)}" aria-label="${esc(nm)} 지우기">${esc(nm)} ✕</button></span>`; };
+// v50: 벌 하나의 사진 칸(내 옷장 창 벌 줄 맨 앞)
+const phChip50 = (k, it) => { const a = phListV(k, it.id), nm = itemNm(k, it), pv = it.id ? ` data-phv="${esc(it.id)}"` : '';
+  return a.length ? `<button type="button" class="ph49c" data-phed="${esc(k)}"${pv} aria-label="${esc(nm)} 사진 ${a.length}장 보기·바꾸기" title="사진 ${a.length}장"><img class="ph49i" src="${a[0].u}" alt="" draggable="false">${a.length > 1 ? `<i>${a.length}</i>` : ''}</button>`
+    : `<button type="button" class="ph49c add" data-phed="${esc(k)}"${pv} aria-label="${esc(nm)} 사진 올리기" title="사진 올리기">사진</button>`; };
 /* 칸을 지우거나 없음으로 바꿀 때: 바꾼 뒤 그 칸이 더는 '있음'이 아니고 사진이 있으면 먼저 물어봄. 사진이 없으면 바로(v48과 같음).
    mut은 OWN만 바꾸고 저장은 안 하는 함수. 먼저 복사본에 해 보고(phLost) 사라지는 칸을 셈 */
-function phLost(ks, mut){ const keep = {s: OWN.s, p: OWN.p, d: OWN.d, f: OWN.f, x: OWN.x};
-  Object.keys(keep).forEach(z => { OWN[z] = Object.assign({}, keep[z]); });
-  let lost = []; try { mut(); const os = ownedSlots(); lost = ks.filter(k => !os.has(k)); } finally { Object.assign(OWN, keep); }
+function phLost(ks, mut){ const keep = {s: OWN.s, p: OWN.p, d: OWN.d, f: OWN.f, x: OWN.x}, kv = OWN.v; // v50: 벌 기록(v)도 복사본에서 해 보고 되돌림
+  Object.keys(keep).forEach(z => { OWN[z] = Object.assign({}, keep[z]); }); if (kv) OWN.v = Object.assign({}, kv);
+  let lost = []; try { mut(); const os = ownedSlots(); lost = ks.filter(k => !os.has(k)); } finally { Object.assign(OWN, keep); if (kv) OWN.v = kv; else delete OWN.v; }
   return lost; }
 function phGuard(el, ks, mut, what, yes, after){
   const lost = phLost(ks, mut).filter(k => phList(k).length), run = () => { mut(); after(); };
@@ -6773,20 +7062,37 @@ function phGuard(el, ks, mut, what, yes, after){
   bn.addEventListener('click', e => { e.stopPropagation(); q.replaceWith(el); });
 }
 /* 칸 하나의 사진 창: 올리기 · 이름 · 앞으로/뒤로(첫 장이 대표) · 바꾸기 · 지우기 */
-function phEdit(k){
+function phEdit(k, vid0){
   if (!okSlot(k)) return;
   const old = document.getElementById('phDlg'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'phDlg'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
   const fi = Object.assign(document.createElement('input'), {type: 'file', accept: 'image/jpeg,image/png,image/webp', className: 'ph49fi'}); fi.hidden = true;
   let mode = null;
-  const body = () => { const a = phList(k), nm = ownNm(k);
+  // v50: 벌 하나의 사진 창(vid). 벌이 지워졌으면 첫 벌. 한 벌인 칸은 v49와 같은 창
+  // v50 검토 반영: vid0 === '?'이면 '벌을 정하지 않은 사진' 창(사진마다 어느 벌 사진인지 고름). 벌이 둘 이상이면 사진마다 '다른 벌로 옮기기'
+  const unk = vid0 === PVQ;
+  const vid = () => vItem(k, vid0).id, per = () => itemN(k) > 1 ? '한 벌에' : '한 칸에';
+  const lab = it => itemN(k) > 1 ? itemLab(it) : itemNm(k, it), full = it => phListV(k, it.id).length >= PHMAX;
+  const toBtn = it => `<button type="button" class="plain sm" data-phto="${esc(it.id)}"${full(it) ? ` disabled title="이 벌은 사진이 ${PHMAX}장이라 더 못 옮겨요"` : ''} aria-label="${esc(`${itemNm(k, it)} 사진으로 옮기기`)}">${esc(lab(it))}</button>`;
+  const unkLine = () => { const n = phUnk(k).length; return n ? `<p class="cn ph50u">이 칸에 어느 벌 사진인지 정하지 않은 사진이 ${n}장 있어요. 정하기 전에는 코디 화면에 보여 주지 않아요. <button type="button" class="plain sm" data-phed="${esc(k)}" data-phv="${PVQ}">사진 보고 벌 정하기</button></p>` : ''; };
+  const bodyU = () => { const a = phUnk(k), its = ownItems(k), nm = ownNm(k);
+    d.setAttribute('aria-label', `내 ${nm} · 벌을 정하지 않은 사진`);
+    return `<div class="phb"><p class="ph49h"><b>내 ${esc(nm)} · 벌을 정하지 않은 사진</b> <span class="cn">${a.length}장</span></p>`
+      + `<p class="cn">어느 벌 사진인지 아직 정하지 않은 사진이에요. 정하기 전에는 어느 벌 사진으로도 보여 주지 않아요. 사진을 보고 맞는 벌을 눌러 주세요. 지우지 않는 한 사진은 그대로 남아요.</p>`
+      + (a.length ? `<ol class="ph49l">${a.map((p, i) => `<li data-id="${esc(p.id)}"><figure><img class="ph49i" src="${p.u}" alt="${esc(`벌을 정하지 않은 사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false"></figure>`
+        + `<div class="ph49e">${p.n ? `<p class="cn">사진 이름: ${esc(p.n)}</p>` : ''}<span class="ph49a"><span class="cn">어느 벌 사진인가요?</span> ${its.map(toBtn).join('')}<button type="button" class="plain sm" data-phdl>지우기</button></span></div></li>`).join('')}</ol>`
+        : '<p class="cn">벌을 정하지 않은 사진이 없어요.</p>')
+      + (a.length && its.some(full) ? `<p class="cn">한 벌에 ${PHMAX}장까지라 사진이 ${PHMAX}장인 벌로는 못 옮겨요. 그 벌 사진을 먼저 지우거나 다른 벌로 옮겨 주세요.</p>` : '')
+      + `<p class="phst" role="status"></p></div>`; };
+  const body = () => { if (unk) return bodyU(); const a = phListV(k, vid()), nm = itemNm(k, vItem(k, vid0)), mv = itemN(k) > 1;
     d.setAttribute('aria-label', `내 ${nm} 사진`);
     return `<div class="phb"><p class="ph49h"><b>내 ${esc(nm)} 사진</b> <span class="cn">${a.length}/${PHMAX}장 · 첫 장이 대표 사진이에요</span></p>`
       + (a.length ? `<ol class="ph49l">${a.map((p, i) => `<li data-id="${esc(p.id)}"><figure><img class="ph49i" src="${p.u}" alt="${esc(`사진 ${i + 1}${p.n ? ' · ' + p.n : ''}`)}" draggable="false">${i ? '' : '<b class="rep">대표</b>'}</figure>`
         + `<div class="ph49e"><label>이름 <input type="text" class="ph49n" maxlength="${PHNM}" value="${esc(p.n)}" placeholder="예: 발목 기장 (안 적어도 돼요)" aria-label="사진 ${i + 1} 이름"></label>`
         + `<span class="ph49a"><button type="button" class="plain sm" data-phmv="-1"${i ? '' : ' disabled'}>앞으로</button><button type="button" class="plain sm" data-phmv="1"${i < a.length - 1 ? '' : ' disabled'}>뒤로</button>`
-        + `<button type="button" class="plain sm" data-phrp>바꾸기</button><button type="button" class="plain sm" data-phdl>지우기</button></span></div></li>`).join('')}</ol>` : '<p class="cn">아직 올린 사진이 없어요.</p>')
-      + (a.length < PHMAX ? `<p><button type="button" class="go" data-phadd>사진 올리기</button></p>` : `<p class="cn">한 칸에 ${PHMAX}장까지 올릴 수 있어요. 다른 사진으로 하려면 '바꾸기'를 눌러 주세요.</p>`)
+        + `<button type="button" class="plain sm" data-phrp>바꾸기</button>${mv ? '<button type="button" class="plain sm" data-phmo>다른 벌로 옮기기</button>' : ''}<button type="button" class="plain sm" data-phdl>지우기</button></span></div></li>`).join('')}</ol>` : '<p class="cn">아직 올린 사진이 없어요.</p>')
+      + (a.length < PHMAX ? `<p><button type="button" class="go" data-phadd>사진 올리기</button></p>` : `<p class="cn">${per()} ${PHMAX}장까지 올릴 수 있어요. 다른 사진으로 하려면 '바꾸기'를 눌러 주세요.</p>`)
+      + unkLine()
       + `<p class="cn">사진은 이 브라우저에만 저장되고 어디로도 보내지 않아요. 백업 링크에는 안 담기니 '내 옷장' 창 아래 '옷 사진 파일'로 따로 내려받아 두세요.</p>`
       + `<p class="phst" role="status"></p></div>`; };
   d.innerHTML = `${body()}<div class="impx"><button type="button" class="plain" data-phx>닫기</button></div>`; d.appendChild(fi);
@@ -6796,7 +7102,12 @@ function phEdit(k){
     if (b.hasAttribute('data-phx')) { d.remove(); return; }
     if (b.hasAttribute('data-phadd')) { mode = {add: 1}; fi.value = ''; fi.click(); return; }
     if (b.hasAttribute('data-phrp')) { mode = {rep: id}; fi.value = ''; fi.click(); return; }
-    if (b.dataset.phmv) { if (await phMove(k, id, +b.dataset.phmv)) phSay(+b.dataset.phmv < 0 ? '앞으로 옮겼어요.' : '뒤로 옮겼어요.'); return; }
+    if (b.dataset.phmv) { if (await phMove(k, id, +b.dataset.phmv, vid())) phSay(+b.dataset.phmv < 0 ? '앞으로 옮겼어요.' : '뒤로 옮겼어요.'); return; }
+    // v50 검토 반영: 다른 벌로 옮기기 → 어느 벌로(취소하면 그대로)
+    if (b.hasAttribute('data-phmo')) { const its = ownItems(k).filter(it => it.id !== vid()); const q = document.createElement('span'); q.className = 'ph49a ph49q'; q.setAttribute('role', 'group'); q.setAttribute('aria-label', '어느 벌로 옮길까요');
+      q.innerHTML = `<span>어느 벌로 옮길까요?</span> ${its.map(toBtn).join('')}<button type="button" class="plain sm" data-phdn>취소</button>`; b.parentElement.replaceWith(q); const f1 = q.querySelector('button:not([disabled])'); if (f1) f1.focus(); return; }
+    if (b.dataset.phto != null) { const it = ownItems(k).find(x => x.id === b.dataset.phto); if (!it) return;
+      if (await phToItem(k, id, it.id)) phSay(`'${lab(it)}' 사진으로 옮겼어요.`); else if (full(it)) phSay(`이 벌은 사진이 ${PHMAX}장이라 더 못 옮겨요.`, 1); return; }
     if (b.hasAttribute('data-phdl')) { const q = document.createElement('span'); q.className = 'ph49a ph49q'; q.setAttribute('role', 'alertdialog');
       q.innerHTML = `<span>이 사진을 지울까요?</span> <button type="button" class="go" data-phdy>지우기</button><button type="button" class="plain sm" data-phdn>취소</button>`; b.parentElement.replaceWith(q); return; }
     if (b.hasAttribute('data-phdy')) { if (await phDel([id])) phSay('사진을 지웠어요.'); return; }
@@ -6805,10 +7116,10 @@ function phEdit(k){
     const id = t.closest('li').dataset.id, v = t.value.trim().slice(0, PHNM); if (await phName(id, v)) phSay(v ? '이름을 저장했어요.' : '이름을 지웠어요.'); });
   fi.addEventListener('change', async () => { const f = fi.files && fi.files[0], m = mode; mode = null; if (!f || !m) return;
     const r = await phCrop(f, k, !!m.add); if (!r) return;
-    if (m.add) { if (phList(k).length >= PHMAX) { phSay(`한 칸에 ${PHMAX}장까지 올릴 수 있어요.`, 1); return; } if (await phAdd(k, r)) phSay('사진을 올렸어요.'); }
+    if (m.add) { if (phListV(k, vid()).length >= PHMAX) { phSay(`${per()} ${PHMAX}장까지 올릴 수 있어요.`, 1); return; } if (await phAdd(k, r, vid())) phSay('사진을 올렸어요.'); }
     else if (await phRep(m.rep, r)) phSay('사진을 바꿨어요.'); });
   document.body.appendChild(d);
-  const f0 = d.querySelector('[data-phadd]') || d.querySelector('[data-phx]'); if (f0) f0.focus();
+  const f0 = d.querySelector('[data-phadd]') || d.querySelector('[data-phto]:not([disabled])') || d.querySelector('[data-phx]'); if (f0) f0.focus();
 }
 /* 자르기 창: 네 모서리를 끌어 자르고 가운데를 끌어 옮김. 안 자르면 사진 전체. 올리기 → 긴 쪽 800px 이하로 줄여 JPEG로 다시 그림 */
 function phCrop(file, k, withName){
@@ -6898,7 +7209,8 @@ async function phExport(){
   let all; try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ PHMSG = {t: '사진을 읽지 못해서 파일을 만들지 못했어요.', bad: 1}; phRefFile(); return null; }
   all = all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o));
   if (!all.length) return null;
-  const ph = []; for (const r of all) ph.push({k: r.k, n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, d: await phB64(r.b)});
+  // v50: 사진의 벌 표시(vi: '0' 첫 벌 · 벌 번호 · '?' 정하지 않음)도 담음. 벌 표시 없는 사진은 v49 파일과 같은 모양
+  const ph = []; for (const r of all) ph.push(Object.assign({k: r.k}, isPvi(r.vi) ? {vi: r.vi} : {}, {n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, d: await phB64(r.b)}));
   const b = new Blob([JSON.stringify({app: PHAPP, v: 1, t: today(), ph})], {type: 'application/json'}), nm = `옷사진-${today()}.json`;
   PH.dl(b, nm);
   PHMSG = {t: `사진 ${ph.length}장을 '${nm}' 파일로 내려받기 시작했어요(${(b.size / 1048576).toFixed(1)}MB). 브라우저의 내려받기 목록에서 확인해 주세요.`}; phRefFile();
@@ -6912,34 +7224,37 @@ async function phImportRead(file){
   if (!isObj(L) || L.app !== PHAPP || L.v !== 1 || !Array.isArray(L.ph)) return bad('이 앱에서 내려받은 옷 사진 파일이 아니에요. 아무것도 안 바꿨어요.');
   const per = {}, list = []; let skip = 0;
   for (const p of L.ph.slice(0, 400)) {
-    if (!isObj(p) || !okSlot(p.k) || typeof p.d !== 'string' || (per[p.k] || 0) >= PHMAX) { skip++; continue; }
+    // v50 검토 반영: 벌 표시(vi)는 그대로 넣음(지금 칸에 없는 벌이면 '벌을 정하지 않은 사진'으로 보이고, 그 벌이 생기면 그 벌 사진). 표시가 같은 사진끼리 PHMAX장까지(v49 파일은 전부 표시 없음)
+    const vi = isObj(p) && isPvi(p.vi) ? p.vi : '', pkv = isObj(p) ? p.k + '#' + vi : '';
+    if (!isObj(p) || !okSlot(p.k) || typeof p.d !== 'string' || (per[pkv] || 0) >= PHMAX || (per[p.k] || 0) >= PHMAX * (VMAX + 1)) { skip++; continue; }
     let b = null; try { const u = phU8(p.d); if (u.length <= 3 * 1048576) b = phStrip(u); } catch(e){}
     if (!b) { skip++; continue; }
     let w = 0, h = 0; try { const bm = await createImageBitmap(b); w = bm.width; h = bm.height; bm.close(); } catch(e){}
     if (!w || !h || Math.max(w, h) > 1600) { skip++; continue; }
-    per[p.k] = (per[p.k] || 0) + 1;
-    list.push({k: p.k, n: typeof p.n === 'string' ? p.n.slice(0, PHNM) : '', o: Number.isFinite(p.o) ? p.o : 0, b, w, h});
+    per[pkv] = (per[pkv] || 0) + 1; per[p.k] = (per[p.k] || 0) + 1;
+    list.push({k: p.k, vi, n: typeof p.n === 'string' ? p.n.slice(0, PHNM) : '', o: Number.isFinite(p.o) ? p.o : 0, b, w, h});
   }
   if (!list.length) return bad('이 파일에서 넣을 수 있는 사진을 찾지 못했어요. 아무것도 안 바꿨어요.');
   list.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o)); const ks = [...new Set(list.map(p => p.k))];
   ks.forEach(k => list.filter(p => p.k === k).forEach((p, o) => { p.o = o; }));
   const os = ownedSlots(), rep = ks.filter(k => phList(k).length).length, orp = ks.filter(k => !os.has(k)).length;
+  const unkN = list.filter(p => os.has(p.k) && phVi(p.k, p) === null).length; // 넣은 뒤 어느 벌 사진인지 정하지 않은 사진으로 남는 수
   PHMSG = null;
   PHIMP = {list, html: `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
-    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
+    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
     + `<button type="button" class="go" data-phimy>넣기</button> <button type="button" class="plain" data-phimn>그만두기</button></div>`};
   phRefFile(); return true;
 }
 async function phImportApply(){
   const L = PHIMP && PHIMP.list; PHIMP = null; if (!L) return false;
   const del = [...new Set(L.map(p => p.k))].flatMap(k => phList(k).map(p => p.id));
-  const ok = await phWrite('사진 파일을 넣지', s => { del.forEach(id => s.delete(id)); L.forEach(p => s.put({id: phId(), k: p.k, n: p.n, o: p.o, b: p.b, w: p.w, h: p.h, t: Date.now()})); });
+  const ok = await phWrite('사진 파일을 넣지', s => { del.forEach(id => s.delete(id)); L.forEach(p => s.put(Object.assign({id: phId(), k: p.k}, p.vi ? {vi: p.vi} : {}, {n: p.n, o: p.o, b: p.b, w: p.w, h: p.h, t: Date.now()}))); });
   PHMSG = ok ? {t: `사진 ${L.length}장을 넣었어요.`} : {t: '사진 파일을 넣지 못했어요. 지금 사진은 그대로예요.', bad: 1}; phRefFile(); return ok;
 }
 // 사진 버튼들(내 옷장 창 · 칸 줄 펼친 곳). 다른 클릭 처리보다 먼저 받아서 그쪽으로 안 넘김
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-phed],[data-phex],[data-phim],[data-phimy],[data-phimn],[data-phorph],[data-phory],[data-phorn]'); if (!b) return;
   e.preventDefault(); e.stopPropagation();
-  if (b.dataset.phed) { phEdit(b.dataset.phed); return; }
+  if (b.dataset.phed) { phEdit(b.dataset.phed, b.dataset.phv || ''); return; }
   if (b.hasAttribute('data-phex')) { PHMSG = null; phExport(); return; }
   if (b.hasAttribute('data-phim')) { const fj = b.parentElement.querySelector('.ph49fj'); if (fj) { fj.value = ''; fj.click(); } return; }
   if (b.hasAttribute('data-phimy')) { phImportApply(); return; }
