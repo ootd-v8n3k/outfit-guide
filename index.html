@@ -1283,6 +1283,7 @@ body.haspast #grid .ghero:has(.hnote) + .gsec42{margin-bottom:8px}
 .oe51n{margin-top:4px}
 .fd.j51u{color:var(--sub)}
 .r42 .fd.j51o .lb,.r42 .fd.j51u .lb,.r42 .fd.j51s .lb{width:auto}
+.r42 .fd.tk59o .lb{width:auto} /* v59: '사진에서 본 것' 이름표가 세 줄로 접히지 않게 */
 .ph49x{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
 .ph49x .plain{margin:2px 6px 0 0}
 .ph49x .phfm{margin-top:6px;font-size:13.5px;color:var(--ink2)}
@@ -4743,7 +4744,10 @@ function wearCols52(L, own, os){
   return new Set(xs.map(x => { const w = x.state && x.state.lv >= 2 ? wearOf(x, os) : null; return String((w && w.k) || x.slot || x.buy || '').split('|')[1]; }).filter(Boolean));
 }
 // 옷 목록의 '겉옷' 줄: 사진엔 없는 내 겉옷을 더한다고 따로 표시
-const aoRow52 = ao => `<li class="r42 ao52r"><div class="rw"><span class="tile">겉옷<small>더함</small></span><div class="rm"><p class="rn">내 ${esc(ao52Nm(ao))}</p><p class="rd">사진엔 없는 겉옷이에요. 언제 입고 벗을지는 위 칸에 적었어요</p>${ao.fl ? `<p class="rd f50"><b>${esc(ao.fl.lab)}</b> · ${esc(ao.fl.s)}</p>` : ''}</div><div class="rs"><span class="cp ao">사진에 없음</span></div><span class="rx0"></span></div></li>`;
+// v59(검토 v59 3번): 더한 겉옷 줄에도 그 코디에 실제로 더한 내 겉옷 칸(ao.k) · 그 벌(ao.it)에 올린 사진. 접힌 줄엔 대표 사진 하나, 펼치면 큰 사진과 '사진 관리'(다른 '내 ○○' 줄과 같은 phT · phBlock).
+//      사진이 없으면 v58과 같은 줄(펼치기 없음). ok · op = 펼침 기억 키 · 펼쳐 둔 상태, idp = 펼치는 칸 id 앞부분. 사진 저장 위치 · 형식 · 백업은 그대로
+const aoRow52 = (ao, ok, op, idp) => { const vid = (ao.it && ao.it.id) || '', pb = phBlock(ao.k, vid), id = (idp || 'rp') + 'ao52';
+  return `<li class="r42 ao52r${pb && op ? ' open' : ''}${pb ? ' ph49r' : ''}"><div class="rw"${pb ? ` data-tg="${id}" data-ok="${esc(ok || '')}"` : ''}><span class="tile">겉옷<small>더함</small></span>${pb ? phT(ao.k, 'ph49s', vid) : ''}<div class="rm"><p class="rn">내 ${esc(ao52Nm(ao))}</p><p class="rd">사진엔 없는 겉옷이에요. 언제 입고 벗을지는 위 칸에 적었어요</p>${ao.fl ? `<p class="rd f50"><b>${esc(ao.fl.lab)}</b> · ${esc(ao.fl.s)}</p>` : ''}</div><div class="rs"><span class="cp ao">사진에 없음</span></div>${pb ? `<button type="button" class="rx" aria-expanded="${!!op}" aria-controls="${id}" aria-label="겉옷(더함) 자세히 보기"></button>` : '<span class="rx0"></span>'}</div>${pb ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${pb}</div>` : ''}</li>`; };
 const jong52 = w => { const ch = String(w || '').slice(-1); return /[013678]/.test(ch) ? 1 : /[2459]/.test(ch) ? 0 : jongOf(w); };
 const eul52 = w => w + (jong52(w) ? '을' : '를');
 const ao52Nm = ao => itemNm(ao.k, ao.it);
@@ -5089,7 +5093,8 @@ function h1Map(){
 // 한 줄 요약: 여러 가지가 겹치면 빠뜨리지 않고 급한 것부터(살 옷 → 보유 여부 확인 → 확인 → 사진과 다른 곳)
 const CHKF = /^(.{1,12}?) 확인: (.+)$/;
 // v43: 타스만과 다른 점 메모(칸 줄에선 한 칸으로 묶음)
-const TASF43 = t => /^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t);
+// v59(검토 v59 4번): 로퍼 문장 끝을 해요체로 바꾸면서, 끝을 읽는 세 곳(여기 · rowHTML42 · rowHTML)이 '보여'와 '보여요'를 둘 다 알아봄
+const TASF43 = t => /^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여(요)?$/.test(t);
 // v43: 준비된 칸(own)의 참고할 점 수 = 칸 줄의 '참고할 점 N'을 모두 더한 수(확인 메모 하나씩 + 타스만 메모는 칸마다 하나)
 const refN43 = R => R.rows.filter(w => w.c === 'own').reduce((s, w) => { const a = w.n.filter(t => typeof t === 'string' && t !== HIDN);
   return s + a.filter(t => CHKF.test(t)).length + (a.some(TASF43) ? 1 : 0); }, 0);
@@ -5136,7 +5141,7 @@ function rowHTML42(w, i, lay, key){
     if (w.pil && j === 1) { fold.push({s: '사진과 다른 점', b: esc(t), w: 1, pil: 1}); return; }
     const m = (w.c === 'own' || w.c === 'chk') && CHKF.exec(t);
     if (m) { fold.push(w.c === 'own' ? {s: m[1] + ' 참고', b: esc(m[2]), r: 1} : {s: m[1] + ' 확인', b: esc(m[2]), w: 1}); return; }
-    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t)) {
+    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여(요)?$/.test(t)) {
       const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push(Object.assign({s: '사진 속 타스만과 다른 점', b: esc(t), tas: 1}, w.c === 'own' ? {r: 1} : {w: 1})); return; }
     vis.push(esc(t) + (j === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
   });
@@ -5161,13 +5166,14 @@ function rowHTML42(w, i, lay, key){
   const pk49 = PHK49.get(w), pv50 = PHV50.get(w) || '', ph49 = pk49 ? phBlock(pk49, pv50) : '';
   // v50: 두께·프린트 알림. 접힌 줄에 '더울 수 있어요 · …' 한 줄, 펼치면 그날 체감·사진 범위까지
   const fl50 = FL50.get(w) || [], j5 = J51.get(w); // v51: 사진 속 옷과 비교(밝기·워싱·소재를 적은 옷만)
+  const g59 = IN59.get(w), tk = TK59.get(w); // v59: 받쳐 입을 옷 안내 · 이름에 턱이 든 데님
   const exH = ph49 + (rel ? `<p class="rl">${esc(rel)}</p>` : '')
     + exV.map(h => typeof h === 'string' ? `<p>${h}</p>` : `<p class="fd"><span class="lb">${esc(h.fold)}</span> ${esc(h.det)}</p>`).join('')
-    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + j51Det(j5, w.c === 'sub') + shd + alt;
+    + fold.map(f => `<p class="fd${f.w && !f.pil ? ' w' : ''}${f.r ? ' r' : ''}"><span class="lb">${esc(f.s)}</span> ${f.b}</p>`).join('') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + j51Det(j5, w.c === 'sub') + (tk && tk.o ? `<p class="fd tk59o"><span class="lb">사진에서 본 것</span> ${esc(tk.o)}</p>` : '') + shd + alt;
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
   return `<li class="r42 ${w.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${g59 ? `<p class="rd in59">${esc(g59.a)}</p><p class="rd in59 b">${esc(g59.b)}</p>` : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
@@ -5183,7 +5189,7 @@ function listHTML42(R, L, ao){
     if (hi > lo) ti.forEach((i, k) => { lay[i] = rs[k] === hi ? '겉' : rs[k] === lo ? '안' : ''; });
   }
   // v52: 내 겉옷을 더하는 코디는 '겉옷 없이 입는 사진' 줄 대신 더할 내 겉옷 줄(그 밖엔 v51과 같음)
-  return `<ul class="l42" aria-label="칸마다 입을 옷">${R.rows.map((w, i) => ao && w.c === 'none' && w.t === '겉옷 없이 입는 사진' ? aoRow52(ao) : rowHTML42(w, i, lay[i] || '', L.key)).join('')}</ul>`;
+  return `<ul class="l42" aria-label="칸마다 입을 옷">${R.rows.map((w, i) => ao && w.c === 'none' && w.t === '겉옷 없이 입는 사진' ? aoRow52(ao, L.key + '|ao52', OPEN42.has(L.key + '|ao52'), 'rp') : rowHTML42(w, i, lay[i] || '', L.key)).join('')}</ul>`;
 }
 // 사진 위 '내 블루종으로' 표시: 대신 입기 칸 중 사진 속 위치가 있고, 지금 자른 사진 안쪽에 들어오는 것만. 나머지는 사진 아래 줄로
 function pins42(o, R, os){
@@ -5653,8 +5659,8 @@ const photoNm = x => x.nm || tasNm(x) || (x.slot ? featNm(x.slot, x.ft) : x.buy 
 // v35: 타스만 칸 줄. 로퍼(대안이나 가진 로퍼)와 모양·분위기가 다르다는 것과, 앱 판정 칸이 아직 로퍼라는 것
 function tasLines(x, q, mine){
   const kd = x.slot.split('|')[0], out = [`사진 속 신발은 타스만 II: 스웨이드 겉에 양모 안감을 댄, 끈 없이 신는 슬리퍼형이라 포근하고 느슨해 보여요. 앱은 아직 이 칸을 ${slotName(x.slot)} 칸으로 판정해요`];
-  if (mine) out.push(`내 ${weun(kd)} 구두형이라 같은 색이어도 사진보다 단정하고 가벼워 보여`);
-  else if (q && !TASM.test(q.name)) out.push(`대안은 ${/페니/.test(q.name) ? '페니 ' : ''}${kindOf(q)}(구두형)라 같은 색이어도 사진보다 단정하고 가벼워 보여`);
+  if (mine) out.push(`내 ${weun(kd)} 구두형이라 같은 색이어도 사진보다 단정하고 가벼워 보여요`);
+  else if (q && !TASM.test(q.name)) out.push(`대안은 ${/페니/.test(q.name) ? '페니 ' : ''}${kindOf(q)}(구두형)라 같은 색이어도 사진보다 단정하고 가벼워 보여요`);
   return out;
 }
 // v26: 사진 속 실제 색 이름(검토 v25 지시 2①③). 칸은 큰 색(검정·회색)으로만 묶어서, 무신사 색 이름이 더 자세하면 칸 줄에 같이 적음.
@@ -5703,6 +5709,31 @@ const COLDW = /부츠|boots?\b|윈터|타스만|클래식 미니|첼시|어그|U
 // v37: 무톤도 겨울 겉옷이라 같이 접음(검토 v37 5)
 const foldOver = (p, r) => !!p && over(p) && (r === 'outer' ? /코트|패딩|무톤/.test(kindOf(p)) : r === 'shoes' && COLDW.test(p.name || ''));
 const foldKind = (p, r) => r === 'shoes' ? '겨울 신발' : /코트/.test(kindOf(p)) ? '코트' : /무톤/.test(kindOf(p)) ? '무톤' : '패딩';
+// v59(검토 v59 1번): 닫힌 상의(니트 등)를 앞이 열리는 옷(가디건 · 후드 집업)으로 대신 입는 줄에 '안에 받쳐 입을 옷' 안내. 안내만이라 코디 구성 · 판정 · 벌 수 · 순서 · 구매는 그대로
+//   앞이 열리는 옷 = 코디 사진 속 제품 이름이 전부 가디건 · 집업인 두 칸(가디건 · 후드 집업). 받쳐 입을 후보 = 사진에서 가디건 · 후드 집업 안에 실제로 입은 종류 중 깃 없는 세 가지(터틀넥 · 긴팔티 · 반팔티)와 셔츠(검수 v59 2번 · 체크 셔츠는 안 넣음)
+//   사진에 상의가 이미 두 벌 보이는 코디(14개)는 안쪽 옷이 줄로 나와서 뺌. '있음'인 후보는 이름만 보여 주고 하나를 고르지 않음(순서 = 내 옷장 창의 종류 순서 → 색 순서).
+//   '있음'이 없으면 '없음'으로 적은 것과 아직 안 적은 종류를 나눠 적음(안 적은 옷까지 없다고 하지 않음)
+const OPEN59 = ['가디건', '후드 집업'], INN59 = ['터틀넥', '긴팔티', '반팔티', '셔츠'], IN59 = new WeakMap();
+function in59(x, sub, L){
+  const kd = String((x && x.slot) || '').split('|')[0], k2 = String(sub || '').split('|')[0];
+  if (!x || x.role !== 'top' || !kd || !k2 || OPEN59.includes(kd) || !OPEN59.includes(k2)) return null;
+  if (partsOf(L).filter(y => y.role === 'top' && y.need === 'req').length >= 2) return null;
+  const cs = Object.keys(CN), ci = k => { const i = cs.indexOf(k.split('|')[1]); return i < 0 ? 99 : i; };
+  const so = (a, b) => (INN59.indexOf(a.split('|')[0]) - INN59.indexOf(b.split('|')[0])) || (ci(a) - ci(b));
+  const isIn = k => INN59.includes(String(k).split('|')[0]);
+  const yes = [...ownedSlots()].filter(isIn).sort(so), no = Object.keys(OWN.s).filter(k => isIn(k) && OWN.s[k] === 'no' && !yes.includes(k)).sort(so);
+  const nm = k => slotName(k) + (OWN.s[k] === 'similar' && itemN(k) > 1 ? ` ${itemN(k)}벌` : ''), a = '안에 받쳐 입을 옷을 함께 골라 주세요';
+  if (yes.length) return {a, b: `옷장에 있는 것: ${yes.map(nm).join(' · ')}`, yes, no: [], unk: []};
+  const unk = INN59.filter(q => !yes.concat(no).some(k => k.split('|')[0] === q));
+  return {a, b: `옷장에 '있음'으로 적은 ${INN59.join(' · ')}가 없어요` + (no.length ? ` · '없음'으로 적은 것: ${no.map(slotName).join(' · ')}` : '') + (unk.length ? ` · 아직 안 적은 종류: ${unk.join(' · ')}` : ''), yes, no, unk};
+}
+// v59(검토 v59 2번): 사진 속 바지가 이름에 '턱'이 든 데님이면 이름에서 확인한 사실만 적음. 사진을 직접 보고 확인한 코디(TKO59)만 본 것을 따로. 판정 · 순서는 그대로
+const TKO59 = {'n-1628945': '허리는 니트 밑단에 가려서 주름(턱)은 사진에서 잘 안 보여요. 워싱 없이 고른 짙은 남색이고 통이 넓게 곧게 떨어져서 청바지보다 슬랙스처럼 보여요',
+  'l4-m': '열린 코트 사이로 허리 아래 주름(턱)이 한 줄 보이고, 워싱 없는 검정에 통이 넓게 떨어져서 청바지보다 슬랙스처럼 보여요'};
+const TK59 = new WeakMap();
+function tk59(x, L){ const p = x && x.role === 'pants' && x.p; if (!p || kindOf(p) !== '데님') return null;
+  const m = /(?:(?:원|투|딥|리버스) ?)?턱/.exec(p.name || ''); if (!m) return null;
+  return {t: `제품명에 '${m[0]}'이 들어간 데님이에요`, o: (L && TKO59[L.key]) || ''}; }
 function recipeOf(L, os){
   os = os || ownedSlots();
   const own = hasOwn(), s = lookStatus(L, os), rows = [], tt = [], buyN = [], unlN = [];
@@ -5747,7 +5778,7 @@ function recipeOf(L, os){
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
       // v37: 내 옷으로 됨·확인 필요 칸이어도 사진과 같다고 확정 못 하는 점(STY rchk, 검토 v37 1: 집업 기장·데님 색·워싱)
       { const rc = own && (c === 'own' || c === 'chk') && ((STY[L.key] || {}).rchk || []).find(y => y.role === r && (!y.slot || y.slot === x.slot)); if (rc) n.push(rc.t); }
-      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
+      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); if (own && c === 'sub' && x.state.sub) { const g = in59(x, x.state.sub, L); if (g) IN59.set(row, g); } { const tk = tk59(x, L); if (tk) TK59.set(row, tk); } /* v59 */ rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
       if (inT) tt.push(nm);
     });
   });
@@ -5867,7 +5898,7 @@ function mirOf(L, os){
   if (inS) c.push({k: 'inner', t: `${inS.trim().replace(/보임$|보여$/, '보이는지').replace(/보이게$/, '보이게 입었는지')}${/는지$|었는지$/.test(inS.trim()) ? '' : ' · 거울에서 그만큼 보이는지'}`, why: '', sc: 1.2});
   if (H && diff(H)) {
     const ph = photoNm(H), dressy = L.level === 'L3' || L.level === 'L4';
-    c.push({k: 'shoe', t: `사진은 ${ph}, 너는 ${sn}. ${dressy ? '로고·장식이 적고 밑창이 얇은 깔끔한 신발일수록 사진의 단정한 느낌에 가까워요. 끈은 단정하게 묶고 바지 밑단이 앞코를 살짝 덮게' : '색이 같으면 아래가 이어져 보여요. 밑창 두께가 사진과 비슷한지만 봐요'}`,
+    c.push({k: 'shoe', t: `사진은 ${ph}, 신을 건 ${sn}. ${dressy ? '로고·장식이 적고 밑창이 얇은 깔끔한 신발일수록 사진의 단정한 느낌에 가까워요. 끈은 단정하게 묶고 바지 밑단이 앞코를 살짝 덮게' : '색이 같으면 아래가 이어져 보여요. 밑창 두께가 사진과 비슷한지만 봐요'}`,
       why: '', sc: 1 + 2 + (dressy ? 1 : 0)});
   }
   if (!c.length) return null;
@@ -5893,7 +5924,7 @@ function rowHTML(w){
     if (w.pil && i === 1) { fold.push({s: '사진과 다른 점', b: esc(t), w: 1}); return; }
     const m = (w.c === 'own' || w.c === 'chk') && /^(.{1,12}?) 확인: (.+)$/.exec(t);
     if (m) { fold.push({s: m[1], b: esc(m[2]), w: 1}); return; }
-    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여$/.test(t)) {
+    if (/^사진 속 신발은 타스만/.test(t) || /구두형(이라|\)라) 같은 색이어도 사진보다 단정하고 가벼워 보여(요)?$/.test(t)) {
       const f = fold.find(x => x.tas); if (f) f.b += ' ' + esc(t); else fold.push({s: '사진 속 타스만과 다른 점', b: esc(t), w: 1, tas: 1}); return; }
     vis.push(esc(t) + (i === 0 && w.shIn && w.sh ? ` · ${chip(w.sh)}${esc(w.sh.nm)}(${esc(w.sh.t)})` : ''));
   });
@@ -7300,12 +7331,13 @@ function partRow(x, p, os, i, lay){
   const one = wHid45(x) ? HIDN + (/앞뒤 날과 다른 상의로 고름/.test(s.t) ? ' · 앞뒤 날과 다른 상의로 고름' : '') : wAk46(x) ? AKN46 : ST.c === 'own' ? '' : ST.c === 'sub' ? (insd || `사진 속 ${nm} 대신`) : s.t;
   // v50: 그날 두께·프린트 알림(dayStatus가 x.fl50에 붙임)
   const fl50 = x.fl50 || [], j5 = has51() ? jOfPart(Object.assign({}, x, {state: s}), os) : null; // v51: 그날 입는 내 옷과 사진 속 옷 비교
-  const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + j51Det(j5, ST.c === 'sub') + (act ? `<p class="ra44">${act}</p>` : '');
+  const g59 = ST.c === 'sub' && s.sub ? in59(x, s.sub, p.L) : null, tk = tk59(x, p.L); // v59: 받쳐 입을 옷 안내 · 이름에 턱이 든 데님(오늘의 코디 칸 줄과 같게)
+  const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + j51Det(j5, ST.c === 'sub') + (tk && tk.o ? `<p class="fd tk59o"><span class="lb">사진에서 본 것</span> ${esc(tk.o)}</p>` : '') + (act ? `<p class="ra44">${act}</p>` : '');
   const stH = ST.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(ST.t)}</span>` : ST.t ? `<span class="cp ${ST.c}">${esc(ST.t)}</span>` : '';
   const key = `${p.d}|${p.L.key}|${i}`, op = OPEN44.has(key), id = 'wrp' + i;
   return `<li class="r42 ${ST.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
     + `<span class="tile${lay ? ' two' : ''}">${RN[x.role]}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${g59 ? `<p class="rd in59">${esc(g59.a)}</p><p class="rd in59 b">${esc(g59.b)}</p>` : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${rc ? '<span class="wk42 ref">참고할 점 1</span>' : ''}</div>`
     + `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(RN[x.role] + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button></div>`
     + `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div></li>`;
@@ -7414,7 +7446,7 @@ function dayDetail(p, os){
   r += `<div class="wdr44">${head}<h2 class="dh1 wdh1">${wH1(p, os)}</h2><p class="dsum">${wSum44(p, nR)}</p>`
     // v52(검수 지시 2): 겉옷을 더하는 날엔 이 줄이 사진을 설명하는 말이라는 걸 앞에 적음('겉옷 없이 …'가 아래 겉옷 칸과 엇갈려 보이지 않게). 다른 날은 v51과 같음
     + `<p class="wcore44">${p.o && p.o.ao ? '<span class="wcl52">사진 속 코디</span>' : ''}${esc(coreOf(p.L))}</p>` + ao52HTML(p.o, p.A, wDw(p.d))
-    + `<ul class="l42 wl44" aria-label="이날 입을 옷">${p.o && p.o.ao ? aoRow52(p.o.ao) : ''}${req.map((x, i) => partRow(x, p, os, i, lay[i] || '')).join('')}</ul>`;
+    + `<ul class="l42 wl44" aria-label="이날 입을 옷">${p.o && p.o.ao ? aoRow52(p.o.ao, `${p.d}|${p.L.key}|ao52`, OPEN44.has(`${p.d}|${p.L.key}|ao52`), 'wrp') : ''}${req.map((x, i) => partRow(x, p, os, i, lay[i] || '')).join('')}</ul>`;
   const m = mirOf(p.L);
   const ta = notes.length ? `<div class="tip42 chg reft"><span class="ti" aria-hidden="true">🌡</span><div><p class="tl">${p.o && p.o.dd > 2 ? '참고 코디' : '이날 바꿀 점'}</p>${notes.map(t => `<p class="tx">${esc(t)}</p>`).join('')}</div></div>` : '';
   const tb = m ? `<div class="tip42 mir"><span class="ti" aria-hidden="true">👀</span><div><p class="tl">거울 앞에서 확인할 한 가지<span class="mk">${MIRN[m.k]}</span></p><p class="tx">${esc(m.t)}</p>${m.why ? `<p class="tw">${esc(m.why)}</p>` : ''}</div></div>` : '';
