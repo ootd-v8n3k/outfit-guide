@@ -2644,7 +2644,7 @@ $('#tabs').addEventListener('click', e => { const b = e.target.closest('button')
 $('#closetB').addEventListener('click', () => showOwnEdit());
 $('#fitB').addEventListener('click', () => showOwnEdit('fit'));
 $('#font').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.font = b.dataset.v || ''; save(); applyFont(); });
-$('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; save(); syncSeg('day', st.day); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); render(); });
+$('#day').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.day = +b.dataset.v; if (st.day) st.dayD = today(); else delete st.dayD; st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; save(); syncSeg('day', st.day); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); render(); });
 $('#sens').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; st.sens = +b.dataset.v; save(); syncSeg('sens', st.sens); render(); });
 $('#start').addEventListener('change', e => { st.start = +e.target.value; if (st.end < st.start) { st.end = st.start; $('#end').value = st.end; } save(); render(); });
 $('#end').addEventListener('change', e => { st.end = +e.target.value; if (st.end < st.start) { st.start = st.end; $('#start').value = st.start; } save(); render(); });
@@ -2858,7 +2858,21 @@ const MT = [[-8, '영하 5° 아래'], [0, '0° 안팎'], [5, '5° 안팎'], [10
 let PV = null;
 const PVS = [[-8, '한겨울'], [0, '겨울'], [6, '늦가을·초봄'], [12, '가을·봄'], [17, '초가을·늦봄']];
 setInterval(() => { if (document.visibilityState === 'visible') load(false); }, 60*1000);
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') load(false); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { dayBack53(); load(false); } });
+addEventListener('pageshow', e => { if (e.persisted) dayBack53(); });
+// v53: '내일'을 누른 날(dayD · 이 기기 날짜)이 오늘이 아니면 '오늘'로(검토 v52 2번). 앱을 열 때 한 번 + 탭으로 돌아왔을 때 한 번(밤새 열어 둔 탭).
+//      보고 있는 중(1분마다 날씨 새로 받기 등)엔 안 바꿈. 날짜 없이 '내일'만 저장된 예전 기록도 처음 열 때 '오늘'로.
+//      저녁에 외출 시간이 지나 앱이 알아서 내일을 보여 주는 건 저장하지 않으므로(st.day 0) 여기와 무관.
+//      어제 '내일'로 고른 날이 오늘이면(하루 지남) 보던 날짜가 같아서 보던 코디(몇 번째·상세)를 그대로 두고, 이틀 넘게 지났으면 '오늘' 버튼과 같게 처음부터
+function dayReset53(){
+  if (!st.day) return 0;
+  const t = today(); if (st.dayD === t) return 0;
+  const same = typeof st.dayD === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(st.dayD) && addDays(st.dayD, st.day) === t;
+  st.day = 0; delete st.dayD;
+  if (!same) { st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; }
+  save(); return same ? 1 : 2; }
+function dayBack53(){ if (!dayReset53()) return;
+  syncSeg('day', 0); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); if (wx && st.mode !== 'week') render(); }
 
 /* ---------- 계산 ---------- */
 const DOW = ['일','월','화','수','목','금','토'];
@@ -2973,7 +2987,7 @@ function render(){
   if (A.past) {
     $('#where').innerHTML = srcTag() + esc(`${st.city} · ${dLabel}`);
     $('#cond').innerHTML = `<p class="msg">오늘 외출 시간(${st.start}~${st.end}시)이 이미 지났다. <button class="plain" type="button" id="toTmr">내일로 보기</button></p>`;
-    $('#toTmr').addEventListener('click', () => { st.day = 1; save(); syncSeg('day', 1); render(); });
+    $('#toTmr').addEventListener('click', () => { st.day = 1; st.dayD = today(); save(); syncSeg('day', 1); render(); });
     $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
     return;
   }
@@ -3438,7 +3452,8 @@ function chartLine(p, z){
   const c = p.chart;
   if (!c || !c.rows || z.k == null) return '';
   const S = p.sizes || [];
-  const ri = p.rowNames ? p.rowNames.indexOf(S[z.k]) : c.rows.length === S.length ? z.k : -1;
+  const rn = p.rowNames || c.rowNames; // v53: 사이즈 이름이 제품에 없으면 실측표 안의 이름(5438737). 둘 다 없으면 예전처럼 줄 수 = 사이즈 수일 때 순서대로
+  const ri = rn ? rn.indexOf(S[z.k]) : c.rows.length === S.length ? z.k : -1;
   if (ri < 0 || !c.rows[ri]) return '';
   return `${esc(z.t)} 실측: ` + c.cols.map((h, j) => `${esc(h)} ${c.rows[ri][j]}`).join(' · ') + 'cm';
 }
@@ -3686,6 +3701,12 @@ const OWN_KIND = {outer: ['패딩', '라이트 패딩', '롱코트', '하프 코
   pants: ['데님', '슬랙스', '면바지', '코듀로이', '스웨트', '워크 팬츠', '나일론 팬츠'],
   shoes: ['스니커즈', '더비', '로퍼', '옥스포드', '부츠', '클로그']};
 const okSlot = k => { const m = /^([^|]{1,12})\|([^|]{1,8})$/.exec(k || ''); return !!m && Object.values(OWN_KIND).some(a => a.includes(m[1])) && !!CN[m[2]]; };
+// v53: 백업 링크(#b=)에 담는 칸 규칙(검토 v52 1번). 앱 버튼이 만드는 칸 이름도 받음: 가린 상의('상의') · '민소매' · 핏이 붙은 바지 이름(테이퍼드·플레어 + 바지 종류) · 색을 모르는 칸('?').
+//      예전 링크의 칸은 okSlot을 통과하므로 그대로 읽힘. 짧은 공유 코드(#o=)는 목록 순서에 묶여 있어서 okSlot · OWN_KIND · CN은 그대로 둠
+const BK53K = ['상의', '민소매'], BK53P = /^(테이퍼드|플레어) (.+)$/;
+const okBk53 = k => { if (okSlot(k)) return true; const m = /^([^|]{1,12})\|([^|]{1,8})$/.exec(k || ''); if (!m) return false;
+  const kd = m[1], pm = BK53P.exec(kd), kOk = BK53K.includes(kd) || Object.values(OWN_KIND).some(a => a.includes(kd)) || (!!pm && OWN_KIND.pants.includes(pm[2]));
+  return kOk && (m[2] === '?' || !!CN[m[2]]); };
 // v19: 짧은 코드(#o=…): 한 칸 = 종류 1글자 + 색 1글자(36진수). 종류·색 목록 순서를 바꾸면 예전 코드가 틀어지니 바꾸지 말 것
 const OWN_KL = Object.values(OWN_KIND).flat(), OWN_CL = Object.keys(CN), B36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 const ownCode = ks => ks.filter(okSlot).map(k => { const [a, b] = k.split('|'); return B36[OWN_KL.indexOf(a)] + B36[OWN_CL.indexOf(b)]; }).join('');
@@ -3983,22 +4004,22 @@ const b64e = s => { const u = new TextEncoder().encode(s); let b = ''; for (let 
 const b64d = s => { const b = atob(String(s).replace(/-/g, '+').replace(/_/g, '/')); const u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return new TextDecoder('utf-8', {fatal: true}).decode(u); };
 const isD = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 const isPK = k => /^\d{1,12}\|[^|<>"&]{1,12}$/.test(k);
-const isXK = k => { const a = String(k).split('>'); return a.length === 2 && okSlot(a[0]) && okSlot(a[1]); };
+const isXK = k => { const a = String(k).split('>'); return a.length === 2 && okBk53(a[0]) && okBk53(a[1]); }; // v53: 백업 칸 규칙(okBk53)
 const isStr = (v, n) => typeof v === 'string' && v.length <= n && !/[<>"&]/.test(v);
 const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
 function bkClean(o){
   const r = {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}; if (!isObj(o)) return r;
-  if (isObj(o.s)) for (const k in o.s) if (okSlot(k) && (o.s[k] === 'similar' || o.s[k] === 'no')) r.s[k] = o.s[k];
-  if (isObj(o.f)) for (const k in o.f) if (okSlot(k) && isObj(o.f[k])) { const y = {}; for (const f in FOPT) if (FOPT[f].includes(o.f[k][f])) y[f] = o.f[k][f]; if (Object.keys(y).length) r.f[k] = y; }
+  if (isObj(o.s)) for (const k in o.s) if (okBk53(k) && (o.s[k] === 'similar' || o.s[k] === 'no')) r.s[k] = o.s[k];
+  if (isObj(o.f)) for (const k in o.f) if (okBk53(k) && isObj(o.f[k])) { const y = {}; for (const f in FOPT) if (FOPT[f].includes(o.f[k][f])) y[f] = o.f[k][f]; if (Object.keys(y).length) r.f[k] = y; }
   if (isObj(o.p)) for (const k in o.p) if (isPK(k) && o.p[k] === 'own') r.p[k] = 'own';
-  if (isObj(o.d)) for (const k in o.d) if ((isPK(k) || okSlot(k)) && isObj(o.d[k]) && ['plan', 'ordered', 'got'].includes(o.d[k].st)) { const v = o.d[k], y = {st: v.st};
+  if (isObj(o.d)) for (const k in o.d) if ((isPK(k) || okBk53(k)) && isObj(o.d[k]) && ['plan', 'ordered', 'got'].includes(o.d[k].st)) { const v = o.d[k], y = {st: v.st};
     if (isStr(v.slot, 30)) y.slot = v.slot; if (Array.isArray(v.slots)) y.slots = v.slots.filter(z => isStr(z, 30)).slice(0, 20);
     if (isD(v.at)) y.at = v.at; if (isD(v.eta)) y.eta = v.eta; r.d[k] = y; }
-  if (isObj(o.w)) for (const k in o.w) if ((okSlot(k) || isPK(k)) && Array.isArray(o.w[k])) { const a = o.w[k].filter(isD).slice(0, 30); if (a.length) r.w[k] = a; }
+  if (isObj(o.w)) for (const k in o.w) if ((okBk53(k) || isPK(k)) && Array.isArray(o.w[k])) { const a = o.w[k].filter(isD).slice(0, 30); if (a.length) r.w[k] = a; }
   if (isObj(o.x)) for (const k in o.x) if (isXK(k)) r.x[k] = 1;
   // v50: 벌 기록(v). 칸마다 VMAX벌까지, 첫 벌은 {n, th, pr}, 둘째 벌부터 {id, n, fit, len, th, pr}. 모양이 안 맞는 값은 버림. 예전 링크엔 없음(→ 한 칸 한 벌)
   const v = {};
-  if (isObj(o.v)) for (const k in o.v) if (okSlot(k) && Array.isArray(o.v[k])) { const a = [];
+  if (isObj(o.v)) for (const k in o.v) if (okBk53(k) && Array.isArray(o.v[k])) { const a = [];
     o.v[k].slice(0, VMAX).forEach((y, i) => { const z = {};
       if (i) { if (!isObj(y) || !isVid(y.id) || a.some(q => q.id === y.id)) return; z.id = y.id; for (const f in FOPT) if (FOPT[f].includes(y[f])) z[f] = y[f]; }
       if (isObj(y)) { if (isStr(y.n, VNM) && y.n.trim()) z.n = y.n.trim(); if (THV.includes(y.th)) z.th = y.th; if (PRV.includes(y.pr)) z.pr = y.pr; if (BRV.includes(y.br)) z.br = y.br; if (WAV.includes(y.wa)) z.wa = y.wa; if (MAV.includes(y.ma)) z.ma = y.ma; if (GMV.includes(y.gm)) z.gm = y.gm; } // v51: 기모·밝기·워싱·소재(목록에 있는 값만)
@@ -4007,6 +4028,13 @@ function bkClean(o){
   if (Object.keys(v).length) r.v = v;
   return r;
 }
+// v53: 백업 링크에 못 담기는 기록(칸 이름이 백업 규칙에 안 맞음). 만들 때 그 자리에서 몇 개인지 알려 줌. 값이 빈 기록은 잃을 것이 없어서 안 셈
+function bkDrop53(O){ const ks = new Set(); let n = 0;
+  const has = v => Array.isArray(v) ? v.length > 0 : isObj(v) ? Object.keys(v).length > 0 : v != null && v !== '';
+  const chk = (sec, okF) => { const a = O && O[sec]; if (!isObj(a)) return;
+    for (const k in a) if (has(a[k]) && !okF(k)) { n++; (sec === 'x' ? String(k).split('>').filter(z => !okBk53(z)) : [k]).forEach(z => ks.add(z)); } };
+  chk('s', okBk53); chk('f', okBk53); chk('v', okBk53); chk('d', k => isPK(k) || okBk53(k)); chk('w', k => okBk53(k) || isPK(k)); chk('p', isPK); chk('x', isXK);
+  return {n, k: [...ks]}; }
 function bkBody(b){ if (!isObj(b)) return null; const r = {};
   Object.keys(BODY).forEach(k => { const v = b[k]; if (v === null || (typeof v === 'number' && v >= BODY[k][0] && v <= BODY[k][1])) r[k] = v; });
   if (b.pf === '' || FITS[b.pf]) r.pf = b.pf;
@@ -5912,7 +5940,8 @@ function showOwnEdit(focus){
       [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { ownItems(k).forEach(it => setItem50(k, it.i, f, v === '모름' ? '' : v)); }); live(); drawHead(); return; }
     if (b.classList.contains('oaGo')) { const k = d.querySelector('.oaK').value + '|' + d.querySelector('.oaC').value; if (okSlot(k)) { OWN.s[k] = 'similar'; live(); } return; }
     if (b.hasAttribute('data-bkmk')) { const wb = d.querySelector('.bkB').checked, url = bkLink(wb), out = d.querySelector('.bkout');
-      out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · ${esc(cntText(ownCount(OWN), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'} · 옷 사진은 안 담김</p><textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
+      const bo53 = bkClean(OWN), dr53 = bkDrop53(OWN); // v53: 수는 링크에 실제로 담긴 기록으로 셈. 못 담긴 기록이 있으면 그 자리에서 알림
+      out.innerHTML = `<p class="cn" style="margin-top:6px">${esc(dLab(today()))} 기록 · 링크에 담긴 것: ${esc(cntText(ownCount(bo53), true))} · ${wb ? '몸 치수 넣음' : '몸 치수 안 넣음'} · 옷 사진은 안 담김</p>${dr53.n ? `<p class="warn bk53">링크에 못 담긴 기록이 ${dr53.n}개 있어요(칸 ${dr53.k.length}개: ${esc(dr53.k.join(', '))}). 이 기록은 이 링크로 되살릴 수 없어요.</p>` : ''}<textarea class="bkT" readonly aria-label="백업 링크"></textarea><button type="button" class="plain" data-bkcp>복사</button> <span class="cn bkm"></span>`;
       out.querySelector('.bkT').value = url; return; }
     if (b.hasAttribute('data-bkcp')) { const ta = d.querySelector('.bkT'), m = d.querySelector('.bkm'), sel = () => { ta.focus(); ta.select(); m.textContent = '자동 복사가 안 돼서 링크 글자를 골라 뒀어. Ctrl+C(폰은 길게 눌러 복사)로 복사해 줘'; };
       try { navigator.clipboard.writeText(ta.value).then(() => { m.textContent = '복사했어. 나만 보는 곳(메모 등)에 붙여 둬'; }, sel); } catch(e){ sel(); } return; }
@@ -7385,7 +7414,7 @@ const refill = (obj, def, v) => { Object.keys(obj).forEach(x => delete obj[x]); 
 function adopt(keys){
   let reload = false;
   keys.forEach(k => { const v = syncRead(k);
-    if (k === KEY) { const keep = {}; SESS.concat(['mode', 'day']).forEach(x => { keep[x] = st[x]; }); const c0 = st.lat + ',' + st.lon;
+    if (k === KEY) { const keep = {}; SESS.concat(['mode', 'day', 'dayD']).forEach(x => { keep[x] = st[x]; }); const c0 = st.lat + ',' + st.lon;
       refill(st, S0, v); delete st.mood; if (!LEVELS[st.level]) st.level = 'L2'; Object.assign(st, keep); reload = c0 !== st.lat + ',' + st.lon; }
     else if (k === OKEY) refill(OWN, {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}, v);
     else if (k === TKEY) refill(TS, {like: {}, nope: {}, why: {}, ab: [], asked: {}, seen: {}}, v);
@@ -7785,7 +7814,7 @@ const ownxSlot = x => { const key = String(x).slice(2); if (x[0] === 's') return
 /* ---------- 시작 ---------- */
 importOwnFromHash() || importBackupFromHash();
 addEventListener('hashchange', () => { if (/^#(own|o)=/.test(location.hash)) importOwnFromHash(); else if (/^#b=/.test(location.hash)) importBackupFromHash(); });
-buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncTabs(); applyFont(); bindWeek();
+dayReset53(); buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); syncTabs(); applyFont(); bindWeek();
 load(true);
 phInit(); // v49: 사진 저장소가 있으면 읽어서 칸 줄에 보여 줌
 })();
