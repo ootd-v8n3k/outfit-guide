@@ -1130,6 +1130,7 @@ details.wsum44 .wsum{margin:6px 0 0;background:var(--soft);border-radius:12px;pa
 .wcta44{align-items:center}
 .wnav44{display:inline-flex;align-items:center;gap:6px}
 .own55n{display:block;margin:6px 0 0;font-size:13px;line-height:1.5;color:var(--ink2)}
+.own56{margin:4px 0 8px;padding:6px 10px;border-radius:8px;background:var(--soft);border:1px solid var(--line)}
 .wcnt44{font-size:14.5px;font-weight:700;color:var(--sub2);min-width:44px;text-align:center}
 #week .walt{margin-top:12px}
 .wit44 .lki{margin:0}
@@ -2917,7 +2918,7 @@ function analyse(dateArg){
   let feels = g('apparent_temperature');
   // 예보가 없고 기온을 직접 골랐으면 그 값으로(낮에는 6° 더 따뜻하다고 봄). 미리보기도 같은 식, 비·바람은 없다고 봄
   const mtv = pv ? PV : wx.est ? st.mt : null, z = v => hours.map(() => v);
-  const sw = h => 6 * Math.max(0, Math.sin(Math.PI * (h - 6) / 18)), b0 = pv ? sw(hours[0]) : 0;
+  const sw = h => 6 * Math.max(0, Math.sin(Math.PI * (h - 6) / 18)), b0 = mtv != null ? sw(hours[0]) : 0; // v56: 직접 고른 기온도 미리보기처럼 첫 외출 시각의 체감이 그 값(검토 v55 3번)
   if (mtv != null) feels = hours.map(h => mtv + sw(h) - b0);
   const temps = mtv != null ? feels : g('temperature_2m'), prob = pv ? z(0) : g('precipitation_probability').map(x => x ?? 0),
         prec = pv ? z(0) : g('precipitation').map(x => x ?? 0), codes = pv ? z(1) : g('weather_code'), wind = pv ? z(2) : g('wind_speed_10m').map(x => x ?? 0), hum = pv ? z(50) : g('relative_humidity_2m');
@@ -3000,7 +3001,7 @@ function render(){
   $('#where').innerHTML = A.pv
     ? `${esc(st.city)} <em>미리보기 체감 ${lo}°~${hi}°</em> <span class="s">실제 예보 아님 · 비·바람 없다고 봄</span>`
     : A.est
-    ? `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>예보 확인 불가</em> <span class="s">${st.mt != null ? `직접 고른 체감 ${st.mt}° 기준` : `참고 체감 ${lo}°~${hi}°(이달 흔한 값)`} · 비·눈 모름${srcWarn()}</span>`
+    ? `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>예보 확인 불가</em> <span class="s">${st.mt != null ? `직접 고른 체감 ${st.mt}°(${A.s}시 기준) · ${st.sens ? `체질 보정 ${st.sens > 0 ? '+' : ''}${st.sens}°를 더한 ` : ''}추천 기준 온도 ${r0(A.tOuter)}°` : `참고 체감 ${lo}°~${hi}°(이달 흔한 값)`} · 비·눈 모름${srcWarn()}</span>`
     : `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>체감 ${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em> <span class="s">${esc(WMO[A.worst] ?? '')}${A.pMax >= 30 ? ` · 강수 ${A.pMax}%` : ''}${srcWarn()}</span>`;
   const condTop = '';
   const pvRow = wx.est ? '' : `<details class="hw pvw"${A.pv ? ' open' : ''}><summary>${A.pv ? '다른 계절 미리보기 중' : '다른 계절 미리보기'}</summary><div class="mtc">`
@@ -3692,7 +3693,7 @@ const OKEY = KEY + '-own';
 const OWN = (() => { let o = {}; try { o = JSON.parse(localStorage.getItem(OKEY)) || {}; } catch(e){} return Object.assign({p:{}, s:{}, f:{}, d:{}, w:{}, x:{}}, o); })();
 // v9 기록(제품번호만)은 그 제품 이름에 붙은 색으로 옮김
 for (const k of Object.keys(OWN.p)) if (!k.includes('|')) { const p = PID[k]; if (p) OWN.p[k + '|' + (colOf(p) || '?')] = OWN.p[k]; delete OWN.p[k]; }
-const saveO = () => { put(OKEY, JSON.stringify(OWN)); };
+const saveO = () => { put(OKEY, JSON.stringify(OWN)); try { drawHead(); } catch(e){} }; // v56: 옷장 기록이 바뀌면 맨 위 '내 옷장 N벌'도 바로(검토 v55 2번)
 const pk = (id, col) => id + '|' + (col || '?');
 const hasOwn = () => Object.keys(OWN.p).length + Object.values(OWN.s).filter(v => v === 'similar').length + Object.values(OWN.d).filter(v => v.st === 'got').length > 0;
 // v18: 가진 옷 목록을 링크 하나로 넣기. 주소 # 뒤(#own=종류|색,종류|색…)는 브라우저 밖으로 안 나가서 사이트(깃허브)에도 안 남음.
@@ -4268,8 +4269,10 @@ function partState(x, os){
   //      일주일 상세 칸 줄도 이 글을 쓰니 변형 이름('상의 종류 미확인 · 내 회색 맨투맨으로 변형')을 앞에 둠
   if (x.vary) { const sb = subFor(x, os); if (sb) return Object.assign({lv: 2, t: `${sb.lab} · ${sb.why}`, sub: sb.k}, sb.vi != null ? {vk: sb.k, vi: sb.vi} : {});
     const no = x.vary.every(k => OWN.s[k] === 'no'); return {lv: 0, t: no ? '없음' : '모름', no}; }
-  const slots = [x.slot].concat(x.also || []), hit = slots.find(k => os.has(k)) || tap54(x, os); // v54: 테이퍼드 사진 → 같은 종류·색 내 바지(벌마다 핏 비교)
-  if (hit) {
+  const slots = [x.slot].concat(x.also || []), hit0 = slots.find(k => os.has(k)), hb56 = tap54(x, os), hit = hit0 || hb56; // v54: 테이퍼드 사진 → 같은 종류·색 내 바지(벌마다 핏 비교)
+  // v56: 예전 '테이퍼드 ○○'(·플레어) 칸과 '○○' 칸이 둘 다 있으면 두 칸을 각각 판정해서 사진에 더 맞는 칸을 고름(같으면 예전처럼 사진 이름 칸).
+  //      두 칸을 같은 옷으로 보지 않고 기록·사진은 그대로(검토 v55 1번). 고른 칸은 two56(화면 이름 · 세탁 날에 씀)
+  const evalHit56 = hit => {
     if (x.also && hit !== x.slot) return Object.assign({lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
       : `가진 ${wro(slotName(hit))} 됨(사진 속 ${x.nm || slotName(x.slot)} 종류를 확정 못 해서 같은 색이면 됨으로 봄)`}, vv50(hit, x));
     // v50: 칸 안의 벌마다 비교해서 가장 잘 맞는 벌로 판정(하나라도 맞으면 됨). 같은 판정이면 그날 날씨·단계에 맞는 벌. 한 벌이면 v49와 같음
@@ -4287,7 +4290,9 @@ function partState(x, os){
     if (unk.length) return Object.assign({lv: 2, t: `가진 ${wwa(hn)} 종류·색은 같음. ${unk.map(k => FNM[k]).join('·')}은 아직 모름`, k: unk[0]}, vv);
     const r3 = Object.assign({lv: 3, t: `가진 ${wro(hn)} 됨${keys.length ? ' (' + keys.map(k => FNM[k] + ' ' + x.ft[k]).join(', ') + ' 같음)' : ''}`}, vv);
     return has51() ? near51(x, os, hit, P.it, r3) : r3; // v51: 같은 종류 다른 색 칸에 사진과 더 가까운 내 옷이 있으면 그 옷(판정은 그대로)
-  }
+  };
+  if (hit0 && hb56 && hit0 !== hb56) { const a = evalHit56(hit0), b = evalHit56(hb56), w = b.lv > a.lv; return Object.assign({}, w ? b : a, {two56: w ? hb56 : hit0, alt56: w ? hit0 : hb56}); }
+  if (hit) return evalHit56(hit);
   // v12: 이 칸 대신 사서 받은 다른 종류·색 제품(코디에 골라 둔 분위기 바꾸기 대안)도 그 칸을 채운 걸로 봄. 사진과 다른 점은 알림
   const gk = Object.keys(OWN.d).find(k => OWN.d[k].st === 'got' && slots.some(s => recHas(OWN.d[k], s)) && PID[k.split('|')[0]]);
   if (gk) { const q = PID[gk.split('|')[0]], df = x.p && x.s && roleOf(x.p) !== 'pants' ? gate(x.p, q, x.s).why : '';
@@ -5489,6 +5494,9 @@ function tapSave55(k){ const b = tapK55(k); if (!b) return null;
 const tapMulti55 = b => `'${slotName(b)}' 칸에 벌이 ${itemN(b)}개 있어서 바꾸지 않았어요. 테이퍼드 벌만 빼려면 '내 옷장' 창에서 그 벌의 '이 벌 빼기'를 눌러 주세요.`;
 // v55: 벌이 둘 이상인 칸을 제품 카드에서 취소할 때 남기는 것(검토 v54 4번)
 const keepMsg55 = k => { const n = itemN(k), ph = typeof phList === 'function' ? phList(k).length : 0; return `이 칸의 벌 ${n}개 기록${ph ? `과 옷 사진 ${ph}장` : ''}은 남겨 뒀어요. 다시 '있음'으로 적으면 그대로 보여요. 지우려면 '내 옷장' 창에서 지워 주세요.`; };
+// v56: 예전 '테이퍼드 ○○'·'플레어 ○○' 칸과 '○○' 칸이 둘 다 있으면 같은 옷이 두 칸으로 적혀 있을 수 있다고 '내 옷장' 창에 알림. 합치거나 지우지 않음(실제로 두 벌일 수 있음)
+const dup56 = os => [...os].map(k => { const m = /^(?:테이퍼드|플레어) ([^|]+)\|([^|]+)$/.exec(k), b = m && m[1] + '|' + m[2]; return b && [...os].includes(b) ? [k, b] : null; }).filter(Boolean);
+const dup56HTML = os => dup56(os).map(([a, b]) => `<p class="cn own56">'${esc(slotName(a))}' 칸과 '${esc(slotName(b))}' 칸에 같은 옷이 두 번 적혀 있을 수 있어요. 같은 옷이면 둘 중 하나를 지워 주세요. 실제로 두 벌이면 그대로 두면 돼요. 지금은 두 칸을 따로 세요.</p>`).join('');
 function tapNote55(el, msg){ const sp = document.createElement('span'); sp.className = 'cn own55n'; sp.setAttribute('role', 'status'); sp.textContent = msg; el.replaceWith(sp); }
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
@@ -5554,6 +5562,7 @@ function wearOf(x, os){
   if (s.pick) { const q = PID[s.pick.split('|')[0]]; return {k: null, nm: q ? shortName(q.name) : '산 옷'}; }
   // v50: 벌이 여럿인 칸이면 판정에서 고른 벌 이름(vNm)과 그 벌 사진 번호(vid). 한 벌이면 v49와 같음
   if (s.sub) return Object.assign({k: s.sub, nm: vNm(s.sub, s)}, s.vk === s.sub && s.vi != null ? {vid: vId(s.sub, s)} : {});
+  if (s.two56 && !s.k51) return Object.assign({k: s.two56, nm: vNm(s.two56, s)}, s.vk === s.two56 && s.vi != null ? {vid: vId(s.two56, s)} : {}); // v56: 두 칸 중 판정에서 고른 칸
   if (s.k51) return Object.assign({k: s.k51, nm: vNm(s.k51, s)}, s.vk === s.k51 && s.vi != null ? {vid: vId(s.k51, s)} : {}); // v51: 사진에 더 가까운 같은 종류 다른 색 내 옷
   const k = x.anyTop || x.anyKind ? hidList(x, [...os])[0] : ([x.slot].concat(x.also || []).find(y => y && os.has(y)) || tap54(x, os)); // v54
   return k ? Object.assign({k, nm: vNm(k, s)}, s.vk === k && s.vi != null ? {vid: vId(k, s)} : {}) : null;
@@ -5960,7 +5969,7 @@ function showOwnEdit(focus){
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '내 옷장');
   const body = () => { const os = [...ownedSlots()], nv = os.reduce((n, k) => n + itemN(k), 0);
     const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg oe50g"><span class="k">${RN[r]} ${ks.reduce((n, k) => n + itemN(k), 0)}</span>${r === 'pants' ? allFit50(ks) : ''}${ks.map(oeSlot50).join('')}</div>` : ''; }).join('');
-    return `<p><b>내 옷장 ${nv}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${os.length ? `<p class="cn">같은 종류·색 옷이 여러 벌이면 '벌 더하기'로 따로 적어 주세요. 두께·프린트를 '모름'으로 두면 추천에 쓰지 않아요. 바지 핏·겉옷 기장을 고르면 사진 속 옷과 모양이 같은 코디만 '됨'으로 봐요(모름이면 그 코디는 '확인할 것'으로 남아요). 왼쪽 네모를 누르면 그 벌 사진을 올리거나 바꿀 수 있어요(한 벌에 ${PHMAX}장까지).</p><p class="cn oe51n">${n51Line()}</p><p class="cn oe51g">${gmLine}</p>` : ''}${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}`; };
+    return `<p><b>내 옷장 ${nv}벌</b> <span class="cn">이 기기에만 저장 · ✕ 누르면 그 옷만 지움</span></p>${dup56HTML(os)}${os.length ? `<p class="cn">같은 종류·색 옷이 여러 벌이면 '벌 더하기'로 따로 적어 주세요. 두께·프린트를 '모름'으로 두면 추천에 쓰지 않아요. 바지 핏·겉옷 기장을 고르면 사진 속 옷과 모양이 같은 코디만 '됨'으로 봐요(모름이면 그 코디는 '확인할 것'으로 남아요). 왼쪽 네모를 누르면 그 벌 사진을 올리거나 바꿀 수 있어요(한 벌에 ${PHMAX}장까지).</p><p class="cn oe51n">${n51Line()}</p><p class="cn oe51g">${gmLine}</p>` : ''}${grp || '<p class="cn">아직 적은 옷이 없어</p>'}${ownAddHTML()}`; };
   // v49: 백업 링크 아래 '옷 사진 파일'(내려받기 · 다시 넣기)
   d.innerHTML = `<div class="oeb">${body()}</div>${bkHTML()}<div class="ph49x">${phFileHTML()}</div><div class="impx"><button type="button" class="plain" data-x>닫기</button></div>`; d._ref = () => { const x = d.querySelector('.oeb'); if (x) x.innerHTML = body(); phRefFile(); };
   const bg = () => { if (typeof wx !== 'undefined' && wx) render(); else drawWait(); };
@@ -6652,7 +6661,7 @@ function buyRecFor(x){
 }
 // 세탁 등으로 못 쓰는 날: OWN.w[제품|색 또는 종류|색] = [날짜…]
 const wDays = k => Array.isArray(OWN.w[k]) ? OWN.w[k] : [];
-const washKey = (x, os) => x.ds && x.ds.pick ? x.ds.pick : x.ds && x.ds.k51 ? x.ds.k51 : x.id && (OWN.p[pk(x.id, x.col)] === 'own' || (OWN.d[pk(x.id, x.col)] || {}).st === 'got') ? pk(x.id, x.col)
+const washKey = (x, os) => x.ds && x.ds.pick ? x.ds.pick : x.ds && x.ds.k51 ? x.ds.k51 : x.ds && x.ds.two56 ? x.ds.two56 : x.id && (OWN.p[pk(x.id, x.col)] === 'own' || (OWN.d[pk(x.id, x.col)] || {}).st === 'got') ? pk(x.id, x.col)
   : [x.slot].concat(x.also || []).find(k => k && os.has(k)) || tap54(x, os) || (x.anyTop || x.anyKind ? hidList(x, [...os])[0] : (subFor(x, os) || {}).k || null); // v54
 const washed = (x, d, os, s) => { const k = s && s.k51 ? s.k51 : washKey(x, os); return !!k && wDays(k).includes(d); }; // v51: 사진에 더 가까운 다른 색 옷을 입는 날은 그 옷의 세탁 날
 // 그날 그 조각을 쓸 수 있는지. code: ok 가진 옷 · soft 가진 옷인데 특징 확인 · info 확인 필요 · eta 도착 예정일 뒤(받기 전) · wait 그날까지 못 받음 · wash 세탁 등 · plan 구매 예정 · miss 없음
