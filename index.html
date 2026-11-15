@@ -2801,7 +2801,7 @@ function drawWait(){
   const n = $('#wxArr'); if (n) n.remove();
 }
 function waitBuyHTML(){
-  const os = ownedSlots(), rec = Object.keys(OWN.p).length + Object.keys(OWN.s).length + Object.keys(OWN.x).length;
+  const os = ownedSlots(), rec = clrN54().any; // v54: '받음'·세탁 날만 남아도 지우기 버튼
   return `<div class="bwait46"><p class="msg wait46">날씨 불러오는 중… 국밥템 순위는 그날 날씨에 맞는 코디로 세서 날씨를 받은 뒤에 보여 줘요</p>`
     + `<div class="own46"><p class="k">내 옷장 관리 <span class="cn">날씨 없이도 돼 · 이 기기에만 저장</span></p>`
     + `<p class="cn">내 옷장 ${[...os].reduce((n, k) => n + itemN(k), 0)}벌 <button type="button" class="plain sm" data-ownedit>내 옷장 창 열기(핏·기장·백업)</button></p>`
@@ -4242,6 +4242,13 @@ const HID_NO = /후드|셔츠|카라티|가디건|베스트|플리스/;
 const hidOk = (k, x) => roleOfSlot(k) === x.role && (!x.col || k.split('|')[1] === x.col) && (x.role !== 'top' || !HID_NO.test(k.split('|')[0]));
 const HID_RK = k => { const kd = k.split('|')[0]; return /니트|맨투맨|터틀넥/.test(kd) ? 0 : /긴팔티/.test(kd) ? 1 : kd === '상의' ? 2 : 3; };
 const hidList = (x, ks) => ks.filter(k => hidOk(k, x)).sort((a, b) => x.role === 'top' ? HID_RK(a) - HID_RK(b) : 0);
+// v54: 가린 상의(anyTop)는 사진에서 종류를 몰라서, 상의 칸 하나를 '없음'으로 적었다고 '없음'(구매 필요)으로 단정하지 않음(검토 v53 7번).
+//      그 색(색을 모르면 모든 색)의 가린 상의 후보(목이 둥근 상의 종류 전부, 또는 '상의')를 '없음'으로 적었을 때만 '없음'. 아니면 '모름'(보유 여부 확인)
+const HID_K54 = OWN_KIND.top.filter(k => !HID_NO.test(k));
+const hidNo54 = x => (x.col ? [x.col] : Object.keys(CN)).every(c => OWN.s['상의|' + c] === 'no' || HID_K54.every(kd => OWN.s[kd + '|' + c] === 'no'));
+// v54: 사진 바지가 테이퍼드라 칸 이름에 핏이 붙은 경우(테이퍼드 슬랙스|블랙), 같은 종류·색 내 바지 칸(슬랙스|블랙)을 그 칸으로 보고 벌마다 적은 핏과 비교(검토 v53 1번).
+//      저장된 '테이퍼드 ○○' 칸이 있으면 그 칸이 먼저(예전과 같음). 플레어는 고를 수 있는 핏에 없어서 그대로 '핏이 달라'
+const tap54 = (x, os) => { const m = x.slot && /^테이퍼드 (.+)$/.exec(x.slot.split('|')[0]), k = m && m[1] + '|' + x.slot.split('|')[1]; return k && os.has(k) ? k : null; };
 // 조각 하나의 상태. lv 4 같은 제품 · 3 비슷한 옷(주요 특징까지 맞음) · 2 비슷한 옷(종류·색만 같고 특징은 모름) · 1 비슷하지만 특징이 다름 · 0 없음/모름 · -1 사진으로 확인 못 함
 function partState(x, os){
   os = os || ownedSlots();
@@ -4249,14 +4256,14 @@ function partState(x, os){
   if (x.info) return {lv: -1, t: '확인 필요: ' + x.info};
   if (x.anyTop || x.anyKind) {
     const r = x.anyTop ? 'top' : 'shoes', hit = hidList(x, [...os])[0];
-    const no = !hit && !!OWN.s && Object.keys(OWN.s).some(k => roleOfSlot(k) === r && OWN.s[k] === 'no');
+    const no = !hit && (x.anyTop ? hidNo54(x) : !!OWN.s && Object.keys(OWN.s).some(k => roleOfSlot(k) === r && OWN.s[k] === 'no')); // v54: 가린 상의는 hidNo54(신발은 그대로)
     return hit ? Object.assign({lv: 3, t: `가진 ${wro(slotName(hit))} 됨`}, vv50(hit, x)) : {lv: 0, t: no ? '없음' : '모름', no};
   }
   // v38: 종류 미확인 칸은 같은 종류를 가져도 '됨'(lv 3)으로 안 봄. 가진 후보가 있으면 변형(lv 2), 없으면 후보를 전부 '없음'으로 적었을 때만 없음(하나라도 안 적었으면 모름)
   //      일주일 상세 칸 줄도 이 글을 쓰니 변형 이름('상의 종류 미확인 · 내 회색 맨투맨으로 변형')을 앞에 둠
   if (x.vary) { const sb = subFor(x, os); if (sb) return Object.assign({lv: 2, t: `${sb.lab} · ${sb.why}`, sub: sb.k}, sb.vi != null ? {vk: sb.k, vi: sb.vi} : {});
     const no = x.vary.every(k => OWN.s[k] === 'no'); return {lv: 0, t: no ? '없음' : '모름', no}; }
-  const slots = [x.slot].concat(x.also || []), hit = slots.find(k => os.has(k));
+  const slots = [x.slot].concat(x.also || []), hit = slots.find(k => os.has(k)) || tap54(x, os); // v54: 테이퍼드 사진 → 같은 종류·색 내 바지(벌마다 핏 비교)
   if (hit) {
     if (x.also && hit !== x.slot) return Object.assign({lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
       : `가진 ${wro(slotName(hit))} 됨(사진 속 ${x.nm || slotName(x.slot)} 종류를 확정 못 해서 같은 색이면 됨으로 봄)`}, vv50(hit, x));
@@ -5437,7 +5444,7 @@ function ownChipsHTML(scope, os){
     + ownAddHTML()
     + ownListHTML(new Set(chips))
     + (fs ? `<p class="cn" style="margin:6px 0 0">있다고 한 옷의 모양을 고르면 사진 속 옷과 같은지 비교해. 모르면 '모름'으로 두면 '확인할 것'으로 남아</p>${fs}` : '')
-    + (Object.keys(OWN.p).length + Object.keys(OWN.s).length + Object.keys(OWN.x).length ? '<button type="button" class="plain sm" id="ownClr" style="margin-top:6px">가진 옷 기록 지우기</button>' : '');
+    + (clrN54().any ? '<button type="button" class="plain sm" id="ownClr" style="margin-top:6px">가진 옷 기록 지우기</button>' : ''); // v54
 }
 // v11: 어떤 경로로 적었든(오늘 화면 칩, 7일 준비 '있음' 버튼, '받음') 가진 옷 기록을 다 보여 주고 하나씩 지울 수 있게
 function ownListHTML(skip){
@@ -5455,13 +5462,23 @@ function ownDel0(k){
   if (t === 's') { delete OWN.s[key]; delete OWN.f[key]; delV(key); } else if (t === 'x') delete OWN.x[key]; else { delete OWN.p[key]; if (OWN.d[key] && OWN.d[key].st === 'got') delete OWN.d[key]; }
 }
 function ownDel(k){ ownDel0(k); saveO(); }
+// v54: '가진 옷 기록 지우기'가 지우는 것(검토 v53 6번): 있음·없음 · 핏·기장 · 벌 · 대신 입기 제외 · 제품 그대로 + '받음'으로 들어온 옷 + 세탁 날.
+//      '살 예정'·'주문함'은 가진 옷이 아니라 남김. 옷 사진은 지우지 않음('있음'으로 적히지 않은 칸 사진으로 남음)
+const clrN54 = () => { const ks = Object.keys(OWN.d || {}), got = ks.filter(k => OWN.d[k] && OWN.d[k].st === 'got').length, w = Object.keys(OWN.w || {}).length;
+  return {got, w, keep: ks.length - got, any: Object.keys(OWN.p).length + Object.keys(OWN.s).length + Object.keys(OWN.x).length + Object.keys(OWN.f).length + (OWN.v ? Object.keys(OWN.v).length : 0) + got + w > 0}; };
+// v54: 칸 하나에 '받음'으로 들어온 제품 기록(제품|색 → 그 제품의 종류|색이 이 칸)
+const gotK54 = k => Object.keys(OWN.d || {}).filter(key => { const p = PID[key.split('|')[0]]; return OWN.d[key] && OWN.d[key].st === 'got' && p && kindOf(p) + '|' + key.split('|')[1] === k; });
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
   box.querySelectorAll('[data-own]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.own, v = b.dataset.v;
     const mut = () => { if (v === '모름') OWN.s[k] = 'similar';
-    else if (v === '있음') { OWN.s[k] = 'no'; delete OWN.f[k]; delV(k); for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; } }
+    else if (v === '있음') { OWN.s[k] = 'no'; delete OWN.f[k]; delV(k); for (const key in OWN.p) { const p = PID[key.split('|')[0]]; if (p && kindOf(p) + '|' + key.split('|')[1] === k) delete OWN.p[key]; }
+      gotK54(k).forEach(key => { delete OWN.d[key]; }); } // v54: '받음'으로 들어온 옷도 '없음'으로 바꾸면 없음(받음 기록을 지움 · 살 예정·주문함은 그대로)
     else delete OWN.s[k]; };
     // v49: 있음 → 없음으로 바꿔 그 칸 사진이 지워지면 먼저 물어봄(사진이 없으면 전처럼 바로)
+    // v54: '받음'으로 들어온 칸을 '없음'으로 바꿀 때는 사진을 지우지 않음('있음'으로 적히지 않은 칸 사진으로 남음 · 검토 v53 3·4번).
+    //      없음 → 모름 · 모름 → 있음은 이 칸이 원래 '있음'이 아니라 잃는 사진이 없어서 묻지 않음(v53은 사진이 남은 칸이면 '없음으로 바꾸면 사진도 지워져요'라고 물었음)
+    if (v !== '있음' || gotK54(k).length) { mut(); saveO(); after(); return; }
     phGuard(b, [k], mut, `'${slotName(k)}' 칸을 없음으로 바꾸면`, '없음으로 바꾸기', () => { saveO(); after(); }); }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); after(); }));
@@ -5470,10 +5487,15 @@ function bindOwn(box, after){
   // v40: 지우기 전에 확인(검토 v39 2번). 브라우저 confirm()은 앱 안 브라우저에서 막힐 수 있어 화면 안 상자로. 지운 뒤 머리글도 바로 고침(전엔 새로고침 전까지 'N벌')
   const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => {
     const q = document.createElement('div'); q.className = 'clrq'; q.setAttribute('role', 'alertdialog');
-    q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p>${phAllN() ? `<p>옷 사진 ${phAllN()}장도 같이 지워져요. '내 옷장' 창 아래 '옷 사진 파일'로 먼저 내려받아 두면 다시 넣을 수 있어요.</p>` : ''}<button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
+    const cn54 = clrN54(), ad54 = [cn54.got ? `'받음'으로 들어온 옷 ${cn54.got}개` : '', cn54.w ? `세탁 날 기록 ${cn54.w}개` : ''].filter(Boolean); // v54
+    q.innerHTML = `<p><b>가진 옷 기록을 모두 지울까?</b> ${esc(cntText(ownCount(OWN)))}. 되돌릴 수 없어. 맨 위 '내 옷장'에서 백업 링크를 먼저 만들어 두면 다시 넣을 수 있어</p>`
+      + (ad54.length ? `<p class="clr54">${esc(ad54.join('와 '))}도 같이 지워져요.</p>` : '')
+      + (cn54.keep ? `<p class="cn clr54">'살 예정'·'주문함' 기록 ${cn54.keep}개는 그대로 둬요.</p>` : '')
+      + (phAllN() ? `<p class="clr54">옷 사진 ${phAllN()}장은 지우지 않아요. '내 옷장' 창 아래 '옷 사진 파일'에 남고, 그 옷을 다시 '있음'으로 적으면 보여요. 따로 지우려면 거기서 '이 사진 지우기'를 눌러 주세요.</p>` : '')
+      + `<button type="button" class="go" data-clr="1">지우기</button> <button type="button" class="plain" data-clr="0">취소</button>`;
     oc.replaceWith(q);
     q.addEventListener('click', e => { const y = e.target.closest('[data-clr]'); if (!y) return;
-      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; delete OWN.v; saveO(); if (phAllN()) phDelAll(); drawHead(); after(); } else q.replaceWith(oc); });
+      if (y.dataset.clr === '1') { OWN.p = {}; OWN.s = {}; OWN.f = {}; OWN.x = {}; delete OWN.v; for (const k in OWN.d) if (OWN.d[k] && OWN.d[k].st === 'got') delete OWN.d[k]; OWN.w = {}; saveO(); drawHead(); after(); } else q.replaceWith(oc); }); // v54: 받음·세탁 날도 지움 · 사진은 안 지움
   });
   const og = box.querySelector('.oaGo'); if (og) og.addEventListener('click', () => { const k = box.querySelector('.oaK').value + '|' + box.querySelector('.oaC').value;
     if (okSlot(k)) { OWN.s[k] = 'similar'; saveO(); after(); } });
@@ -5511,7 +5533,7 @@ function wearOf(x, os){
   // v50: 벌이 여럿인 칸이면 판정에서 고른 벌 이름(vNm)과 그 벌 사진 번호(vid). 한 벌이면 v49와 같음
   if (s.sub) return Object.assign({k: s.sub, nm: vNm(s.sub, s)}, s.vk === s.sub && s.vi != null ? {vid: vId(s.sub, s)} : {});
   if (s.k51) return Object.assign({k: s.k51, nm: vNm(s.k51, s)}, s.vk === s.k51 && s.vi != null ? {vid: vId(s.k51, s)} : {}); // v51: 사진에 더 가까운 같은 종류 다른 색 내 옷
-  const k = x.anyTop || x.anyKind ? hidList(x, [...os])[0] : [x.slot].concat(x.also || []).find(y => y && os.has(y));
+  const k = x.anyTop || x.anyKind ? hidList(x, [...os])[0] : ([x.slot].concat(x.also || []).find(y => y && os.has(y)) || tap54(x, os)); // v54
   return k ? Object.assign({k, nm: vNm(k, s)}, s.vk === k && s.vi != null ? {vid: vId(k, s)} : {}) : null;
 }
 // v35: 사진 속 신발이 타스만이면 화면 이름만 '○○ 타스만'(칸 판정은 그대로 ○○ 로퍼)
@@ -6502,7 +6524,8 @@ function openSheet(i, keep){
   box.querySelectorAll('[data-ownp]').forEach(b => b.addEventListener('click', () => { const id = b.dataset.ownp;
     if (OWN.p[id] === 'own') delete OWN.p[id]; else OWN.p[id] = 'own'; saveO(); const k = i; reorder(); openSheet(k, true); }));
   box.querySelectorAll('[data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
-    if (OWN.s[k0] === 'similar') delete OWN.s[k0]; else OWN.s[k0] = 'similar'; saveO(); const k = i; reorder(); openSheet(k, true); }));
+    // v54: 취소하면 상세 줄 '있음 취소'처럼 그 칸의 핏·벌 기록도 지움(검토 v53 13번). 벌이 둘 이상이면 이번엔 예전처럼 '있음'만 지움. 옷 사진은 안 지움
+    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; if (itemN(k0) <= 1) { delete OWN.f[k0]; delV(k0); } } else OWN.s[k0] = 'similar'; saveO(); const k = i; reorder(); openSheet(k, true); }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k0] = OWN.f[k0] || {}; if (v === '모름') delete OWN.f[k0][f]; else OWN.f[k0][f] = v; saveO(); const k = i; reorder(); openSheet(k, true); }));
   imgFail(box);
@@ -6599,7 +6622,7 @@ function buyRecFor(x){
 // 세탁 등으로 못 쓰는 날: OWN.w[제품|색 또는 종류|색] = [날짜…]
 const wDays = k => Array.isArray(OWN.w[k]) ? OWN.w[k] : [];
 const washKey = (x, os) => x.ds && x.ds.pick ? x.ds.pick : x.ds && x.ds.k51 ? x.ds.k51 : x.id && (OWN.p[pk(x.id, x.col)] === 'own' || (OWN.d[pk(x.id, x.col)] || {}).st === 'got') ? pk(x.id, x.col)
-  : [x.slot].concat(x.also || []).find(k => k && os.has(k)) || (x.anyTop || x.anyKind ? hidList(x, [...os])[0] : (subFor(x, os) || {}).k || null);
+  : [x.slot].concat(x.also || []).find(k => k && os.has(k)) || tap54(x, os) || (x.anyTop || x.anyKind ? hidList(x, [...os])[0] : (subFor(x, os) || {}).k || null); // v54
 const washed = (x, d, os, s) => { const k = s && s.k51 ? s.k51 : washKey(x, os); return !!k && wDays(k).includes(d); }; // v51: 사진에 더 가까운 다른 색 옷을 입는 날은 그 옷의 세탁 날
 // 그날 그 조각을 쓸 수 있는지. code: ok 가진 옷 · soft 가진 옷인데 특징 확인 · info 확인 필요 · eta 도착 예정일 뒤(받기 전) · wait 그날까지 못 받음 · wash 세탁 등 · plan 구매 예정 · miss 없음
 function dayPart(x, d, os){
@@ -7277,7 +7300,7 @@ function dayDetail(p, os){
   const tb = m ? `<div class="tip42 mir"><span class="ti" aria-hidden="true">👀</span><div><p class="tl">거울 앞에서 확인할 한 가지<span class="mk">${MIRN[m.k]}</span></p><p class="tx">${esc(m.t)}</p>${m.why ? `<p class="tw">${esc(m.why)}</p>` : ''}</div></div>` : '';
   if (ta || tb) r += `<div class="tips42${ta && tb ? ' two' : ''}">${ta}${tb}</div>`;
   r += `<div class="cta42 wcta44"><button type="button" class="pri44" id="wpin" aria-pressed="${!!D.pin}">${D.pin ? '고정됨 · 풀기' : '이날 코디 고정'}</button>`
-    + (wc.length > 1 ? `<span class="wnav44"><button type="button" class="sb44" id="wprev" aria-label="이전 후보 코디">‹</button><span class="wcnt44">${wc.findIndex(o => o.L === p.L) + 1}/${wc.length}</span><button type="button" class="sb44" id="wnext">다른 코디로 ›</button></span>` : '')
+    + (wc.length > 1 ? `<span class="wnav44"><button type="button" class="sb44" id="wprev" aria-label="이전 후보 코디">‹</button><span class="wcnt44">${(i54 => i54 >= 0 ? (i54 + 1) + '/' + wc.length : D.pin ? '고정한 코디' : '후보 밖')(wc.findIndex(o => o.L === p.L))}</span><button type="button" class="sb44" id="wnext">다른 코디로 ›</button></span>` : '')
     + `<button type="button" class="sb44" id="wshow" aria-pressed="${wShow44}">사진 속 제품</button></div>`;
   // 그날 고른 이유 메모(v43 글 그대로)
   const memo = (p.why ? `<p class="reft"><b>바뀜</b>${esc(p.why)}</p>` : '')
