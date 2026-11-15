@@ -1129,6 +1129,7 @@ details.wsum44 .wsum{margin:6px 0 0;background:var(--soft);border-radius:12px;pa
 .wl44 .rp .cn{font-size:14px}
 .wcta44{align-items:center}
 .wnav44{display:inline-flex;align-items:center;gap:6px}
+.own55n{display:block;margin:6px 0 0;font-size:13px;line-height:1.5;color:var(--ink2)}
 .wcnt44{font-size:14.5px;font-weight:700;color:var(--sub2);min-width:44px;text-align:center}
 #week .walt{margin-top:12px}
 .wit44 .lki{margin:0}
@@ -4248,7 +4249,11 @@ const HID_K54 = OWN_KIND.top.filter(k => !HID_NO.test(k));
 const hidNo54 = x => (x.col ? [x.col] : Object.keys(CN)).every(c => OWN.s['상의|' + c] === 'no' || HID_K54.every(kd => OWN.s[kd + '|' + c] === 'no'));
 // v54: 사진 바지가 테이퍼드라 칸 이름에 핏이 붙은 경우(테이퍼드 슬랙스|블랙), 같은 종류·색 내 바지 칸(슬랙스|블랙)을 그 칸으로 보고 벌마다 적은 핏과 비교(검토 v53 1번).
 //      저장된 '테이퍼드 ○○' 칸이 있으면 그 칸이 먼저(예전과 같음). 플레어는 고를 수 있는 핏에 없어서 그대로 '핏이 달라'
-const tap54 = (x, os) => { const m = x.slot && /^테이퍼드 (.+)$/.exec(x.slot.split('|')[0]), k = m && m[1] + '|' + x.slot.split('|')[1]; return k && os.has(k) ? k : null; };
+const tap54 = (x, os) => { const m = x.slot && /^(?:테이퍼드|플레어) (.+)$/.exec(x.slot.split('|')[0]), k = m && m[1] + '|' + x.slot.split('|')[1]; return k && os.has(k) ? k : null; }; // v55: 플레어 칸도 같은 종류·색 내 바지로(판정은 아래 nc55로 '핏 확인')
+// v55: 고를 수 있는 바지 핏(FOPT.fit과 같은 목록). 사진 핏이 여기 없으면(플레어·카고·배기) 내 바지 핏과 비교할 수 없어서 '핏 확인'(검토 v54 1번)
+const FIT55 = ['와이드', '스트레이트', '테이퍼드', '벌룬'];
+// v55: 가린 신발(종류를 모르는 신발 칸 · anyKind)도 가린 상의와 같은 기준(검토 v54 3번). 그 색(색을 모르면 모든 색)의 신발 종류를 모두 '없음'으로 적었을 때만 '없음'
+const hidNo55 = x => (x.col ? [x.col] : Object.keys(CN)).every(c => OWN.s['신발|' + c] === 'no' || OWN_KIND.shoes.every(kd => OWN.s[kd + '|' + c] === 'no'));
 // 조각 하나의 상태. lv 4 같은 제품 · 3 비슷한 옷(주요 특징까지 맞음) · 2 비슷한 옷(종류·색만 같고 특징은 모름) · 1 비슷하지만 특징이 다름 · 0 없음/모름 · -1 사진으로 확인 못 함
 function partState(x, os){
   os = os || ownedSlots();
@@ -4256,7 +4261,7 @@ function partState(x, os){
   if (x.info) return {lv: -1, t: '확인 필요: ' + x.info};
   if (x.anyTop || x.anyKind) {
     const r = x.anyTop ? 'top' : 'shoes', hit = hidList(x, [...os])[0];
-    const no = !hit && (x.anyTop ? hidNo54(x) : !!OWN.s && Object.keys(OWN.s).some(k => roleOfSlot(k) === r && OWN.s[k] === 'no')); // v54: 가린 상의는 hidNo54(신발은 그대로)
+    const no = !hit && (x.anyTop ? hidNo54(x) : hidNo55(x)); // v54: 가린 상의는 hidNo54(신발은 그대로)
     return hit ? Object.assign({lv: 3, t: `가진 ${wro(slotName(hit))} 됨`}, vv50(hit, x)) : {lv: 0, t: no ? '없음' : '모름', no};
   }
   // v38: 종류 미확인 칸은 같은 종류를 가져도 '됨'(lv 3)으로 안 봄. 가진 후보가 있으면 변형(lv 2), 없으면 후보를 전부 '없음'으로 적었을 때만 없음(하나라도 안 적었으면 모름)
@@ -4268,10 +4273,13 @@ function partState(x, os){
     if (x.also && hit !== x.slot) return Object.assign({lv: 3, t: x.role === 'shoes' ? `가진 ${wro(slotName(hit))} 됨(사진 속 신발 모양을 확정 못 해서 검정 가죽 신발이면 됨으로 봄)`
       : `가진 ${wro(slotName(hit))} 됨(사진 속 ${x.nm || slotName(x.slot)} 종류를 확정 못 해서 같은 색이면 됨으로 봄)`}, vv50(hit, x));
     // v50: 칸 안의 벌마다 비교해서 가장 잘 맞는 벌로 판정(하나라도 맞으면 됨). 같은 판정이면 그날 날씨·단계에 맞는 벌. 한 벌이면 v49와 같음
-    const keys = Object.keys(x.ft || {}).filter(k => x.ft[k]);
+    const nc55 = x.role === 'pants' && x.ft && x.ft.fit && !FIT55.includes(x.ft.fit) ? x.ft.fit : ''; // v55: 비교할 수 없는 사진 핏
+    const keys = Object.keys(x.ft || {}).filter(k => x.ft[k] && !(nc55 && k === 'fit'));
     const P = pickItem(hit, x, it => { const g = it.f, d = keys.find(k => g[k] && g[k] !== x.ft[k]), u = keys.filter(k => !g[k]); return {lv: d ? 1 : u.length ? 2 : 3, diff: d, unk: u}; });
     const m = itemN(hit) > 1, f = P.it.f, diff = P.r.diff, unk = P.r.unk, hn = m ? slotName(hit) + ' ' + itemLab(P.it) : slotName(hit), vv = m ? {vk: hit, vi: P.it.i} : {};
     if (diff) return Object.assign({lv: 1, t: `가진 ${weun(slotName(hit))} ${m ? [...new Set(ownItems(hit).map(y => y.f[diff]).filter(Boolean))].join('·') : f[diff]}, 사진은 ${x.ft[diff]}`, k: diff}, vv);
+    // v55: 사진 핏이 고를 수 있는 핏에 없으면 '됨'으로 단정하지 않고 '핏 확인'(종류·색이 같은 내 바지가 있을 때만 여기까지 옴)
+    if (nc55) return Object.assign({lv: 2, t: `가진 ${wwa(hn)} 종류·색은 같음. 사진은 ${nc55} 핏이라 내 바지 핏과 비교할 수 없어요`, k: 'fit', nc55}, vv);
     // v14: 이 칸에 맞춰 사서 받은 제품(주요 특징이 사진과 같은 대체품)이면 특징을 따로 안 적어도 됨으로 봄. v13까진 받음을 눌러도 '특징 확인'으로 남았음
     const gp = unk.length && Object.keys(OWN.p).filter(k => OWN.p[k] === 'own').concat(Object.keys(OWN.d).filter(k => OWN.d[k].st === 'got'))
       .find(k => { const q = PID[k.split('|')[0]]; return q && kindOf(q) + '|' + k.split('|')[1] === hit && fitsPart(q, x).ok; });
@@ -4617,7 +4625,7 @@ function itemsHTML(L){
     const nm = `${RN[x.role]} · ${slotName(sl)}`;
     if (!p) return `<li><div class="lkx"><span class="lt"><b>${esc(nm)}</b><span>${esc(why)} · 10만원 아래 제품을 못 찾음</span></span></div></li>`;
     // v15: 내 사이즈·품절(sizeLine)과 '비슷한 것 있음' 버튼도 이 줄에 바로(검토 v14 지시 4). 상세 시트는 사진 속 태그 위치를 기준으로 열려서 태그 없는 칸엔 안 씀
-    const ow = OWN.s[sl] === 'similar';
+    const ow = OWN.s[sl] === 'similar' || tapOwn55(sl); // v55
     return `<li><div class="lkx"><span class="ai">${photo(p, 120, 1)}</span><span class="lt"><b>${esc(nm)} · ${esc(shortName(p.name))}</b><span>${won(p.price)}${badges(p)} · ${esc(why)}</span>`
       + `<span class="lsz">내 사이즈 ${sizeLine(p)} <button type="button" class="plain sm" data-owns="${esc(sl)}" aria-pressed="${ow}">${ow ? esc(slotName(sl)) + ' 있음 취소' : '비슷한 ' + esc(slotName(sl)) + ' 있음'}</button></span></span>`
       + `<span class="go">${lnk(p, '무신사 ↗')}</span></div></li>`;
@@ -5468,6 +5476,20 @@ const clrN54 = () => { const ks = Object.keys(OWN.d || {}), got = ks.filter(k =>
   return {got, w, keep: ks.length - got, any: Object.keys(OWN.p).length + Object.keys(OWN.s).length + Object.keys(OWN.x).length + Object.keys(OWN.f).length + (OWN.v ? Object.keys(OWN.v).length : 0) + got + w > 0}; };
 // v54: 칸 하나에 '받음'으로 들어온 제품 기록(제품|색 → 그 제품의 종류|색이 이 칸)
 const gotK54 = k => Object.keys(OWN.d || {}).filter(key => { const p = PID[key.split('|')[0]]; return OWN.d[key] && OWN.d[key].st === 'got' && p && kindOf(p) + '|' + key.split('|')[1] === k; });
+// v55: '비슷한 ○○ 있음'·'비슷한 옷 있어'가 테이퍼드 바지 칸('테이퍼드 슬랙스|블랙')을 저장할 때 '슬랙스|블랙' + 핏 '테이퍼드'로(검토 v54 2번).
+//      종류(바지 종류 목록)·색(정해진 색 이름)을 확인할 수 있을 때만. 그 칸에 이미 기록(있음·없음·핏·벌)이 있으면 바꾸지 않고 그 자리에서 알림. 예전 '테이퍼드 ○○' 칸은 그대로 읽음
+const tapK55 = k => { const m = /^테이퍼드 ([^|]+)\|([^|]+)$/.exec(k || ''); return m && OWN_KIND.pants.includes(m[1]) && CN[m[2]] ? m[1] + '|' + m[2] : null; };
+const tapOwn55 = k => { const b = tapK55(k); return !!b && OWN.s[b] === 'similar' && ownItems(b).some(it => it.f.fit === '테이퍼드'); };
+function tapSave55(k){ const b = tapK55(k); if (!b) return null;
+  if (tapOwn55(k)) return {ok: 1, b};
+  const s0 = OWN.s[b], its = ownItems(b), fits = [...new Set(its.map(it => it.f.fit || '모름'))];
+  if (s0 != null || its.length > 1 || Object.keys(OWN.f[b] || {}).length || (OWN.v && OWN.v[b]))
+    return {ok: 0, b, msg: `내 옷장에 '${slotName(b)}' 기록이 이미 있어서(${s0 === 'no' ? '없다고 적음' : its.length > 1 ? '벌 ' + its.length + '개' : '핏 ' + fits.join('·')}) 바꾸지 않았어요. 테이퍼드 핏인 벌이 따로 있으면 '내 옷장' 창에서 그 칸에 '벌 더하기'로 적어 주세요.`};
+  OWN.s[b] = 'similar'; OWN.f[b] = {fit: '테이퍼드'}; return {ok: 1, b}; }
+const tapMulti55 = b => `'${slotName(b)}' 칸에 벌이 ${itemN(b)}개 있어서 바꾸지 않았어요. 테이퍼드 벌만 빼려면 '내 옷장' 창에서 그 벌의 '이 벌 빼기'를 눌러 주세요.`;
+// v55: 벌이 둘 이상인 칸을 제품 카드에서 취소할 때 남기는 것(검토 v54 4번)
+const keepMsg55 = k => { const n = itemN(k), ph = typeof phList === 'function' ? phList(k).length : 0; return `이 칸의 벌 ${n}개 기록${ph ? `과 옷 사진 ${ph}장` : ''}은 남겨 뒀어요. 다시 '있음'으로 적으면 그대로 보여요. 지우려면 '내 옷장' 창에서 지워 주세요.`; };
+function tapNote55(el, msg){ const sp = document.createElement('span'); sp.className = 'cn own55n'; sp.setAttribute('role', 'status'); sp.textContent = msg; el.replaceWith(sp); }
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
   box.querySelectorAll('[data-own]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.own, v = b.dataset.v;
@@ -5613,7 +5635,8 @@ function recipeOf(L, os){
           const pw = x.state.sub && subsFor(x, os).find(y => y.k === x.state.sub); if (pw && pw.pilot) { n.push(pw.why); pil = 1; } }
         else if (lv === 2) { const k = x.state.k, fv = (x.ft || {})[k]; c = 'chk'; t = `내 ${nm}`; bd = k === 'fit' ? '핏 확인' : k === 'len' ? '기장 확인' : '확인 필요';
           n.push(fv ? `사진은 ${fv}${k === 'fit' ? ' 핏' : ''}` : `사진은 ${ph}`); shIn = true;
-          n.push(`내 ${FN2[k] || '옷 모양'}을 아직 안 골라서 사진과 같은지 확인 필요`); if (k === 'fit' || k === 'len') act = k; }
+          if (x.state.nc55) n.push(`사진 핏(${x.state.nc55})은 고를 수 있는 핏에 없어서 내 바지와 비교할 수 없어요. 입어 보고 확인해 주세요`); // v55
+          else { n.push(`내 ${FN2[k] || '옷 모양'}을 아직 안 골라서 사진과 같은지 확인 필요`); if (k === 'fit' || k === 'len') act = k; } }
         else { c = 'own'; t = '내 ' + nm; bd = lv === 4 ? '사진 속 제품' : '비슷한 내 옷';
           if (x.state.k51) n.push(`사진 속 ${ph} 대신 · 사진 속 옷과 더 비슷한 같은 종류 다른 색`); // v51
           if (lv === 3 && /같음\)$/.test(x.state.t)) n.push(sameTxt(x) || x.state.t.replace(/^.*\((.+)\)$/, '$1'));
@@ -6357,7 +6380,10 @@ function drawBelow(){
   box.querySelectorAll('ul.lki button[data-i]').forEach(b => b.addEventListener('click', () => { lastFocus = b; openSheet(+b.dataset.i); }));
   // v15: 태그 없는 칸의 '비슷한 것 있음'
   box.querySelectorAll('ul.lki [data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
-    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; delV(k0); } else OWN.s[k0] = 'similar'; saveO(); reorder(); }));
+    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; delete OWN.f[k0]; delV(k0); }
+    else if (tapOwn55(k0)) { const b0 = tapK55(k0); if (itemN(b0) > 1) { tapNote55(b, tapMulti55(b0)); return; } delete OWN.s[b0]; delete OWN.f[b0]; delV(b0); } // v55: 새 방식으로 저장한 테이퍼드 바지 칸 취소
+    else { const r55 = tapSave55(k0); if (r55 && !r55.ok) { tapNote55(b, r55.msg); return; } if (!r55) OWN.s[k0] = 'similar'; }
+    saveO(); reorder(); }));
   box.querySelectorAll('.abc img').forEach(im => im.addEventListener('error', () => im.replaceWith(Object.assign(document.createElement('span'), {className: 'noimg', textContent: '사진 못 불러옴'})), {once: true}));
   // v43: TOP 3·꾸밈 단계·비교 사진도 갤러리처럼 한 번은 원래 주소로 다시, 그래도 안 되면 '사진 못 불러옴'(검토 v43 7번)
   box.querySelectorAll('.t3c .gk img, .lvc .gk img, .pair .gk img').forEach(im => { const b = im.closest('[data-t3],[data-jump]');
@@ -6466,7 +6492,7 @@ function cardHTML(L, i){
   const why = [z.why, chartLine(p, zz)].filter(Boolean);
   const facts = [p.fitPct, p.reviewCount ? '후기 ' + Number(p.reviewCount).toLocaleString('ko-KR') + '개' : ''].filter(Boolean).join(' · ');
   // v9: 긴 상품명은 사진 위 전체 폭에, 사진 옆엔 색·사이즈·가격·재고만, 구매·가진 옷 버튼은 아래 한 줄
-  const slot = slotOf(p, s), key0 = pk(p.id, slotCol(s, p)), oP = OWN.p[key0] === 'own', oS = OWN.s[slot] === 'similar';
+  const slot = slotOf(p, s), key0 = pk(p.id, slotCol(s, p)), oP = OWN.p[key0] === 'own', oS = OWN.s[slot] === 'similar' || tapOwn55(slot); // v55
   // v10: 재고는 확인한 날짜 기준. 전 사이즈 품절이 아니라고 내 사이즈가 있다고 하지 않음(바지는 추천 사이즈가 확인 때 품절이었는지만 말함)
   const zt = q && q.row ? q.S[q.k] : null;
   const stk = p.soldAll ? '<span class="warn">전 사이즈 품절</span>'
@@ -6525,7 +6551,12 @@ function openSheet(i, keep){
     if (OWN.p[id] === 'own') delete OWN.p[id]; else OWN.p[id] = 'own'; saveO(); const k = i; reorder(); openSheet(k, true); }));
   box.querySelectorAll('[data-owns]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.owns;
     // v54: 취소하면 상세 줄 '있음 취소'처럼 그 칸의 핏·벌 기록도 지움(검토 v53 13번). 벌이 둘 이상이면 이번엔 예전처럼 '있음'만 지움. 옷 사진은 안 지움
-    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; if (itemN(k0) <= 1) { delete OWN.f[k0]; delV(k0); } } else OWN.s[k0] = 'similar'; saveO(); const k = i; reorder(); openSheet(k, true); }));
+    let n55 = ''; // v55: 벌이 둘 이상이면 벌 기록은 남기고 그 자리에서 알림(검토 v54 4번) · 테이퍼드 바지 칸은 '○○|색' + 핏 테이퍼드로(2번)
+    if (OWN.s[k0] === 'similar') { delete OWN.s[k0]; if (itemN(k0) <= 1) { delete OWN.f[k0]; delV(k0); } else n55 = keepMsg55(k0); }
+    else if (tapOwn55(k0)) { const b0 = tapK55(k0); if (itemN(b0) > 1) { tapNote55(b, tapMulti55(b0)); return; } delete OWN.s[b0]; delete OWN.f[b0]; delV(b0); }
+    else { const r55 = tapSave55(k0); if (r55 && !r55.ok) { tapNote55(b, r55.msg); return; } if (!r55) OWN.s[k0] = 'similar'; }
+    saveO(); const k = i; reorder(); openSheet(k, true);
+    if (n55) { const b2 = document.querySelector('#shIn [data-owns]'); if (b2) (b2.closest('.cact') || b2).insertAdjacentHTML('afterend', `<p class="cn own55n" role="status">${esc(n55)}</p>`); } }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k0 = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k0] = OWN.f[k0] || {}; if (v === '모름') delete OWN.f[k0][f]; else OWN.f[k0][f] = v; saveO(); const k = i; reorder(); openSheet(k, true); }));
   imgFail(box);
@@ -7394,7 +7425,9 @@ function bindWeek(){
     if (b.id === 'wnext' || b.id === 'wprev') { const p = planWeek(false).find(x => x.d === sel), c = (p.cand || []).filter(o => o.dd <= 2), i = c.findIndex(o => o.L === p.L), st1 = b.id === 'wprev' ? -1 : 1;
       if (c.length > 1) { D.key = c[(i + st1 + c.length) % c.length].L.key; D.pin = true; delete D.why; } saveW(); redraw(true); return; }
     if (b.dataset.swap) { D.key = b.dataset.swap; D.pin = true; delete D.why; saveW(); redraw(true); return; }
-    if (b.dataset.have) { OWN.s[b.dataset.have] = 'similar'; saveO(); redraw(true); return; }
+    if (b.dataset.have) { const r55 = tapSave55(b.dataset.have); // v55: 테이퍼드 바지 칸은 '○○|색' + 핏 테이퍼드로. 이미 그 칸 기록이 있으면 바꾸지 않고 알림
+      if (r55 && !r55.ok) { tapNote55(b, r55.msg); return; }
+      if (!r55) OWN.s[b.dataset.have] = 'similar'; saveO(); redraw(true); return; }
     if (b.dataset.unhave) { const k = b.dataset.unhave; phGuard(b, [k], () => { delete OWN.s[k]; delete OWN.f[k]; delV(k); }, `'${slotName(k)}' 있음을 취소하면`, '있음 취소', () => { saveO(); redraw(true); }); return; }
     if (b.dataset.nosub) { OWN.x[b.dataset.nosub] = 1; saveO(); redraw(true); return; }
     if (b.dataset.ownx) { const op = !!b.closest('details[open]'), x = b.dataset.ownx, sk = ownxSlot(x);
