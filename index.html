@@ -1131,6 +1131,8 @@ details.wsum44 .wsum{margin:6px 0 0;background:var(--soft);border-radius:12px;pa
 .wnav44{display:inline-flex;align-items:center;gap:6px}
 .own55n{display:block;margin:6px 0 0;font-size:13px;line-height:1.5;color:var(--ink2)}
 .own56{margin:4px 0 8px;padding:6px 10px;border-radius:8px;background:var(--soft);border:1px solid var(--line)}
+#brk57{margin:10px 0 14px;padding:12px 16px;border-radius:12px;background:#fff4e0;border:1px solid #d9ad3c;color:var(--ink);font-size:14px;line-height:1.55}
+#brk57 p{margin:4px 0}#brk57 .i57{margin-top:10px;padding-top:8px;border-top:1px solid #ecd9a8}#brk57 span.cn{margin-left:6px}
 .wcnt44{font-size:14.5px;font-weight:700;color:var(--sub2);min-width:44px;text-align:center}
 #week .walt{margin-top:12px}
 .wit44 .lki{margin:0}
@@ -2522,7 +2524,70 @@ function resolve(sel, pal, mood){
 
 /* ---------- 상태 ---------- */
 const KEY = 'outfit-guide-v1';
-const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } })();
+// v57: 저장 값 검사(검토 12번). 이 기기 저장소에서 읽는 기록(설정 · 옷장 · 취향 · 일주일 · 받아 둔 예보)이 깨져 있어도 화면이 뜨게.
+//      멀쩡한 기록은 v56과 똑같이 읽고 아무것도 쓰지 않음. 깨진 기록은 ① 원래 글자를 다른 이름(키.broken.날짜-시각)으로 따로 남기고
+//      ② 읽을 수 있는 부분만 화면에 쓰고 ③ 사용자가 '읽은 부분으로 계속 쓰기'(또는 백업 링크 적용)를 누르기 전엔 그 키를 저장하지 않음(덮어쓰기 · 지우기 없음).
+//      따로 남기지 못하면(저장 공간 부족 등) 그 키는 계속 저장하지 않고 '다시 남겨 보기'만 보여 줌. 키 이름 · 기록 모양은 그대로
+const io57 = v => !!v && typeof v === 'object' && !Array.isArray(v);
+const BRK57 = {}; // 키 → {raw: 원래 글자, bad: 읽지 못한 부분, bk: 따로 남긴 이름(못 남겼으면 null), ok: 사용자가 계속 쓰기를 누름}
+const BRKN57 = {'': '설정', '-own': '옷장 기록', '-taste': '취향 기록', '-week': '일주일 기록', '-wx': '받아 둔 예보'};
+const HOW57 = {
+  '': '지역 · 외출 시간 · 체질 보정 · 꾸밈 단계는 다시 고르면 돼요. 몸 치수는 \'몸 치수 포함\'으로 만든 옷장 백업 링크가 있으면 그 링크로 되살릴 수 있어요. 그 밖의 설정은 백업 링크에 담기지 않아요.',
+  '-own': '옷장 백업 링크가 있으면 그 링크를 열고 \'이 링크로 바꾸기\'를 누르면 링크를 만든 때의 옷장 기록으로 되살릴 수 있어요. 옷 사진은 이 기록과 따로 저장돼 있어서 영향이 없어요. 사진이 없어졌다면 내려받아 둔 \'옷 사진 파일\'로만 되살릴 수 있어요.',
+  '-week': '일주일 기록은 백업 링크에 담기지 않아서 되살릴 수 없어요. 일주일 코디를 다시 짜 주세요. 산 옷 상태(주문함 · 받음)는 옷장 기록에 있어서 영향이 없어요.',
+  '-taste': '취향 기록은 백업 링크에 담기지 않아서 되살릴 수 없어요. 코디를 보며 다시 고르면 다시 쌓여요.',
+  '-wx': '받아 둔 예보는 새 예보를 받으면 다시 생겨요. 되살릴 필요는 없어요.'};
+const nm57 = k => BRKN57[k.slice(KEY.length)] || k;
+const num57 = v => (typeof v === 'number' && isFinite(v)) || (typeof v === 'string' && v.trim() !== '' && isFinite(+v));
+// 키마다 읽지 못한 부분(빈 배열 = 멀쩡함)과 읽을 수 있는 부분만 남긴 값. 앱이 쓰는 모양과 다른 것만 봄(값이 이상해도 앱이 그대로 쓰는 것은 그대로)
+function chk57(k, v){ const sf = k.slice(KEY.length), bad = [];
+  if (!io57(v)) return {bad: ['기록 전체가 다른 모양'], v: sf === '-wx' ? null : {}};
+  const o = Object.assign({}, v);
+  if (sf === '') { const T = {city: x => typeof x === 'string', lat: num57, lon: num57, day: num57, start: num57, end: num57, sens: num57, level: x => typeof x === 'string', pf: x => typeof x === 'string'},
+      N = {city: '지역', lat: '지역', lon: '지역', day: '날짜', start: '외출 시간', end: '외출 시간', sens: '체질 보정', level: '꾸밈 단계', pf: '몸 치수'};
+    ['bh', 'bw', 'bf', 'pl', 'pw'].forEach(f => { T[f] = x => x === null || x === '' || num57(x); N[f] = '몸 치수'; });
+    for (const f in T) if (f in o && !T[f](o[f])) { bad.push(N[f]); delete o[f]; } }
+  else if (sf === '-own') { const N = {p: '제품 기록', s: '칸 기록', f: '핏·기장', d: '산 옷 상태', w: '못 쓰는 날', x: '대신 입기 제외', v: '벌 기록'},
+      E = {p: x => x === null || typeof x !== 'object', s: x => typeof x === 'string', f: io57, d: io57, w: Array.isArray, x: () => true, v: x => Array.isArray(x) && x.every(io57)};
+    for (const f in E) { if (!(f in o)) continue; if (!io57(o[f])) { bad.push(N[f]); delete o[f]; continue; }
+      const y = {}; let n = 0; for (const q in o[f]) { if (E[f](o[f][q])) y[q] = o[f][q]; else n++; } if (n) { bad.push(N[f]); o[f] = y; } } }
+  else if (sf === '-week') { if ('days' in o) { if (!io57(o.days)) { bad.push('날짜별 코디'); delete o.days; }
+      else { const y = {}; let n = 0; for (const d in o.days) { if (io57(o.days[d])) y[d] = o.days[d]; else n++; } if (n) { bad.push('날짜별 코디'); o.days = y; } } } }
+  else if (sf === '-taste') { ['like', 'nope', 'why', 'asked', 'seen'].forEach(f => { if (f in o && !io57(o[f])) { bad.push('취향 기록'); delete o[f]; } });
+    if ('ab' in o && !Array.isArray(o.ab)) { bad.push('취향 기록'); delete o.ab; } }
+  else if (sf === '-wx') { if (!io57(o.wx) || !io57(o.wx.hourly) || !Array.isArray(o.wx.hourly.time) || !o.wx.hourly.time.every(x => typeof x === 'string') || !num57(o.t)) return {bad: ['예보 모양'], v: null}; }
+  return {bad: [...new Set(bad)], v: bad.length ? o : v};
+}
+// 원래 글자를 다른 이름으로 남김. 같은 글자를 이미 남겼으면 그 이름을 다시 씀(열 때마다 늘지 않게). 못 남기면 null
+function bk57(k, raw){ try { const pre = k + '.broken.';
+    for (let i = 0; i < localStorage.length; i++) { const n = localStorage.key(i); if (n && n.startsWith(pre) && localStorage.getItem(n) === raw) return n; }
+    const d = new Date(), p = x => String(x).padStart(2, '0'), n = pre + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+    localStorage.setItem(n, raw); return localStorage.getItem(n) === raw ? n : null; } catch(e){ return null; } }
+function keep57(k, raw, bad){ const e = BRK57[k] = BRK57[k] || {raw, bad: [], bk: null, ok: false}; e.raw = raw; e.bad = [...new Set(e.bad.concat(bad))];
+  if (!e.bk) e.bk = bk57(k, raw); setTimeout(draw57, 0); }
+// 읽기: 멀쩡하면 v56과 같은 값(JSON 그대로 · 없으면 {}), 깨졌으면 남긴 뒤 읽을 수 있는 부분. 예보(-wx)는 없거나 깨졌으면 null
+function rd57(k){ const wxK = k === KEY + '-wx'; let raw = null; try { raw = localStorage.getItem(k); } catch(e){ return wxK ? null : {}; }
+  if (raw == null) return wxK ? null : {};
+  let v; try { v = JSON.parse(raw); } catch(e){ keep57(k, raw, ['글자가 잘렸거나 읽을 수 없는 모양']); return wxK ? null : {}; }
+  const r = chk57(k, v); if (!r.bad.length) return v;
+  keep57(k, raw, r.bad); return r.v; }
+const held57 = k => !!BRK57[k] && !BRK57[k].ok;
+// 사용자가 '읽은 부분으로 계속 쓰기'를 누르면 그 키를 지금 화면 값으로 저장(원래 글자는 남긴 이름에 그대로)
+function go57(k){ const e = BRK57[k]; if (!e || !e.bk) return; e.ok = true; const S = typeof SAVER !== 'undefined' ? SAVER[k] : null; if (S) S(); draw57(); }
+function draw57(){ const ks = Object.keys(BRK57).filter(held57); let b = document.getElementById('brk57');
+  if (!ks.length) { if (b) b.remove(); return; }
+  const m = document.querySelector('main'); if (!m) return;
+  if (!b) { b = document.createElement('div'); b.id = 'brk57'; b.setAttribute('role', 'alert'); m.prepend(b);
+    b.addEventListener('click', ev => { const x = ev.target.closest('[data-brk]'); if (!x) return; const k = x.dataset.k, e = BRK57[k]; if (!e) return;
+      if (x.dataset.brk === 'go') go57(k); else if (x.dataset.brk === 'retry') { e.bk = bk57(k, e.raw); draw57(); } }); }
+  b.innerHTML = '<p class="t57"><b>저장된 기록 일부를 읽지 못했어요.</b> 화면은 읽을 수 있는 부분만으로 보여 줘요.</p>' + ks.map(k => { const e = BRK57[k];
+    return `<div class="i57"><p><b>${esc(nm57(k))}</b> · 읽지 못한 부분: ${esc(e.bad.join(', '))}</p>`
+      + (e.bk ? `<p>원래 기록은 지우거나 덮어쓰지 않고 이 브라우저에 '${esc(e.bk)}' 이름으로 따로 남겨 뒀어요. 아래 버튼을 누르기 전에는 이 기록을 저장하지 않아요(지금 바꾼 것은 새로고침하면 사라져요).</p>`
+        : `<p><b>원래 기록을 따로 남기지 못했어요</b>(이 기기 저장 공간이 꽉 찼을 수 있어요). 그래서 원래 기록은 덮어쓰거나 지우지 않고 그대로 뒀고, 이 기록은 저장하지 않아요. 저장 공간을 비운 뒤 '다시 남겨 보기'를 눌러 주세요.</p>`)
+      + `<p class="cn">${esc(HOW57[k.slice(KEY.length)] || '')}</p>`
+      + (e.bk ? `<button type="button" class="plain sm" data-brk="go" data-k="${esc(k)}">읽은 부분으로 계속 쓰기</button> <span class="cn">누르면 지금 화면의 기록으로 저장해요. 원래 기록은 남긴 이름에 그대로 있어요.</span>`
+        : `<button type="button" class="plain sm" data-brk="retry" data-k="${esc(k)}">다시 남겨 보기</button>`) + '</div>'; }).join(''); }
+const saved = rd57(KEY);
 // pl·pw: 내가 잘 입는 바지 총장·허리단면(cm), pf: 좋아하는 바지 핏. 키·몸무게처럼 이 기기에만 저장
 const S0 = {city:'대전', lat:36.3502, lon:127.3848, day:0, start:9, end:18, sens:0, level:'L2', bh:null, bw:null, bf:null, pl:null, pw:null, pf:''};
 const st = Object.assign({}, S0, saved);
@@ -2539,6 +2604,7 @@ function svNote(){ let n = document.getElementById('svFail');
   if (!n) { n = document.createElement('p'); n.id = 'svFail'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
   n.textContent = '방금 바꾼 기록이 저장되지 않았어. 이 기기의 저장 공간이 꽉 찼을 수 있어. 새로고침하면 이번 변경은 사라져'; }
 function put(k, v){ if (HELD.has(k)) return false;
+  if (held57(k)) return false; // v57: 깨진 기록은 사용자가 고르기 전엔 저장 안 함(원래 기록 그대로)
   try { localStorage.setItem(k, v); SVF.delete(k); svNote(); return true; } catch(e){ SVF.add(k); svNote(); return false; } }
 const SESS = ['shuffle', 'peek', 'lookN', 'show', 'grid', 'how', 'buy'];
 const save = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; put(KEY, JSON.stringify(rest)); };
@@ -2720,7 +2786,7 @@ async function load(force){
     if (wxReq !== R) return;
     j.got = Date.now();
     const rec = {t: j.got, lat: R.lat, lon: R.lon, wx: j};
-    try { localStorage.setItem(KEY + '-wx', JSON.stringify(rec)); } catch(_){}
+    if (!held57(KEY + '-wx')) try { localStorage.setItem(KEY + '-wx', JSON.stringify(rec)); } catch(_){} // v57: 받아 둔 예보가 깨져 있으면 고르기 전엔 안 덮음
     wxFail = null;
     if (wx && wxSrc !== 'live') { pendWx = rec; drawArr(); drawWxSt(); }
     else { wx = j; wxAt = {lat: R.lat, lon: R.lon}; wxSrc = 'live'; wxWhy = ''; lastFetch = j.got; wxNote = ''; pendWx = null; render(); }
@@ -2744,7 +2810,7 @@ const cacheOk = c => { if (!c || !c.wx || !c.wx.hourly || !Array.isArray(c.wx.ho
 //   '예보 적용'을 기다리는 예보(pendWx)와 그보다 나중 것은 대비로 안 씀(저장소에 이미 저장됐어도. 누르기 전에 화면이 바뀌지 않게). fbHeld = 지금 대비로 보여 주는 받아 둔 예보(저장소가 새 예보로 바뀌어도 날짜를 바꿨다 돌아오면 다시 씀)
 let fbHeld = null;
 function fallback(why){
-  let c = null; try { c = JSON.parse(localStorage.getItem(KEY + '-wx')); } catch(_){}
+  let c = rd57(KEY + '-wx'); // v57: 깨졌으면 따로 남기고 안 씀(v56도 모양이 안 맞으면 안 썼음)
   const lim = pendWx ? pendWx.t : Infinity;
   const u = [c, fbHeld].filter(x => x && x.t < lim).filter(cacheOk).sort((a, b) => b.t - a.t)[0];
   if (why) wxWhy = why;
@@ -3566,7 +3632,7 @@ const famOf = p => ({flare:'플레어', tapered:'테이퍼드', balloon:'벌룬'
 const TKEY = KEY + '-taste';
 const FK = ['ot', 'ol', 'pf', 'pm', 'pc', 'sh', 'tone', 'mood'];
 const WHY = [['pf', '바지 핏'], ['pc', '바지 색'], ['tone', '색 조합'], ['ol', '겉옷 기장'], ['ot', '겉옷 종류'], ['sh', '신발'], ['mood', '전체 분위기']];
-const TS = (() => { let t = {}; try { t = JSON.parse(localStorage.getItem(TKEY)) || {}; } catch(e){}
+const TS = (() => { let t = rd57(TKEY); // v57: 저장 값 검사
   return Object.assign({like:{}, nope:{}, why:{}, ab:[], asked:{}, seen:{}}, t); })();
 const saveT = () => { put(TKEY, JSON.stringify(TS)); };
 const hasTaste = () => Object.keys(TS.like).length + Object.keys(TS.nope).length + TS.ab.length > 0;
@@ -3690,7 +3756,7 @@ const slotName = k => { const [kd, c] = k.split('|'), n = (/데님/.test(kd) && 
 const OKEY = KEY + '-own';
 // v10: p 제품 그대로(키 '제품번호|색': 같은 상품 페이지라도 색이 다르면 다른 옷) · s 종류·색 칸('similar' 비슷한 것 있음 / 'no' 없음)
 //      f 비슷한 옷의 주요 특징(바지 통 등, 모르면 비워 둠) · d 산 옷 상태(구매 예정·주문함·받음 + 도착 예정일) · w 세탁 등으로 못 쓰는 날
-const OWN = (() => { let o = {}; try { o = JSON.parse(localStorage.getItem(OKEY)) || {}; } catch(e){} return Object.assign({p:{}, s:{}, f:{}, d:{}, w:{}, x:{}}, o); })();
+const OWN = (() => { let o = rd57(OKEY); /* v57: 저장 값 검사 */ return Object.assign({p:{}, s:{}, f:{}, d:{}, w:{}, x:{}}, o); })();
 // v9 기록(제품번호만)은 그 제품 이름에 붙은 색으로 옮김
 for (const k of Object.keys(OWN.p)) if (!k.includes('|')) { const p = PID[k]; if (p) OWN.p[k + '|' + (colOf(p) || '?')] = OWN.p[k]; delete OWN.p[k]; }
 const saveO = () => { put(OKEY, JSON.stringify(OWN)); try { drawHead(); } catch(e){} }; // v56: 옷장 기록이 바뀌면 맨 위 '내 옷장 N벌'도 바로(검토 v55 2번)
@@ -4062,6 +4128,8 @@ const bkHTML = () => `<div class="bkup"><p><b>백업 링크</b> <span class="cn"
   + `<label><input type="checkbox" class="bkB"> 키·몸무게·발 크기·바지 실측·좋아하는 핏도 넣기</label>`
   + `<button type="button" class="plain" data-bkmk>백업 링크 만들기</button><div class="bkout"></div></div>`;
 function bkApply(o, b, mode){
+  // v57: 깨진 옷장 기록(·설정)을 따로 남겨 둔 상태에서 백업 링크를 적용하면 사용자가 고른 것으로 보고 저장함. 따로 남기지 못했으면 그대로 저장 안 함
+  [OKEY].concat(b ? [KEY] : []).forEach(k => { if (held57(k) && BRK57[k].bk) BRK57[k].ok = true; }); draw57();
   let nb = 0;
   if (mode === 'rep') { ['p', 's', 'f', 'd', 'w', 'x'].forEach(k => { OWN[k] = JSON.parse(JSON.stringify(o[k])); });
     if (o.v) OWN.v = JSON.parse(JSON.stringify(o.v)); else delete OWN.v; // v50: 예전 링크(벌 기록 없음)로 바꾸면 한 칸 한 벌
@@ -4372,6 +4440,8 @@ function reasonsOf(o){
   // 취향 근거는 앞쪽에(이유는 세 개까지만 보여서 뒤에 두면 잘림)
   const h = (o.t && o.t.hits || []).filter(x => x[2] > 0).sort((a, b) => b[2] - a[2]).slice(0, 1);
   if (h.length && !TS.like[L.key]) r.push(`내가 고른 ${FNAME[h[0][0]]}(${h[0][1]})`);
+  // v57: 첫 장으로 옮긴 기본 코디는 날씨에 맞는 코디(±2°) 밖이라는 것을 이유 첫 줄에
+  if (o.lead57) r.push(`사진(체감 ${L.lo}~${L.hi}°)이 ${A.pv ? '이 날씨' : dwA(A)} 체감 ${deg(A.tOuter)}와 ${Math.round(dist(L, A.tOuter) * 10) / 10}° 차이 나서 날씨에 맞는 코디(±2°)는 아니에요. 맞는 코디가 포인트 코디뿐이라 기본 코디를 먼저 보여 줘요`);
   if (o.dd === 0) r.push(`${A.pv ? '미리보기' : dwA(A)} 체감 ${deg(A.tOuter)}에 맞는 두께`);
   else if (o.dd <= 2 && o.ao) r.push(`사진에 없는 내 ${eul52(ao52Nm(o.ao))} 더해 입어요`);
   else if (o.dd <= 2) r.push(A.tOuter < L.lo && noOut(L) ? `사진은 겉옷 없는 차림(체감 ${L.lo}° 위)이라 ${A.pv ? '이 날씨엔' : dwA(A) + '은'} 가벼운 겉옷을 더해야 함` : `사진(체감 ${L.lo}~${L.hi}°)보다 ${A.tOuter < L.lo ? '조금 추운' : '조금 따뜻한'} 날이라 아래 '${chgNm()}'만 챙기면 됨`);
@@ -4489,6 +4559,7 @@ function orderLooks(A, lv, sel){
   // (예: 꾸꾸꾸 체감 -8°에 무톤·머플러 코디가 첫 장이 되던 것 → 코트 기본안 + '오늘 바꿀 점'이 먼저)
   if (!g0.some(o => baseOf(o.L) >= 1 || TS.like[o.L.key])) {
     const up = g1.filter(o => o.dd <= 3 && baseOf(o.L) === 2);
+    up.forEach(o => { o.up57 = 1; }); // v57: 이 묶음으로 올린 기본 코디 표시(화면 첫 장 처리용 · 순서 계산은 그대로)
     g0 = g0.concat(up); g1 = g1.filter(o => !up.includes(o));
   }
   const out = [], rest = g0.slice();
@@ -4555,7 +4626,11 @@ function lookList(A){
   const near = all.filter(o => o.dd <= 2), adjL = own.filter(o => o.adj);
   const full = near.filter(o => gpOf(o) <= 1).concat(adjL, near.filter(o => gpOf(o) > 1), all.filter(o => o.dd > 2));
   allN = full.length; allNear = near.length + adjL.length;
-  return divHead(ownOn ? own : full);
+  // v57(검토 8번): 날씨에 맞는 코디(±2°)가 포인트 코디뿐이라 순서 계산(orderLooks)이 범위에서 3°까지 벗어난 기본 코디를 맨 앞에 뒀는데
+  //   여기서 ±2°로 다시 나누며 뒤로 가던 것 → 순서 계산의 맨 앞 기본 코디만 첫 장으로 옮김. 나머지 순서 · 맞는 코디 판정 · 벌 수 · 일주일(orderLooks 따로 씀)은 그대로
+  const out57 = divHead(ownOn ? own : full), lead57 = !ownOn && near.length && all[0] && all[0].up57 && all[0].dd > 2 ? all[0] : null;
+  if (!lead57) return out57;
+  lead57.lead57 = 1; return [lead57].concat(out57.filter(o => o !== lead57));
 }
 // v27: 앞 세 벌(TOP 3)을 실제 사진 순서 1·2·3번에 둠(검토 v26 버그 2: TOP 3 2위를 누르면 3 / 4로 가고 '다음'은 TOP 3에 없는 코디로 갔음).
 //      날씨가 맞는 코디에서 묶음(gp)마다 실제로 입을 겉옷이 아직 안 나온 코디를 먼저, 같은 묶음의 나머지를 그다음. 세 벌을 채우면 나머지는 원래 순서.
@@ -4912,7 +4987,7 @@ function heroHTML(){
 function galBar(os){
   const n = Math.max(0, Math.min(st.lookN || 0, curOrder.length - 1)), o = curOrder[n]; if (!o) return '';
   // 두 줄로(1366×768에서 첫 줄 카드의 상태 글자를 가리지 않게): 이름표·코디 이름·상태 / 추천 이유 첫째(나머지 이유는 상세의 '첫 장인 이유')
-  const R = recipeOf(o.L, os), S = st42(o, R), rs = o.dd > 2 ? [] : reasonsOf(o).slice(0, 1), all = (S.main ? [S.main] : []).concat(S.list);
+  const R = recipeOf(o.L, os), S = st42(o, R), rs = o.dd > 2 && !o.lead57 ? [] : reasonsOf(o).slice(0, 1) /* v57: 첫 장으로 옮긴 기본 코디는 범위 밖이라는 이유 첫 줄을 아래 줄에도 */, all = (S.main ? [S.main] : []).concat(S.list);
   const lab = n === 0 ? (o.dd > 2 ? '맨 앞 코디 · 1번' : `${dwOf()} 1위 추천 · 1번`) : `방금 본 코디 · ${n + 1}번`;
   return `<div class="gbar42" role="region" aria-label="추천 코디 바로 보기"><div class="gb42i"><p class="gb42t"><span class="gb42k">${esc(lab)}</span>${esc(R.title)} `
     + `<span class="gb42s">${all.map(g => `<span class="g ${g.c}">${esc(g.t)}</span>`).join(' ')}</span></p>${rs.length ? `<p class="gb42r"><b>추천 이유</b> ${rs.map(esc).join(' · ')}</p>` : ''}</div>`
@@ -5342,11 +5417,16 @@ function howHTML(L, A, noPair){
 // 먼저 살 옷: 기록된 코디 사진만 센다(조합을 곱해서 늘리지 않음). 모름은 가진 걸로 치지 않음
 // 원리 참고: zebangeth/ai-closet RelevantOutfits.tsx(MIT), Lismo77/capward item.dart(GPL → 원리만). 코드는 새로 씀
 const lvW = L => L.level === st.level ? 1 : (TS.lv && TS.lv[L.level] ? .8 : .5);
+// v57(검토 10번): 이름에 색이 없는 제품(이름으로 본 칸 '…|?')은 코디 사진에 적힌 색의 칸으로도 후보에 넣음. 이름에 색이 있는 제품 · 가격 기준(10만원) · 정렬은 그대로
+let PCS57 = null;
+const pcs57 = p => { if (!PCS57) { PCS57 = new Map(); LOOKS.forEach(L => L.spots.forEach(s => { const q = PID[s.id]; if (!q || !roleOf(q) || !slotOf(q).endsWith('|?')) return;
+  const k = slotOf(q, s); if (k.endsWith('|?')) return; if (!PCS57.has(q.id)) PCS57.set(q.id, new Set()); PCS57.get(q.id).add(k); })); } return PCS57.get(p.id); };
+const inSlot57 = (p, slot) => { const a = slotOf(p); if (a === slot) return true; if (!a.endsWith('|?')) return false; const c = pcs57(p); return !!c && c.has(slot); };
 function repOf(slot, looks, nk){
   const inLooks = new Set(looks.flatMap(L => partsOf(L).filter(x => x.slot === slot && x.id).map(x => x.id)));
   // v12: nk(사진 속 상의 목 모양)를 주면 목 모양이 같은 걸 먼저
   const sn = p => nk ? +(featOf(p, null, 'top').neck === nk) : 0;
-  const c = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && slotOf(p) === slot && !over(p) && !userSizeOut(p))
+  const c = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && inSlot57(p, slot) && !over(p) && !userSizeOut(p))
     .sort((a, b) => sn(b) - sn(a) || inLooks.has(b.id) - inLooks.has(a.id) || a.price - b.price);
   return {p: c[0] || null, same: c[0] ? looks.filter(L => L.spots.some(s => s.id === c[0].id)).length : 0};
 }
@@ -6054,7 +6134,7 @@ function gukbap(os){
 // v27: 10만원이 넘어서 기본 추천에서 뺀 같은 종류·색 제품(사진 속 제품 먼저, 그다음 싼 것). 내 사이즈가 없는 건 뺌
 function overOf(slot, looks){
   const inLooks = new Set(looks.flatMap(L => partsOf(L).filter(x => x.slot === slot && x.id).map(x => x.id)));
-  return PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && slotOf(p) === slot && over(p) && !userSizeOut(p))
+  return PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && inSlot57(p, slot) && over(p) && !userSizeOut(p))
     .sort((a, b) => inLooks.has(b.id) - inLooks.has(a.id) || a.price - b.price).slice(0, 2)
     .map(p => ({p, same: looks.filter(L => L.spots.some(s => s.id === p.id)).length}));
 }
@@ -6627,7 +6707,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet
    오늘 주문한 옷은 오늘 못 입는다. 앞으로 7일 날짜별 코디 · 산 옷의 배송·수령 상태 · 한 주 전체에서 겹치지 않게 센 구매 목록.
    계획·배송 기록은 이 기기에만 저장(KEY-week, 가진 옷 기록 OWN.d·OWN.w). 판매처 배송일은 읽어 오지 않고 주문 후 직접 넣은 날짜만 씀 */
 const WKEY = KEY + '-week';
-const WK = (() => { let w = {}; try { w = JSON.parse(localStorage.getItem(WKEY)) || {}; } catch(e){} return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false},w); })();
+const WK = (() => { let w = rd57(WKEY); /* v57: 저장 값 검사 */ return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false},w); })();
 const saveW = () => { put(WKEY, JSON.stringify(WK)); };
 const dLab = d => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}/${x.getDate()}(${DOW[x.getDay()]})`; };
 function weekDates(){
@@ -7474,11 +7554,13 @@ document.addEventListener('change', e => { if (e.target === typing) { typing = n
 document.addEventListener('focusout', e => { const x = e.target; if (x === typing) setTimeout(() => { if (typing === x && document.activeElement !== x) { typing = null; typed(); } }, 0); }, true);
 const unsaved = k => SVF.has(k) || HELD.has(k) || (!!typing && INK(typing) === k);
 const SAVER = {[KEY]: () => save(), [OKEY]: () => saveO(), [TKEY]: () => saveT(), [WKEY]: () => saveW()};
-function syncRead(k){ let v = null; try { v = JSON.parse(localStorage.getItem(k)); } catch(e){} return isObj(v) ? v : {}; }
+// v57: 다른 탭이 쓴 값이 깨져 있으면 이 탭은 그 키를 안 불러옴(null). 지워졌으면 v56과 같이 {}
+function syncRead(k){ let raw = null; try { raw = localStorage.getItem(k); } catch(e){} if (raw == null) return {};
+  let v = null; try { v = JSON.parse(raw); } catch(e){ return null; } return isObj(v) && !chk57(k, v).bad.length ? v : null; }
 const refill = (obj, def, v) => { Object.keys(obj).forEach(x => delete obj[x]); Object.assign(obj, JSON.parse(JSON.stringify(def)), v); };
 function adopt(keys){
   let reload = false;
-  keys.forEach(k => { const v = syncRead(k);
+  keys.forEach(k => { const v = syncRead(k); if (v === null) return; // v57
     if (k === KEY) { const keep = {}; SESS.concat(['mode', 'day', 'dayD']).forEach(x => { keep[x] = st[x]; }); const c0 = st.lat + ',' + st.lon;
       refill(st, S0, v); delete st.mood; if (!LEVELS[st.level]) st.level = 'L2'; Object.assign(st, keep); reload = c0 !== st.lat + ',' + st.lon; }
     else if (k === OKEY) refill(OWN, {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}, v);
@@ -7551,7 +7633,7 @@ async function phLoad(){
   let all;
   try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ return false; }
   const old = PH.urls; PH.urls = []; PH.map = new Map();
-  all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => (a.o - b.o) || (a.t - b.t)).forEach(r => {
+  all.filter(r => r && okBk53(r.k) && r.b instanceof Blob).sort((a, b) => (a.o - b.o) || (a.t - b.t)).forEach(r => { // v57: 사진 칸 = 백업 칸 규칙(okBk53 · v53)
     const u = URL.createObjectURL(r.b); PH.urls.push(u);
     // v50: vi = 그 칸의 어느 벌 사진인지(아래 phVi). v49 사진엔 없음
     const a = PH.map.get(r.k) || []; a.push({id: r.id, k: r.k, vi: isPvi(r.vi) ? r.vi : '', n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, u, sz: r.b.size}); PH.map.set(r.k, a); });
@@ -7636,9 +7718,9 @@ document.addEventListener('error', e => { const t = e.target; if (!t || !t.class
   const w = t.closest('.ph49s, .ph49b figure'); if (w) w.remove(); else t.remove(); }, true);
 // 일주일 칸 줄의 '내 ○○' 칸 키(wNm45와 같은 길)
 function wKey49(x, os, mk){ const s = x.ds; if (s.code !== 'ok' && s.code !== 'soft') return null;
-  if ((x.anyTop || x.anyKind) && s.free && s.pick) return okSlot(s.pick) ? s.pick : null;
+  if ((x.anyTop || x.anyKind) && s.free && s.pick) return okBk53(s.pick) ? s.pick : null; // v57
   const w = wearOf(Object.assign({}, x, {state: s}), os || ownedSlots()); if (w) return w.k || null;
-  return mk && okSlot(mk) ? mk : null; }
+  return mk && okBk53(mk) ? mk : null; } // v57
 // v50: 일주일 칸 줄에서 그 칸의 어느 벌을 입는지(첫 벌이면 '')
 function wVid50(x, os, k){ const s = x.ds; if (!s || (x.anyTop || x.anyKind) && s.free && s.pick) return '';
   const w = wearOf(Object.assign({}, x, {state: s}), os || ownedSlots()); return w && w.k === k && w.vid ? w.vid : ''; }
@@ -7670,7 +7752,7 @@ function phGuard(el, ks, mut, what, yes, after){
 }
 /* 칸 하나의 사진 창: 올리기 · 이름 · 앞으로/뒤로(첫 장이 대표) · 바꾸기 · 지우기 */
 function phEdit(k, vid0){
-  if (!okSlot(k)) return;
+  if (!okBk53(k)) return; // v57(지난 조사 ④): 가린 상의 · 민소매 · 테이퍼드·플레어 바지 · 색 모름 칸도 사진 창이 열림(백업 칸 규칙과 같음)
   const old = document.getElementById('phDlg'); if (old) old.remove();
   const d = document.createElement('div'); d.id = 'phDlg'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
   const fi = Object.assign(document.createElement('input'), {type: 'file', accept: 'image/jpeg,image/png,image/webp', className: 'ph49fi'}); fi.hidden = true;
@@ -7814,7 +7896,7 @@ function phFileHTML(){
 const phRefFile = () => { const x = document.querySelector('#ownImp .ph49x'); if (x) x.innerHTML = phFileHTML(); };
 async function phExport(){
   let all; try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ PHMSG = {t: '사진을 읽지 못해서 파일을 만들지 못했어요.', bad: 1}; phRefFile(); return null; }
-  all = all.filter(r => r && okSlot(r.k) && r.b instanceof Blob).sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o));
+  all = all.filter(r => r && okBk53(r.k) && r.b instanceof Blob) /* v57 */.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o));
   if (!all.length) return null;
   // v50: 사진의 벌 표시(vi: '0' 첫 벌 · 벌 번호 · '?' 정하지 않음)도 담음. 벌 표시 없는 사진은 v49 파일과 같은 모양
   const ph = []; for (const r of all) ph.push(Object.assign({k: r.k}, isPvi(r.vi) ? {vi: r.vi} : {}, {n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, d: await phB64(r.b)}));
@@ -7833,7 +7915,7 @@ async function phImportRead(file){
   for (const p of L.ph.slice(0, 400)) {
     // v50 검토 반영: 벌 표시(vi)는 그대로 넣음(지금 칸에 없는 벌이면 '벌을 정하지 않은 사진'으로 보이고, 그 벌이 생기면 그 벌 사진). 표시가 같은 사진끼리 PHMAX장까지(v49 파일은 전부 표시 없음)
     const vi = isObj(p) && isPvi(p.vi) ? p.vi : '', pkv = isObj(p) ? p.k + '#' + vi : '';
-    if (!isObj(p) || !okSlot(p.k) || typeof p.d !== 'string' || (per[pkv] || 0) >= PHMAX || (per[p.k] || 0) >= PHMAX * (VMAX + 1)) { skip++; continue; }
+    if (!isObj(p) || !okBk53(p.k) || typeof p.d !== 'string' || (per[pkv] || 0) >= PHMAX || (per[p.k] || 0) >= PHMAX * (VMAX + 1)) { skip++; continue; }
     let b = null; try { const u = phU8(p.d); if (u.length <= 3 * 1048576) b = phStrip(u); } catch(e){}
     if (!b) { skip++; continue; }
     let w = 0, h = 0; try { const bm = await createImageBitmap(b); w = bm.width; h = bm.height; bm.close(); } catch(e){}
