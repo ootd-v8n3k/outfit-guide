@@ -1086,6 +1086,30 @@ details.ao61 > .ao52 > .t{display:none}
 .need63 .ns.no{background:#fff4e0;color:#8a4b00}
 .need63 .ns.fit{background:#f3eefc;color:#4b2f80}
 .need63 .nf{margin:8px 0 0;font-size:12.5px;color:var(--sub);line-height:1.5}
+.need63 .ns.unl{background:#eef1f6;color:#3d4a5c}
+.need63 .ft64{margin:2px 0 0;font-size:13px;color:var(--sub);line-height:1.45}
+.need63 .nf64{margin:8px 0 0}
+.need63 .nf64 summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--sub)}
+.alt64{display:block;margin:2px 0 0}
+.same64{margin:8px 0 0;font-size:14px;line-height:1.55;color:var(--ink2);background:#f4f6fa;border-radius:10px;padding:8px 12px}
+.free64b[aria-pressed=true]{background:var(--ink2);color:#fff}
+.wsb44.free64b::after{content:none}
+.free64{margin:14px 0 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.free64 .fb64{margin:0;font-size:15px;font-weight:800;color:#4b2f80;background:#f3eefc;border-radius:10px;padding:8px 12px}
+.free64 .fn64{margin:10px 0 0;font-size:15px;line-height:1.5}
+.free64 .fi64,.free64 .fds64{margin:8px 0 0;padding:0;list-style:none}
+.free64 .fi64 li{margin:4px 0;font-size:14px;line-height:1.5;color:var(--ink2)}
+.free64 .fi64 b{color:var(--ink);margin-right:6px}
+.free64 .ns64{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:6px;background:#eef1f6;color:#3d4a5c}
+.free64 .ns64.no{background:#fff4e0;color:#8a4b00}
+.free64 .ns64.fit{background:#f3eefc;color:#4b2f80}
+.free64 .fd64{display:flex;gap:12px;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line)}
+.free64 .fph64{position:relative;display:block;overflow:hidden;flex:0 0 96px;width:96px;aspect-ratio:3/4;border-radius:10px;background:#f2f3f5}
+.free64 .fph64 img{position:absolute}
+.free64 .fdt64 p,.free64 .fd64 p{margin:2px 0;font-size:14px;line-height:1.5;color:var(--ink2)}
+.free64 .fdt64 b{color:var(--ink);margin-right:6px}
+.alt64 summary{cursor:pointer;display:inline-block;font-size:12.5px;font-weight:700;color:#3d5a80}
+.alt64>span{display:block;margin-top:2px;font-size:13px;color:var(--ink2);line-height:1.45}
 .try62{margin:14px 0 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px}
 .try62 .tt62{margin:0;font-size:17px;font-weight:800;color:var(--ink)}
 .try62 .ts62{margin:4px 0 10px;font-size:13.5px;color:var(--sub);line-height:1.5}
@@ -5239,6 +5263,14 @@ function tile61(w, role){
   const box = ph.length ? `<span class="wp im"><img class="ph49i" src="${ph[0].u}" alt="${esc(w.t + ' 사진')}" draggable="false"></span>`
     : `<span class="wp${mine ? '' : ' ' + w.c}">${mine ? '사진 없음' : esc(st)}</span>`;
   return `<li data-c61="${w.c}">${box}<span class="wr">${esc(role)}</span><span class="wn">${esc(w.t)}</span>${mine ? `<span class="wst">${esc(st)}</span>` : ''}</li>`; }
+// v64(검토 v64 A1): 받쳐 입을 옷이 하나로 정해졌을 때 사진 줄의 '안에 입는 옷' 칸. 그 벌에 올린 사진의 대표 한 장(없으면 '사진 없음'). 안 정해지면 칸 없음
+function inTile64(z){ const ph = phListV(z.k, (z.it && z.it.id) || ''), nm = '내 ' + nmI62(z);
+  const box = ph.length ? `<span class="wp im"><img class="ph49i" src="${ph[0].u}" alt="${esc(nm + ' 사진')}" draggable="false"></span>` : `<span class="wp">사진 없음</span>`;
+  return `<li data-c61="in64">${box}<span class="wr">안에 입는 옷</span><span class="wn">${esc(nm)}</span><span class="wst">받쳐 입기</span></li>`; }
+// v64(검토 v64 A2): '다른 후보'는 접어 두고 누르면 펼침(고른 옷 문장 · 기본값 설명은 그대로 보임). 칸 줄 안에 있어도 줄이 같이 펼쳐지지 않게 data-alt64
+const alt64 = (alt, n) => `<details class="alt64" data-alt64><summary>다른 후보 ${n}개</summary><span>${esc(alt)}</span></details>`;
+const careLi64 = ([k, t, alt, n]) => `<li><b>${esc(k)}</b>${esc(t)}${alt ? alt64(alt, n) : ''}</li>`;
+const in59H64 = g => `<p class="rd in59">${esc(g.a)}</p>` + (g.one ? (g.b1 ? `<p class="rd in59 b">${esc(g.b1)}</p>` : '') + (g.altN ? `<div class="rd in59 b">${alt64(g.alt, g.altN)}</div>` : '') : g.b ? `<p class="rd in59 b">${esc(g.b)}</p>` : '');
 function aoTile61(ao){ const vid = (ao.it && ao.it.id) || '', ph = phListV(ao.k, vid), nm = '내 ' + ao52Nm(ao);
   const box = ph.length ? `<span class="wp im"><img class="ph49i" src="${ph[0].u}" alt="${esc(nm + ' 사진')}" draggable="false"></span>` : `<span class="wp">사진 없음</span>`;
   return `<li data-c61="ao">${box}<span class="wr">겉옷 · 더함</span><span class="wn">${esc(nm)}</span><span class="wst">사진에 없음</span></li>`; }
@@ -5300,7 +5332,7 @@ function aoCare61(o, A){ const L = o.L, nm = ao52Nm(o.ao), adj = A.feelMinRaw !=
   return free.length ? `${on}엔 내 ${eul52(nm)} 입고, ${hrs52(hs, free)}엔 벗어 들어도 돼요.` : `외출 시간(${A.s}~${A.e}시) 내내 내 ${eul52(nm)} 입고 있게 돼요.`; }
 function care61(o, R){ const out = [];
   if (o.ao && curA && curA.tOuter != null) { const t = aoCare61(o, curA); if (t) out.push(['겉옷', t]); }
-  const g = R.rows.map(w => IN59.get(w)).find(Boolean); if (g) out.push(['받쳐 입기', [g.a, g.b].filter(Boolean).join(' ')]); // v62: 문장 사이 마침표(in59의 a가 마침표로 끝남)
+  const g = R.rows.map(w => IN59.get(w)).find(Boolean); if (g) out.push(['받쳐 입기', [g.a, g.one ? g.b1 : g.b].filter(Boolean).join(' '), g.one && g.altN ? g.alt : '', g.altN]); // v62: 문장 사이 마침표(in59의 a가 마침표로 끝남) · v64: 하나로 정해지면 '다른 후보'는 접음
   const m = mirOf(o.L); if (m) out.push(['거울 앞', first62(m.t)]); // v62(검토 v62 A2): 이 칸엔 첫 문장만. 전체 글은 아래 '거울 앞에서 확인할 한 가지'에 그대로
   return out.slice(0, 3); }
 function wear61(o, R){
@@ -5312,11 +5344,12 @@ function wear61(o, R){
     const role = w.r === '상의' ? (L2 === '안' || hid ? '안에 입는 옷' : '상의') : w.r;
     const ord = w.r === '겉옷' ? 0 : w.r === '상의' ? (hid ? 3 : 1 + rk[L2]) : w.r === '바지' ? 4 : 5;
     items.push({o: ord, i, h: tile61(w, role)}); });
+  const g64 = R.rows.map(w => IN59.get(w)).find(g => g && g.one); if (g64) items.push({o: 3, i: 99, h: inTile64(g64.one)}); // v64(검토 v64 A1): 하나로 정해진 받쳐 입을 옷도 사진 줄에
   items.sort((a, b) => a.o - b.o || a.i - b.i);
   const why = why61(o), care = care61(o, R);
   return `<section class="wear61" aria-label="이렇게 입어요"><p class="wt">이렇게 입어요</p><ul class="ws">${items.map(x => x.h).join('')}</ul>`
     + `<p class="w1">${esc(ready61(R))}</p>` + (why ? `<p class="w2">${esc(why)}</p>` : '')
-    + (care.length ? `<ul class="wc">${care.map(([k, t]) => `<li><b>${esc(k)}</b>${esc(t)}</li>`).join('')}</ul>` : '') + `</section>`; }
+    + (care.length ? `<ul class="wc">${care.map(careLi64).join('')}</ul>` : '') + `</section>`; }
 // v62(검토 v62 A2): 거울 앞 글의 첫 문장
 const first62 = t => String(t || '').split(/\.\s+/)[0];
 // v62(검토 v62 A3): 일주일 상세에도 '이렇게 입어요' 칸. 그날 판정(ds) · 칸 줄(partRow)과 같은 값으로 오늘의 코디 칸 줄 모양을 만들어 같은 규칙으로 그림.
@@ -5339,10 +5372,11 @@ function wear62W(p, os, lay){
   p.status.req.forEach((x, i) => { const w = wRow62(x, p, os), hid = x.role === 'top' && !!x.anyTop, L2 = (lay || {})[i] || ''; rows.push(w);
     const role = x.role === 'top' ? (L2 === '안' || hid ? '안에 입는 옷' : '상의') : RN[x.role];
     items.push({o: x.role === 'outer' ? 0 : x.role === 'top' ? (hid ? 3 : 1 + rk[L2]) : x.role === 'pants' ? 4 : 5, i, h: tile61(w, role)}); });
+  const g64 = rows.map(w => IN59.get(w)).find(g => g && g.one); if (g64) items.push({o: 3, i: 99, h: inTile64(g64.one)}); // v64(검토 v64 A1): 일주일 상세도 같게
   items.sort((a, b) => a.o - b.o || a.i - b.i);
   const R = {rows}, care = care61({ao: p.o && p.o.ao, L: p.L}, R);
   return `<section class="wear61 wk62" aria-label="이렇게 입어요"><p class="wt">이렇게 입어요</p><ul class="ws">${items.map(x => x.h).join('')}</ul>`
-    + `<p class="w1">${esc(ready61(R))}</p>` + (care.length ? `<ul class="wc">${care.map(([k, t]) => `<li><b>${esc(k)}</b>${esc(t)}</li>`).join('')}</ul>` : '') + `</section>`; }
+    + `<p class="w1">${esc(ready61(R))}</p>` + (care.length ? `<ul class="wc">${care.map(careLi64).join('')}</ul>` : '') + `</section>`; }
 // 더한 겉옷 설명(v52 ao52HTML)은 내용 그대로 접어 둠. 한 번 펼치면 다시 그려도 펼친 채(AO61)
 const ao61 = h => h ? `<details class="ao61"${AO61 ? ' open' : ''}><summary>사진에 없는 내 겉옷을 더해 입는 코디예요</summary>${h}</details>` : '';
 // 칸 한 줄 = [칸 이름] [내 옷 이름 + 한 줄] [상태]. 누르면 그 칸의 자세한 내용(v41 칸 줄의 모든 문구)이 펼쳐짐. 확인할 점은 접힌 상태에서도 표시
@@ -5387,7 +5421,7 @@ function rowHTML42(w, i, lay, key){
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
   return `<li class="r42 ${w.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${g59 ? `<p class="rd in59">${esc(g59.a)}</p>${g59.b ? `<p class="rd in59 b">${esc(g59.b)}</p>` : ''}` : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
@@ -5981,7 +6015,9 @@ function in59(x, sub, L, d){
   if (!yes.length) return {a, b: `옷장에 있는 것이 이날 모두 세탁 중이에요: ${wsh.map(slotName).join(' · ')}`, yes, no: [], unk: [], wsh};
   const P = pick62(yes, L), grp = c => yes.filter(k => c.some(z => z.k === k)).flatMap(k => { const q = c.filter(z => z.k === k); return q.length === itemN(k) ? [nm(k)] : q.map(nmI62); });
   if (P.one) { const rest = grp(P.all.filter(z => z !== P.one)), d63 = why63(P), tail = (rest.length ? `다른 후보: ${rest.join(' · ')}` : '') + (rest.length ? wN : wN.replace(/^ · /, ''));
-    return {a: `안에는 내 ${eulI62(P.one)} 입어요.`, b: d63 ? d63 + (tail ? '. ' + tail : '.') : tail, yes, no: [], unk: [], one: P.one, why: P.why, wsh, def63: !!d63}; } // v63: 기본값으로 골랐으면 그 기준을 먼저 적음
+    return {a: `안에는 내 ${eulI62(P.one)} 입어요.`, b: d63 ? d63 + (tail ? '. ' + tail : '.') : tail, yes, no: [], unk: [], one: P.one, why: P.why, wsh, def63: !!d63, // v63: 기본값으로 골랐으면 그 기준을 먼저 적음
+      // v64(검토 v64 A2): 늘 보이는 글(b1 = 기본값 설명 · 다른 후보가 없을 때의 세탁 중 안내)과 접는 글(alt = 다른 후보 + 그날 세탁 중)을 나눔. b는 v63 그대로
+      b1: [d63 ? d63 + '.' : '', rest.length ? '' : wN.replace(/^ · /, '')].filter(Boolean).join(' '), alt: rest.length ? rest.join(' · ') + wN : '', altN: rest.length}; }
   return {a, b: `옷장에 있는 것: ${grp(P.c).join(' · ')}${wN}`, yes, no: [], unk: [], why: P.why, wsh};
 }
 // v59(검토 v59 2번): 사진 속 바지가 이름에 '턱'이 든 데님이면 이름에서 확인한 사실만 적음. 사진을 직접 보고 확인한 코디(TKO59)만 본 것을 따로. 판정 · 순서는 그대로
@@ -6600,22 +6636,31 @@ function need63(){
 function need63HTML(){
   const r = need63(); if (!r) return '';
   const lvN = LEVELS[r.lv].name, scope = r.P ? `이번 주 날씨에 맞는 ${lvN} 사진` : `${lvN} 사진`;
-  const nmS = c => esc(c.nm) + (c.st === 'unl' ? '(보유 확인)' : '');
+  const nmS = c => esc(c.nm); // v64(검토 v64 B1): 결론 문장 안 '(보유 확인)'은 뺌. 보유 여부 모름은 결론 바로 아래 옷 줄에 접지 않고 보임
   const jg = (s, a, b) => s + (jongOf(String(s).replace(/\([^)]*\)$/, '').replace(/[^가-힣]/g, '').slice(-1)) ? a : b); // 괄호(보유 확인 등) 앞 이름으로 조사
-  const stL = c => c.st === 'no' ? '<span class="ns no">없다고 적음</span>' : c.st === 'fit' ? '<span class="ns fit">같은 종류 · 색은 있지만 핏 · 기장이 다른 벌</span>' : '<span class="ns">옷장에 안 적음 · 먼저 있는지 확인</span>';
+  const stL = c => c.st === 'no' ? '<span class="ns no">없다고 적음</span>' : c.st === 'fit' ? '<span class="ns fit">같은 종류 · 색은 있지만 핏 · 기장이 다른 벌</span>' : '<span class="ns unl">옷장에 안 적음 · 먼저 보유 확인</span>';
+  // v64(검토 v64 B1 · B2): 옷 한 줄 = 이름 · 상태 · (두 벌까지 0장일 땐 필요한 사진 수) · 대표 제품 + 고를 때 볼 한 가지(바지 핏 · 겉옷 기장, 사진에 적힌 값만)
+  const it64 = (c, base) => `<li><b>${esc(c.nm)}</b>${stL(c)}${base ? `${base}장 중 ${c.needB.length}장에 필요해요 · ` : ''}${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)}${base ? '' : ` <span class="cn">${md(c.p.checked)} 확인 가격</span>`}` : '대표 제품 없음'}${ft64(c, r.lv)}</li>`;
   const kinds = cs => cs.map(c => (c.slot || c.base || '').split('|')[0]).filter((k, i, a) => a.indexOf(k) === i).map(kd => { const n = r.kindN(kd), m = r.cands.filter(c => (c.slot || c.base || '').split('|')[0] === kd).length; return m > 1 ? `${jg(kd, '은', '는')} 색을 합치면 ${n}장` : ''; }).filter(Boolean);
   let l1, l2, body = '';
   if (r.top) { const cs = r.top.cs, nm = cs.map(nmS);
     l1 = `${cs.length > 1 ? `${jg(nm[0], '과', '와')} ${nm[1]}, 두 벌이` : `${nm[0]} 한 벌이`} 있으면 ${scope} ${r.top.gB}장을 입을 수 있어요.`;
     l2 = `지금은 ${r.now}장 · ${cs.map(c => `${jg(esc(c.nm), '은', '는')} ${r.base}장 중 ${c.needB.length}장`).join(', ')}에 필요해요` + (r.P ? ` · 전체 ${lvN} 사진은 ${r.all}장` : '') + (kinds(cs).length ? ` · ${esc(kinds(cs).join(' · '))}` : '') + '.';
-    body = `<div class="nps">${r.top.photos.slice(0, 3).map(z => `<figure class="np"><span class="npi">${wImg44(z.L, .75)}</span><figcaption>${z.w === 'ok' ? '바로 입을 수 있음' : '핏 · 기장 등 확인 남음'}${r.P ? ` · 이번 주 ${z.n}일 맞음` : ''}</figcaption></figure>`).join('')}</div>`
+    body = `<ul class="nis">${cs.map(c => it64(c)).join('')}</ul><p class="n2">${l2}</p><div class="nps">${r.top.photos.slice(0, 3).map(z => `<figure class="np"><span class="npi">${wImg44(z.L, .75)}</span><figcaption>${z.w === 'ok' ? '바로 입을 수 있음' : '핏 · 기장 등 확인 남음'}${r.P ? ` · 이번 주 ${z.n}일 맞음` : ''}</figcaption></figure>`).join('')}</div>`
       + `<p class="n2">새로 되는 사진 ${r.top.gB}장: 바로 입을 수 있는 사진 ${r.top.ok}장 · 핏 · 기장 등 확인이 남는 사진 ${r.top.chk}장${r.top.other ? ` · 이 ${cs.length > 1 ? '두 벌' : '한 벌'}이 있어도 다른 옷이 더 필요한 사진 ${r.top.other}장` : ''}</p>`
-      + `<ul class="nis">${cs.map(c => `<li><b>${esc(c.nm)}</b>${stL(c)}${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)} <span class="cn">${md(c.p.checked)} 확인 가격</span>` : '대표 제품 없음'}</li>`).join('')}</ul>`; }
+      ; } // v64: 옷 줄은 결론 바로 아래로 옮김(위 body 첫머리)
   else { l1 = '두 벌까지 더해도 새로 되는 사진이 없어요.'; l2 = `${scope} ${r.base}장에 가장 많이 필요한 옷이에요(지금 가진 옷으로 되는 사진 ${r.now}장).`;
-    body = `<ul class="nis">${r.alt.map(c => `<li><b>${esc(c.nm)}</b>${stL(c)}${r.base}장 중 ${c.needB.length}장에 필요해요 · ${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)}` : '대표 제품 없음'}</li>`).join('')}</ul>`; }
+    body = `<p class="n2">${l2}</p><ul class="nis">${r.alt.map(c => it64(c, r.base)).join('')}</ul>`; }
   const dw = r.days.map(z => `${dLab(z.d)} ${deg(z.t)}${z.fc ? '' : '(예보 없음 · 계절 참고)'}`).join(' · ');
-  return `<section class="need63" aria-label="이 단계를 입으려면 필요한 옷"><p class="nt63">이 단계를 입으려면 필요한 옷 · ${esc(lvN)}</p><p class="n1">${l1}</p><p class="n2">${l2}</p>${body}`
-    + `<p class="nf">날씨 기준: 이번 주 날짜마다 그날 체감(${esc(dw)})과 사진 체감 범위가 2° 안이면 맞는 사진으로 봐요(일주일 계획과 같은 기준). 새로 더하는 칸은 핏 · 기장 · 두께를 모르는 채로 세고, 핏 · 기장이 다른 벌은 사진의 핏 · 기장으로 셌어요. 보여 주기만 해요. 일주일 계획 · 판정 · 살 옷 목록은 그대로예요.</p></section>`; }
+  return `<section class="need63" aria-label="이 단계를 입으려면 필요한 옷"><p class="nt63">이 단계를 입으려면 필요한 옷 · ${esc(lvN)}</p><p class="n1">${l1}</p>${body}`
+    + `<details class="nf64"><summary>어떻게 셌나요</summary><p class="nf">날씨 기준: 이번 주 날짜마다 그날 체감(${esc(dw)})과 사진 체감 범위가 2° 안이면 맞는 사진으로 봐요(일주일 계획과 같은 기준). 새로 더하는 칸은 핏 · 기장 · 두께를 모르는 채로 세고, 핏 · 기장이 다른 벌은 사진의 핏 · 기장으로 셌어요. 보여 주기만 해요. 일주일 계획 · 판정 · 살 옷 목록은 그대로예요. '고를 때 볼 한 가지'는 그 옷이 나오는 사진에 적힌 핏 · 기장 값을 센 거예요. 내 몸에 맞는 핏이나 실제 제품의 핏 · 기장이라는 뜻은 아니에요.</p></details></section>`; }
+// v64(검토 v64 B2): 결론에 나온 옷이 바지면 핏, 겉옷이면 기장을 그 옷이 나오는 (고른 단계) 사진에 적힌 값으로 센 한 줄. 값이 하나도 없는 종류(상의 · 니트 · 셔츠 · 신발)는 줄 없음
+function ft64(c, lv){ const k0 = c.st === 'fit' ? c.rs : c.slot; if (!k0) return '';
+  const ps = []; LOOKS.filter(L => L.level === lv && !TS.nope[L.key]).forEach(L => { const x = partsOf(L).find(y => y.need === 'req' && (y.slot === k0 || (c.st !== 'fit' && ((y.also || []).includes(k0) || y.buy === k0)))); if (x) ps.push(x); });
+  const role = ps.length ? ps[0].role : '', key = role === 'pants' ? 'fit' : role === 'outer' ? 'len' : ''; if (!key) return '';
+  const cnt = {}; let none = 0; ps.forEach(x => { const v = (x.ft || {})[key]; if (v) cnt[v] = (cnt[v] || 0) + 1; else none++; });
+  const vs = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); if (!vs.length) return '';
+  return `<p class="ft64">고를 때 볼 한 가지 · 이 옷이 나오는 ${esc(LEVELS[lv].name)} 사진 ${ps.length}장에 적힌 ${key === 'fit' ? '핏' : '기장'}: ${vs.map(v => `${esc(v)} ${cnt[v]}장`).join(' · ')}${none ? ` · 안 적힌 사진 ${none}장` : ''}</p>`; }
 /* ---------- v63(검토 v63 D · 시험본 나만): 안 입어 본 스타일 · 꾸꾸꾸(v62 시험본 나의 칸을 다듬음) ----------
    더할 옷 이름 옆에는 '없다고 적음'(내가 '없음'으로 적은 칸) · 핏 · 기장이 다른 벌(판정이 가진 이유 그대로)만 표시. 옷장에 안 적은 옷 안내는 묶음 맨 위에 한 번.
    순서 · 사진을 누르면 그 사진의 상세 · '바로 준비됨' 규칙은 v62 시험본 나와 같음. 따라 할 한 가지 문장 = v62 목록의 고친 판 */
@@ -6830,7 +6875,7 @@ function drawBelow(){
   const tgB = $('#toGal'); if (tgB) tgB.addEventListener('click', backToGal);
   { const d61 = box.querySelector('details.ao61'); if (d61) d61.addEventListener('toggle', () => { AO61 = d61.open; }); } // v61
   bindProx(box);
-  box.querySelectorAll('.r42 .rw[data-tg]').forEach(rw => rw.addEventListener('click', e => { if (e.target.closest('[data-rowact],a')) return;
+  box.querySelectorAll('.r42 .rw[data-tg]').forEach(rw => rw.addEventListener('click', e => { if (e.target.closest('[data-rowact],a,[data-alt64]')) return;
     const p = document.getElementById(rw.dataset.tg), bt = rw.querySelector('.rx'), on = p.hidden;
     p.hidden = !on; bt.setAttribute('aria-expanded', String(on)); rw.parentNode.classList.toggle('open', on);
     if (on) OPEN42.add(rw.dataset.ok); else OPEN42.delete(rw.dataset.ok); }));
@@ -7710,7 +7755,7 @@ function partRow(x, p, os, i, lay){
   const key = `${p.d}|${p.L.key}|${i}`, op = OPEN44.has(key), id = 'wrp' + i;
   return `<li class="r42 ${ST.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
     + `<span class="tile${lay ? ' two' : ''}">${RN[x.role]}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${g59 ? `<p class="rd in59">${esc(g59.a)}</p>${g59.b ? `<p class="rd in59 b">${esc(g59.b)}</p>` : ''}` : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${rc ? '<span class="wk42 ref">참고할 점 1</span>' : ''}</div>`
     + `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(RN[x.role] + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button></div>`
     + `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div></li>`;
@@ -7757,9 +7802,11 @@ function showWeek(){
   let h = (wxNote && wxNote !== 'est' ? `<p class="wxn"><span class="wsn47">${esc(noteTxt47())}</span></p>` : '')
     + `<div class="wpan44"><div class="ghero whero44"><div class="gh-top"><p class="kick">${$('#where').innerHTML}</p><div class="ctl"><span class="q44">날마다 기본</span>${px.lv}</div></div>`
     + `<div class="gh-mid"><h1 class="gh1 wh1" tabindex="-1">이번 주 코디 <b>${nD}일</b></h1><div class="ctl wset44"><span class="wcur">${wsNow.map(t => `<span class="cap">${esc(t)}</span>`).join('')}</span>`
-    + `<button type="button" class="wsb44" id="wsetB" aria-expanded="${wsetOpen}" aria-controls="wsetP">주간 추천 설정</button></div></div>`
+    + `<button type="button" class="wsb44 free64b" id="free64" aria-pressed="${FREE64}">가진 옷 조건 없이 보기</button><button type="button" class="wsb44" id="wsetB" aria-expanded="${wsetOpen}" aria-controls="wsetP">주간 추천 설정</button></div></div>`
     + `<div class="wsetp44" id="wsetP"${wsetOpen ? '' : ' hidden'}>${wset}</div>`
-    + `<details class="wsum44" id="wsumd"${wsumOpen ? ' open' : ''}><summary><b>이번 주 사진 ${wN}장</b> · ${s1}<span class="wmore">자세히</span></summary><p class="wsum"><b>이번 주 사진 ${wN}장</b>${s1}${s2 ? '. ' + s2 : ''}</p></details></div>`;
+    + `<details class="wsum44" id="wsumd"${wsumOpen ? ' open' : ''}><summary><b>이번 주 사진 ${wN}장</b> · ${s1}<span class="wmore">자세히</span></summary><p class="wsum"><b>이번 주 사진 ${wN}장</b>${s1}${s2 ? '. ' + s2 : ''}</p></details>${FREE64 ? '' : same64HTML(plan)}</div>`;
+  // v64(검토 v64 D): '가진 옷 조건 없이 보기'를 켜면 그 한 주만 따로 보여 줌(지금 계획 · 저장값 · 고정은 그대로, 끄면 원래 화면)
+  if (FREE64) { box.innerHTML = h + free64HTML(); imgFail(box); bindProx(box); return; }
   // 7일 카드: 요일·날짜 · 체감·비 · 사진(사진 위 상태 하나) · 코디 이름 · 작은 표시(단계·옆 단계 사진 · 외출 시간 · 전날과 같은 코디). 고른 날은 테두리, 오늘은 '오늘'
   const si = Math.max(0, ds.indexOf(WK.sel));
   h += '<div class="wk44" role="group" aria-label="이번 주 7일">' + plan.map((p, i) => {
@@ -7891,6 +7938,91 @@ function weekBuyHTML(B, plan){
   return h;
 }
 let wsetOpen = false;
+/* ---------- v64(검토 v64 C · 시험본 나만): 일주일에서 같은 겉옷이 이어지는 까닭 한 줄 ----------
+   일주일 계획에서 (예보가 있는 날 중) 겉옷 칸이 같은 날이 사흘 이상이고, 그날들의 후보 사진 중 가진 옷으로 되는 사진(계획과 같은 기준: 날씨 2° 안 · 내 취향 아님 뺌 · 칸마다 됨/핏 확인/배송)에
+   다른 겉옷 칸의 사진이 하나도 없을 때만 한 줄. 다른 겉옷 사진이 '가진 옷 확인'만 남아 있으면(보유 여부 모호) 안 보임. 계획 · 판정 · 살 옷은 그대로(보여 주기만) */
+const wear64 = (o, d, os) => o.dd <= 2 && !TS.nope[o.L.key] && partsOf(o.L).filter(x => x.need === 'req').every(x => ['ok', 'soft', 'eta'].includes(dayPart(x, d, os).code));
+function outK64(o, d, os){ if (o.ao) return o.ao.k; const x = partsOf(o.L).find(y => y.need === 'req' && y.role === 'outer'); if (!x) return '';
+  const s = dayPart(x, d, os); return s.code === 'ok' || s.code === 'soft' ? (wMk44(Object.assign({}, x, {ds: s})) || x.slot) : s.code === 'eta' ? x.slot : null; }
+function dayOutK64(p){ if (p.o && p.o.ao) return p.o.ao.k; const x = p.status.req.find(y => y.role === 'outer'); if (!x) return '';
+  return x.ds.code === 'ok' || x.ds.code === 'soft' ? (wMk44(x) || x.slot) : null; }
+const DAYW64 = {3: '사흘', 4: '나흘', 5: '닷새', 6: '엿새', 7: '이레'};
+const md64 = d => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}/${x.getDate()}`; };
+function same64(plan){
+  const os = ownedSlots(), g = {}, out = [];
+  plan.filter(p => p.L && p.status && p.A && p.A.fc).forEach(p => { const k = dayOutK64(p); if (k) (g[k] = g[k] || []).push(p); });
+  Object.entries(g).forEach(([K, ps]) => { if (ps.length < 3) return;
+    let other = 0, amb = 0; const rows = [], seen = new Set(), oc = {};
+    ps.forEach(p => { const cs = (p.cand || []).filter(o => o.dd <= 2 && !TS.nope[o.L.key]), wr = cs.filter(o => wear64(o, p.d, os));
+      const wk = wr.map(o => ({k: o.L.key, o: outK64(o, p.d, os)})).filter(z => z.o !== null), oth = wk.filter(z => z.o !== K);
+      const am = cs.filter(o => !wr.includes(o)).filter(o => { const xo = partsOf(o.L).find(y => y.need === 'req' && y.role === 'outer'); if (!xo || xo.slot === K) return false;
+        const bad = partsOf(o.L).filter(x => x.need === 'req').map(x => dayPart(x, p.d, os).code).filter(c => !['ok', 'soft', 'eta'].includes(c)); return bad.length && bad.every(c => c === 'info'); });
+      other += oth.length; amb += am.length;
+      cs.forEach(o => { if (seen.has(o.L.key)) return; seen.add(o.L.key); const xo = partsOf(o.L).find(y => y.need === 'req' && y.role === 'outer'); if (xo && xo.slot && xo.slot !== K) oc[xo.slot] = (oc[xo.slot] || 0) + 1; });
+      rows.push({d: p.d, n: cs.length, wear: wk, oth: oth.length, amb: am.length}); });
+    const top = Object.entries(oc).sort((a, b) => b[1] - a[1])[0] || null;
+    out.push({K, days: ps.map(p => p.d), other, amb, show: !other && !amb, top, rows}); });
+  return out; }
+function same64HTML(plan){
+  if (!hasOwn()) return '';
+  const os = ownedSlots();
+  return same64(plan).filter(z => z.show).map(z => { const ds = z.days.slice().sort(), n = ds.length, cont = ds.every((d, i) => !i || addDays(ds[i - 1], 1) === d);
+    const a = md64(ds[0]), b = md64(ds[n - 1]), dw = DAYW64[n] || n + '일', rng = cont ? `${a}~${a.split('/')[0] === b.split('/')[0] ? b.split('/')[1] : b} ${dw}${jongOf(dw) ? '은' : '는'}` : `이번 주 중 ${n}일(${ds.map(md64).join(' · ')})은`;
+    let t = `${rng} 내 ${slotName(z.K)} 말고 다른 겉옷으로 입을 수 있는 후보 사진이 없어서 겉옷이 같아요.`;
+    if (z.top) { const [S, c] = z.top, nm = slotName(S), sl = OWN.s[S] === 'no' ? '없다고 적음' : os.has(S) ? '가진 옷 · 그 사진엔 다른 칸이 더 필요해요' : '옷장에 안 적음';
+      t += ` 이 날씨 사진에는 ${nm}${jongOf(nm) ? '이' : '가'} ${c}장에 나와요(${sl}).`; }
+    return `<p class="same64">${esc(t)}</p>`; }).join(''); }
+/* ---------- v64(검토 v64 D · 시험본 나만): 가진 옷 조건 없이 짠 한 주 보기 ----------
+   켜면 같은 날씨 · 단계 · 설정으로, 옷장을 빈 걸로 보고(가진 옷 점수 · 겉옷 더하기 · 옆 단계 가진 옷 사진 없음) 날마다 날씨에 맞는 사진 중
+   이번 주에 아직 안 고른 차림을 점수 순으로 골라 보여 줌(다 쓰면 덜 쓴 차림). 고정한 날은 고정 코디 그대로 · 코디 불필요로 둔 날은 건너뜀 · 맞는 사진 없는 날은 비워 둠.
+   지금 계획 · 저장된 계획 · 고정 · 설정은 안 바꾸고 저장도 안 함(보기 상태도 저장 안 해서 새로 열면 꺼짐). 날마다 칸 판정은 지금 판정(dayStatus) 그대로 */
+let FREE64 = false;
+function planFree64(){
+  const ds = weekDates(), o0 = JSON.stringify(OWN); let C;
+  try { ['p', 's', 'f', 'd', 'w', 'x'].forEach(k => { OWN[k] = {}; }); delete OWN.v;
+    C = ds.map(d => { const D = WK.days[d] || {}, lv = D.lv || st.level, A = dayA(d); if (D.skip) return {d, A, lv, skip: true};
+      return {d, A, lv, pin: !!(D.pin && D.key), key: D.key, cs: orderLooks(A, lv).filter(o => o.dd <= 2 && !TS.nope[o.L.key])}; }); }
+  finally { Object.keys(OWN).forEach(z => { delete OWN[z]; }); Object.assign(OWN, JSON.parse(o0)); }
+  const n = {};
+  return C.map(c => { if (c.skip) return c;
+    const PL = c.pin && LOOKS.find(L => L.key === c.key); let pick = null;
+    if (PL) pick = {L: PL}; else if (c.cs.length) { const m = Math.min(...c.cs.map(o => n[sigOf(o.L)] || 0)); pick = c.cs.filter(o => (n[sigOf(o.L)] || 0) === m).sort((a, b) => b.sc - a.sc)[0]; }
+    if (pick) n[sigOf(pick.L)] = (n[sigOf(pick.L)] || 0) + 1;
+    return Object.assign({}, c, {L: pick ? pick.L : null, none: !pick}); }); }
+function free64(){
+  const os = ownedSlots(), P = planFree64(), need = new Map();
+  const days = P.map(p => { if (p.skip || !p.L) return Object.assign({mine: [], add: [], chk: []}, p);
+    const S = dayStatus(p.L, p.d, os), mine = [], add = [], chk = [];
+    S.req.forEach(x => { const c = x.ds.code, mk = wMk44(x), nm = x.anyTop && !x.slot ? `${CN[x.col] || x.col || ''} 상의(겉옷 안)` : slotName(x.slot || x.buy || '') || (x.what || '');
+      const fk = x.role === 'pants' ? 'fit' : x.role === 'outer' ? 'len' : '', fv = fk ? (x.ft || {})[fk] || '' : '';
+      if (c === 'ok') mine.push('내 ' + (mk ? slotName(mk) : wNm45(x, os).nm.replace(/^내 /, '')));
+      else if (c === 'soft') { mine.push('내 ' + (mk ? slotName(mk) : nm)); chk.push(`${mk ? slotName(mk) : nm} ${x.role === 'outer' ? '기장 ' : x.role === 'pants' ? '핏 ' : x.role === 'shoes' ? '모양 ' : ''}확인`); }
+      else if (c === 'wash') mine.push(`${'내 ' + nm} · 이날 세탁 중`);
+      else if (c === 'eta' || c === 'wait' || c === 'plan') mine.push(`${nm} · ${c === 'plan' ? '구매 예정' : '주문함'}`);
+      else if (c === 'info') chk.push(`${nm} · 가진 옷 확인`);
+      else { const st2 = x.ds.lv === 1 ? 'fit' : OWN.s[x.slot] === 'no' ? 'no' : 'unl', key = st2 === 'fit' ? `${x.slot}#${fv}` : (x.slot || x.buy || 'top|' + x.col);
+        const lab = st2 === 'fit' ? `${nm}(${fv}${fk === 'fit' ? ' 핏' : ''})` : nm; add.push({lab, st: st2, why: st2 === 'fit' ? x.ds.t : ''});
+        if (!need.has(key)) need.set(key, {lab, st: st2, why: st2 === 'fit' ? x.ds.t : '', days: [], fk, fv: new Set()});
+        const q = need.get(key); if (!q.days.includes(p.d)) q.days.push(p.d); if (fv) q.fv.add(fv); } });
+    return Object.assign({mine, add, chk}, p); });
+  return {days, need: [...need.values()]}; }
+const ST64 = {no: '없음', unl: '옷장에 안 적음', fit: '다른 핏 · 기장 필요'};
+function free64HTML(){
+  const F = free64(), L1 = LEVELS[st.level].name;
+  const it = F.need.map(q => `<li><b>${esc(q.lab)}</b><span class="ns64 ${q.st}">${ST64[q.st]}</span>${q.st === 'fit' && q.why ? `<span class="cn">${esc(q.why)}</span> ` : ''}${q.days.length}일(${q.days.map(md64).join(' · ')})`
+    + (q.fv.size > 1 ? ` · <span class="warn">사진마다 필요한 ${q.fk === 'fit' ? '핏' : '기장'}이 달라요(${esc([...q.fv].join(' · '))}) · 한 벌로 다 되는지 몰라요</span>` : '') + `</li>`).join('');
+  const dy = F.days.map(p => {
+    if (p.skip) return `<li class="fd64"><p class="fdh"><b>${dLab(p.d)}</b> 코디 불필요로 둔 날이라 비워 둬요</p></li>`;
+    const wl = `<span class="cn">${esc(wxLine(p.A))}${p.A.fc ? '' : ' · 예보 없음 · 계절 참고'}</span>`;
+    if (!p.L) return `<li class="fd64"><p class="fdh"><b>${dLab(p.d)}</b> ${wl}</p><p>이날 날씨에 맞는 ${esc(LEVELS[p.lv].name)} 사진이 없어서 비워 둬요.</p></li>`;
+    return `<li class="fd64"><span class="fph64">${wImg44(p.L, .5)}</span><div class="fdt64"><p class="fdh"><b>${dLab(p.d)}</b> ${wl} · ${esc(LEVELS[p.lv].name)}${p.L.level !== p.lv ? ` · ${esc(LEVELS[p.L.level].name)} 사진` : ''}${p.pin ? ' · 고정한 코디' : ''}</p>`
+      + `<p><b>내 옷으로 되는 칸</b> ${p.mine.length ? esc(p.mine.join(' · ')) : '없음'}</p>`
+      + `<p><b>더할 옷</b> ${p.add.length ? p.add.map(a => `${esc(a.lab)} <span class="ns64 ${a.st}">${ST64[a.st]}</span>`).join(' · ') : '없음'}</p>`
+      + (p.chk.length ? `<p><b>확인할 것</b> ${esc(p.chk.join(' · '))}</p>` : '') + `</div></li>`; }).join('');
+  return `<section class="free64" aria-label="가진 옷 조건 없이 짠 한 주"><p class="fb64">가진 옷 조건을 빼고 가상으로 짠 한 주예요. 지금 계획과 살 옷 목록은 바뀌지 않아요.</p>`
+    + `<p class="fn64"><b>이 한 주를 입으려면 더할 옷 ${F.need.length}벌</b> <span class="cn">서로 다른 옷만 셌어요(같은 옷이 여러 날 나와도 한 번). 옷장에 안 적은 옷은 이미 있을 수도 있어요</span></p>`
+    + (F.need.length ? `<ul class="fi64">${it}</ul>` : '')
+    + `<ul class="fds64">${dy}</ul><p class="cn">같은 날씨 · 단계(${esc(L1)}, 그날 직접 고른 단계는 그대로)로, 날마다 날씨에 맞는 사진 중 이번 주에 아직 안 고른 차림을 먼저 골랐어요. 고정한 날은 고정 코디 그대로예요. 이 보기에서는 코디를 고정하거나 저장할 수 없어요.</p></section>`; }
 function bindWeek(){
   const box = $('#week');
   // v29: '주간 추천 설정'을 펼친 채로 칸을 바꿔도 다시 그릴 때 접히지 않게(이번 방문 동안만 기억)
@@ -7898,11 +8030,13 @@ function bindWeek(){
   const redraw = keep => { const y = window.scrollY; showWeek(); if (keep) window.scrollTo(0, y); };
   box.addEventListener('click', e => {
     // v44: 옷 줄 펼치기(오늘의 코디 상세와 같은 동작). 펼친 곳(.rp) 안 버튼은 아래 원래 처리로
+    if (e.target.closest('[data-alt64]')) return; // v64: '다른 후보' 펼치기는 줄을 펼치지 않음
     const rw = e.target.closest('.r42 .rw[data-tg]');
     if (rw && box.contains(rw)) { const pp = document.getElementById(rw.dataset.tg), bt = rw.querySelector('.rx'), on = pp.hidden;
       pp.hidden = !on; bt.setAttribute('aria-expanded', String(on)); rw.parentNode.classList.toggle('open', on);
       if (on) OPEN44.add(rw.dataset.ok); else OPEN44.delete(rw.dataset.ok); return; }
     const b = e.target.closest('button'); if (!b || !box.contains(b)) return;
+    if (b.id === 'free64') { FREE64 = !FREE64; redraw(true); return; } // v64: 가진 옷 조건 없이 보기 켜고 끄기(저장 안 함)
     if (b.dataset.toset) { toSet(b.dataset.toset); return; }
     if (b.id === 'wsetB') { wsetOpen = !wsetOpen; b.setAttribute('aria-expanded', String(wsetOpen)); const pn = $('#wsetP'); if (pn) pn.hidden = !wsetOpen; return; }
     if (b.id === 'wshow') { wShow44 = !wShow44; redraw(true); return; }
