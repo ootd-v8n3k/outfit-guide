@@ -1103,6 +1103,9 @@ details.ao61 > .ao52 > .t{display:none}
 .free64 .ns64{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:6px;background:#eef1f6;color:#3d4a5c}
 .free64 .ns64.no{background:#fff4e0;color:#8a4b00}
 .free64 .ns64.fit{background:#f3eefc;color:#4b2f80}
+.free64 .fs65{margin:4px 0 0;font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.5}
+.free64 .fm65{margin:4px 0 0}
+.free64 .fm65 summary{cursor:pointer;font-size:13px;font-weight:700;color:#3d5a80}
 .free64 .fd64{display:flex;gap:12px;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line)}
 .free64 .fph64{position:relative;display:block;overflow:hidden;flex:0 0 96px;width:96px;aspect-ratio:3/4;border-radius:10px;background:#f2f3f5}
 .free64 .fph64 img{position:absolute}
@@ -2446,7 +2449,7 @@ const STY = {
       ['신발', '흰(살짝 아이보리) 캔버스 운동화(태그 없음)']]},
   'n-3405554': {base:2, sit:'발표 날, 친구 약속', pal:['검정','차콜'],
     core:'검정 울 블루종을 카라까지 지퍼로 잠그고 차콜 와이드 슬랙스, 검정 라운드 더비. 쌀쌀한 날 두 색으로 끝나는 단정한 조합',
-    how:[['겉옷', '허리선에서 끝나는 짧은 울 블루종. 지퍼를 끝까지 올려 카라를 세움. 같은 촬영 앞모습 컷에선 안에 네이비 크루 넥 니트를 입었음'],
+    how:[['겉옷', '허리선에서 끝나는 짧은 울 블루종. 앞을 깃 아래까지 잠금. 같은 촬영 앞모습 컷에선 안에 네이비 크루 넥 니트를 입었음'],
       ['바지', '앞 주름선이 있는 차콜 그레이 와이드 슬랙스. 엉덩이부터 넓게 떨어지고 밑단이 더비 등에 얹혀 살짝 쌓이는 길이'],
       ['신발', '앞코가 둥근 검정 가죽 더비. 검정 운동화로 바꾸면 꾸안꾸에 가까워짐']]}
 };
@@ -6655,11 +6658,14 @@ function need63HTML(){
   return `<section class="need63" aria-label="이 단계를 입으려면 필요한 옷"><p class="nt63">이 단계를 입으려면 필요한 옷 · ${esc(lvN)}</p><p class="n1">${l1}</p>${body}`
     + `<details class="nf64"><summary>어떻게 셌나요</summary><p class="nf">날씨 기준: 이번 주 날짜마다 그날 체감(${esc(dw)})과 사진 체감 범위가 2° 안이면 맞는 사진으로 봐요(일주일 계획과 같은 기준). 새로 더하는 칸은 핏 · 기장 · 두께를 모르는 채로 세고, 핏 · 기장이 다른 벌은 사진의 핏 · 기장으로 셌어요. 보여 주기만 해요. 일주일 계획 · 판정 · 살 옷 목록은 그대로예요. '고를 때 볼 한 가지'는 그 옷이 나오는 사진에 적힌 핏 · 기장 값을 센 거예요. 내 몸에 맞는 핏이나 실제 제품의 핏 · 기장이라는 뜻은 아니에요.</p></details></section>`; }
 // v64(검토 v64 B2): 결론에 나온 옷이 바지면 핏, 겉옷이면 기장을 그 옷이 나오는 (고른 단계) 사진에 적힌 값으로 센 한 줄. 값이 하나도 없는 종류(상의 · 니트 · 셔츠 · 신발)는 줄 없음
+// v65(검토 v65 B): 옷 이름(칸 이름 · 핏 벌 이름)에 그 값의 뜻이 이미 들어 있는지. 기장은 이름의 롱 · 하프 · 숏 · 크롭으로만, 핏은 이름에 같은 낱말이 있을 때만
+const imp65 = (nm, key, v) => key === 'len' ? (v === '긴 기장' && /롱/.test(nm)) || (v === '짧은 기장' && /하프|숏|크롭/.test(nm)) : String(nm).includes(v);
 function ft64(c, lv){ const k0 = c.st === 'fit' ? c.rs : c.slot; if (!k0) return '';
   const ps = []; LOOKS.filter(L => L.level === lv && !TS.nope[L.key]).forEach(L => { const x = partsOf(L).find(y => y.need === 'req' && (y.slot === k0 || (c.st !== 'fit' && ((y.also || []).includes(k0) || y.buy === k0)))); if (x) ps.push(x); });
   const role = ps.length ? ps[0].role : '', key = role === 'pants' ? 'fit' : role === 'outer' ? 'len' : ''; if (!key) return '';
   const cnt = {}; let none = 0; ps.forEach(x => { const v = (x.ft || {})[key]; if (v) cnt[v] = (cnt[v] || 0) + 1; else none++; });
   const vs = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); if (!vs.length) return '';
+  if (vs.length === 1 && imp65(c.nm, key, vs[0])) return ''; // v65(검토 v65 B): 값이 한 가지뿐이고 옷 이름에 이미 든 뜻이면 줄 없음(롱코트 → 긴 기장 · 하프 코트 → 짧은 기장 · 테이퍼드 핏 벌 → 테이퍼드)
   return `<p class="ft64">고를 때 볼 한 가지 · 이 옷이 나오는 ${esc(LEVELS[lv].name)} 사진 ${ps.length}장에 적힌 ${key === 'fit' ? '핏' : '기장'}: ${vs.map(v => `${esc(v)} ${cnt[v]}장`).join(' · ')}${none ? ` · 안 적힌 사진 ${none}장` : ''}</p>`; }
 /* ---------- v63(검토 v63 D · 시험본 나만): 안 입어 본 스타일 · 꾸꾸꾸(v62 시험본 나의 칸을 다듬음) ----------
    더할 옷 이름 옆에는 '없다고 적음'(내가 '없음'으로 적은 칸) · 핏 · 기장이 다른 벌(판정이 가진 이유 그대로)만 표시. 옷장에 안 적은 옷 안내는 묶음 맨 위에 한 번.
@@ -6698,6 +6704,43 @@ function try62HTML(os){
   return `<section class="try62" aria-label="안 입어 본 스타일 · 꾸꾸꾸"><p class="tt62">안 입어 본 스타일 · 꾸꾸꾸</p>`
     + `<p class="ts62">가진 옷 조건 없이 꾸꾸꾸 사진 ${R.length}장을 모두 보여 줘요. 내 옷에 더할 옷이 적은 사진부터, 같으면 이번 주 날씨에 맞는 사진부터예요. 사진을 누르면 그 코디의 자세한 화면으로 가요. 더할 옷 이름 옆에 표시가 없으면 옷장에 안 적은 옷이에요. 있는지 먼저 확인해 주세요.</p>`
     + `<div class="tl62">${R.map(card).join('')}</div></section>`; }
+/* ---------- v65(검토 v65 C · 시험본 나만): 안 입어 본 스타일 · 적당히 꾸민 ----------
+   꾸꾸꾸 묶음(try62HTML)과 같은 정렬 · 표시 · 사진을 누르면 상세. 꾸꾸꾸 묶음 아래 따로 한 묶음. 문장 = v65 초안(사용자가 사진과 맞춰 본 뒤에만 배포) */
+const TRY65 = {
+  'l3-h': '패딩 지퍼는 가슴까지만 올려서 안의 터틀넥 목이 보이게 입어요.',
+  'l3-i': '블루종은 앞을 열고, 터틀넥은 바지 안에 다 넣어서 벨트가 보이게 입어요.',
+  'l3-j': '코트 단추는 맨 위 하나만 빼고 다 채워요.',
+  'l3-q': '카라티를 바지 안에 넣어 벨트가 보이게 하고, 블루종은 지퍼를 열어 입어요.',
+  'n-2518455': '플리스 풀오버 안에 체크 셔츠를 입고, 셔츠 깃과 밑단이 플리스 밖으로 보이게 입어요.',
+  'n-1168906': '재킷 지퍼는 가슴 위까지 올리고 깃은 펴 두어요.',
+  'm-80ufgd': '하프 코트 단추를 풀고, 안에 입은 후드를 코트 칼라 밖으로 꺼내요.',
+  'm-qgfj41': '블레이저는 단추를 풀고, 안의 흰 티는 바지 밖으로 빼서 입어요.',
+  'n-1628939': '니트는 바지 밖으로 내려 입어서 밑단이 허리를 덮게 해요.',
+  'n-1224094': '넉넉한 흰 반팔티를 바지 안에 넣어 입어요.',
+  'n-5662153': '가디건 단추를 맨 위까지 다 채워서 니트처럼 입어요.',
+  'n-3405554': '블루종 앞을 깃 아래까지 잠가 입어요.'};
+function try65HTML(os){
+  if (!hasOwn()) return '';
+  const L3 = LOOKS.filter(L => L.level === 'L3'); if (!L3.length) return '';
+  const T = weekDates().filter(d => !(WK.days[d] || {}).skip).map(d => dayA(d).tOuter).filter(t => t != null);
+  const R = L3.map((L, i) => { const r = recipeOf(L, os), rows = r.rows.filter(w => w.c !== 'none');
+    return {L, i, add: rows.filter(w => w.c === 'buy' || w.c === 'unl'), chk: rows.filter(w => w.c === 'chk' || w.c === 'info'), mine: rows.filter(w => /^(own|sub|chk)$/.test(w.c)), fit: T.some(t => dist(L, t) <= 2)}; });
+  R.sort((a, b) => a.add.length - b.add.length || (b.fit - a.fit) || a.i - b.i);
+  const ck = w => w.c === 'info' ? '신발(가진 신발 중 고르기)' : `${w.t.replace(/^(내|산) /, '')} ${w.bd === '핏 확인' ? '핏' : w.bd === '기장 확인' ? '기장' : '모양'}`;
+  const addL = w => w.c === 'buy' ? (w.n[0] === '옷장에 없다고 적음' ? '없다고 적음' : w.n[0]) : '';
+  const mt = w => { const k = PHK49.get(w), ph = k ? phListV(k, PHV50.get(w) || '') : [];
+    return `<li><span class="wp">${ph.length ? `<img class="ph49i" src="${ph[0].u}" alt="${esc(w.t + ' 사진')}" draggable="false">` : '사진 없음'}</span>${esc(w.t)}</li>`; };
+  const card = z => { const k = z.L.key, f = TRY65[k], n = z.add.length;
+    const head = n ? `더할 옷 ${n}벌` : z.chk.length ? '더할 옷 없음 · 확인할 칸 있음' : '가진 옷으로 바로 입을 수 있어요';
+    return `<div class="tc62" data-try62="${esc(k)}"><button type="button" class="gc tp62" data-jump="${esc(k)}" aria-label="적당히 꾸민 코디 사진 자세히 보기"><span class="gk">${wImg44(z.L, .75)}</span><span class="go62">사진 체감 ${z.L.lo}~${z.L.hi}° · 자세히</span></button>`
+      + `<div class="tb62"><p class="tn62">${head}${z.fit ? '<span class="cn">· 이번 주 날씨에 맞음</span>' : ''}</p>`
+      + `<p class="tf62${f ? '' : ' hold'}"><b>따라 할 한 가지</b>${esc(f || '문장 보류')}</p>`
+      + (n ? `<p class="ta62"><b>더할 옷</b>${z.add.map(w => esc(w.t) + (addL(w) ? ` <i>(${esc(addL(w))})</i>` : '')).join(' · ')}</p>` : '')
+      + (z.chk.length ? `<p class="tk62"><b>확인할 칸</b>${esc(z.chk.map(ck).join(' · '))}</p>` : '')
+      + (z.mine.length ? `<div class="tm62"><b>내 옷으로 되는 칸</b><ul>${z.mine.map(mt).join('')}</ul></div>` : '') + `</div></div>`; };
+  return `<section class="try62 try65" aria-label="안 입어 본 스타일 · 적당히 꾸민"><p class="tt62">안 입어 본 스타일 · 적당히 꾸민</p>`
+    + `<p class="ts62">가진 옷 조건 없이 적당히 꾸민 사진 ${R.length}장을 모두 보여 줘요. 내 옷에 더할 옷이 적은 사진부터, 같으면 이번 주 날씨에 맞는 사진부터예요. 사진을 누르면 그 코디의 자세한 화면으로 가요. 더할 옷 이름 옆에 표시가 없으면 옷장에 안 적은 옷이에요. 있는지 먼저 확인해 주세요.</p>`
+    + `<div class="tl62">${R.map(card).join('')}</div></section>`; }
 function gukbapHTML(){
   const A = curA, os = ownedSlots(), own = hasOwn(), G = gukbap(os), nv = [...os].reduce((n, k) => n + itemN(k), 0); // v51: 맨 위 '내 옷장 N벌'과 같은 수(칸 안의 벌까지 셈)
   const t0 = localNow(wx).date, dW = A.date === t0 ? ' 오늘' : A.date === addDays(t0, 1) ? ' 내일' : '';
@@ -6710,7 +6753,7 @@ function gukbapHTML(){
   let h = `<div class="buy44"><div class="ghero bhero44"><div class="gh-top"><p class="kick">${$('#where').innerHTML}</p><div class="ctl">${px.day}</div></div>`
     + `<div class="gh-mid"><h1 class="gh1 bh1" tabindex="-1"><span class="gtag44">국밥템</span>${h1}</h1><div class="ctl">${px.lv}</div></div></div>`
     // v45: 카드 숫자 ①·②의 정의 그대로(①만 '코디가 생김', ②는 코디 수는 같고 칸이 사진과 같은 종류·색이 됨). 추천 0개면 찾았는데 없다고
-    + need63HTML() + try62HTML(os) // v63(검토 v63 C · D)
+    + need63HTML() + try62HTML(os) + try65HTML(os) // v63(검토 v63 C · D) · v65(검토 v65 C): 꾸꾸꾸 아래 적당히 꾸민 묶음
     + `<p class="bsub44">${!own ? `가진 옷을 아직 안 적어서 여러 코디 사진에 같이 나오는 옷 순서예요. 가진 옷을 적으면 내 옷장 기준으로 다시 셈`
       : G.top.length ? `하나만 사도 내 옷장 ${nv}벌과 같이 새로 입는 코디가 생기거나, 지금 내 다른 옷으로 대신 입던 칸이 사진과 같은 종류·색이 되는 옷이에요. 순서는 카드의 순위 점수대로, 모든 기온·단계 기본 코디 ${G.scope.length}벌에서 셈`
       : `하나만 사서 내 옷장 ${nv}벌과 같이 새로 입는 코디가 생기거나, 대신 입던 칸이 사진과 같은 종류·색이 되는 옷을 모든 기온·단계 기본 코디 ${G.scope.length}벌에서 찾았는데 지금은 없어요`}</p>`
@@ -7431,6 +7474,8 @@ function planWeekCore(force, own){
       if (pick && pick.fl && !planWeekCore.nofl) { const pr = RW.find(r => r.o === pick);
         const w = pr && RW.filter(r => !r.o.fl && r.buys <= pr.buys && r.dead <= pr.dead && r.v >= pr.v - FL50P).sort((a, b) => b.v - a.v)[0];
         if (w) { pick = w.o; bv = w.v; planWeekCore.fsw = (planWeekCore.fsw || 0) + 1; if (window.__PWDBG) window.__PWDBG.push({d, k: w.o.L.key, fl50: pr.o.L.key, v: w.v, over: pr.v}); } }
+      // v65(검토 v65 D · 시험본 나): '다양하게'일 때만, 가진 옷만으로 되는 후보 안에서 바로 앞 날과 겉옷 칸이 다른 사진 먼저(날씨 · 확인 상태가 나빠지지 않을 때만)
+      if (pick && WK.vary && !WK.thrift) { const r65 = rot65(pick, RW, out, d, os); if (r65) { pick = r65.o; bv = r65.v; } }
       if (D.key && !force && pick && D.key !== pick.L.key && D.lvAt === lv) D.why = '예보가 바뀌어 전에 고른 코디가 이날 날씨와 안 맞아서 다시 고름';
       else delete D.why;
     }
@@ -7938,6 +7983,26 @@ function weekBuyHTML(B, plan){
   return h;
 }
 let wsetOpen = false;
+/* ---------- v65(검토 v65 D · 시험본 나만): 일주일 '다양하게'에서 가진 옷으로 되는 후보 안에서 겉옷 돌려 입기 ----------
+   바로 앞 날 = 계획에서 바로 앞 칸(지금 계획이 같은 코디 · 같은 상의를 견주는 앞 칸과 같음). 그 칸이 건너뛴 날 · 사진 없는 날이거나 겉옷이 가진 겉옷이 아니면 견주지 않음(그 앞 날짜로 넘어가 견주지 않음).
+   바꾸는 조건: 고른 사진의 겉옷 칸(가진 겉옷이면 입는 내 칸, 살 겉옷이면 그 칸)이 바로 앞 날과 같을 때, 가진 옷만으로 되는 다른 후보(칸마다 됨 · 핏 확인 · 배송) 중
+   겉옷 칸이 다르고 · 날씨 차이(dd)가 고른 사진보다 크지 않고 · 확인할 칸(핏 · 기장 · 배송 · 보유 확인) 수가 늘지 않고 · 두께 · 프린트 알림이 새로 생기지 않고 · 같은 단계/옆 단계가 같은 사진이 있으면 그중 점수가 가장 높은 것.
+   고른 사진에 살 옷이 있어도 바꿀 수 있음(가진 옷만으로 되는 사진으로만 바꾸니 그날 살 옷은 늘지 않음). 새 숫자(감점) 없음.
+   고정한 날 · 건너뛴 날 · 전에 골라 둔 날(다시 짜기 전)은 이 코드까지 오지 않음 */
+const outS65 = (x, s) => !x ? '' : s.code === 'ok' || s.code === 'soft' ? (wMk44(Object.assign({}, x, {ds: s})) || x.slot) : (x.slot || x.buy || '?');
+function rot65(pick, RW, out, d, os){
+  const lg = window.__ROT65, log = (why, x) => { if (lg) lg.push(Object.assign({d, k: pick.L.key, why}, x || {})); return null; };
+  const p1 = out[out.length - 1]; if (!p1 || !p1.L || !p1.status) return log('앞 날 사진 없음');
+  const x1 = p1.status.req.find(y => y.role === 'outer'), pk = p1.o && p1.o.ao ? p1.o.ao.k : x1 ? outS65(x1, x1.ds) : ''; if (!pk) return log('앞 날 겉옷 없음');
+  const xo = partsOf(pick.L).find(y => y.need === 'req' && y.role === 'outer'), k0 = pick.ao ? pick.ao.k : xo ? outS65(xo, dayPart(xo, d, os)) : ''; if (k0 !== pk) return log('이미 다른 겉옷');
+  const codes = o => partsOf(o.L).filter(x => x.need === 'req').map(x => dayPart(x, d, os).code);
+  const wr = o => o.dd <= 2 && !TS.nope[o.L.key] && codes(o).every(c => ['ok', 'soft', 'eta'].includes(c)), chk = o => codes(o).filter(c => ['soft', 'eta', 'info'].includes(c)).length;
+  const alts = RW.filter(r => r.o !== pick && wr(r.o)).map(r => Object.assign({k: outK64(r.o, d, os), c: chk(r.o)}, r)).filter(r => r.k !== null && r.k !== pk);
+  if (!alts.length) return log('다른 겉옷 후보 없음', {buy: !wr(pick)});
+  const c0 = chk(pick), bad = r => [r.o.dd > pick.dd ? '날씨' : '', r.c > c0 ? '확인' : '', r.o.fl && !pick.fl ? '알림' : '', !!r.o.adj !== !!pick.adj ? '단계' : ''].filter(Boolean);
+  const ok = alts.filter(r => !bad(r).length).sort((a, b) => b.v - a.v);
+  if (!ok.length) return log('다른 겉옷 후보가 모두 더 나쁨', {alts: alts.map(r => r.o.L.key + ':' + bad(r).join('·')), buy: !wr(pick)});
+  log('바꿈', {to: ok[0].o.L.key, from: pk, toK: ok[0].k, alts: alts.length, ready: ok[0].c === 0, buy: !wr(pick)}); return ok[0]; }
 /* ---------- v64(검토 v64 C · 시험본 나만): 일주일에서 같은 겉옷이 이어지는 까닭 한 줄 ----------
    일주일 계획에서 (예보가 있는 날 중) 겉옷 칸이 같은 날이 사흘 이상이고, 그날들의 후보 사진 중 가진 옷으로 되는 사진(계획과 같은 기준: 날씨 2° 안 · 내 취향 아님 뺌 · 칸마다 됨/핏 확인/배송)에
    다른 겉옷 칸의 사진이 하나도 없을 때만 한 줄. 다른 겉옷 사진이 '가진 옷 확인'만 남아 있으면(보유 여부 모호) 안 보임. 계획 · 판정 · 살 옷은 그대로(보여 주기만) */
@@ -8009,8 +8074,12 @@ function free64(){
 const ST64 = {no: '없음', unl: '옷장에 안 적음', fit: '다른 핏 · 기장 필요'};
 function free64HTML(){
   const F = free64(), L1 = LEVELS[st.level].name;
-  const it = F.need.map(q => `<li><b>${esc(q.lab)}</b><span class="ns64 ${q.st}">${ST64[q.st]}</span>${q.st === 'fit' && q.why ? `<span class="cn">${esc(q.why)}</span> ` : ''}${q.days.length}일(${q.days.map(md64).join(' · ')})`
-    + (q.fv.size > 1 ? ` · <span class="warn">사진마다 필요한 ${q.fk === 'fit' ? '핏' : '기장'}이 달라요(${esc([...q.fv].join(' · '))}) · 한 벌로 다 되는지 몰라요</span>` : '') + `</li>`).join('');
+  // v65(검토 v65 A): 더할 옷은 필요한 날이 많은 순(같으면 v64 순서) · 위 다섯 개만 보이고 나머지는 접음 · 맨 위 요약 한 줄(가장 여러 날 필요한 옷 두 개). 날 수 = 서로 다른 날짜 수(하루에 여러 번 나와도 하루)
+  const nd = F.need.map((q, i) => ({q, i})).sort((a, b) => b.q.days.length - a.q.days.length || a.i - b.i).map(z => z.q);
+  const li65 = q => `<li><b>${esc(q.lab)}</b><span class="ns64 ${q.st}">${ST64[q.st]}</span>${q.st === 'fit' && q.why ? `<span class="cn">${esc(q.why)}</span> ` : ''}${q.days.length}일(${q.days.map(md64).join(' · ')})`
+    + (q.fv.size > 1 ? ` · <span class="warn">사진마다 필요한 ${q.fk === 'fit' ? '핏' : '기장'}이 달라요(${esc([...q.fv].join(' · '))}) · 한 벌로 모두 되는지 확인되지 않았어요</span>` : '') + `</li>`;
+  const it = nd.slice(0, 5).map(li65).join(''), more = nd.slice(5);
+  const sum65 = nd.slice(0, 2).map(q => `${q.lab} ${q.days.length}일${q.st === 'unl' ? '(보유 확인)' : q.st === 'fit' ? '(다른 핏 · 기장)' : ''}`).join(' · ');
   const dy = F.days.map(p => {
     if (p.skip) return `<li class="fd64"><p class="fdh"><b>${dLab(p.d)}</b> 코디 불필요로 둔 날이라 비워 둬요</p></li>`;
     const wl = `<span class="cn">${esc(wxLine(p.A))}${p.A.fc ? '' : ' · 예보 없음 · 계절 참고'}</span>`;
@@ -8021,7 +8090,7 @@ function free64HTML(){
       + (p.chk.length ? `<p><b>확인할 것</b> ${esc(p.chk.join(' · '))}</p>` : '') + `</div></li>`; }).join('');
   return `<section class="free64" aria-label="가진 옷 조건 없이 짠 한 주"><p class="fb64">가진 옷 조건을 빼고 가상으로 짠 한 주예요. 지금 계획과 살 옷 목록은 바뀌지 않아요.</p>`
     + `<p class="fn64"><b>이 한 주를 입으려면 더할 옷 ${F.need.length}벌</b> <span class="cn">서로 다른 옷만 셌어요(같은 옷이 여러 날 나와도 한 번). 옷장에 안 적은 옷은 이미 있을 수도 있어요</span></p>`
-    + (F.need.length ? `<ul class="fi64">${it}</ul>` : '')
+    + (F.need.length ? `<p class="fs65">${esc(sum65)}에 필요해요.</p><ul class="fi64">${it}</ul>` + (more.length ? `<details class="fm65"><summary>나머지 ${more.length}벌</summary><ul class="fi64">${more.map(li65).join('')}</ul></details>` : '') : '')
     + `<ul class="fds64">${dy}</ul><p class="cn">같은 날씨 · 단계(${esc(L1)}, 그날 직접 고른 단계는 그대로)로, 날마다 날씨에 맞는 사진 중 이번 주에 아직 안 고른 차림을 먼저 골랐어요. 고정한 날은 고정 코디 그대로예요. 이 보기에서는 코디를 고정하거나 저장할 수 없어요.</p></section>`; }
 function bindWeek(){
   const box = $('#week');
