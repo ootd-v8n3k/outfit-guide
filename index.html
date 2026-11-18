@@ -2658,7 +2658,9 @@ function chk57(k, v){ const sf = k.slice(KEY.length), bad = [];
 // 원래 글자를 다른 이름으로 남김. 같은 글자를 이미 남겼으면 그 이름을 다시 씀(열 때마다 늘지 않게). 못 남기면 null
 function bk57(k, raw){ try { const pre = k + '.broken.';
     for (let i = 0; i < localStorage.length; i++) { const n = localStorage.key(i); if (n && n.startsWith(pre) && localStorage.getItem(n) === raw) return n; }
-    const d = new Date(), p = x => String(x).padStart(2, '0'), n = pre + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+    const d = new Date(), p = x => String(x).padStart(2, '0'), n0 = pre + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+    // v70(B2): 같은 초에 글자가 다른 값이 또 오면 앞 사본을 덮지 않고 이름 뒤에 '-2' · '-3' …을 붙임(첫 사본 이름은 v69와 같음). 빈 이름이 없거나 저장이 안 되면 남기지 못한 것(null). 사본은 어디서도 지우지 않음
+    let n = n0, i = 1; while (localStorage.getItem(n) !== null) { if (++i > 99) return null; n = n0 + '-' + i; }
     localStorage.setItem(n, raw); return localStorage.getItem(n) === raw ? n : null; } catch(e){ return null; } }
 function keep57(k, raw, bad){ const e = BRK57[k] = BRK57[k] || {raw, bad: [], bk: null, ok: false}; e.raw = raw; e.bad = [...new Set(e.bad.concat(bad))];
   if (!e.bk) e.bk = bk57(k, raw); setTimeout(draw57, 0); }
@@ -3598,7 +3600,8 @@ function clothSize(p){
   // v11: 체형이 좀 먼 후기로만 짐작한 건 ref(참고)로 표시해서 확정 사이즈처럼 보이지 않게.
   // 계산에 쓰는 후기는 그대로 두고, 가장 가까운 후기도 키 4cm 안팎(또는 키·몸무게 3씩) 넘게 차이 나면 참고로만 보여 줌
   const ref = loose || use[0].d > 1.0;
-  return {t: S[k], k, ref, x: sx / sw, why: `키·몸무게 가까운 후기 ${use.length}개: ` + use.map(r => `${r.h}cm ${r.w}kg ${r.s}${fw(r.f)}`).join(', ') + (ref ? ' (체형 차이가 좀 있어 참고만)' : '')};
+  // v70(C4): 가까운 후기가 1개뿐이면 one(보여 줄 때 '참고 · 후기 1개 기준'). 고르는 값 · ref는 그대로
+  return {t: S[k], k, ref, one: use.length === 1, x: sx / sw, why: `키·몸무게 가까운 후기 ${use.length}개: ` + use.map(r => `${r.h}cm ${r.w}kg ${r.s}${fw(r.f)}`).join(', ') + (ref ? ' (체형 차이가 좀 있어 참고만)' : '')};
 }
 // 신발: 평소 신는 사이즈와 같은 옵션(v11: 입력 이름을 '발 길이'에서 바꿈. 실제 발 길이를 넣으면 작게 나와서), 없으면 후기에 '큼'이 많을 때 작은 쪽
 function shoeSize(p){
@@ -3651,7 +3654,8 @@ function optTxt(p){
 }
 function sizeTxt(z, p){
   if (!z.t) return '';
-  return `<span class="sz${z.ref ? ' ref' : ''}">${esc(p ? szPlain(p, z.t, null, 1) : z.t)}</span>${z.ref ? ' <span class="cn">참고</span>' : ''}${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
+  const nt = z.one ? '참고 · 후기 1개 기준' : z.ref ? '참고' : ''; // v70(C4)
+  return `<span class="sz${z.ref || z.one ? ' ref' : ''}">${esc(p ? szPlain(p, z.t, null, 1) : z.t)}</span>${nt ? ` <span class="cn">${nt}</span>` : ''}${z.out ? ' <span class="warn">(품절)</span>' : ''}`;
 }
 function prodHTML(spec, label){
   const g = PBY[spec];
@@ -4249,6 +4253,19 @@ const bkHTML = () => `<div class="bkup"><p><b>백업 링크</b> <span class="cn"
   + `<p class="cn">칸마다 더한 벌과 벌마다 고른 핏·두께·기모·프린트·밝기·워싱·소재도 같이 담겨요.</p>` // v50
   + `<label><input type="checkbox" class="bkB"> 키·몸무게·발 크기·바지 실측·좋아하는 핏도 넣기</label>`
   + `<button type="button" class="plain" data-bkmk>백업 링크 만들기</button><div class="bkout"></div></div>`;
+// v70(C2 · 검토 v70): '없는 것만 더하기'(규칙은 아래 bkApply 그대로)에서 이미 있는 칸인데 링크의 그 칸 내용이 다 들어오지 못하는 칸과 그 칸의 링크 벌 수.
+//   더한 뒤 그 칸에 링크 내용이 다 들어 있으면(값이 같거나 빈 곳만 채워짐) 세지 않음. 셈 = 있음 · 없음이 다름 · 핏 · 기장이 다른 값으로 이미 적힘 ·
+//   첫 벌의 이름 · 두께 등이 다른 값으로 이미 적힘 · 이 기기에 벌 기록이 있는데 링크의 둘째 벌부터가 이 기기에 없음(이 기기에 벌 기록이 없으면 링크 벌이 들어감).
+//   벌 수 = 링크에서 '없음'이면 0, 링크에 벌 기록이 있으면 그 수, 없으면 1. 지금 옷장에 그 옷이 없다는 뜻은 아님(같은 옷일 수 있음)
+function bkSkip70(o){ const A = (V, k) => V && Array.isArray(V[k]) ? V[k] : null, FV = ['n', 'th', 'pr', 'br', 'wa', 'ma', 'gm'];
+  const J = x => JSON.stringify(Object.keys(x || {}).sort().reduce((a, q) => { a[q] = x[q]; return a; }, {}));
+  const fits = (l, c, ks) => (ks || Object.keys(l || {})).every(q => !l || l[q] == null || l[q] === '' || c[q] == null || c[q] === l[q]); // 링크 값이 빈 곳에 채워지거나 이미 같음
+  const ks = Object.keys(o.s || {}).filter(k => { if (!(k in OWN.s)) return false; if (o.s[k] !== OWN.s[k]) return true;
+    if (!fits((o.f || {})[k], OWN.f[k] || {})) return true;
+    const lv = A(o.v, k), cv = A(OWN.v, k); if (!lv || !cv) return false;
+    if (!fits(lv[0], cv[0] || {}, FV)) return true;
+    return lv.slice(1).some(y => !cv.slice(1).some(z => J(z) === J(y))); });
+  return {ks, n: ks.reduce((a, k) => a + (o.s[k] === 'no' ? 0 : A(o.v, k) ? o.v[k].length : 1), 0)}; }
 function bkApply(o, b, mode){
   // v57: 깨진 옷장 기록(·설정)을 따로 남겨 둔 상태에서 백업 링크를 적용하면 사용자가 고른 것으로 보고 저장함. 따로 남기지 못했으면 그대로 저장 안 함
   [OKEY].concat(b ? [KEY] : []).forEach(k => { if (held57(k) && BRK57[k].bk) BRK57[k].ok = true; }); draw57();
@@ -4292,16 +4309,19 @@ function showBackupImport(L){
     + `<p class="cn">일주일 코디 설정·취향·지역·외출 시간은 백업 링크에 안 담겨서 그대로예요</p>`
     + `<p class="cn">옷 사진도 이 링크엔 없어요. 내려받아 둔 옷 사진 파일이 있으면 '내 옷장' 창 아래 '옷 사진 파일'에서 다시 넣어 주세요.</p>` // v49
     + `<p><button type="button" class="go" data-bk="rep">이 링크로 바꾸기</button> 지금 옷장 기록을 지우고 링크 내용으로 바꿔요${b ? '. 몸 치수도 링크 값으로 바꿔요' : '. 몸 치수는 링크에 없어서 그대로 둬요'}</p>`
-    + `<p><button type="button" class="plain" data-bk="add">없는 것만 더하기</button> 지금 기록은 그대로 두고 이 기기에 없는 칸만 더해요. 이미 적은 칸(있음·없음·핏·기장)은 안 바꿔요${b ? '. 몸 치수는 빈 칸만 채워요' : ''}</p>`
+    + `<p><button type="button" class="plain" data-bk="add">없는 것만 더하기</button> 지금 기록은 그대로 두고 이 기기에 없는 칸만 더해요. 이미 적은 칸(있음·없음·핏·기장)은 안 바꿔요${b ? '. 몸 치수는 빈 칸만 채워요' : ''}${skipTx70(bkSkip70(o), false) ? '. ' + esc(skipTx70(bkSkip70(o), false).replace(/\.$/, '')) : ''}</p>`
     + (empty ? '<p class="cn">지금 이 기기 옷장이 비어 있어서 두 방법 결과가 같아요</p>' : '')
     + `<div class="impx"><button type="button" class="plain" data-x>안 적기</button></div>`;
   d.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return;
-    if (t.dataset.bk) { const rep = t.dataset.bk === 'rep', r = bkDo69(o, b, t.dataset.bk); if (r.msg) { bkMsg69(d, r.msg); return; } const nb = r.nb; // v69(검토 v69 B)
-      d.innerHTML = `<p><b>${rep ? '링크 내용으로 바꿨어요' : '없는 칸만 더했어요'}.</b> 지금 옷장: ${esc(cntText(ownCount(OWN), true))}${nb ? ` · 몸 치수 ${nb}칸 바뀜` : ''}</p>${close}`;
+    if (t.dataset.bk) { const rep = t.dataset.bk === 'rep', sk = rep ? '' : skipTx70(bkSkip70(o), true), r = bkDo69(o, b, t.dataset.bk); if (r.msg) { bkMsg69(d, r.msg); return; } const nb = r.nb; // v69(검토 v69 B) · v70(C2): 건너뛸 칸은 더하기 전에 셈
+      d.innerHTML = `<p><b>${rep ? '링크 내용으로 바꿨어요' : '없는 칸만 더했어요'}.</b>${sk ? ' ' + esc(sk) : ''} 지금 옷장: ${esc(cntText(ownCount(OWN), true))}${nb ? ` · 몸 치수 ${nb}칸 바뀜` : ''}</p>${close}`;
       buildBody(); drawHead(); if (typeof wx !== 'undefined' && wx) render(); return; }
     if (t.hasAttribute('data-x')) d.remove(); });
   document.body.appendChild(d);
 }
+// v70(C2): '없는 것만 더하기'에서 건너뛰는 칸 안내(누르기 전 done=false · 끝 문구 done=true). 칸 이름은 세 개까지, 나머지는 '외 n칸'. 지금 옷장에 그 옷이 없다고 단정하지 않음
+const skipTx70 = (sk, done) => { if (!sk.ks.length) return ''; const nm = sk.ks.slice(0, 3).map(k => slotName(k)).join(', ') + (sk.ks.length > 3 ? ` 외 ${sk.ks.length - 3}칸` : '');
+  return sk.n ? `이미 있는 ${sk.ks.length}칸은 건너뛰어서 링크의 그 칸 옷 ${sk.n}벌은 ${done ? '더하지 않았어요' : '더하지 않아요'}(${nm}).` : `이미 있는 ${sk.ks.length}칸은 링크 내용으로 ${done ? '바꾸지 않았어요' : '바꾸지 않아요'}(${nm}).`; };
 
 // v69(검토 v69 B): '이 링크로 바꾸기' · '없는 것만 더하기'는 저장할 키(옷장 · 몸 치수가 바뀌면 설정)를 먼저 봄.
 //   다른 탭과 맞추는 중 · 깨진 기록을 따로 남기지 못한 채 멈춤이면 아무것도 바꾸지 않고(화면 기록도 그대로) 까닭을 알림. 저장 공간 부족은 바꾼 뒤 확인해서 되돌림(build 2).
@@ -4614,10 +4634,13 @@ function reasonsOf(o){
 
 function sizeLine(p){
   // v12: 바지는 허리단면·총장을 넣었으면 제품 카드와 같은 판정(pantsPick)을 씀(제품 카드 29, 7일 준비 28처럼 다르게 말하던 문제)
-  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k]; return `<span class="sz${q.ref ? ' ref' : ''}">${esc(szPlain(p, t, q, 1))}</span>` + (q.ref ? ' <span class="cn">참고 · 허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음</span>' : '') + (p.out && p.out.includes(t) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''); } }
+  // v70(C4): 가까운 후기 1개로 고른 사이즈는 '참고 · 후기 1개 기준'을 붙임(고르는 값 · 품절 판단은 그대로)
+  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k], nt = [q.ref ? '허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음' : '', q.one ? '후기 1개 기준' : ''].filter(Boolean).join(' · ');
+    return `<span class="sz${q.ref || q.one ? ' ref' : ''}">${esc(szPlain(p, t, q, 1))}</span>` + (nt ? ` <span class="cn">참고 · ${nt}</span>` : '') + (p.out && p.out.includes(t) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''); } }
   const z = sizeOf(p), sh = isShoe(p);
   const needs = sh ? !st.bf : (!st.bh || !st.bw);
-  if (z.t && z.t !== '실측표로 고르기') return `<span class="sz${z.ref ? ' ref' : ''}">${esc(z.t)}</span>` + (z.ref ? ' <span class="cn">참고 · 체형이 좀 먼 후기로 짐작</span>' : '') + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
+  const zn = [z.one ? '후기 1개 기준' : '', z.ref ? '체형이 좀 먼 후기로 짐작' : ''].filter(Boolean).join(' · ');
+  if (z.t && z.t !== '실측표로 고르기') return `<span class="sz${z.ref || z.one ? ' ref' : ''}">${esc(z.t)}</span>` + (zn ? ` <span class="cn">참고 · ${zn}</span>` : '') + ((z.out || (p.out && p.out.includes(z.t))) ? ' <span class="warn">(이 사이즈 품절)</span>' : '');
   if (needs) return `<button class="plain" type="button" data-toset="${sh ? 'bf' : 'bh'}" style="padding:1px 7px;font-size:12px">${sh ? '평소 신발 사이즈' : '키·몸무게'} 넣으면 계산</button>`;
   // v12: 사이즈 목록이 비어 있는 신발(예약배송 문구만 있던 것)은 '실측 확인' 대신 상품 페이지에서 고르라고 씀
   return z.note ? esc(z.note) + ' · 환산표 확인' : sh ? '사이즈 목록을 못 읽음 · 상품 페이지에서 확인' : '실측 확인';
@@ -4643,9 +4666,9 @@ function pantsPick(p){
   const c = p.chart, S = p.sizes || [];
   if (!c || !c.rows || c.rows.length !== S.length) return null;
   const iL = c.cols.indexOf('총장'), iW = c.cols.indexOf('허리단면'), el = elasticW(p);
-  let k = null, basis = '', ref = false, nr = 0, by = ''; // v66(검토 v66 C): by = 고른 방법(w 허리단면 · r 후기) · nr = 허리 차이가 비슷한 사이즈 수(경계 표시용 · 고르는 값은 그대로)
+  let k = null, basis = '', ref = false, nr = 0, by = '', one = false; // v70(C4): one = 가까운 후기 1개로 고름(후기로 고를 때만) // v66(검토 v66 C): by = 고른 방법(w 허리단면 · r 후기) · nr = 허리 차이가 비슷한 사이즈 수(경계 표시용 · 고르는 값은 그대로)
   const byReview = () => { if (S.length <= 1) return; const z = clothSize(p);
-    if (z.k != null && z.t && S[z.k] === z.t) { k = z.k; ref = !!z.ref; by = 'r'; basis = (el && st.pw ? '고무줄 허리라 허리단면 대신 ' : '') + (z.ref ? '체형이 좀 먼 후기로 짐작한 사이즈(참고)' : '키·몸무게 비슷한 후기로 고른 사이즈'); } };
+    if (z.k != null && z.t && S[z.k] === z.t) { k = z.k; ref = !!z.ref; one = !!z.one; by = 'r'; basis = (el && st.pw ? '고무줄 허리라 허리단면 대신 ' : '') + (z.ref ? '체형이 좀 먼 후기로 짐작한 사이즈(참고)' + (z.one ? ' · 후기 1개 기준' : '') : z.one ? '키·몸무게 비슷한 후기 1개로 고른 사이즈(참고)' : '키·몸무게 비슷한 후기로 고른 사이즈'); } };
   if (el && st.pw) byReview();
   if (k == null && st.pw && iW >= 0) {
     // 허리 차이가 가장 작은 사이즈. 0.6cm 안으로 비슷하면 총장이 내 바지에 더 가까운 쪽(총장을 넣었을 때만)
@@ -4657,7 +4680,7 @@ function pantsPick(p){
     if (k != null) { by = 'w'; basis = basis || '허리단면이 가장 가까운 사이즈'; if (el) { ref = true; basis += ' · 고무줄 허리라 실제론 한 치수 작아도 맞을 수 있어 참고만'; } }
   }
   if (k == null) byReview();
-  return {k, basis, ref, iL, iW, S, rows: c.rows, row: k != null ? c.rows[k] : null, nr, by};
+  return {k, basis, ref, iL, iW, S, rows: c.rows, row: k != null ? c.rows[k] : null, nr, by, one};
 }
 function fitScore(L){
   const p = pantsOf(L), r = {cmp: false, pf: false, d: 0};
@@ -5900,6 +5923,20 @@ function tapNote55(el, msg){ const sp = document.createElement('span'); sp.class
 function note60(sel, msg, fb){ const el = document.querySelector(sel), p = `<p class="cn own55n own60n" role="status">${esc(msg)}</p>`;
   if (el) (el.closest('.cact') || el).insertAdjacentHTML('afterend', p); else { const f = fb && document.querySelector(fb); if (f) f.insertAdjacentHTML('afterbegin', p); } }
 function note60el(el, msg){ const sp = document.createElement('span'); sp.className = 'cn own55n own60n'; sp.setAttribute('role', 'status'); sp.textContent = msg; el.replaceWith(sp); }
+// v70(C1): 칸을 '없음'으로 바꿀 때 같이 지워지는 기록 문장. 벌 기록(두 벌 이상이면 벌 수, 한 벌이면 그 벌에 적은 항목) · 핏 · 기장이 있을 때만 글을 만듦(없으면 '' = 묻지 않음).
+//   글에는 같은 누름이 실제로 지우는 것만 적음: 위 둘 + (mk일 때) 그 칸 제품의 '이 제품 있어요' · '받음' 표시. 지우는 방식 · 기록 모양은 그대로
+//   v70(C1b · 검토 v70): '적어 둔 가진 옷' 줄의 ✕(칸 기록 's:')도 같은 규칙. ✕는 칸 · 핏 · 벌만 지우고 제품 · 받음 표시는 안 지워서 mk = false
+function noRec70(k, mk = true){ const its = ownItems(k), n = its.length, V = OWN.v && Array.isArray(OWN.v[k]) ? OWN.v[k] : [], a = [];
+  if (n > 1) a.push(`옷 ${n}벌 기록`);
+  else { const z = V[0] || {}, NM = {n: '이름', th: '두께', pr: '프린트', br: '밝기', wa: '워싱', ma: '소재', gm: '기모'}, fs = Object.keys(NM).filter(q => z[q]).map(q => NM[q]); if (fs.length) a.push(`옷에 적은 ${fs.join(' · ')} 기록`); }
+  const f0 = OWN.f[k] || {}, fl = [...new Set(Object.keys(f0).filter(q => f0[q]).concat(V.slice(1).flatMap(y => ['fit', 'len'].filter(q => y && y[q]))))].map(q => q === 'fit' ? '핏' : q === 'len' ? '기장' : '모양');
+  if (fl.length) a.push(`${[...new Set(fl)].join(' · ')} 기록`);
+  if (!a.length) return '';
+  const pN = !mk ? 0 : Object.keys(OWN.p).filter(key => { const p = PID[key.split('|')[0]]; return p && kindOf(p) + '|' + key.split('|')[1] === k; }).length, gN = mk ? gotK54(k).length : 0;
+  if (pN) a.push(`'이 제품 있어요' 표시 ${pN}개`); if (gN) a.push(`'받음' 표시 ${gN}개`);
+  const L = a[a.length - 1], j = a.length > 1 ? a.slice(0, -2).map(x => x + ', ').join('') + wwa(a[a.length - 2]) + ' ' + L : L;
+  return `이 칸의 ${j}${jongOf(L) ? '이' : '가'} 같이 지워져요.`; }
+const xRec70 = x => { const t = String(x)[0] === 's' ? noRec70(String(x).slice(2), false) : ''; return t ? {t, keep: ''} : null; }; // v70(C1b): ✕ 묻는 글(칸 기록 's:'만)
 // 가진 옷 칩 누름(오늘 화면·7일 준비 공통)
 function bindOwn(box, after){
   box.querySelectorAll('[data-own]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.own, v = b.dataset.v;
@@ -5910,12 +5947,15 @@ function bindOwn(box, after){
     // v49: 있음 → 없음으로 바꿔 그 칸 사진이 지워지면 먼저 물어봄(사진이 없으면 전처럼 바로)
     // v54: '받음'으로 들어온 칸을 '없음'으로 바꿀 때는 사진을 지우지 않음('있음'으로 적히지 않은 칸 사진으로 남음 · 검토 v53 3·4번).
     //      없음 → 모름 · 모름 → 있음은 이 칸이 원래 '있음'이 아니라 잃는 사진이 없어서 묻지 않음(v53은 사진이 남은 칸이면 '없음으로 바꾸면 사진도 지워져요'라고 물었음)
-    if (v !== '있음' || gotK54(k).length) { mut(); saveO(); after(); return; }
-    phGuard(b, [k], mut, `'${slotName(k)}' 칸을 없음으로 바꾸면`, '없음으로 바꾸기', () => { saveO(); after(); }); }));
+    // v70(C1): 벌 기록이나 핏 · 기장이 같이 지워지면 사진이 없어도 먼저 묻고 지워지는 기록을 적음. '받음'으로 들어온 칸은 사진을 지우지 않으니(v54) 남는다고 알림. 지울 기록이 없으면 v69 그대로
+    if (v !== '있음') { mut(); saveO(); after(); return; }
+    const rc = noRec70(k), got = gotK54(k).length, ph = typeof phList === 'function' ? phList(k).length : 0;
+    if (got && !rc) { mut(); saveO(); after(); return; }
+    phGuard(b, got ? [] : [k], mut, `'${slotName(k)}' 칸을 없음으로 바꾸면`, '없음으로 바꾸기', () => { saveO(); after(); }, rc ? {t: rc, keep: got && ph ? `옷 사진 ${ph}장은 지우지 않아요.` : ''} : null); }));
   box.querySelectorAll('[data-ownf]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v;
     OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; saveO(); after(); }));
   box.querySelectorAll('[data-ownx]').forEach(b => b.addEventListener('click', () => { const x = b.dataset.ownx, sk = ownxSlot(x);
-    phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); after(); }); }));
+    phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); after(); }, xRec70(x)); })); // v70(C1b)
   // v40: 지우기 전에 확인(검토 v39 2번). 브라우저 confirm()은 앱 안 브라우저에서 막힐 수 있어 화면 안 상자로. 지운 뒤 머리글도 바로 고침(전엔 새로고침 전까지 'N벌')
   const oc = box.querySelector('#ownClr'); if (oc) oc.addEventListener('click', () => {
     const q = document.createElement('div'); q.className = 'clrq'; q.setAttribute('role', 'alertdialog');
@@ -6701,8 +6741,12 @@ function over66(slot){ if (!slot) return null;
   const all = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && inSlot57(p, slot));
   if (all.some(p => !over(p))) return null;
   return all.filter(p => over(p) && !userSizeOut(p)).sort((a, b) => a.price - b.price)[0] || null; }
-function np66(c){ const q = c.rs ? over66(c.rs) : null; if (!q) return '대표 제품 없음';
-  return `예산 안에서 확인된 대표 제품이 없어요<details class="ov66"><summary>예산 초과 제품 보기</summary><span>앱 자료 안에서 확인된 제품 중 가장 싼 것 · ${esc(shortName(q.name))} · ${won(q.price)} · ${md(q.checked)} 확인 가격. 예산(10만원)을 넘어서 구매 추천 · 합계에는 넣지 않아요</span></details>`; }
+// v70(A2): 고른 제품보다 싼 예산 초과 제품이 내 사이즈 품절(전 사이즈 품절 포함)로 빠졌으면 그대로 말함. 고르는 방식(over66)은 그대로
+const cut70 = (slot, q) => PRODUCTS.some(p => p.id !== q.id && roleOf(p) && inSlot57(p, slot) && over(p) && userSizeOut(p) && p.price < q.price);
+// v70(A4): 칸(종류)이 정해지지 않은 줄('○○ 상의(겉옷 안에 입는 것)')은 대표 제품을 찾지 않으므로 '없음'이라 하지 않음
+function np66(c){ if (!c.rs) return '종류를 정하지 않은 줄이라 대표 제품은 고르지 않아요';
+  const q = over66(c.rs); if (!q) return '대표 제품 없음';
+  return `예산 안에서 확인된 대표 제품이 없어요<details class="ov66"><summary>예산 초과 제품 보기</summary><span>${cut70(c.rs, q) ? '앱 자료 안에서 내 사이즈가 남은 제품 중 가장 싼 것' : '앱 자료 안에서 확인된 제품 중 가장 싼 것'} · ${esc(shortName(q.name))} · ${won(q.price)} · ${md(q.checked)} 확인 가격. 예산(10만원)을 넘어서 구매 추천 · 합계에는 넣지 않아요</span></details>`; }
 /* ---------- v66(검토 v66 C · 시험본 나만): 필요한 옷 칸 대표 제품의 '설정에 넣은 치수 기준' 사이즈 ----------
    계산은 '내 사이즈 품절'(userSizeOut)이 쓰는 것 그대로(새 계산 없음):
      바지 = 실측표 줄 수가 사이즈 수와 맞으면 pantsPick(허리단면을 넣었으면 설정 허리단면 ↔ 실측표 허리단면 · 아니면 후기). 아니면 아래 옷과 같음
@@ -6729,7 +6773,7 @@ function cls66(p){
   const z = clothSize(p); if (!z.t || z.t === '실측표로 고르기') return {c: 'lack', why: '키 · 몸무게가 가까운 후기가 없음'};
   if (z.ref) return {c: 'lack', why: '키 · 몸무게가 가까운 후기가 적어 참고로만 짐작'};
   if (z.x != null && Math.abs(z.x - Math.round(z.x)) > EDGE66) return {c: 'chk', why: '후기로 고른 값이 두 사이즈 가운데쯤(경계)', t: z.t, edge: true};
-  return {c: 'ok', t: z.t, m: 'r', why: '설정 키 · 몸무게와 가까운 구매 후기로 고른 사이즈'}; }
+  return {c: 'ok', t: z.t, m: 'r', why: '설정 키 · 몸무게와 가까운 구매 후기로 고른 사이즈', one: !!z.one}; } // v70(C4): one = 가까운 후기 1개(나눔 c는 그대로)
 function stock66(p, t){ const n = String(p.stockNote || ''), out = (p.out || []).map(String);
   if (p.stock) { const o = String(p.stock).split(' ').find(x => parseInt(x, 10) === parseInt(t, 10)); if (o) return `${md(p.checked)} 확인 때 ${/x$/.test(o) ? '품절' : '주문 가능'}`; }
   if (n && !/확인 안 함/.test(n)) return `${md(p.checked)} 확인 때 ${out.includes(String(t)) ? '품절' : '주문 가능'}`;
@@ -6737,7 +6781,7 @@ function stock66(p, t){ const n = String(p.stockNote || ''), out = (p.out || [])
 function sz66(p){ const r = cls66(p); if (r.c !== 'ok') return '';
   // v66 검수 뒤: 무엇을 기준으로 냈는지(후기 · 허리단면 · 평소 신발 사이즈)를 줄에 적고, 재고는 한 마디만. '참고일 뿐 · 재고 다시 확인'은 칸 아래 '어떻게 셌나요'에 한 번
   const lab = r.m === 's' ? `평소 신발 사이즈 기준 ${r.t}(참고)` : r.m === 'w' ? `설정에 넣은 허리단면 기준 ${r.t} 사이즈(참고)` : `키·몸무게가 비슷한 구매 후기 기준 ${r.t} 사이즈(참고)`;
-  return `<p class="sz66">${esc(lab)}<span class="cn"> · ${esc(stock66(p, r.t))}</span></p>`; }
+  return `<p class="sz66">${esc(lab)}${r.one ? ' · 후기 1개 기준' : ''}<span class="cn"> · ${esc(stock66(p, r.t))}</span></p>`; }
 /* ---------- v67(검토 v67 A): 갖출 옷 이름 옆에 사진 속 제품의 색 이름 ----------
    '사진 속 제품 색' = 그 옷이 나오는 사진에 태그된 제품의 이름 끝 색 이름(대괄호 등 · 앱 색 묶음에 들어가는 이름만). 태그가 없거나 색 이름이 없으면 '미확인'(사진을 보고 짐작하지 않음).
    칸 색과 같은 이름(그레이 · 회색 · GRAY 등)이면 안 붙임. 다르면 이름 옆에 "(사진 속 제품 색: 차콜 그레이)" · 여러 가지면 세 개까지 + '외 n'.
@@ -6767,7 +6811,10 @@ function need63HTML(){
   const stL = c => c.st === 'no' ? '<span class="ns no">없다고 적음</span>' : c.st === 'fit' ? '<span class="ns fit">같은 종류 · 색은 있지만 핏 · 기장이 다른 벌</span>' : '<span class="ns unl">옷장에 안 적음 · 먼저 보유 확인</span>';
   // v64(검토 v64 B1 · B2): 옷 한 줄 = 이름 · 상태 · (두 벌까지 0장일 땐 필요한 사진 수) · 대표 제품 + 고를 때 볼 한 가지(바지 핏 · 겉옷 기장, 사진에 적힌 값만)
   const it64 = (c, base) => `<li><b>${esc(c.nm)}</b>${pc67(c67(c))}${stL(c)}${base ? `${base}장 중 ${c.needB.length}장에 필요해요 · ` : ''}${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)}${base ? '' : ` <span class="cn">${md(c.p.checked)} 확인 가격</span>`}` : np66(c)}${c.p ? sz66(c.p) : ''}${ft64(c, r.lv)}${c67(c).det}</li>`; // v67(검토 v67 A): 이름 옆 사진 속 제품 색 · 펼쳐 보는 사진별 색 // v66(검토 v66 C): 대표 제품이 계산 가능이면 설정 치수 기준 사이즈 한 줄 // v66(검토 v66 B): 예산 안 제품이 없으면 예산 초과 제품은 눌러야 보임
-  const kinds = cs => cs.map(c => (c.slot || c.base || '').split('|')[0]).filter((k, i, a) => a.indexOf(k) === i).map(kd => { const n = r.kindN(kd), m = r.cands.filter(c => (c.slot || c.base || '').split('|')[0] === kd).length; return m > 1 ? `${jg(kd, '은', '는')} 색을 합치면 ${n}장` : ''; }).filter(Boolean);
+  // v70(A3): 같은 종류 후보가 둘 이상인 까닭을 사실대로. 색이 둘 이상일 때만 '색을', 핏 · 기장이 다른 벌 후보가 있으면 그 말을 붙임(셈 r.kindN은 그대로)
+  const kinds = cs => cs.map(c => (c.slot || c.base || '').split('|')[0]).filter((k, i, a) => a.indexOf(k) === i).map(kd => { const n = r.kindN(kd), g = r.cands.filter(c => (c.slot || c.base || '').split('|')[0] === kd); if (g.length < 2) return '';
+    const nc = new Set(g.map(c => (c.slot || c.base || '').split('|')[1] || '')).size, vw = [...new Set(g.filter(c => c.st === 'fit').map(c => c.k === 'len' ? '기장' : '핏'))].join(' · ');
+    return `${jg(kd, '은', '는')} ${nc > 1 ? (vw ? `색 · ${vw}이 다른 것까지 합치면` : '색을 합치면') : vw ? `${vw}이 다른 것까지 합치면` : '이 줄들을 합치면'} ${n}장`; }).filter(Boolean);
   let l1, l2, body = '';
   if (r.top) { const cs = r.top.cs, nm = cs.map(nmS);
     l1 = `${cs.length > 1 ? `${jg(nm[0], '과', '와')} ${nm[1]}, 두 벌이` : `${nm[0]} 한 벌이`} 있으면 ${scope} ${r.top.gB}장을 입을 수 있어요.`;
@@ -6775,8 +6822,10 @@ function need63HTML(){
     body = `<ul class="nis">${cs.map(c => it64(c)).join('')}</ul><p class="n2">${l2}</p><div class="nps">${r.top.photos.slice(0, 3).map(z => `<figure class="np"><span class="npi">${wImg44(z.L, .75)}</span><figcaption>${z.w === 'ok' ? '바로 입을 수 있음' : '핏 · 기장 등 확인 남음'}${r.P ? ` · 이번 주 ${z.n}일 맞음` : ''}</figcaption></figure>`).join('')}</div>`
       + `<p class="n2">새로 되는 사진 ${r.top.gB}장: 바로 입을 수 있는 사진 ${r.top.ok}장 · 핏 · 기장 등 확인이 남는 사진 ${r.top.chk}장${r.top.other ? ` · 이 ${cs.length > 1 ? '두 벌' : '한 벌'}이 있어도 다른 옷이 더 필요한 사진 ${r.top.other}장` : ''}</p>`
       ; } // v64: 옷 줄은 결론 바로 아래로 옮김(위 body 첫머리)
-  else { l1 = '두 벌까지 더해도 새로 되는 사진이 없어요.'; l2 = `${scope} ${r.base}장에 가장 많이 필요한 옷이에요(지금 가진 옷으로 되는 사진 ${r.now}장).`;
-    body = `<p class="n2">${l2}</p><ul class="nis">${r.alt.map(c => it64(c, r.base)).join('')}</ul>`; }
+  else { // v70(A1): 첫 문장에 무엇을 셌는지(scope). 필요한 사진이 0장인 옷은 목록에서 빼고, 남는 옷이 없으면 목록 머리말(l2)도 안 냄. 보여 주기만 바꿈(r.alt는 그대로)
+    const alt = r.alt.filter(c => c.needB.length);
+    l1 = `${scope} 중에는 두 벌까지 더해도 새로 되는 사진이 없어요.`; l2 = `${scope} ${r.base}장에 가장 많이 필요한 옷이에요(지금 가진 옷으로 되는 사진 ${r.now}장).`;
+    body = alt.length ? `<p class="n2">${l2}</p><ul class="nis">${alt.map(c => it64(c, r.base)).join('')}</ul>` : ''; }
   const dw = r.days.map(z => `${dLab(z.d)} ${deg(z.t)}${z.fc ? '' : '(예보 없음 · 계절 참고)'}`).join(' · ');
   return `<section class="need63" aria-label="이 단계를 입으려면 필요한 옷"><p class="nt63">이 단계를 입으려면 필요한 옷 · ${esc(lvN)}</p><p class="n1">${l1}</p>${body}`
     + `<details class="nf64"><summary>어떻게 셌나요</summary><p class="nf">날씨 기준: 이번 주 날짜마다 그날 체감(${esc(dw)})과 사진 체감 범위가 2° 안이면 맞는 사진으로 봐요(일주일 계획과 같은 기준). 새로 더하는 칸은 핏 · 기장 · 두께를 모르는 채로 세고, 핏 · 기장이 다른 벌은 사진의 핏 · 기장으로 셌어요. 보여 주기만 해요. 일주일 계획 · 판정 · 살 옷 목록은 그대로예요. '고를 때 볼 한 가지'는 그 옷이 나오는 사진에 적힌 핏 · 기장 값을 센 거예요. 내 몸에 맞는 핏이나 실제 제품의 핏 · 기장이라는 뜻은 아니에요.</p>${/class="sz66"/.test(body) ? '<p class="nf">참고일 뿐이고 맞는지는 입어 봐야 알아요. 재고는 상품 페이지에서 다시 확인해 주세요.</p>' : ''}</details></section>`; } // v66 검수 뒤: 사이즈 줄이 있을 때만 한 번
@@ -7169,7 +7218,7 @@ function altHTML(L, p, a, s){
     + (g.ok ? '' : `<br><span class="df">달라지는 점: ${esc(g.why)}</span>`)
     + (g.ok && g.unk && g.unk.length ? `<br><span class="cn">확인 못 한 특징: ${esc(g.unk.join('·'))} · 상품 페이지 사진으로 확인</span>` : '')
     + `<br><span class="df">${esc(diffs(p, a, s).join(' · '))}</span>` + (why ? `<br><span class="cn">${esc(why)}</span>` : '')
-    + `<br>${roleOf(a) === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz${q.ref ? ' ref' : ''}">${esc(szPlain(a, q.S[q.k]))}</span> 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
+    + `<br>${roleOf(a) === 'pants' ? (() => { const q = pantsPick(a); return q && q.row ? `추천 <span class="sz${q.ref || q.one ? ' ref' : ''}">${esc(szPlain(a, q.S[q.k]))}</span>${q.one ? ' <span class="cn">참고 · 후기 1개 기준</span>' : ''} 총장 ${q.row[q.iL]}·허리 ${q.row[q.iW]}` : sizeLine(a); })() : sizeLine(a)}`
     + ` · ${won(a.price)} <span class="cn">${md(a.checked)} 확인</span>${a.stockNote ? ' · ' + esc(a.stockNote) : ''} · ${lnk(a, '무신사 ↗')}</span></div>`;
 }
 function cardHTML(L, i){
@@ -7186,7 +7235,7 @@ function cardHTML(L, i){
   const fb0 = L.fb && L.fb[s.id], fb = typeof fb0 === 'string' ? FB[fb0] : fb0;
   // 품절이어도 바지는 사이즈를 계산해 둔다(대안 비교가 이 사이즈 기준이고, 재입고되면 바로 씀)
   const sz = p.soldAll ? (q && q.row ? `<span class="sz">${esc(q.S[q.k])}</span> <span class="warn">품절</span> <span class="cn">재입고되면 이 사이즈 · ${esc(q.basis)}</span>` : '<span class="warn">품절이라 계산 안 함</span>')
-    : q && q.row ? `<span class="sz${q.ref ? ' ref' : ''}">${esc(q.S[q.k])}</span>${p.out && p.out.includes(q.S[q.k]) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''} <span class="cn">${esc(q.basis)}</span>`
+    : q && q.row ? `<span class="sz${q.ref || q.one ? ' ref' : ''}">${esc(q.S[q.k])}</span>${p.out && p.out.includes(q.S[q.k]) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''} <span class="cn">${esc(q.basis)}</span>`
     : sizeLine(p);
   const why = [z.why, chartLine(p, zz)].filter(Boolean);
   const facts = [p.fitPct, p.reviewCount ? '후기 ' + Number(p.reviewCount).toLocaleString('ko-KR') + '개' : ''].filter(Boolean).join(' · ');
@@ -7937,8 +7986,11 @@ function buyActs(key, slot, slots){
     + `<button type="button" class="plain sm" data-bst="plan" aria-pressed="${r.st === 'plan'}">구매 예정</button>`
     + `<button type="button" class="plain sm" data-bst="ordered" aria-pressed="${r.st === 'ordered'}">주문함</button>`
     + (r.st === 'ordered' ? `<label class="eta">도착 예정 <input type="date" data-eta value="${esc(r.eta || '')}"></label><button type="button" class="plain sm" data-bst="got">받음</button>` : '')
-    + (r.st ? `<button type="button" class="plain sm" data-bst="">기록 지우기</button>` : '') + '</span>';
+    + (r.st ? `<button type="button" class="plain sm" data-bst="">기록 지우기</button>` : '')
+    + ((r.st === 'plan' || r.st === 'ordered') && at70(r.at) ? `<span class="cn bat70">${r.st === 'plan' ? '구매 예정' : '주문함'}(${md(r.at)}에 표시)</span>` : '') + '</span>';
 }
+// v70(C3): '구매 예정' · '주문함'을 누른 날(기록의 at = 마지막으로 그 상태를 누른 날)을 줄에 보여 줌. 날짜 모양이 아니면 안 보여 줌. 동작 · 기록 모양은 그대로
+const at70 = v => isD(v) && +v.slice(5, 7) >= 1 && +v.slice(5, 7) <= 12 && +v.slice(8, 10) >= 1 && +v.slice(8, 10) <= 31;
 let wShow44 = false, wsumOpen = false;
 function showWeek(){
   $('#look').hidden = true; $('#cond').hidden = true; $('#outfit').hidden = true; $('#day').hidden = true; closeSheet();
@@ -8200,7 +8252,7 @@ function alt66(z){
 function prod67(a){ const K = a.K, p = a.p; if (!p) return np66({rs: K});
   const tag = (a.looks || []).some(L => (L.spots || []).some(s => s.id === p.id)), pc = pcol67(p), col = K.split('|')[1], z = cls66(p);
   const lab = z.c !== 'ok' ? '' : z.m === 's' ? `평소 신발 사이즈 기준 ${z.t}(참고)` : z.m === 'w' ? `설정에 넣은 허리단면 기준 ${z.t} 사이즈(참고)` : `키·몸무게가 비슷한 구매 후기 기준 ${z.t} 사이즈(참고)`;
-  return `대표 제품 ${esc(shortName(p.name))}${pc && !same67(pc, col) ? ` <span class="pc67">(제품 색: ${esc(pc)} · 칸 색: ${esc(CN[col] || col)})</span>` : ''} · ${won(p.price)}(${md(p.checked)} 확인)${tag ? '' : ' · 사진 속 제품 아님 · 추천 제품'}${lab ? ` · ${esc(lab)} · ${esc(stock66(p, z.t))}` : ''}`; }
+  return `대표 제품 ${esc(shortName(p.name))}${pc && !same67(pc, col) ? ` <span class="pc67">(제품 색: ${esc(pc)} · 칸 색: ${esc(CN[col] || col)})</span>` : ''} · ${won(p.price)}(${md(p.checked)} 확인)${tag ? '' : ' · 사진 속 제품 아님 · 추천 제품'}${lab ? ` · ${esc(lab)}${z.one ? ' · 후기 1개 기준' : ''} · ${esc(stock66(p, z.t))}` : ''}`; } // v70(C4): 가까운 후기 1개로 고른 사이즈
 function same64HTML(plan){
   if (!hasOwn()) return '';
   const os = ownedSlots();
@@ -8307,7 +8359,7 @@ function bindWeek(){
     if (b.dataset.unhave) { const k = b.dataset.unhave, m61 = keep61(k); delete OWN.s[k]; saveO(); redraw(true); if (m61) note60(`#week [data-have="${CSS.escape(k)}"]`, m61, '#wdet'); return; }
     if (b.dataset.nosub) { OWN.x[b.dataset.nosub] = 1; saveO(); redraw(true); return; }
     if (b.dataset.ownx) { const op = !!b.closest('details[open]'), x = b.dataset.ownx, sk = ownxSlot(x);
-      phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } }); return; }
+      phGuard(b, sk ? [sk] : [], () => ownDel0(x), `'${sk ? slotName(sk) : ''}' 기록을 지우면`, '지우기', () => { saveO(); redraw(true); if (op) { const d = $('#week details.ownw'); if (d) d.open = true; } }, xRec70(x)); return; } // v70(C1b)
     if (b.dataset.wash) { const k = b.dataset.wash, a = wDays(k).slice(), j = a.indexOf(sel); if (j >= 0) a.splice(j, 1); else a.push(sel);
       const t0 = localNow(wx).date, keep = a.filter(x => x >= t0).sort(); if (keep.length) OWN.w[k] = keep; else delete OWN.w[k]; saveO(); redraw(true); return; }
     if (b.dataset.bst != null) { const wrap = b.closest('.bact'), k = wrap.dataset.k, v = b.dataset.bst;
@@ -8589,12 +8641,13 @@ function say60(m){ let n = document.getElementById('phN'); if (!n) { n = documen
 function back60(old){ const o = JSON.parse(old); Object.keys(OWN).forEach(z => { delete OWN[z]; }); Object.assign(OWN, o); saveO();
   const m = saved60() ? '칸 기록도 지우기 전으로 되돌렸어요.' : '칸 기록은 지운 채로 남았어요. 새로고침하면 지우기 전 칸 기록이 돌아올 수 있어요.', p = document.querySelector('#phN p');
   if (p) p.textContent += ' ' + m; else say60(m); }
-function phGuard(el, ks, mut, what, yes, after){
+// v70(C1): rec = {t: 같이 지워지는 기록 문장, keep: 남는 사진 문장}. rec가 있으면 지울 사진이 없어도 먼저 물음(누른 뒤 저장 확인 · 되돌리기는 사진 때와 같은 길). rec가 없으면 v69 그대로
+function phGuard(el, ks, mut, what, yes, after, rec){
   const lost = phLost(ks, mut).filter(k => phList(k).length), run = () => { mut(); after(); };
-  if (!lost.length || !el) { run(); return; }
+  if ((!lost.length && !rec) || !el) { run(); return; }
   const n = phN(lost), ids = lost.flatMap(k => phList(k).map(p => p.id));
   const q = document.createElement('span'); q.className = 'ph49q'; q.setAttribute('role', 'alertdialog');
-  q.innerHTML = `<span>${esc(what)} 이 칸 사진 ${n}장도 같이 지워져요.</span> <button type="button" class="go">${esc(yes)}</button><button type="button" class="plain sm">그대로 두기</button>`;
+  q.innerHTML = `<span>${esc(rec ? `${what} ${rec.t}${lost.length ? ` 이 칸 사진 ${n}장도 같이 지워져요.` : rec.keep ? ` ${rec.keep}` : ''} 되돌릴 수 없어요.` : `${what} 이 칸 사진 ${n}장도 같이 지워져요.`)}</span> <button type="button" class="go">${esc(yes)}</button><button type="button" class="plain sm">그대로 두기</button>`;
   el.replaceWith(q);
   const [by, bn] = q.querySelectorAll('button');
   by.addEventListener('click', async e => { e.stopPropagation();
@@ -8806,6 +8859,8 @@ async function phImportRead(file, moved){
   //   지금 사진이 있으면 그 칸은 건드리지 않음(지금 사진 그대로 · 파일 사진 안 넣음) · 지금 사진이 없으면 읽은 사진만 넣음(잃을 것 없음). 안내문 숫자 = '넣기'에서 하는 일
   const kOf = p => isObj(p) && okBk53(p.k) ? p.k : '', cut = L.ph.slice(0, PHFMAX), rest = L.ph.slice(PHFMAX);
   const fileN = {}; L.ph.forEach(p => { const k = kOf(p); if (k) fileN[k] = (fileN[k] || 0) + 1; });
+  // v70(B1): 400장 뒤에만 있는 칸. 파일 전체는 위에서 이미 읽었고, 칸 이름은 앞부분과 같은 검사(okBk53)를 지난 것만 씀. 검사를 못 지난 뒷부분 사진은 이름 없이 수만 알림
+  const cutK = new Set(cut.map(kOf)), restK = [...new Set(rest.map(kOf).filter(k => k && !cutK.has(k)))], restU = rest.filter(p => !kOf(p)).length;
   const per = {}, all = []; let skipU = 0; // skipU = 칸을 알 수 없는 사진(칸 이름이 틀림 등)
   for (const p of cut) { const k = kOf(p); if (!k) { skipU++; continue; }
     // v50 검토 반영: 벌 표시(vi)는 그대로 넣음(지금 칸에 없는 벌이면 '벌을 정하지 않은 사진'으로 보이고, 그 벌이 생기면 그 벌 사진). 표시가 같은 사진끼리 PHMAX장까지(v49 파일은 전부 표시 없음)
@@ -8838,7 +8893,7 @@ async function phImportRead(file, moved){
   PHIMP = {list, ks, snap: ksnap, file, pt, html: (moved ? '<p class="warn ph69m" role="alert">안내한 뒤에 사진이 바뀌어서 넣지 않았어요. 아래 숫자를 다시 확인해 주세요.</p>' : '')
     + `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 ${any ? '넣을 ' : ''}사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
     + `<p class="cn">${[pt ? `${pt.n}개로 나눈 사진 파일${pt.set ? `(묶음 ${esc(pt.set)})` : ''} 중 ${pt.i}번째예요. 이 파일에 든 칸: ${nmK(ks)}.` : '',
-      rest.length ? `파일에 사진이 ${L.ph.length}장 있는데 ${PHFMAX}장까지만 읽어요(${rest.length}장은 못 읽어요).` : '',
+      rest.length ? `파일에 사진이 ${L.ph.length}장 있는데 ${PHFMAX}장까지만 읽어요(${rest.length}장은 못 읽어요).${restK.length ? ` 못 읽는 뒷부분에만 있는 칸: ${nmK(restK.slice(0, 3))}${restK.length > 3 ? ` 외 ${restK.length - 3}칸` : ''}.` : ''}${restU ? ` 못 읽는 뒷부분에는 칸 이름을 확인할 수 없는 사진 ${restU}장도 있어요.` : ''}` : '',
       keepK.length ? `파일 사진이 다 들어오지 못하는 ${keepK.length}칸(${nmK(keepK)})은 지금 사진 ${keepN}장을 그대로 두고, 그 칸의 파일 사진 ${keepF}장은 넣지 않아요.` : '',
       fillK.length ? `지금 사진이 없는 ${fillK.length}칸(${nmK(fillK)})은 넣을 수 있는 파일 사진 ${fillIn}장만 넣어요. 그 칸의 ${fillMiss}장은 넣지 못해요.` : '',
       rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요. 그 칸의 지금 사진 ${delN}장이 지워지고 파일 사진 ${inN}장이 들어와요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skipU ? `읽지 못한 사진 ${skipU}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
