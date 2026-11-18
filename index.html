@@ -1087,6 +1087,7 @@ details.ao61 > .ao52 > .t{display:none}
 .need63 .ns.fit{background:#f3eefc;color:#4b2f80}
 .need63 .nf{margin:8px 0 0;font-size:12.5px;color:var(--sub);line-height:1.5}
 .need63 .ns.unl{background:#eef1f6;color:#3d4a5c}
+.pc67{margin:0 4px 0 2px;font-size:12.5px;color:var(--ink2)} details.c67{display:block;margin:2px 0 0;font-size:12.5px;color:var(--sub)} details.c67 summary{cursor:pointer;display:inline} details.c67 .c67l{display:block;margin:1px 0 0 12px} .same64 .sp67{margin:3px 0 0;font-size:13px;color:var(--sub);line-height:1.5} .same64 .s67t{display:block} .same64 .ov66 summary{cursor:pointer;color:var(--acc);text-decoration:underline;font-size:12.5px} .same64 .ov66[open] span{display:block;margin-top:2px}
 .need63 .sz66{margin:2px 0 0;font-size:13px;color:var(--ink2);line-height:1.45}.need63 .sz66 .cn{font-size:12.5px;color:var(--sub)}
 .need63 .ov66{display:inline;margin-left:6px}.need63 .ov66 summary{display:inline;cursor:pointer;font-size:12.5px;color:var(--acc);text-decoration:underline}.need63 .ov66[open] span{display:block;margin:2px 0 0;font-size:13px;color:var(--sub);line-height:1.45}
 .need63 .ft64{margin:2px 0 0;font-size:13px;color:var(--sub);line-height:1.45}
@@ -6076,7 +6077,7 @@ function recipeOf(L, os){
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
       // v37: 내 옷으로 됨·확인 필요 칸이어도 사진과 같다고 확정 못 하는 점(STY rchk, 검토 v37 1: 집업 기장·데님 색·워싱)
       { const rc = own && (c === 'own' || c === 'chk') && ((STY[L.key] || {}).rchk || []).find(y => y.role === r && (!y.slot || y.slot === x.slot)); if (rc) n.push(rc.t); }
-      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); if (own && c === 'sub' && x.state.sub) { const g = in59(x, x.state.sub, L); if (g) IN59.set(row, g); } { const tk = tk59(x, L); if (tk) TK59.set(row, tk); } /* v59 */ rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
+      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); if (own && c === 'sub' && x.state.sub) { const g = in59(x, x.state.sub, L); if (g) IN59.set(row, g); } { const tk = tk59(x, L); if (tk) TK59.set(row, tk); } /* v59 */ PART67.set(row, x); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
       if (inT) tt.push(nm);
     });
   });
@@ -6683,6 +6684,27 @@ function sz66(p){ const r = cls66(p); if (r.c !== 'ok') return '';
   // v66 검수 뒤: 무엇을 기준으로 냈는지(후기 · 허리단면 · 평소 신발 사이즈)를 줄에 적고, 재고는 한 마디만. '참고일 뿐 · 재고 다시 확인'은 칸 아래 '어떻게 셌나요'에 한 번
   const lab = r.m === 's' ? `평소 신발 사이즈 기준 ${r.t}(참고)` : r.m === 'w' ? `설정에 넣은 허리단면 기준 ${r.t} 사이즈(참고)` : `키·몸무게가 비슷한 구매 후기 기준 ${r.t} 사이즈(참고)`;
   return `<p class="sz66">${esc(lab)}<span class="cn"> · ${esc(stock66(p, r.t))}</span></p>`; }
+/* ---------- v67(검토 v67 A): 갖출 옷 이름 옆에 사진 속 제품의 색 이름 ----------
+   '사진 속 제품 색' = 그 옷이 나오는 사진에 태그된 제품의 이름 끝 색 이름(대괄호 등 · 앱 색 묶음에 들어가는 이름만). 태그가 없거나 색 이름이 없으면 '미확인'(사진을 보고 짐작하지 않음).
+   칸 색과 같은 이름(그레이 · 회색 · GRAY 등)이면 안 붙임. 다르면 이름 옆에 "(사진 속 제품 색: 차콜 그레이)" · 여러 가지면 세 개까지 + '외 n'.
+   사진 속 제품 색이 하나도 확인되지 않았을 때만, 대표 추천 제품의 색이 칸 색과 다르면 "(추천 제품 색: ○○)"로 따로(사진 속 제품 색처럼 쓰지 않음).
+   이름 옆에 붙였을 때만 '사진별 제품 색'을 펼쳐 보게 둠(사진마다 색 · 같은 색 · 미확인). 미확인은 이름 옆엔 안 붙임 */
+const CNM67 = {블랙: ['블랙', '검정', 'BLACK'], 그레이: ['그레이', '회색', 'GRAY', 'GREY'], 화이트: ['화이트', '흰색', 'WHITE'], 크림: ['크림', 'CREAM'], 베이지: ['베이지', 'BEIGE'], 브라운: ['브라운', '갈색', 'BROWN'], 네이비: ['네이비', 'NAVY'], 카키: ['카키', 'KHAKI'], 레드: ['레드', 'RED'], 그린: ['그린', 'GREEN'], 옐로우: ['옐로우', 'YELLOW'], 연청: ['연청'], 진청: ['진청'], 블루: ['블루', 'BLUE'], '블루 그레이': ['블루 그레이', 'BLUE GRAY', 'BLUE GREY']};
+const pcol67 = p => { if (!p) return ''; const m = p.name.match(/\[([^\]]+)\]\s*$/) || p.name.match(/_([^_]+)$/) || p.name.match(/\(([^)]+)\)\s*$/);
+  for (const s of [m ? m[1] : '', String(p.color || '')]) { const v = s.trim(); if (v && colStr(v)) return v; } return ''; };
+const same67 = (nm, col) => (CNM67[col] || [col]).some(w => w.toUpperCase() === String(nm).trim().toUpperCase());
+// 칸 S가 나오는 사진들(Ls)의 사진별 제품 색. rep = 대표 추천 제품(있으면)
+function col67(S, Ls, rep){ if (!S) return {txt: '', det: '', rows: []}; const col = S.split('|')[1], rows = [];
+  (Ls || []).forEach(L => { const x = partsOf(L).find(y => y.need === 'req' && (y.slot === S || (y.also || []).includes(S))); if (!x) return; const v = x.id ? pcol67(x.p) : '';
+    rows.push({L, v, st: !x.id ? 'untag' : !v ? 'nocol' : same67(v, col) ? 'same' : 'diff'}); });
+  const df = [...new Set(rows.filter(r => r.st === 'diff').map(r => r.v))], rc = rep ? pcol67(rep) : '';
+  const txt = df.length ? `사진 속 제품 색: ${df.slice(0, 3).join(' · ')}${df.length > 3 ? ` 외 ${df.length - 3}` : ''}` : !rows.some(r => r.st === 'same' || r.st === 'diff') && rc && !same67(rc, col) ? `추천 제품 색: ${rc}` : '';
+  const ST = {same: '칸 색과 같음', untag: '미확인(사진에 제품 태그 없음)', nocol: '미확인(제품 색 이름 없음)'};
+  const det = !txt ? '' : `<details class="c67"><summary>사진별 제품 색</summary>${rows.map(r => `<span class="c67l">${esc(LEVELS[r.L.level].name)} 사진 · 체감 ${r.L.lo}~${r.L.hi}° · ${esc(r.st === 'diff' ? r.v : r.st === 'same' ? `${r.v}(${ST.same})` : ST[r.st])}</span>`).join('')}${!df.length && rc ? `<span class="c67l">대표 추천 제품 · ${esc(rc)}(사진 속 제품 색이 아니에요)</span>` : ''}</details>`;
+  return {txt, det, rows}; }
+const pc67 = o => o.txt ? `<span class="pc67">(${esc(o.txt)})</span>` : '';
+const MC67 = new WeakMap(); // 필요한 옷 칸 줄(c) → 색 표시(다시 셈 안 함)
+const c67 = c => { if (!MC67.has(c)) MC67.set(c, col67(c.rs, c.needB.length ? c.needB : c.needAll, c.p)); return MC67.get(c); };
 function need63HTML(){
   const r = need63(); if (!r) return '';
   const lvN = LEVELS[r.lv].name, scope = r.P ? `이번 주 날씨에 맞는 ${lvN} 사진` : `${lvN} 사진`;
@@ -6690,7 +6712,7 @@ function need63HTML(){
   const jg = (s, a, b) => s + (jongOf(String(s).replace(/\([^)]*\)$/, '').replace(/[^가-힣]/g, '').slice(-1)) ? a : b); // 괄호(보유 확인 등) 앞 이름으로 조사
   const stL = c => c.st === 'no' ? '<span class="ns no">없다고 적음</span>' : c.st === 'fit' ? '<span class="ns fit">같은 종류 · 색은 있지만 핏 · 기장이 다른 벌</span>' : '<span class="ns unl">옷장에 안 적음 · 먼저 보유 확인</span>';
   // v64(검토 v64 B1 · B2): 옷 한 줄 = 이름 · 상태 · (두 벌까지 0장일 땐 필요한 사진 수) · 대표 제품 + 고를 때 볼 한 가지(바지 핏 · 겉옷 기장, 사진에 적힌 값만)
-  const it64 = (c, base) => `<li><b>${esc(c.nm)}</b>${stL(c)}${base ? `${base}장 중 ${c.needB.length}장에 필요해요 · ` : ''}${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)}${base ? '' : ` <span class="cn">${md(c.p.checked)} 확인 가격</span>`}` : np66(c)}${c.p ? sz66(c.p) : ''}${ft64(c, r.lv)}</li>`; // v66(검토 v66 C): 대표 제품이 계산 가능이면 설정 치수 기준 사이즈 한 줄 // v66(검토 v66 B): 예산 안 제품이 없으면 예산 초과 제품은 눌러야 보임
+  const it64 = (c, base) => `<li><b>${esc(c.nm)}</b>${pc67(c67(c))}${stL(c)}${base ? `${base}장 중 ${c.needB.length}장에 필요해요 · ` : ''}${c.p ? `대표 제품 ${esc(shortName(c.p.name))} · ${won(c.p.price)}${base ? '' : ` <span class="cn">${md(c.p.checked)} 확인 가격</span>`}` : np66(c)}${c.p ? sz66(c.p) : ''}${ft64(c, r.lv)}${c67(c).det}</li>`; // v67(검토 v67 A): 이름 옆 사진 속 제품 색 · 펼쳐 보는 사진별 색 // v66(검토 v66 C): 대표 제품이 계산 가능이면 설정 치수 기준 사이즈 한 줄 // v66(검토 v66 B): 예산 안 제품이 없으면 예산 초과 제품은 눌러야 보임
   const kinds = cs => cs.map(c => (c.slot || c.base || '').split('|')[0]).filter((k, i, a) => a.indexOf(k) === i).map(kd => { const n = r.kindN(kd), m = r.cands.filter(c => (c.slot || c.base || '').split('|')[0] === kd).length; return m > 1 ? `${jg(kd, '은', '는')} 색을 합치면 ${n}장` : ''; }).filter(Boolean);
   let l1, l2, body = '';
   if (r.top) { const cs = r.top.cs, nm = cs.map(nmS);
@@ -6745,7 +6767,7 @@ function try62HTML(os){
     return `<div class="tc62" data-try62="${esc(k)}"><button type="button" class="gc tp62" data-jump="${esc(k)}" aria-label="꾸꾸꾸 코디 사진 자세히 보기"><span class="gk">${wImg44(z.L, .75)}</span><span class="go62">사진 체감 ${z.L.lo}~${z.L.hi}° · 자세히</span></button>`
       + `<div class="tb62"><p class="tn62">${head}${z.fit ? '<span class="cn">· 이번 주 날씨에 맞음</span>' : ''}</p>`
       + `<p class="tf62${f ? '' : ' hold'}"><b>따라 할 한 가지</b>${esc(f || '문장 보류')}</p>`
-      + (n ? `<p class="ta62"><b>더할 옷</b>${z.add.map(w => esc(w.t) + (addL(w) ? ` <i>(${esc(addL(w))})</i>` : '')).join(' · ')}</p>` : '')
+      + (n ? `<p class="ta62"><b>더할 옷</b>${z.add.map(w => esc(w.t) + pcw67(w, z.L) + (addL(w) ? ` <i>(${esc(addL(w))})</i>` : '')).join(' · ')}</p>` : '') // v67(검토 v67 A): 사진 한 장이라 그 사진 속 제품 색만
       + (z.chk.length ? `<p class="tk62"><b>확인할 칸</b>${esc(z.chk.map(ck).join(' · '))}</p>` : '')
       + (z.mine.length ? `<div class="tm62"><b>내 옷으로 되는 칸</b><ul>${z.mine.map(mt).join('')}</ul></div>` : '') + `</div></div>`; };
   return `<section class="try62" aria-label="안 입어 본 스타일 · 꾸꾸꾸"><p class="tt62">안 입어 본 스타일 · 꾸꾸꾸</p>`
@@ -6782,7 +6804,7 @@ function try65HTML(os){
     return `<div class="tc62" data-try62="${esc(k)}"><button type="button" class="gc tp62" data-jump="${esc(k)}" aria-label="적당히 꾸민 코디 사진 자세히 보기"><span class="gk">${wImg44(z.L, .75)}</span><span class="go62">사진 체감 ${z.L.lo}~${z.L.hi}° · 자세히</span></button>`
       + `<div class="tb62"><p class="tn62">${head}${z.fit ? '<span class="cn">· 이번 주 날씨에 맞음</span>' : ''}</p>`
       + `<p class="tf62${f ? '' : ' hold'}"><b>따라 할 한 가지</b>${esc(f || '문장 보류')}</p>`
-      + (n ? `<p class="ta62"><b>더할 옷</b>${z.add.map(w => esc(w.t) + (addL(w) ? ` <i>(${esc(addL(w))})</i>` : '')).join(' · ')}</p>` : '')
+      + (n ? `<p class="ta62"><b>더할 옷</b>${z.add.map(w => esc(w.t) + pcw67(w, z.L) + (addL(w) ? ` <i>(${esc(addL(w))})</i>` : '')).join(' · ')}</p>` : '') // v67(검토 v67 A)
       + (z.chk.length ? `<p class="tk62"><b>확인할 칸</b>${esc(z.chk.map(ck).join(' · '))}</p>` : '')
       + (z.mine.length ? `<div class="tm62"><b>내 옷으로 되는 칸</b><ul>${z.mine.map(mt).join('')}</ul></div>` : '') + `</div></div>`; };
   return `<section class="try62 try65" aria-label="안 입어 본 스타일 · 적당히 꾸민"><p class="tt62">안 입어 본 스타일 · 적당히 꾸민</p>`
@@ -8110,9 +8132,18 @@ function alt66(z){
   R.forEach(r => { r.st = OWN.s[r.K] === 'no' ? 'no' : 'unl'; r.p = repOf(r.K, r.looks).p; });
   R.sort((a, b) => b.n - a.n || !!b.p - !!a.p || (a.p ? a.p.price : 1e9) - (b.p ? b.p.price : 1e9));
   const res = R.length ? Object.assign({all: R}, R[0].n > 0 ? R[0] : {n: 0}) : null;
-  ALT66.key = key; ALT66.res = res; return res; }function alt66T(a, n){ const nm = slotName(a.K), N = DAYN66[n] || n + '일', M = DAYN66[a.n] || a.n + '일', C = DAYN66[a.chk] || a.chk + '일';
+  ALT66.key = key; ALT66.res = res; return res; }function alt66T(a, n, lab){ const nm = slotName(a.K) + (lab || ''), N = DAYN66[n] || n + '일', M = DAYN66[a.n] || a.n + '일', C = DAYN66[a.chk] || a.chk + '일';
   const ck = !a.chk ? '' : a.chk === a.n ? '모두 핏 · 기장 등 확인이 남아요 · ' : `그중 ${C}${jongOf(C) ? '은' : '는'} 핏 · 기장 등 확인이 남아요 · `;
-  return `${nm}${jongOf(nm) ? '이' : '가'} 있으면 이 ${N} ${a.n === n ? '모두' : `중 ${M}에`} 다른 겉옷 후보가 생겨요(${ck}${a.st === 'no' ? '없다고 적음' : '옷장에 안 적음 · 먼저 보유 확인'}).`; }
+  const nj = slotName(a.K); // v67: 이름 옆 색 표시(lab)가 있어도 조사는 옷 이름으로
+  return `${nm}${jongOf(nj) ? '이' : '가'} 있으면 이 ${N} ${a.n === n ? '모두' : `중 ${M}에`} 다른 겉옷 후보가 생겨요(${ck}${a.st === 'no' ? '없다고 적음' : '옷장에 안 적음 · 먼저 보유 확인'}).`; }
+/* ---------- v67(검토 v67 B): 같은 겉옷 줄 아래 둘째 줄 · 대표 제품 · 값 · 확인 날짜 · 사이즈 한 마디 ----------
+   대표 제품 = 그 겉옷 칸의 대표 제품 규칙(repOf: 예산 · 내 사이즈 품절 뺌) 그대로. 그 칸이 나오는 사진에 태그된 제품이 아니면 '사진 속 제품 아님 · 추천 제품'.
+   제품 색 이름이 칸 색과 다르면 두 이름을 함께. 값 · 재고는 확인 날짜를 붙이고 지금도 같다고 하지 않음. 사이즈는 v66과 같은 계산 · 계산 가능일 때만.
+   대표 제품이 없으면 v66 B와 같게(예산 안 제품이 없을 때만 접힌 '예산 초과 제품 보기'). 계산 · 계획 · 판정 · 살 옷 합계는 그대로 */
+function prod67(a){ const K = a.K, p = a.p; if (!p) return np66({rs: K});
+  const tag = (a.looks || []).some(L => (L.spots || []).some(s => s.id === p.id)), pc = pcol67(p), col = K.split('|')[1], z = cls66(p);
+  const lab = z.c !== 'ok' ? '' : z.m === 's' ? `평소 신발 사이즈 기준 ${z.t}(참고)` : z.m === 'w' ? `설정에 넣은 허리단면 기준 ${z.t} 사이즈(참고)` : `키·몸무게가 비슷한 구매 후기 기준 ${z.t} 사이즈(참고)`;
+  return `대표 제품 ${esc(shortName(p.name))}${pc && !same67(pc, col) ? ` <span class="pc67">(제품 색: ${esc(pc)} · 칸 색: ${esc(CN[col] || col)})</span>` : ''} · ${won(p.price)}(${md(p.checked)} 확인)${tag ? '' : ' · 사진 속 제품 아님 · 추천 제품'}${lab ? ` · ${esc(lab)} · ${esc(stock66(p, z.t))}` : ''}`; }
 function same64HTML(plan){
   if (!hasOwn()) return '';
   const os = ownedSlots();
@@ -8120,10 +8151,11 @@ function same64HTML(plan){
     const a = md64(ds[0]), b = md64(ds[n - 1]), dw = DAYW64[n] || n + '일', rng = cont ? `${a}~${a.split('/')[0] === b.split('/')[0] ? b.split('/')[1] : b} ${dw}${jongOf(dw) ? '은' : '는'}` : `이번 주 중 ${n}일(${ds.map(md64).join(' · ')})은`;
     let t = `${rng} 내 ${slotName(z.K)} 말고 다른 겉옷으로 입을 수 있는 후보 사진이 없어서 겉옷이 같아요.`;
     const a66 = alt66(z); // v66(검토 v66 A): 안 가진 겉옷 칸 하나로 다른 겉옷 후보가 생기는 날이 있으면 그 칸 · 날 수. 0일이면 아래 v64 문장 그대로
-    if (a66 && a66.n > 0) t += ' ' + alt66T(a66, n);
+    let x67 = ''; // v67(검토 v67 A · B): 이름 옆 사진 속 제품 색 · 둘째 줄 대표 제품
+    if (a66 && a66.n > 0) { const o67 = col67(a66.K, a66.looks, a66.p); t += ' ' + alt66T(a66, n, o67.txt ? `(${o67.txt})` : ''); x67 = `<div class="sp67">${prod67(a66)}</div>${o67.det}`; }
     else if (z.top) { const [S, c] = z.top, nm = slotName(S), sl = OWN.s[S] === 'no' ? '없다고 적음' : os.has(S) ? '가진 옷 · 그 사진엔 다른 칸이 더 필요해요' : '옷장에 안 적음';
       t += ` 이 날씨 사진에는 ${nm}${jongOf(nm) ? '이' : '가'} ${c}장에 나와요(${sl}).`; }
-    return `<p class="same64">${esc(t)}</p>`; }).join(''); }
+    return x67 ? `<div class="same64"><span class="s67t">${esc(t)}</span>${x67}</div>` : `<p class="same64">${esc(t)}</p>`; }).join(''); }
 /* ---------- v64(검토 v64 D · 시험본 나만): 가진 옷 조건 없이 짠 한 주 보기 ----------
    켜면 같은 날씨 · 단계 · 설정으로, 옷장을 빈 걸로 보고(가진 옷 점수 · 겉옷 더하기 · 옆 단계 가진 옷 사진 없음) 날마다 날씨에 맞는 사진 중
    이번 주에 아직 안 고른 차림을 점수 순으로 골라 보여 줌(다 쓰면 덜 쓴 차림). 고정한 날은 고정 코디 그대로 · 코디 불필요로 둔 날은 건너뜀 · 맞는 사진 없는 날은 비워 둠.
@@ -8154,8 +8186,8 @@ function free64(){
       else if (c === 'info') chk.push(`${nm} · 가진 옷 확인`);
       else { const st2 = x.ds.lv === 1 ? 'fit' : OWN.s[x.slot] === 'no' ? 'no' : 'unl', key = st2 === 'fit' ? `${x.slot}#${fv}` : (x.slot || x.buy || 'top|' + x.col);
         const lab = st2 === 'fit' ? `${nm}(${fv}${fk === 'fit' ? ' 핏' : ''})` : nm; add.push({lab, st: st2, why: st2 === 'fit' ? x.ds.t : ''});
-        if (!need.has(key)) need.set(key, {lab, st: st2, why: st2 === 'fit' ? x.ds.t : '', days: [], fk, fv: new Set()});
-        const q = need.get(key); if (!q.days.includes(p.d)) q.days.push(p.d); if (fv) q.fv.add(fv); } });
+        if (!need.has(key)) need.set(key, {lab, st: st2, why: st2 === 'fit' ? x.ds.t : '', days: [], fk, fv: new Set(), slot: x.slot || x.buy || '', ls: []});
+        const q = need.get(key); if (!q.days.includes(p.d)) q.days.push(p.d); if (fv) q.fv.add(fv); if (!q.ls.includes(p.L)) q.ls.push(p.L); } }); // v67: 사진 속 제품 색용(칸 · 사진)
     return Object.assign({mine, add, chk}, p); });
   return {days, need: [...need.values()]}; }
 const ST64 = {no: '없음', unl: '옷장에 안 적음', fit: '다른 핏 · 기장 필요'};
@@ -8163,8 +8195,9 @@ function free64HTML(){
   const F = free64(), L1 = LEVELS[st.level].name;
   // v65(검토 v65 A): 더할 옷은 필요한 날이 많은 순(같으면 v64 순서) · 위 다섯 개만 보이고 나머지는 접음 · 맨 위 요약 한 줄(가장 여러 날 필요한 옷 두 개). 날 수 = 서로 다른 날짜 수(하루에 여러 번 나와도 하루)
   const nd = F.need.map((q, i) => ({q, i})).sort((a, b) => b.q.days.length - a.q.days.length || a.i - b.i).map(z => z.q);
-  const li65 = q => `<li><b>${esc(q.lab)}</b><span class="ns64 ${q.st}">${ST64[q.st]}</span>${q.st === 'fit' && q.why ? `<span class="cn">${esc(q.why)}</span> ` : ''}${q.days.length}일(${q.days.map(md64).join(' · ')})`
-    + (q.fv.size > 1 ? ` · <span class="warn">사진마다 필요한 ${q.fk === 'fit' ? '핏' : '기장'}이 달라요(${esc([...q.fv].join(' · '))}) · 한 벌로 모두 되는지 확인되지 않았어요</span>` : '') + `</li>`;
+  const c67f = q => q.c67 || (q.c67 = col67(q.slot, q.ls, q.slot ? repOf(q.slot, q.ls).p : null)); // v67(검토 v67 A)
+  const li65 = q => `<li><b>${esc(q.lab)}</b>${pc67(c67f(q))}<span class="ns64 ${q.st}">${ST64[q.st]}</span>${q.st === 'fit' && q.why ? `<span class="cn">${esc(q.why)}</span> ` : ''}${q.days.length}일(${q.days.map(md64).join(' · ')})`
+    + (q.fv.size > 1 ? ` · <span class="warn">사진마다 필요한 ${q.fk === 'fit' ? '핏' : '기장'}이 달라요(${esc([...q.fv].join(' · '))}) · 한 벌로 모두 되는지 확인되지 않았어요</span>` : '') + c67f(q).det + `</li>`;
   const it = nd.slice(0, 5).map(li65).join(''), more = nd.slice(5);
   const sum65 = nd.slice(0, 2).map(q => `${q.lab} ${q.days.length}일${q.st === 'unl' ? '(보유 확인)' : q.st === 'fit' ? '(다른 핏 · 기장)' : ''}`).join(' · ');
   const dy = F.days.map(p => {
@@ -8307,6 +8340,9 @@ const PHMAX = 4, PHLONG = 800, PHQ = .85, PHNM = 20, PHDB = KEY + '-ph', PHAPP =
 const PH = {db: null, ok: null, map: new Map(), urls: [], bc: null,
   // 내려받기(시험본에선 이 함수를 바꿔 파일 내용을 확인)
   dl: (b, nm) => { const u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = nm; a.hidden = true; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 60000); }};
+const PART67 = new WeakMap(); // v67: 칸 줄(recipeOf rows) → 그 줄의 사진 칸(사진 속 제품 색용 · 줄 객체엔 아무것도 안 붙임)
+// v67(검토 v67 A): 안 입어 본 스타일 카드의 더할 옷(사진 한 장) → 그 사진 속 제품 색이 칸 색과 다를 때만 이름 옆에
+const pcw67 = (w, L) => { const x = PART67.get(w), S = x && (x.slot || x.buy); return S ? pc67(col67(S, [L], null)) : ''; };
 const PHK49 = new WeakMap(); // 칸 줄(recipeOf rows) → 그 줄의 '내 ○○' 칸 키. 줄 객체엔 아무것도 안 붙임(판정 비교 그대로)
 const PHV50 = new WeakMap(), FL50 = new WeakMap(); // v50: 칸 줄 → 입는 벌 번호(첫 벌은 안 넣음) · 두께·프린트 알림
 let PHIMP = null, PHMSG = null;
