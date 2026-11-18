@@ -2672,6 +2672,8 @@ const held57 = k => !!BRK57[k] && !BRK57[k].ok;
 // 사용자가 '읽은 부분으로 계속 쓰기'를 누르면 그 키를 지금 화면 값으로 저장(원래 글자는 남긴 이름에 그대로)
 function go57(k){ const e = BRK57[k]; if (!e || !e.bk) return; e.ok = true; const S = typeof SAVER !== 'undefined' ? SAVER[k] : null; if (S) S(); draw57(); }
 function draw57(){ const ks = Object.keys(BRK57).filter(held57); let b = document.getElementById('brk57');
+  // v69(검토 v69 C1): 다른 탭 기록을 못 읽어 붙잡은 키가 더 없으면(놓음 · 고름 · 지워짐) '… 읽지 못해서 불러오지 않았어요. 위 안내를 봐 주세요' 줄도 같이 지움
+  if (!ks.some(k => BRK57[k].live)) { const n = document.getElementById('syncN'); if (n && /읽지 못해서 불러오지 않았어요/.test(n.textContent)) n.remove(); }
   if (!ks.length) { if (b) b.remove(); return; }
   const m = document.querySelector('main'); if (!m) return;
   if (!b) { b = document.createElement('div'); b.id = 'brk57'; b.setAttribute('role', 'alert'); m.prepend(b);
@@ -3086,8 +3088,14 @@ function analyse(dateArg){
   const idx = [];
   H.time.forEach((t,i) => { if (t.slice(0,10) === date) { const h = +t.slice(11,13); if (h >= s && h <= e) idx.push(i); } });
   if (!idx.length) return {date, past: date === today, nofc: date !== today};
-  const g = k => idx.map(i => H[k][i]);
-  const hours = idx.map(i => +H.time[i].slice(11,13));
+  // v69(검토 v69 D): 예보의 빈 값(null)은 계산에서 뺌(0은 진짜 값). 외출 시간의 체감이 하나도 없으면 '예보 없는 날'과 같게. 일부만 비면 있는 시간으로만 셈(gap69 → 화면에 한 줄)
+  //   빈 값이 없는 예보는 v68과 같은 계산(id2 = idx와 같은 시간들)
+  const okv = v => v != null && Number.isFinite(v), est69 = (PV != null && !dateArg) || !!wx.est;
+  const id2 = est69 ? idx : idx.filter(i => okv(H.apparent_temperature[i]));
+  if (!id2.length) return {date, past: false, nofc: true, blank69: true};
+  const gap69 = id2.length < idx.length;
+  const g = k => id2.map(i => H[k][i]);
+  const hours = id2.map(i => +H.time[i].slice(11,13));
   const unkRain = !pv && (!!wx.est || g('precipitation_probability').every(x => x == null));
   let feels = g('apparent_temperature');
   // 예보가 없고 기온을 직접 골랐으면 그 값으로(낮에는 6° 더 따뜻하다고 봄). 미리보기도 같은 식, 비·바람은 없다고 봄
@@ -3096,6 +3104,7 @@ function analyse(dateArg){
   if (mtv != null) feels = hours.map(h => mtv + sw(h) - b0);
   const temps = mtv != null ? feels : g('temperature_2m'), prob = pv ? z(0) : g('precipitation_probability').map(x => x ?? 0),
         prec = pv ? z(0) : g('precipitation').map(x => x ?? 0), codes = pv ? z(1) : g('weather_code'), wind = pv ? z(2) : g('wind_speed_10m').map(x => x ?? 0), hum = pv ? z(50) : g('relative_humidity_2m');
+  const tv = temps.filter(okv), hv = hum.filter(okv); // v69: 기온 · 습도도 빈 값을 뺌(하루 내내 비면 그 줄 · 그 값으로 하는 판단을 안 함 = null)
   const iMin = feels.indexOf(Math.min(...feels)), iMax = feels.indexOf(Math.max(...feels));
   const pMax = Math.max(...prob), iP = prob.indexOf(pMax);
   const precSum = prec.reduce((a,b) => a+b, 0);
@@ -3111,16 +3120,16 @@ function analyse(dateArg){
     tOuter: feels[iMin] + adj, hOuter: hours[iMin],
     tTop: feels[iMax] + adj, hTop: hours[iMax],
     tMid: feels.reduce((a,b) => a+b, 0) / feels.length + adj,
-    tMinRaw: Math.min(...temps), tMaxRaw: Math.max(...temps),
+    tMinRaw: tv.length ? Math.min(...tv) : null, tMaxRaw: tv.length ? Math.max(...tv) : null,
     feelMinRaw: feels[iMin], feelMaxRaw: feels[iMax],
-    diurnal: Math.max(...temps) - Math.min(...temps),
+    diurnal: tv.length ? Math.max(...tv) - Math.min(...tv) : null,
     pMax, hP: hours[iP], precSum,
     rainy: precSum >= 1 || (pMax >= 60 && (precSum >= .3 || codes.some(c => isRainCode(c) && c > 55))), drizzle: codes.some(isRainCode) || precSum >= .1 || pMax >= 50,
     maybeRain: pMax >= 30,
     snowy: codes.some(isSnowCode),
     hSnow: hours[Math.max(0, codes.findIndex(isSnowCode))],
-    windMax: Math.max(...wind), humAvg: hum.reduce((a,b) => a+b, 0) / hum.length,
-    uv, worst, est: !!wx.est && !pv, unkRain, pv
+    windMax: Math.max(...wind), humAvg: hv.length ? hv.reduce((a,b) => a+b, 0) / hv.length : null,
+    uv, worst, est: !!wx.est && !pv, unkRain, pv, gap69
   };
 }
 
@@ -3155,7 +3164,7 @@ function render(){
 
   if (A.nofc) {
     $('#where').innerHTML = srcTag() + esc(`${st.city} · ${dLabel}`);
-    $('#cond').innerHTML = `<p class="msg">${esc(dLabel)}은 받아 둔 예보 범위 밖이에요. 오늘로 보거나 예보를 다시 받아 주세요. ${rbHTML47('plain')}</p>`; // v48: 해요체 + 버튼은 v47 버튼 표시(rbHTML47)
+    $('#cond').innerHTML = `<p class="msg">${esc(dLabel)}은 ${A.blank69 ? '받아 둔 예보에 외출 시간 값이 비어 있어요' : '받아 둔 예보 범위 밖이에요'}. 오늘로 보거나 예보를 다시 받아 주세요. ${rbHTML47('plain')}</p>`; // v69(검토 v69 D): 값이 빈 날은 그 까닭으로 // v48: 해요체 + 버튼은 v47 버튼 표시(rbHTML47)
     $('#retry').addEventListener('click', retryWx);
     $('#look').hidden = true; $('#outfit').hidden = true; closeSheet();
     return;
@@ -3176,12 +3185,12 @@ function render(){
     ? `${esc(st.city)} <em>미리보기 체감 ${lo}°~${hi}°</em> <span class="s">실제 예보 아님 · 비·바람 없다고 봄</span>`
     : A.est
     ? `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>예보 확인 불가</em> <span class="s">${st.mt != null ? `직접 고른 체감 ${st.mt}°(${A.s}시 기준) · ${st.sens ? `체질 보정 ${st.sens > 0 ? '+' : ''}${st.sens}°를 더한 ` : ''}추천 기준 온도 ${r0(A.tOuter)}°` : `참고 체감 ${lo}°~${hi}°(이달 흔한 값)`} · 비·눈 모름${srcWarn()}</span>`
-    : `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>체감 ${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em> <span class="s">${esc(WMO[A.worst] ?? '')}${A.pMax >= 30 ? ` · 강수 ${A.pMax}%` : ''}${srcWarn()}</span>`;
+    : `${srcTag()}${esc(dLabel)} ${esc(st.city)} <em>체감 ${lo === hi ? lo + '°' : `${lo}°~${hi}°`}</em> <span class="s">${esc(WMO[A.worst] ?? '')}${A.pMax >= 30 ? ` · 강수 ${A.pMax}%` : ''}${srcWarn()}${A.gap69 ? ' · 예보에 빈 시간이 있어서 있는 값으로만 계산했어요' : ''}</span>`; // v69: 외출 시간 일부가 빈 날
   const condTop = '';
   const pvRow = wx.est ? '' : `<details class="hw pvw"${A.pv ? ' open' : ''}><summary>${A.pv ? '다른 계절 미리보기 중' : '다른 계절 미리보기'}</summary><div class="mtc">`
     + PVS.map(([v, t]) => `<button type="button" data-pv="${v}" aria-pressed="${PV === v}">${t} ${v}°</button>`).join('') + (A.pv ? '<button type="button" data-pv="">실제 날씨로</button>' : '')
     + `</div><p class="sub">나갈 때 체감 기준이고 오후엔 몇 도 더 따뜻하다고 봄. 저장 안 되고, 일주일 코디는 실제 예보 그대로</p></details>`;
-  const hrsIn = A.est || A.pv ? '' : `<p class="sub">기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · 바람 ${A.windMax.toFixed(1)}m/s${st.sens ? ` · 체질 ${st.sens > 0 ? '+' : ''}${st.sens}° 반영` : ''}${upd ? ` · ${upd}에 받은 예보` : ''}</p>
+  const hrsIn = A.est || A.pv ? '' : `<p class="sub">${A.tMinRaw != null ? `기온 ${deg(A.tMinRaw)}~${deg(A.tMaxRaw)} · ` : ''}바람 ${A.windMax.toFixed(1)}m/s${st.sens ? ` · 체질 ${st.sens > 0 ? '+' : ''}${st.sens}° 반영` : ''}${upd ? ` · ${upd}에 받은 예보` : ''}</p>
     <div class="hrs" aria-label="시간별 체감온도와 강수확률">${hrs}</div>`;
   const wxMore = hrsIn ? `<details class="hw"><summary>시간별 날씨 · ${esc(win)} · 강수 ${A.pMax}%</summary>${hrsIn}</details>` : '';
 
@@ -4258,7 +4267,7 @@ function bkApply(o, b, mode){
       else { const a = OWN.v[k][0] = OWN.v[k][0] || {}, b0 = o.v[k][0] || {}; ['n', 'th', 'pr', 'br', 'wa', 'ma', 'gm'].forEach(q => { if (a[q] == null && b0[q]) a[q] = b0[q]; }); } } // v51: 기모·밝기·워싱·소재도
     if (b) BODYK.forEach(k => { if (k in b && b[k] != null && b[k] !== '' && (st[k] == null || st[k] === '')) { st[k] = b[k]; nb++; } });
   }
-  saveO(); if (nb) { st.lookN = 0; save(); }
+  if (nb) { st.lookN = 0; save(); } saveO(); // v69(검토 v69 B): 몸 치수(설정)를 먼저 · 옷장 기록을 나중에 저장(옷장이 안 되면 몸 치수를 되돌려 씀 · bkDo69)
   return nb;
 }
 function importBackupFromHash(){
@@ -4287,12 +4296,43 @@ function showBackupImport(L){
     + (empty ? '<p class="cn">지금 이 기기 옷장이 비어 있어서 두 방법 결과가 같아요</p>' : '')
     + `<div class="impx"><button type="button" class="plain" data-x>안 적기</button></div>`;
   d.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return;
-    if (t.dataset.bk) { const rep = t.dataset.bk === 'rep', nb = bkApply(o, b, t.dataset.bk);
+    if (t.dataset.bk) { const rep = t.dataset.bk === 'rep', r = bkDo69(o, b, t.dataset.bk); if (r.msg) { bkMsg69(d, r.msg); return; } const nb = r.nb; // v69(검토 v69 B)
       d.innerHTML = `<p><b>${rep ? '링크 내용으로 바꿨어요' : '없는 칸만 더했어요'}.</b> 지금 옷장: ${esc(cntText(ownCount(OWN), true))}${nb ? ` · 몸 치수 ${nb}칸 바뀜` : ''}</p>${close}`;
       buildBody(); drawHead(); if (typeof wx !== 'undefined' && wx) render(); return; }
     if (t.hasAttribute('data-x')) d.remove(); });
   document.body.appendChild(d);
 }
+
+// v69(검토 v69 B): '이 링크로 바꾸기' · '없는 것만 더하기'는 저장할 키(옷장 · 몸 치수가 바뀌면 설정)를 먼저 봄.
+//   다른 탭과 맞추는 중 · 깨진 기록을 따로 남기지 못한 채 멈춤이면 아무것도 바꾸지 않고(화면 기록도 그대로) 까닭을 알림. 저장 공간 부족은 바꾼 뒤 확인해서 되돌림(build 2).
+//   깨진 기록을 따로 남겨 둔 경우는 v57 그대로(링크를 고른 것으로 보고 저장). 바꾼 뒤에 저장이 안 됐으면 화면 기록 · 저장 기록을 바꾸기 전으로 되돌리고 알림
+//   → 저장 안 된 링크 내용이 화면에 남는 일 없음. 링크를 읽는 규칙 · 담는 규칙(v53)은 그대로
+const bkBodyCh69 = (b, mode) => !!b && BODYK.some(k => mode === 'rep' ? k in b && st[k] !== b[k] : k in b && b[k] != null && b[k] !== '' && (st[k] == null || st[k] === ''));
+const stJSON69 = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; return JSON.stringify(rest); }; // save()와 같은 글
+function bkWhy69(b, mode){ const ks = [OKEY].concat(bkBodyCh69(b, mode) ? [KEY] : []);
+  for (const k of ks) { if (HELD.has(k)) return {k, why: 'tab'}; if (held57(k) && !BRK57[k].bk) return {k, why: 'brk'}; }
+  // build 2(검토 7): 저장 공간은 미리 써 보지 않음(저장 안 된 변경이 있는 꽉 찬 저장소에서도 더 작은 링크로 바꿀 수 있게). 공간 부족은 바꾼 뒤 확인 · 되돌리기(bkDo69)로만
+  return null; }
+const BKW69 = {tab: k => `다른 탭과 ${SYNC[k]} 기록을 맞추는 중이라`,
+  brk: k => BRK57[k] && BRK57[k].live ? `다른 탭이 저장한 ${SYNC[k]} 기록을 읽지 못했고 따로 남기지도 못해서` : `깨진 ${SYNC[k]} 기록을 아직 고르지 않았고 원래 기록을 따로 남기지 못해서`}; // build 2(검토 5): 다른 탭 기록을 못 읽어 붙잡은 경우는 그 말로
+// build 2(검토 1): 되돌릴 때는 다시 만든 글이 아니라 누르기 전에 저장돼 있던 글 그대로 씀(없던 키는 지움). 저장 안 된 입력 표시(SVF)도 누르기 전으로
+const rawOf69 = k => { try { return localStorage.getItem(k); } catch(e){ return undefined; } };
+function bkBack69(raw, svf){ let back = true;
+  [OKEY, KEY].forEach(k => { const r = raw[k]; if (r === undefined || rawOf69(k) === r) return; try { if (r === null) localStorage.removeItem(k); else localStorage.setItem(k, r); } catch(e){ back = false; } });
+  SVF.clear(); svf.forEach(k => SVF.add(k)); svNote(); return back; }
+function bkDo69(o, b, mode){ const rep = mode === 'rep', raw = {[OKEY]: rawOf69(OKEY), [KEY]: rawOf69(KEY)}, svf = new Set(SVF), w = bkWhy69(b, mode);
+  if (w) { bkBack69(raw, svf); return {msg: `${SYNC[w.k]} 기록 저장이 멈춰 있어서 ${rep ? '링크 내용으로 바꾸지' : '링크에서 없는 칸을 더하지'} 않았어요. 지금 기록은 그대로예요. ${BKW69[w.why](w.k)} 지금은 저장할 수 없어요.`}; }
+  const own0 = JSON.stringify(OWN), body0 = {}, lk0 = st.lookN, ok0 = {}; BODYK.forEach(k => { body0[k] = st[k]; }); [OKEY, KEY].forEach(k => { if (BRK57[k]) ok0[k] = BRK57[k].ok; });
+  const nb = bkApply(o, b, mode), okO = saved60(), okB = !nb || rawOf69(KEY) === stJSON69();
+  if (okO && okB) return {nb};
+  // 저장이 안 됨: 화면 기록을 바꾸기 전으로 되돌리고, 저장소도 누르기 전 글 그대로(깨진 기록을 따로 남겨 둔 경우 그 원래 글 · 고르기 전 상태도 그대로)
+  Object.keys(OWN).forEach(z => { delete OWN[z]; }); Object.assign(OWN, JSON.parse(own0)); BODYK.forEach(k => { st[k] = body0[k]; }); st.lookN = lk0;
+  [OKEY, KEY].forEach(k => { if (BRK57[k] && k in ok0) BRK57[k].ok = ok0[k]; }); draw57();
+  const back = bkBack69(raw, svf);
+  buildBody(); drawHead(); if (typeof wx !== 'undefined' && wx) render();
+  return {msg: `링크 내용을 저장하지 못해서 ${rep ? '바꾸지' : '없는 칸을 더하지'} 않았어요. ${back ? '지금 기록은 그대로예요.' : '바꾸기 전 기록을 다시 저장하지 못했어요. 새로고침하면 일부가 링크 내용으로 보일 수 있어요.'} 이 기기의 저장 공간이 부족할 수 있어요.`}; }function bkMsg69(d, m){ let p = d.querySelector('.bk69'); if (!p) { p = document.createElement('p'); p.className = 'warn bk69'; p.setAttribute('role', 'alert'); d.prepend(p); }
+  p.textContent = m;
+  const c = d.querySelector('.bkt'); if (c) { const cur = ownCount(OWN), td = c.querySelectorAll('tr')[1]; if (td) td.lastElementChild.textContent = cntText(cur, true); } } // '지금 이 기기' 수를 지금 기록으로
 // v18: 가진 옷으로 대신 입기. 칸이 똑같진 않아도 겉으로 비슷한 것만, 한 단계만(종류만 바꾸거나 색만 바꾸거나).
 //      바지 종류가 바뀌는 것(스웨트 팬츠 → 데님), 보온이 다른 것(라이트 패딩 → 패딩·코트), 핏이 다른 것(테이퍼드·플레어), 신발은 대신으로 안 봄.
 //      대신 입은 날은 '확인할 것'(lv 2)으로 두고 사진과 다른 점을 같이 적음
@@ -6628,7 +6668,8 @@ function try63(cs, ls){ const o0 = JSON.stringify(OWN);
 function need63(){
   if (!hasOwn()) return null;
   const lv = st.level, ds = weekDates().filter(d => !(WK.days[d] || {}).skip), DA = ds.map(d => ({d, A: dayA(d)}));
-  const key = JSON.stringify([OWN, lv, DA.map(z => [z.d, Math.round((z.A.tOuter || 0) * 100)]), TS.nope]); if (N63.key === key) return N63.res;
+  // v69(검토 v69 F): 몸 치수(대표 제품의 내 사이즈 품절 판단에 씀)도 열쇠에 넣음 → 치수를 바꾸면 다시 셈(값은 이 메모리에만 · 저장 안 함)
+  const key = JSON.stringify([OWN, lv, DA.map(z => [z.d, Math.round((z.A.tOuter || 0) * 100)]), TS.nope, BODYK.map(k => st[k])]); if (N63.key === key) return N63.res;
   const t0 = performance.now(), os0 = ownedSlots(), all = LOOKS.filter(L => L.level === lv && !TS.nope[L.key]);
   const days = DA.map(z => ({d: z.d, t: z.A.tOuter, fc: !!z.A.fc, keys: new Set(orderLooks(z.A, lv).filter(o => o.dd <= 2 && o.L.level === lv).map(o => o.L.key))}));
   const fitD = {}; days.forEach(z => z.keys.forEach(k => { fitD[k] = (fitD[k] || 0) + 1; }));
@@ -7688,13 +7729,16 @@ function buyPick(x, L){
   return {p: r, col, key: pk(r.id, col), kind: f.ok ? 'sub' : 'part', why: f.ok ? '' : f.why, over: why0};
 }
 // 주간 구매 목록: 같은 제품·같은 색은 여러 날 써도 한 번만. 다른 날 코디의 같은 칸도 이미 고른 제품이 주요 특징까지 맞으면 그걸로 같이 셈
+// v69(검토 v69 E): 그 주 사진 전부에서 모양이 안 보이는 신발(스스로 사는 칸 x.buy)은 '구매 예정' · '주문함'이 되면 연결(link)이 없어져 목록에서 빠졌음.
+//   그 칸에 산 기록(ds.key)이 있으면 그 칸으로 품목을 만듦. 보이는 사진이 있는 품목(그 칸 품목이 이미 있음)은 v68 그대로(그 품목에 날을 더하지 않음)
+const lk69 = x => !x.ds.link && x.anyKind && x.buy && x.ds.key ? x.buy : null;
 function weekBuy(plan){
-  const items = [], later = [];
+  const items = [], later = [], hid69 = new Set();
   plan.filter(p => p.L).forEach(p => p.status.req.forEach(x => {
     if (!BUYC.includes(x.ds.code)) return;
     // v12: 앞 날짜에 사기로 한 옷과 연결된 조각은 그 품목에 날짜만 더함
     // v13: 뒤 날짜에 사는 옷과 연결된 앞날 조각은 그 품목이 아직 안 만들어져서 목록에서 빠졌음 → 품목을 다 만든 뒤에 붙임
-    if (!x.slot) { if (x.ds.link) later.push([p, x]); return; }
+    if (!x.slot) { if (x.ds.link || lk69(x)) later.push([p, x]); return; } // v69: 산 기록이 있는 안 보이는 신발도
     const bp = buyPick(x, p.L);
     const k0 = bp && bp.p ? bp.key : 'slot:' + x.slot;
     let it = items.find(i => i.k === k0), diff = '';
@@ -7711,10 +7755,10 @@ function weekBuy(plan){
     p.status.req.filter(y => y !== x && !y.ds.link && ['miss', 'plan', 'info'].includes(y.ds.code)).forEach(y => it.others.add(y.slot ? slotName(y.slot) : (y.what || y.info)));
   }));
   // v14: 모양이 안 보이는 신발이 스스로 산 칸(x.buy)이면 그 품목은 여기서 만듦(v13까진 이런 신발이 살 옷 목록에 아예 안 나왔음)
-  later.forEach(([p, x]) => { if (!x.buy || x.ds.link !== x.buy || items.some(i => i.slot === x.buy)) return;
-    const bp = buyPick(x, p.L);
-    items.push({k: bp && bp.p ? bp.key : 'slot:' + x.buy, p: bp && bp.p, col: bp && bp.col, slot: x.buy, kind: bp ? bp.kind : null, why: (bp && bp.why) || '', over: '', days: [], uses: [], others: new Set()}); });
-  later.forEach(([p, x]) => { const it = items.find(i => i.slot === x.ds.link); if (!it) return;
+  later.forEach(([p, x]) => { if (!x.buy || (x.ds.link !== x.buy && lk69(x) !== x.buy) || items.some(i => i.slot === x.buy)) return;
+    const bp = buyPick(x, p.L), it = {k: bp && bp.p ? bp.key : 'slot:' + x.buy, p: bp && bp.p, col: bp && bp.col, slot: x.buy, kind: bp ? bp.kind : null, why: (bp && bp.why) || '', over: '', days: [], uses: [], others: new Set()};
+    items.push(it); if (x.ds.link !== x.buy) hid69.add(it); }); // v69: 산 기록으로 만든 품목 표시
+  later.forEach(([p, x]) => { const it = x.ds.link ? items.find(i => i.slot === x.ds.link) : items.find(i => hid69.has(i) && i.slot === lk69(x)); if (!it) return; // v69
     x.bi = it; x.biDiff = '';
     if (!it.days.includes(p.d)) it.days.push(p.d);
     it.uses.push({d: p.d, L: p.L, exact: false, diff: '', link: true}); });
@@ -7972,7 +8016,7 @@ function dayDetail(p, os){
   const tg = [];
   if (p.L) { if (D.pin) tg.push('고정한 코디'); if (p.o && p.o.dd > 2) tg.push('참고 코디'); else if (baseOf(p.L) === 0) tg.push('포인트 코디'); if (p.L.level !== p.lv) tg.push(`${LEVELS[p.L.level].name} 사진`); if (p.o && p.o.ao) tg.push('사진에 없는 겉옷을 더함'); }
   const bl = dayBase(p.d, p.A, 1);
-  const head = `<div class="dtop wdt44"><p class="kick"><b class="wdd44">${dLab(p.d)}</b> ${esc(wxLine(p.A))}${p.A.fc ? '' : ' · 비·눈 모름'}${tg.map(t => `<span class="ktg">${esc(t)}</span>`).join('')}</p>`
+  const head = `<div class="dtop wdt44"><p class="kick"><b class="wdd44">${dLab(p.d)}</b> ${esc(wxLine(p.A))}${p.A.fc ? '' : ' · 비·눈 모름'}${p.A.gap69 ? ' · 예보에 빈 시간이 있어서 있는 값으로만 계산했어요' : ''}${tg.map(t => `<span class="ktg">${esc(t)}</span>`).join('')}</p>`
     + `<div class="ctl"><div class="chips" id="wlv" aria-label="이날 꾸밈 정도">${lvs}</div></div></div>${bl ? `<p class="wbase44">${esc(bl)}</p>` : ''}`;
   if (!p.L) return `<div class="wdr44 wdr0">${head}<p class="msg card44">${p.skip ? '이날은 코디를 안 짜요. 위에서 단계를 고르면 다시 짜요.' : `이날 날씨(나갈 때 체감 ${deg(p.A.tOuter)})에 맞는 ${esc(LEVELS[p.lv].name)} 사진이 아직 없어서 다른 날씨 사진으로 억지로 채우지 않았어요. 위에서 단계를 바꾸면 그 단계 사진으로 짜요.`}</p></div>`;
   const keepA = curA; curA = p.A;
@@ -8388,7 +8432,7 @@ const PART67 = new WeakMap(); // v67: 칸 줄(recipeOf rows) → 그 줄의 사�
 const pcw67 = (w, L) => { const x = PART67.get(w), S = x && (x.slot || x.buy); return S ? pc67(col67(S, [L], null)) : ''; };
 const PHK49 = new WeakMap(); // 칸 줄(recipeOf rows) → 그 줄의 '내 ○○' 칸 키. 줄 객체엔 아무것도 안 붙임(판정 비교 그대로)
 const PHV50 = new WeakMap(), FL50 = new WeakMap(); // v50: 칸 줄 → 입는 벌 번호(첫 벌은 안 넣음) · 두께·프린트 알림
-let PHIMP = null, PHMSG = null;
+let PHIMP = null, PHMSG = null, PHEXP = null; // v69: PHEXP = 나눠 내려받는 중인 사진 파일(새로고침하면 없어짐 · 저장 안 함)
 function phOpen(){
   if (PH.ok) return PH.ok;
   PH.ok = new Promise(res => { let r;
@@ -8434,7 +8478,7 @@ const phN = ks => ks.reduce((n, k) => n + phList(k).length, 0);
 const phAllN = () => [...PH.map.values()].reduce((n, a) => n + a.length, 0);
 const phId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 // 다른 탭에 알림(사진은 안 보냄, 바뀌었다는 신호만). 받은 탭은 자기 저장소에서 다시 읽음
-try { PH.bc = new BroadcastChannel(PHDB); PH.bc.onmessage = () => { phLoad().then(() => phRedraw(true)); }; } catch(e){}
+try { PH.bc = new BroadcastChannel(PHDB); PH.bc.onmessage = () => { phLoad().then(() => { phExpOff69(); phRedraw(true); }); }; /* v69 build 2: 나눈 파일도 버림 */ } catch(e){}
 function phRedraw(other){
   const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref();
   const pd = document.getElementById('phDlg'), ae = document.activeElement;
@@ -8453,8 +8497,11 @@ function phFail(e, what){
 function phSay(m, bad){ const s = document.querySelector('#phDlg .phst'); if (s) { s.textContent = m; s.classList.toggle('bad', !!bad); } }
 async function phWrite(what, fn){
   try { await phTx('readwrite', fn); } catch(e){ phFail(e, what); return false; }
-  await phLoad(); phChanged(); return true;
+  await phLoad(); phExpOff69(); phChanged(); return true;
 }
+// v69 build 2(검토 2): 나눠 내려받기 중에 사진이 바뀌면(이 탭에서 씀 · 다른 탭 알림) 나눈 파일을 버리고 다시 누르게 함
+const PHX69 = '파일을 나눈 뒤에 사진이 바뀌어서 나눈 파일 버튼을 지웠어요. 내려받기를 다시 눌러 주세요.';
+function phExpOff69(){ if (!PHEXP) return; PHEXP = null; PHMSG = {t: PHX69}; }
 // 벌이 둘 이상인 칸에서 올린 사진은 그 벌로 표시('0' = 첫 벌). 한 벌인 칸은 v49처럼 표시 없이
 const phAdd = (k, r, vid) => phWrite('사진을 저장하지', s => { const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0), vi = itemN(k) > 1 ? vid || PV1 : '';
   s.put(Object.assign({id: phId(), k}, vi ? {vi} : {}, {n: r.n || '', o, b: r.b, w: r.w, h: r.h, t: Date.now()})); });
@@ -8695,64 +8742,131 @@ function phFileHTML(){
   let h = `<p><b>옷 사진 파일</b> <span class="cn">올린 사진 ${n}장. 사진은 백업 링크와 공유 링크에 안 담겨요. 브라우저 기록이 지워져도 다시 올리지 않게 파일 하나로 내려받아 두세요. 파일 안에 내 옷 사진이 그대로 들어 있으니 나만 보관해 주세요.</span></p>`;
   if (on) h += `<p class="cn">'있음'으로 적히지 않은 칸의 사진 ${on}장(${orph.map(k => esc(slotName(k))).join(', ')})도 이 브라우저에 남아 있어요. 그 옷을 다시 '있음'으로 적으면 보여요. <button type="button" class="plain sm" data-phorph>이 사진 지우기</button></p>`;
   h += `<p>${n ? `<button type="button" class="plain" data-phex>사진 ${n}장 파일로 내려받기</button>` : ''}<button type="button" class="plain" data-phim>사진 파일 넣기</button><input type="file" class="ph49fj" accept=".json,application/json" hidden></p>`;
+  h += phExpHTML(); // v69: 나눠 내려받기 버튼
   if (PHIMP) h += PHIMP.html;
   if (PHMSG) h += `<p class="phfm${PHMSG.bad ? ' bad' : ''}" role="status">${esc(PHMSG.t)}</p>`;
   return h;
 }
 const phRefFile = () => { const x = document.querySelector('#ownImp .ph49x'); if (x) x.innerHTML = phFileHTML(); };
+// v69(검토 v69 A-3): 사진 파일 한 개 한도 = 넣을 때 한도(80MB · 400장). 넘으면 칸이 나뉘지 않게 여러 파일로 나눔(파일마다 따로 넣을 수 있음)
+const PHLIM = 80 * 1048576, PHFMAX = 400, u8n = s => new Blob([s]).size;
+// PHEXP: {t, set, n, parts: [{slots, ph: [JSON 글], n, size, over}], got: Set}
 async function phExport(){
+  PHEXP = null;
   let all; try { all = (await phTx('readonly', s => s.getAll())).result || []; } catch(e){ PHMSG = {t: '사진을 읽지 못해서 파일을 만들지 못했어요.', bad: 1}; phRefFile(); return null; }
   all = all.filter(r => r && okBk53(r.k) && r.b instanceof Blob) /* v57 */.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o));
   if (!all.length) return null;
   // v50: 사진의 벌 표시(vi: '0' 첫 벌 · 벌 번호 · '?' 정하지 않음)도 담음. 벌 표시 없는 사진은 v49 파일과 같은 모양
   const ph = []; for (const r of all) ph.push(Object.assign({k: r.k}, isPvi(r.vi) ? {vi: r.vi} : {}, {n: typeof r.n === 'string' ? r.n : '', o: r.o, w: r.w, h: r.h, d: await phB64(r.b)}));
-  const b = new Blob([JSON.stringify({app: PHAPP, v: 1, t: today(), ph})], {type: 'application/json'}), nm = `옷사진-${today()}.json`;
-  PH.dl(b, nm);
-  PHMSG = {t: `사진 ${ph.length}장을 '${nm}' 파일로 내려받기 시작했어요(${(b.size / 1048576).toFixed(1)}MB). 브라우저의 내려받기 목록에서 확인해 주세요.`}; phRefFile();
-  return b;
+  const one = JSON.stringify({app: PHAPP, v: 1, t: today(), ph});
+  const b = new Blob([one], {type: 'application/json'}), nm = `옷사진-${today()}.json`;
+  if (ph.length <= PHFMAX && b.size <= PHLIM) { // 한도 안: v68과 같은 파일 하나
+    PH.dl(b, nm);
+    PHMSG = {t: `사진 ${ph.length}장을 '${nm}' 파일로 내려받기 시작했어요(${(b.size / 1048576).toFixed(1)}MB). 브라우저의 내려받기 목록에서 확인해 주세요.`}; phRefFile();
+    return b; }
+  // 한도 넘음: 칸 단위로 나눔. 크기는 실제 파일 글의 바이트(머리 + 사진 글 + 쉼표)로 셈(어림 아님 · 내려받을 때 만든 파일 크기와 다시 맞춰 봄)
+  const set = Math.random().toString(36).slice(2, 10), t = today(), byK = new Map();
+  ph.forEach(p => { const a = byK.get(p.k) || []; a.push(JSON.stringify(p)); byK.set(p.k, a); });
+  const head = (sl, i, n) => JSON.stringify({app: PHAPP, v: 1, t, part: i, parts: n, set, slots: sl, ph: []});
+  const sizeOf = (sl, fr, i, n) => u8n(head(sl, i, n)) + fr.reduce((s, x) => s + u8n(x), 0) + Math.max(0, fr.length - 1);
+  const parts = []; let cur = null;
+  for (const [k, fr] of byK) { const fit = cur && cur.ph.length + fr.length <= PHFMAX && sizeOf(cur.slots.concat([k]), cur.ph.concat(fr), 999, 999) <= PHLIM;
+    if (!fit) { cur = {slots: [], ph: []}; parts.push(cur); }
+    cur.slots.push(k); cur.ph.push(...fr); }
+  parts.forEach((x, i) => { x.n = x.ph.length; x.size = sizeOf(x.slots, x.ph, i + 1, parts.length); x.over = x.size > PHLIM; });
+  PHEXP = {t, set, n: ph.length, size: b.size, sig: all.map(r => r.id + ':' + (r.t || '')).sort().join('\n'), parts, got: new Set()};
+  PHMSG = null; phRefFile(); return parts.length;
 }
-async function phImportRead(file){
+// 나눈 파일 하나 내려받기(누를 때 만듦). 만든 파일 크기가 셈과 다르거나 한도를 넘으면 내려받지 않고 알림(한 칸이 혼자 넘는 파일은 내려받되 다시 넣을 수 없다고 알림)
+async function phExportPart(i){ const E = PHEXP, x = E && E.parts[i]; if (!x) return null;
+  // build 2(검토 2): 누를 때 사진 저장소를 다시 읽어 나눌 때와 다르면(알림 없이 다른 탭이 바꾼 경우도) 내려받지 않음
+  let now = null; try { now = ((await phTx('readonly', s => s.getAll())).result || []).filter(r => r && okBk53(r.k) && r.b instanceof Blob).map(r => r.id + ':' + (r.t || '')).sort().join('\n'); } catch(e){}
+  if (PHEXP !== E || now !== E.sig) { if (PHEXP === E) phExpOff69(); phRefFile(); return null; }
+  const h = JSON.stringify({app: PHAPP, v: 1, t: E.t, part: i + 1, parts: E.parts.length, set: E.set, slots: x.slots, ph: []}), s = h.slice(0, -2) + x.ph.join(',') + h.slice(-2);
+  const b = new Blob([s], {type: 'application/json'}), nm = `옷사진-${E.t}-${E.set.slice(0, 4)}-${i + 1}of${E.parts.length}.json`; /* build 2(검토 8): 묶음 4자 */
+  if (b.size !== x.size || (b.size > PHLIM && !x.over)) { PHMSG = {t: `${i + 1}번째 파일을 만들지 못했어요(크기가 맞지 않음). 사진은 그대로예요.`, bad: 1}; phRefFile(); return null; }
+  PH.dl(b, nm); E.got.add(i);
+  PHMSG = {t: `${E.parts.length}개 중 ${i + 1}번째 파일 '${nm}'을 내려받기 시작했어요(사진 ${x.n}장 · ${x.slots.length}칸 · ${(b.size / 1048576).toFixed(1)}MB).` + (x.over ? ` 이 파일은 '${slotName(x.slots[0])}' 칸 사진만으로 80MB를 넘어서 지금 앱에서 다시 넣을 수 없어요. 지우지 말고 따로 보관해 주세요.` : '') }; phRefFile(); return b; }
+function phExpHTML(){ const E = PHEXP; if (!E) return '';
+  return `<div class="clrq ph49exp" role="group" aria-label="나눈 사진 파일"><p><b>사진 ${E.n}장(${(E.size / 1048576).toFixed(1)}MB)을 파일 ${E.parts.length}개로 나눴어요.</b> 파일 하나에 사진 ${PHFMAX}장 · 80MB까지만 다시 넣을 수 있어서, 칸이 나뉘지 않게 나눴어요. 파일마다 따로 넣을 수 있어요. 아래 버튼을 하나씩 눌러 내려받아 주세요.</p>`
+    + E.parts.map((x, i) => `<p><button type="button" class="plain" data-phexp="${i}">${i + 1}번째 파일 내려받기</button> <span class="cn">사진 ${x.n}장 · ${x.slots.length}칸 · ${(x.size / 1048576).toFixed(1)}MB${E.got.has(i) ? ' · 내려받기 시작함' : ''}${x.over ? ' · 80MB 넘음(다시 넣을 수 없음)' : ''}</span></p>`).join('')
+    + `<p class="cn">이 파일들은 묶음 ${esc(E.set.slice(0, 4))}이에요(파일 이름에 있어요). 다른 때 나눈 다른 묶음의 파일과 섞어 넣지 마세요. 앱은 어느 파일을 내려받았는지 새로고침하면 기억하지 않아요.</p></div>`; }
+// v69(검토 v69 A-1): 바뀌는 칸마다 지금 사진 id(사진 저장소 기준 · 화면 목록과 같은 규칙). 안내할 때 하나 · '넣기' 때 같은 쓰기 묶음 안에서 하나 → 다르면 넣지 않음
+function phSnap69(recs, ks){ const o = {}; ks.forEach(k => { o[k] = []; }); recs.forEach(r => { if (r && o[r.k] && okBk53(r.k) && r.b instanceof Blob) o[r.k].push(r.id + ':' + (r.t || '')); }); /* build 2(검토 3): '바꾸기'는 id가 같고 t가 바뀜 */ ks.forEach(k => o[k].sort()); return o; }
+async function phHas69(){ if (PH.db) return true; try { if (indexedDB.databases) return (await indexedDB.databases()).some(d => d.name === PHDB); } catch(e){} return true; } // 사진 저장소가 없으면 만들지 않음(읽기만 할 때)
+async function phImportRead(file, moved){
   PHIMP = null;
   const bad = m => { PHMSG = {t: m, bad: 1}; phRefFile(); return false; };
-  if (!file || file.size > 80 * 1048576) return bad('사진 파일이 너무 커요(80MB 넘음).');
+  if (!file || file.size > PHLIM) return bad('사진 파일이 너무 커요(80MB 넘음).');
   let L = null; try { L = JSON.parse(await file.text()); } catch(e){}
   if (!isObj(L) || L.app !== PHAPP || L.v !== 1 || !Array.isArray(L.ph)) return bad('이 앱에서 내려받은 옷 사진 파일이 아니에요. 아무것도 안 바꿨어요.');
-  const per = {}, list = []; let skip = 0;
-  for (const p of L.ph.slice(0, 400)) {
+  // v69(A-3): 나눈 파일 표시(모양이 맞을 때만 씀 · 없으면 v68과 같음) · build 2(검토 8): 묶음 = set 앞 4자
+  const pt = Number.isInteger(L.part) && Number.isInteger(L.parts) && L.part >= 1 && L.part <= L.parts && L.parts <= 999 && Array.isArray(L.slots) && L.slots.every(k => typeof k === 'string') ? {i: L.part, n: L.parts, set: typeof L.set === 'string' && /^[a-z0-9]{4,16}$/.test(L.set) ? L.set.slice(0, 4) : ''} : null;
+  // v69 build 2(검토 6): 파일 사진이 다 들어오지 못하는 칸(400장 밖 · 칸 · 벌 한도 · 읽을 수 없는 그림) = 일부만 읽힌 칸.
+  //   지금 사진이 있으면 그 칸은 건드리지 않음(지금 사진 그대로 · 파일 사진 안 넣음) · 지금 사진이 없으면 읽은 사진만 넣음(잃을 것 없음). 안내문 숫자 = '넣기'에서 하는 일
+  const kOf = p => isObj(p) && okBk53(p.k) ? p.k : '', cut = L.ph.slice(0, PHFMAX), rest = L.ph.slice(PHFMAX);
+  const fileN = {}; L.ph.forEach(p => { const k = kOf(p); if (k) fileN[k] = (fileN[k] || 0) + 1; });
+  const per = {}, all = []; let skipU = 0; // skipU = 칸을 알 수 없는 사진(칸 이름이 틀림 등)
+  for (const p of cut) { const k = kOf(p); if (!k) { skipU++; continue; }
     // v50 검토 반영: 벌 표시(vi)는 그대로 넣음(지금 칸에 없는 벌이면 '벌을 정하지 않은 사진'으로 보이고, 그 벌이 생기면 그 벌 사진). 표시가 같은 사진끼리 PHMAX장까지(v49 파일은 전부 표시 없음)
-    const vi = isObj(p) && isPvi(p.vi) ? p.vi : '', pkv = isObj(p) ? p.k + '#' + vi : '';
-    if (!isObj(p) || !okBk53(p.k) || typeof p.d !== 'string' || (per[pkv] || 0) >= PHMAX || (per[p.k] || 0) >= PHMAX * (VMAX + 1)) { skip++; continue; }
+    const vi = isPvi(p.vi) ? p.vi : '', pkv = k + '#' + vi;
+    if (typeof p.d !== 'string' || (per[pkv] || 0) >= PHMAX || (per[k] || 0) >= PHMAX * (VMAX + 1)) continue;
     let b = null; try { const u = phU8(p.d); if (u.length <= 3 * 1048576) b = phStrip(u); } catch(e){}
-    if (!b) { skip++; continue; }
+    if (!b) continue;
     let w = 0, h = 0; try { const bm = await createImageBitmap(b); w = bm.width; h = bm.height; bm.close(); } catch(e){}
-    if (!w || !h || Math.max(w, h) > 1600) { skip++; continue; }
-    per[pkv] = (per[pkv] || 0) + 1; per[p.k] = (per[p.k] || 0) + 1;
-    list.push({k: p.k, vi, n: typeof p.n === 'string' ? p.n.slice(0, PHNM) : '', o: Number.isFinite(p.o) ? p.o : 0, b, w, h});
+    if (!w || !h || Math.max(w, h) > 1600) continue;
+    per[pkv] = (per[pkv] || 0) + 1; per[k] = (per[k] || 0) + 1;
+    all.push({k, vi, n: typeof p.n === 'string' ? p.n.slice(0, PHNM) : '', o: Number.isFinite(p.o) ? p.o : 0, b, w, h});
   }
-  if (!list.length) return bad('이 파일에서 넣을 수 있는 사진을 찾지 못했어요. 아무것도 안 바꿨어요.');
+  const readN = {}; all.forEach(p => { readN[p.k] = (readN[p.k] || 0) + 1; }); const fileK = Object.keys(fileN);
+  // v69(A-1): 지금 사진은 사진 저장소에서 읽어 셈(다른 탭이 더한 사진까지). 넣는 칸의 이 id 묶음을 '넣기' 때 다시 견줌
+  let snap = {}; fileK.forEach(k => { snap[k] = []; });
+  if (await phHas69()) { try { snap = phSnap69((await phTx('readonly', s => s.getAll())).result || [], fileK); } catch(e){ return bad('지금 사진을 읽지 못해서 사진 파일을 넣지 않았어요. 지금 사진은 그대로예요.'); } }
+  const part = fileK.filter(k => (readN[k] || 0) < fileN[k]), keepK = part.filter(k => snap[k].length), fillK = part.filter(k => !snap[k].length && readN[k]);
+  const nmK = a => a.map(k => esc(slotName(k))).join(', ');
+  const list = all.filter(p => !keepK.includes(p.k));
+  if (!list.length) return bad(keepK.length ? `파일 사진이 다 들어오지 못하는 칸(${keepK.map(slotName).join(', ')})뿐이라 지금 사진을 그대로 두고 아무것도 넣지 않았어요.` : '이 파일에서 넣을 수 있는 사진을 찾지 못했어요. 아무것도 안 바꿨어요.');
   list.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o)); const ks = [...new Set(list.map(p => p.k))];
   ks.forEach(k => list.filter(p => p.k === k).forEach((p, o) => { p.o = o; }));
-  const os = ownedSlots(), rep = ks.filter(k => phList(k).length).length, orp = ks.filter(k => !os.has(k)).length;
-  // v68(검토 v68 A2): 바뀌는 칸에서 실제로 지워지는 지금 사진 수 · 그 칸에 들어오는 파일 사진 수(넣기 동작은 그대로)
-  const repK = ks.filter(k => phList(k).length), delN = repK.reduce((n, k) => n + phList(k).length, 0), inN = list.filter(p => repK.includes(p.k)).length;
+  const os = ownedSlots(), repK = ks.filter(k => snap[k].length), rep = repK.length, orp = ks.filter(k => !os.has(k)).length;
+  // v68(검토 v68 A2): 바뀌는 칸에서 실제로 지워지는 지금 사진 수 · 그 칸에 들어오는 파일 사진 수
+  const delN = repK.reduce((n, k) => n + snap[k].length, 0), inN = list.filter(p => repK.includes(p.k)).length;
   const unkN = list.filter(p => os.has(p.k) && phVi(p.k, p) === null).length; // 넣은 뒤 어느 벌 사진인지 정하지 않은 사진으로 남는 수
+  const keepN = keepK.reduce((n, k) => n + snap[k].length, 0), keepF = keepK.reduce((n, k) => n + fileN[k], 0), fillIn = fillK.reduce((n, k) => n + readN[k], 0), fillMiss = fillK.reduce((n, k) => n + fileN[k] - readN[k], 0);
+  const ksnap = {}; ks.forEach(k => { ksnap[k] = snap[k]; }); const any = rest.length || keepK.length || fillK.length;
   PHMSG = null;
-  PHIMP = {list, html: `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
-    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요. 그 칸의 지금 사진 ${delN}장이 지워지고 파일 사진 ${inN}장이 들어와요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
+  PHIMP = {list, ks, snap: ksnap, file, pt, html: (moved ? '<p class="warn ph69m" role="alert">안내한 뒤에 사진이 바뀌어서 넣지 않았어요. 아래 숫자를 다시 확인해 주세요.</p>' : '')
+    + `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 ${any ? '넣을 ' : ''}사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
+    + `<p class="cn">${[pt ? `${pt.n}개로 나눈 사진 파일${pt.set ? `(묶음 ${esc(pt.set)})` : ''} 중 ${pt.i}번째예요. 이 파일에 든 칸: ${nmK(ks)}.` : '',
+      rest.length ? `파일에 사진이 ${L.ph.length}장 있는데 ${PHFMAX}장까지만 읽어요(${rest.length}장은 못 읽어요).` : '',
+      keepK.length ? `파일 사진이 다 들어오지 못하는 ${keepK.length}칸(${nmK(keepK)})은 지금 사진 ${keepN}장을 그대로 두고, 그 칸의 파일 사진 ${keepF}장은 넣지 않아요.` : '',
+      fillK.length ? `지금 사진이 없는 ${fillK.length}칸(${nmK(fillK)})은 넣을 수 있는 파일 사진 ${fillIn}장만 넣어요. 그 칸의 ${fillMiss}장은 넣지 못해요.` : '',
+      rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요. 그 칸의 지금 사진 ${delN}장이 지워지고 파일 사진 ${inN}장이 들어와요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skipU ? `읽지 못한 사진 ${skipU}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
     + `<button type="button" class="go" data-phimy>넣기</button> <button type="button" class="plain" data-phimn>그만두기</button></div>`};
   phRefFile(); return true;
 }
 async function phImportApply(){
-  const L = PHIMP && PHIMP.list; PHIMP = null; if (!L) return false;
-  const del = [...new Set(L.map(p => p.k))].flatMap(k => phList(k).map(p => p.id));
-  const ok = await phWrite('사진 파일을 넣지', s => { del.forEach(id => s.delete(id)); L.forEach(p => s.put(Object.assign({id: phId(), k: p.k}, p.vi ? {vi: p.vi} : {}, {n: p.n, o: p.o, b: p.b, w: p.w, h: p.h, t: Date.now()}))); });
-  PHMSG = ok ? {t: `사진 ${L.length}장을 넣었어요.`} : {t: '사진 파일을 넣지 못했어요. 지금 사진은 그대로예요.', bad: 1}; phRefFile(); return ok;
+  const I = PHIMP; PHIMP = null; if (!I || !I.list) return false; const L = I.list;
+  // v69(검토 v69 A-1): 같은 쓰기 묶음(트랜잭션) 안에서 지금 사진 id를 다시 읽어 안내 때와 칸마다 견줌. 하나라도 다르면(더함 · 지움 · 바꿈 · 칸이 늘어남) 아무것도 쓰지 않고 새 숫자로 다시 안내.
+  //   같으면 그 id만 지우고 넣음. 다른 탭의 쓰기는 이 묶음 앞이나 뒤에만 끼어들 수 있어서(사진 저장소 규칙) 견준 뒤 넣기 전에 바뀌는 일은 없음
+  let moved = false;
+  const ok = await phWrite('사진 파일을 넣지', s => { const g = s.getAll(); g.onsuccess = () => {
+    const now = phSnap69(g.result || [], I.ks);
+    if (I.ks.some(k => now[k].join('\n') !== I.snap[k].join('\n'))) { moved = true; return; }
+    I.ks.forEach(k => now[k].forEach(x => s.delete(x.slice(0, x.lastIndexOf(':')))));
+    L.forEach(p => s.put(Object.assign({id: phId(), k: p.k}, p.vi ? {vi: p.vi} : {}, {n: p.n, o: p.o, b: p.b, w: p.w, h: p.h, t: Date.now()}))); }; });
+  if (ok && moved) { await phImportRead(I.file, true); return false; }
+  const nm = I.pt ? `${I.pt.n}개 중 ${I.pt.i}번째 파일${I.pt.set ? `(묶음 ${I.pt.set})` : ''}` : ''; // build 2(검토 8): 묶음
+  PHMSG = ok ? {t: I.pt ? `${nm}의 사진 ${L.length}장을 넣었어요. 이 파일로 들어온 칸: ${I.ks.map(slotName).join(', ')}. 나머지 ${I.pt.n - 1}개 파일의 칸은 이 파일로 들어오지 않았어요. 아직 안 넣었으면 그 파일도 넣어 주세요(앱은 어느 파일을 넣었는지 기억하지 않아요).` : `사진 ${L.length}장을 넣었어요.`}
+    : {t: I.pt ? `${nm}을 넣지 못했어요. 지금 사진은 그대로예요.` : '사진 파일을 넣지 못했어요. 지금 사진은 그대로예요.', bad: 1};
+  phRefFile(); return ok;
 }
 // 사진 버튼들(내 옷장 창 · 칸 줄 펼친 곳). 다른 클릭 처리보다 먼저 받아서 그쪽으로 안 넘김
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-phed],[data-phex],[data-phim],[data-phimy],[data-phimn],[data-phorph],[data-phory],[data-phorn]'); if (!b) return;
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-phed],[data-phex],[data-phexp],[data-phim],[data-phimy],[data-phimn],[data-phorph],[data-phory],[data-phorn]'); if (!b) return;
   e.preventDefault(); e.stopPropagation();
   if (b.dataset.phed) { phEdit(b.dataset.phed, b.dataset.phv || ''); return; }
   if (b.hasAttribute('data-phex')) { PHMSG = null; phExport(); return; }
+  if (b.dataset.phexp != null) { phExportPart(+b.dataset.phexp); return; } // v69: 나눈 파일 하나씩
   if (b.hasAttribute('data-phim')) { const fj = b.parentElement.querySelector('.ph49fj'); if (fj) { fj.value = ''; fj.click(); } return; }
   if (b.hasAttribute('data-phimy')) { phImportApply(); return; }
   if (b.hasAttribute('data-phimn')) { PHIMP = null; PHMSG = null; phRefFile(); return; }
