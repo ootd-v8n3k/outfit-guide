@@ -2677,7 +2677,15 @@ function draw57(){ const ks = Object.keys(BRK57).filter(held57); let b = documen
   if (!b) { b = document.createElement('div'); b.id = 'brk57'; b.setAttribute('role', 'alert'); m.prepend(b);
     b.addEventListener('click', ev => { const x = ev.target.closest('[data-brk]'); if (!x) return; const k = x.dataset.k, e = BRK57[k]; if (!e) return;
       if (x.dataset.brk === 'go') go57(k); else if (x.dataset.brk === 'retry') { e.bk = bk57(k, e.raw); draw57(); } }); }
-  b.innerHTML = '<p class="t57"><b>저장된 기록 일부를 읽지 못했어요.</b> 화면은 읽을 수 있는 부분만으로 보여 줘요.</p>' + ks.map(k => { const e = BRK57[k];
+  // v68(검토 v68 B-1): 다른 탭이 쓴 기록을 못 읽어 붙잡은 키(e.live)는 화면이 이 탭 기록 그대로라서 그 줄만 다른 문장. 시작할 때 문장은 그대로
+  const hasS = ks.some(k => !BRK57[k].live), hasL = ks.some(k => BRK57[k].live);
+  b.innerHTML = (hasS ? '<p class="t57"><b>저장된 기록 일부를 읽지 못했어요.</b> 화면은 읽을 수 있는 부분만으로 보여 줘요.</p>' : '') + (hasL ? '<p class="t57"><b>다른 탭에서 저장한 기록을 읽지 못했어요.</b> 이 탭 화면은 이 탭에 있던 기록 그대로예요.</p>' : '') + ks.map(k => { const e = BRK57[k];
+    if (e.live) return `<div class="i57"><p><b>${esc(nm57(k))}</b> · 읽지 못한 부분: ${esc(e.bad.join(', '))}</p>`
+      + (e.bk ? `<p>다른 탭이 저장한 이 기록은 지우거나 덮어쓰지 않고 이 브라우저에 '${esc(e.bk)}' 이름으로 따로 남겨 뒀어요. 아래 버튼을 누르기 전에는 이 탭이 이 기록을 저장하지 않아요(이 탭에서 바꾼 것은 새로고침하면 사라져요).</p>`
+        : `<p><b>다른 탭이 저장한 이 기록을 따로 남기지 못했어요</b>(이 기기 저장 공간이 꽉 찼을 수 있어요). 그래서 그 기록은 덮어쓰거나 지우지 않고 그대로 뒀고, 이 탭은 이 기록을 저장하지 않아요. 저장 공간을 비운 뒤 '다시 남겨 보기'를 눌러 주세요.</p>`)
+      // 되살리는 방법 줄(HOW57)은 시작할 때만: 이 길에서는 이 탭이 기록을 그대로 갖고 있어서 '되살릴 수 없어요'가 틀린 말(검토 v68 build 3 1)
+      + (e.bk ? `<button type="button" class="plain sm" data-brk="go" data-k="${esc(k)}">이 탭 기록으로 계속 쓰기</button> <span class="cn">누르면 이 탭 화면의 기록으로 저장해요. 다른 탭이 저장한 기록은 남긴 이름에 그대로 있어요.</span>`
+        : `<button type="button" class="plain sm" data-brk="retry" data-k="${esc(k)}">다시 남겨 보기</button>`) + '</div>';
     return `<div class="i57"><p><b>${esc(nm57(k))}</b> · 읽지 못한 부분: ${esc(e.bad.join(', '))}</p>`
       + (e.bk ? `<p>원래 기록은 지우거나 덮어쓰지 않고 이 브라우저에 '${esc(e.bk)}' 이름으로 따로 남겨 뒀어요. 아래 버튼을 누르기 전에는 이 기록을 저장하지 않아요(지금 바꾼 것은 새로고침하면 사라져요).</p>`
         : `<p><b>원래 기록을 따로 남기지 못했어요</b>(이 기기 저장 공간이 꽉 찼을 수 있어요). 그래서 원래 기록은 덮어쓰거나 지우지 않고 그대로 뒀고, 이 기록은 저장하지 않아요. 저장 공간을 비운 뒤 '다시 남겨 보기'를 눌러 주세요.</p>`)
@@ -2701,7 +2709,7 @@ function svNote(){ let n = document.getElementById('svFail');
   if (!n) { n = document.createElement('p'); n.id = 'svFail'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
   n.textContent = '방금 바꾼 기록이 저장되지 않았어요. 이 기기의 저장 공간이 꽉 찼을 수 있어요. 새로고침하면 이번 변경은 사라져요'; }
 function put(k, v){ if (HELD.has(k)) return false;
-  if (held57(k)) return false; // v57: 깨진 기록은 사용자가 고르기 전엔 저장 안 함(원래 기록 그대로)
+  if (held57(k)) { if (BRK57[k].live) BRK57[k].dirty = true; return false; } // v57: 깨진 기록은 사용자가 고르기 전엔 저장 안 함(원래 기록 그대로) · v68: 다른 탭 기록을 못 읽어 붙잡은 동안 저장하려던 게 있으면 표시(나중에 읽을 수 있는 값이 오면 '저장 안 된 입력'으로 봄)
   try { localStorage.setItem(k, v); SVF.delete(k); svNote(); return true; } catch(e){ SVF.add(k); svNote(); return false; } }
 const SESS = ['shuffle', 'peek', 'lookN', 'show', 'grid', 'how', 'buy'];
 const save = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; put(KEY, JSON.stringify(rest)); };
@@ -6374,8 +6382,11 @@ const allFit50 = ks => { const its = ks.flatMap(k => ownItems(k)); if (its.lengt
   const fv = its.map(it => it.f.fit || '모름'), same = fv.every(v => v === fv[0]) ? fv[0] : '';
   return `<div class="ownf"><span><b>바지 ${its.length}벌 전부</b></span>${FOPT.fit.concat(['모름']).map(v => `<button type="button" data-ownall="fit" data-v="${esc(v)}" aria-pressed="${same === v}">${esc(v)}</button>`).join('')}</div>`; };
 // 내 옷 목록·수정 창. 바꿀 때마다 뒤 화면을 다시 그림
+// v68(검토 v68 C): '이 벌 빼기'는 한 번 누르면 한 벌만. busy = 빼는 중(사진 표시 저장 중)인 칸, at = 이 창에서 그 칸의 벌을 실제로 뺀 때(다시 그린 직후의 누름을 버리는 데 씀)
+const VDEL68 = {busy: new Set(), at: {}};
 function showOwnEdit(focus){
   const old = document.getElementById('ownImp'); if (old) old.remove();
+  VDEL68.at = {}; // 창을 새로 열면 '방금 뺀 때'는 지움(같은 창에서 빠르게 두 번 누른 것만 막음)
   const d = document.createElement('div'); d.id = 'ownImp'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '내 옷장');
   const body = () => { const os = [...ownedSlots()], nv = os.reduce((n, k) => n + itemN(k), 0);
     const grp = Object.keys(RN).map(r => { const ks = os.filter(k => OKR(k) === r); return ks.length ? `<div class="oeg oe50g"><span class="k">${RN[r]} ${ks.reduce((n, k) => n + itemN(k), 0)}</span>${r === 'pants' ? allFit50(ks) : ''}${ks.map(oeSlot50).join('')}</div>` : ''; }).join('');
@@ -6392,11 +6403,13 @@ function showOwnEdit(focus){
     if (b.dataset.oex) { const k = b.dataset.oex; phGuard(b.closest('.oe50b') || b.closest('.oe49') || b, [k], () => ownDelSlot(k), `'${ownNm(k)}' 칸을 지우면`, '지우기', live); return; } // v49: 사진도 지워지면 먼저 물어봄
     if (b.hasAttribute('data-vadd')) { const k = b.closest('.oe50').dataset.k; if (addItem50(k)) live(); return; }
     if (b.dataset.vdel) { const k = b.closest('.oe50').dataset.k, i = +b.dataset.vdel, its = ownItems(k); if (!its[i]) return;
+      // v68(검토 v68 C): 같은 칸을 빼는 중이거나 방금(0.5초 안) 뺐으면 이 누름은 버림(빠르게 두 번 눌러 다음 벌까지 빠지는 것 막기 · 누르는 횟수 · 묻는 창은 그대로)
+      if (VDEL68.busy.has(k) || Date.now() - (VDEL68.at[k] || 0) < 500) return;
       // v50 검토 반영: 사진은 지우지 않고 '벌을 정하지 않은 사진'으로 남김. 첫 벌을 빼면 사진 표시를 먼저 저장하고 된 뒤에 벌을 뺌
       // v60(검토 v60 A2): 첫 벌 사진 표시를 바꾸기 전에 옷장 기록을 저장할 수 있는지 먼저 봄. 못 하면 사진 · 벌 모두 그대로 두고 그 자리에서 알림
-      const n = phListV(k, its[i].id).length, go = async el => { const r60 = delPh50(k, i);
+      const n = phListV(k, its[i].id).length, go = async el => { if (VDEL68.busy.has(k)) return; VDEL68.busy.add(k); let done = false; try { const r60 = delPh50(k, i);
         if (r60) { const why = okSave60(); if (why) { const m = saveWhy60(why, '벌을 빼지 않았어요. 벌과 사진은 그대로예요.'); if (el && el.isConnected) note60el(el, m); else say60(m); return; } }
-        if (!(await phApply50(r60))) return; if (delItem50(k, i)) { live(); drawHead(); if (r60 && !saved60()) say60('벌은 뺐지만 옷장 기록이 저장되지 않았어요. 사진 표시는 이미 바꿔서, 새로고침하기 전에 저장 공간을 비우고 아무 기록이나 한 번 다시 저장해 주세요.'); } };
+        if (!(await phApply50(r60))) return; if (delItem50(k, i)) { done = true; live(); drawHead(); if (r60 && !saved60()) say60('벌은 뺐지만 옷장 기록이 저장되지 않았어요. 사진 표시는 이미 바꿔서, 새로고침하기 전에 저장 공간을 비우고 아무 기록이나 한 번 다시 저장해 주세요.'); } } finally { VDEL68.busy.delete(k); if (done) VDEL68.at[k] = Date.now(); } }; // 못 뺐으면(저장 실패 등) 다시 누를 수 있게 시간을 안 남김
       if (!n) { go(b); return; }
       const q = document.createElement('span'); q.className = 'ph49q'; q.setAttribute('role', 'alertdialog');
       q.innerHTML = `<span>이 벌 사진 ${n}장은 지우지 않고 '어느 벌 사진인지 정하지 않은 사진'으로 남겨요.</span> <button type="button" class="go">빼기</button><button type="button" class="plain sm">그대로 두기</button>`;
@@ -8256,6 +8269,9 @@ function bindWeek(){
     if (b.dataset.bst != null) { const wrap = b.closest('.bact'), k = wrap.dataset.k, v = b.dataset.bst;
       if (!v) { delete OWN.d[k]; if (OWN.p[k] === 'own') delete OWN.p[k]; }
       else { const o = OWN.d[k] || {}, ss = (wrap.dataset.slots || '').split(',').filter(Boolean);
+        // v68(검토 v68 D): 도착일은 '주문함'에 머무를 때만 남김. '주문함'이 아닌 상태로 바꾸거나 '주문함'이 아니던 기록을 '주문함'으로 바꾸면 지움
+        //   (예전 기록에 남은 도착일은 '주문함'일 때만 읽어서 따로 고쳐 쓰지 않음 · 사용자가 누를 때만 이 기록을 새로 씀)
+        if (!(v === 'ordered' && o.st === 'ordered')) delete o.eta;
         OWN.d[k] = Object.assign(o, {st: v, slot: wrap.dataset.slot || o.slot, slots: [...new Set((o.slots || []).concat(ss))], at: localNow(wx).date}); }
       if (v === 'got') OWN.p[k] = 'own';
       saveO(); redraw(true); return; }
@@ -8278,7 +8294,7 @@ const INK = el => el && el.matches ? (el.matches('#bh,#bw,#bf,#pl,#pw') ? KEY : 
 let typing = null, syncGone = false;
 const PEND = new Set();
 function typed(){ const ks = [...PEND].filter(k => !HELD.has(k)); PEND.clear(); if (!ks.length) return;
-  adopt(ks); const shown = ks.filter(k => k !== TKEY); if (shown.length) syncNote(`다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어요`); }
+  note68(adopt(ks)); }
 document.addEventListener('input', e => { if (INK(e.target)) typing = e.target; }, true);
 document.addEventListener('change', e => { if (e.target === typing) { typing = null; setTimeout(typed, 0); } }, true);
 document.addEventListener('focusout', e => { const x = e.target; if (x === typing) setTimeout(() => { if (typing === x && document.activeElement !== x) { typing = null; typed(); } }, 0); }, true);
@@ -8287,19 +8303,38 @@ const SAVER = {[KEY]: () => save(), [OKEY]: () => saveO(), [TKEY]: () => saveT()
 // v57: 다른 탭이 쓴 값이 깨져 있으면 이 탭은 그 키를 안 불러옴(null). 지워졌으면 v56과 같이 {}
 function syncRead(k){ let raw = null; try { raw = localStorage.getItem(k); } catch(e){} if (raw == null) return {};
   let v = null; try { v = JSON.parse(raw); } catch(e){ return null; } return isObj(v) && !chk57(k, v).bad.length ? v : null; }
+// v68(검토 v68 B-1): 다른 탭이 쓴 값을 못 읽으면 그 키는 불러오지 않고, 시작할 때(v57)와 같이 원래 글자를 '키.broken.날짜' 이름으로 따로 남긴 뒤(bk57 · 다시 읽어 확인)
+//   그 키를 붙잡음(held57 → put이 자동 · 수동 저장을 모두 거절). 이 탭에 저장 안 된 입력이 있어도 두 갈래 상자로 보내지 않음.
+//   붙잡은 동안 다른 탭이 읽을 수 있는 값을 쓰면 놓고 보통 길로(불러오기, 이 탭에 저장 안 된 입력이 있으면 두 갈래 상자). 읽을 수 있는 키는 그대로
+function raw68(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function bad68(k, raw){ let v; try { v = JSON.parse(raw); } catch(e){ return ['글자가 잘렸거나 읽을 수 없는 모양']; } return chk57(k, v).bad; }
+function syncBox68(){ if (HELD.size) { hold([], syncGone); return; } syncGone = false; const b = document.getElementById('syncB'); if (b) b.remove(); }
+function live68(k){ const raw = raw68(k); if (raw == null) return false; const bad = bad68(k, raw); if (!bad.length) return false;
+  // build 3(검토 2): '저장 안 된 입력' 표시를 이어 감 = 앞 항목에 있던 표시(아직 고르기 전) 또는 두 갈래 상자로 붙잡혀 있던 키(그동안의 저장 거절은 표시가 안 남음)
+  const o = BRK57[k], dirty = !!(o && o.live && !o.ok && o.dirty) || HELD.has(k);
+  let e = o; if (!e || e.raw !== raw) e = BRK57[k] = {raw, bad: [...new Set(bad)], bk: null, ok: false, live: true}; else e.ok = false;
+  if (dirty) e.dirty = true;
+  if (!e.bk) e.bk = bk57(k, raw);
+  PEND.delete(k); if (HELD.delete(k)) syncBox68();
+  draw57(); return true; }
+function release68(k){ const e = BRK57[k]; if (!e || !e.live) return {released: false, dirty: false}; const r = {released: !e.ok, dirty: !e.ok && !!e.dirty}; delete BRK57[k]; draw57(); return r; }
+function note68(r, all){ const shown = r.got.filter(k => k !== TKEY), nb = r.bad.map(k => SYNC[k]).join('·');
+  if (!r.bad.length) { if (all) syncNote(all); else if (shown.length) syncNote(`다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어요`); return; }
+  syncNote((shown.length ? `다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어요. ` : '') + `다른 탭에서 바뀐 ${nb} 기록은 읽지 못해서 불러오지 않았어요. 위 안내를 봐 주세요`); }
 const refill = (obj, def, v) => { Object.keys(obj).forEach(x => delete obj[x]); Object.assign(obj, JSON.parse(JSON.stringify(def)), v); };
 function adopt(keys){
-  let reload = false;
-  keys.forEach(k => { const v = syncRead(k); if (v === null) return; // v57
+  let reload = false; const got = [], bad = []; // v68: 실제로 불러온 키 · 못 읽어 붙잡은 키를 돌려줌
+  keys.forEach(k => { const v = syncRead(k); if (v === null) { if (live68(k)) bad.push(k); return; } got.push(k); // v57 · v68
     if (k === KEY) { const keep = {}; SESS.concat(['mode', 'day', 'dayD']).forEach(x => { keep[x] = st[x]; }); const c0 = st.lat + ',' + st.lon;
       refill(st, S0, v); delete st.mood; if (!LEVELS[st.level]) st.level = 'L2'; Object.assign(st, keep); reload = c0 !== st.lat + ',' + st.lon; }
     else if (k === OKEY) refill(OWN, {p: {}, s: {}, f: {}, d: {}, w: {}, x: {}}, v);
     else if (k === TKEY) refill(TS, {like: {}, nope: {}, why: {}, ab: [], asked: {}, seen: {}}, v);
     else if (k === WKEY) refill(WK, {start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false}, v); });
-  if (keys.includes(KEY)) { buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); applyFont(); }
+  if (got.includes(KEY)) { buildCity(); buildHours(); buildLevels(); buildBody(); syncSeg('day', st.day); syncSeg('sens', st.sens); applyFont(); }
   const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref();
   drawHead();
   if (reload) load(true); else if (typeof wx !== 'undefined' && wx) render();
+  return {got, bad};
 }
 function syncNote(m){ let n = document.getElementById('syncN'); if (!n) { n = document.createElement('p'); n.id = 'syncN'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
   n.textContent = m; clearTimeout(syncNote.t); syncNote.t = setTimeout(() => { const x = document.getElementById('syncN'); if (x) x.remove(); }, 4000); }
@@ -8317,17 +8352,25 @@ function hold(keys, gone){
 function syncPick(v){
   const keys = [...HELD], b = document.getElementById('syncB'); if (b) b.remove();
   if (v === 'theirs') { if (typing) { const x = typing; typing = null; x.blur(); }
-    const g = syncGone; HELD.clear(); syncGone = false; keys.forEach(k => SVF.delete(k)); svNote(); const all = [...new Set(keys.concat([...PEND]))]; PEND.clear(); adopt(all); syncNote(g ? '지워진 상태를 따랐어요' : '다른 탭 기록을 불러왔어요'); }
+    const g = syncGone; HELD.clear(); syncGone = false; keys.forEach(k => SVF.delete(k)); svNote(); const all = [...new Set(keys.concat([...PEND]))]; PEND.clear(); note68(adopt(all), g ? '지워진 상태를 따랐어요' : '다른 탭 기록을 불러왔어요'); }
   else { HELD.clear(); syncGone = false; if (typing && keys.includes(INK(typing))) typing.dispatchEvent(new Event('change', {bubbles: true}));
-    keys.forEach(k => SAVER[k]()); syncNote('이 탭 기록을 저장했어요'); }
+    keys.forEach(k => SAVER[k]());
+    // v68(검토 v68 B-2): 실제로 저장됐을 때만 '저장했어요'. 저장 공간이 꽉 찼거나(SVF) 깨진 기록을 고르기 전(held57)이면 안 됐다고 알림
+    const fail = keys.filter(k => SVF.has(k) || held57(k));
+    syncNote(!fail.length ? '이 탭 기록을 저장했어요' : `${fail.map(k => SYNC[k]).join('·')} 기록을 저장하지 못했어요. ${fail.some(k => held57(k)) ? '읽지 못한 기록을 아직 고르지 않아서 저장하지 않았어요(위 안내를 봐 주세요)' : '이 기기의 저장 공간이 꽉 찼을 수 있어요'}`); }
 }
 addEventListener('storage', e => {
   if (e.storageArea && e.storageArea !== localStorage) return;
   const ks = e.key == null ? Object.keys(SYNC) : SYNC[e.key] ? [e.key] : []; if (!ks.length) return;
-  const gone = e.key == null || e.newValue == null, hk = ks.filter(k => gone || unsaved(k)), rest = ks.filter(k => !hk.includes(k));
+  const gone = e.key == null || e.newValue == null;
+  // v68(검토 v68 B-1): 못 읽는 값은 저장 안 된 입력이 있어도 붙잡기만(두 갈래 상자로 안 감) · 읽을 수 있는 값이 오면 붙잡은 것을 놓고 보통 길로
+  const bad = [], rel = {};
+  if (!gone) ks.forEach(k => { const raw = raw68(k); if (raw != null && bad68(k, raw).length) { if (live68(k)) bad.push(k); } else { const r = release68(k); if (r.dirty) rel[k] = 1; } });
+  else ks.forEach(k => release68(k)); // build 3(검토 3): 지워졌으면 지킬 기록이 없으니 먼저 놓고 v67과 같은 '지워졌어요' 두 갈래 상자로
+  const ks2 = ks.filter(k => !bad.includes(k)), hk = ks2.filter(k => gone || unsaved(k) || rel[k]), rest = ks2.filter(k => !hk.includes(k));
   if (typing) rest.forEach(k => PEND.add(k));
   const ok = typing ? [] : rest;
-  if (ok.length) { adopt(ok); const shown = ok.filter(k => k !== TKEY); if (shown.length) syncNote(`다른 탭에서 바뀐 ${shown.map(k => SYNC[k]).join('·')} 기록을 불러왔어요`); }
+  if (ok.length) { const r = adopt(ok); note68({got: r.got, bad: r.bad.concat(bad)}); } else if (bad.length) note68({got: [], bad});
   if (hk.length) hold(hk, gone);
 });
 
@@ -8417,19 +8460,29 @@ const phAdd = (k, r, vid) => phWrite('사진을 저장하지', s => { const o = 
   s.put(Object.assign({id: phId(), k}, vi ? {vi} : {}, {n: r.n || '', o, b: r.b, w: r.w, h: r.h, t: Date.now()})); });
 // v50 검토 반영: 같은 칸 안에서 사진을 다른 벌로 옮김(지우고 다시 올리지 않음). 그 벌 사진의 맨 뒤로. 한 번에 저장해서 안 되면 그대로
 function phToItem(k, id, vid){ const it = ownItems(k).find(x => x.id === (vid || ''));
-  if (!it || !phList(k).some(p => p.id === id) || phListV(k, it.id).length >= PHMAX) return Promise.resolve(false);
+  if (it && !phList(k).some(p => p.id === id)) return Promise.resolve(gone68('사진을 옮기지')); // v68(검토 v68 A3)
+  if (!it || phListV(k, it.id).length >= PHMAX) return Promise.resolve(false);
   const o = phList(k).reduce((m, p) => Math.max(m, p.o + 1), 0);
   return phUpd(id, {vi: it.id || PV1, o}, '사진을 옮기지'); }
-const phUpd = (id, v, what) => phWrite(what, s => { const q = s.get(id); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, v, {t: Date.now()})); }; });
+// v68(검토 v68 A3): 바꾸려던 사진이 이미 없으면(다른 탭에서 지웠거나 사진 파일을 넣어서) 아무것도 저장하지 않고 안 됐다고 알림.
+//   여러 장을 함께 바꿀 때는 모두 있을 때만 씀(한 장만 바뀌는 일 없음). 저장소가 열리지 않는 등은 전처럼 phFail
+const GONE68 = {'사진을 바꾸지': '바꾸지', '사진 이름을 저장하지': '이름을 저장하지', '사진을 옮기지': '옮기지', '사진 순서를 바꾸지': '순서를 바꾸지'};
+const gone68 = what => { phSay(`이 사진이 이미 지워져서 ${GONE68[what] || '바꾸지'} 못했어요.`, 1); return false; };
+const putAll68 = async (what, ids, vals) => { let hit = false;
+  const ok = await phWrite(what, s => { const qs = ids.map(x => s.get(x)); qs[qs.length - 1].onsuccess = () => { if (qs.every(q => q.result)) { hit = true; qs.forEach((q, n) => s.put(Object.assign(q.result, vals[n]))); } }; });
+  return ok && !hit ? gone68(what) : ok; };
+const phUpd = (id, v, what) => putAll68(what, [id], [Object.assign({}, v, {t: Date.now()})]);
 const phRep = (id, r) => phUpd(id, {b: r.b, w: r.w, h: r.h}, '사진을 바꾸지');
 const phName = (id, n) => phUpd(id, {n}, '사진 이름을 저장하지');
 function phMove(k, id, d, vid){
   // v50: 벌 하나의 사진끼리만 순서를 바꿈(칸 전체 순서 번호 o는 그대로 두고 두 사진의 번호만 맞바꿈. 한 벌이면 v49와 같은 결과)
-  const all = phList(k), a = phListV(k, vid).map(p => p.id), i = a.indexOf(id), j = i + d; if (i < 0 || j < 0 || j >= a.length) return Promise.resolve(false);
+  const all = phList(k), a = phListV(k, vid).map(p => p.id), i = a.indexOf(id), j = i + d;
+  if (i < 0) return Promise.resolve(phList(k).some(p => p.id === id) ? false : gone68('사진 순서를 바꾸지')); // v68(검토 v68 A3) · build 3(검토 4): 사진이 칸에 있으면(다른 벌로 갔거나 '정하지 않은 사진') v67처럼 말없이 안 됨
+  if (j < 0 || j >= a.length) return Promise.resolve(false);
   if (a.length === all.length) { [a[i], a[j]] = [a[j], a[i]];
-    return phWrite('사진 순서를 바꾸지', s => a.forEach((x, o) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; })); }
+    return putAll68('사진 순서를 바꾸지', a, a.map((x, o) => ({o}))); }
   const oi = all.find(p => p.id === a[i]).o, oj = all.find(p => p.id === a[j]).o;
-  return phWrite('사진 순서를 바꾸지', s => [[a[i], oj], [a[j], oi]].forEach(([x, o]) => { const q = s.get(x); q.onsuccess = () => { if (q.result) s.put(Object.assign(q.result, {o})); }; }));
+  return putAll68('사진 순서를 바꾸지', [a[i], a[j]], [{o: oj}, {o: oi}]);
 }
 const phDel = (ids, what) => ids.length ? phWrite(what || '사진을 지우지', s => ids.forEach(id => s.delete(id))) : Promise.resolve(true);
 const phDelAll = () => phDel([...PH.map.values()].flat().map(p => p.id));
@@ -8548,8 +8601,8 @@ function phEdit(k, vid0){
     // v50 검토 반영: 다른 벌로 옮기기 → 어느 벌로(취소하면 그대로)
     if (b.hasAttribute('data-phmo')) { const its = ownItems(k).filter(it => it.id !== vid()); const q = document.createElement('span'); q.className = 'ph49a ph49q'; q.setAttribute('role', 'group'); q.setAttribute('aria-label', '어느 벌로 옮길까요');
       q.innerHTML = `<span>어느 벌로 옮길까요?</span> ${its.map(toBtn).join('')}<button type="button" class="plain sm" data-phdn>취소</button>`; b.parentElement.replaceWith(q); const f1 = q.querySelector('button:not([disabled])'); if (f1) f1.focus(); return; }
-    if (b.dataset.phto != null) { const it = ownItems(k).find(x => x.id === b.dataset.phto); if (!it) return;
-      if (await phToItem(k, id, it.id)) phSay(`'${lab(it)}' 사진으로 옮겼어요.`); else if (full(it)) phSay(`이 벌은 사진이 ${PHMAX}장이라 더 못 옮겨요.`, 1); return; }
+    if (b.dataset.phto != null) { const it = ownItems(k).find(x => x.id === b.dataset.phto); if (!it) return; const had = phList(k).some(p => p.id === id); // build 3(검토 5): 사진이 이미 없으면 '지워져서' 알림을 그대로 둠
+      if (await phToItem(k, id, it.id)) phSay(`'${lab(it)}' 사진으로 옮겼어요.`); else if (had && full(it)) phSay(`이 벌은 사진이 ${PHMAX}장이라 더 못 옮겨요.`, 1); return; }
     if (b.hasAttribute('data-phdl')) { const q = document.createElement('span'); q.className = 'ph49a ph49q'; q.setAttribute('role', 'alertdialog');
       q.innerHTML = `<span>이 사진을 지울까요?</span> <button type="button" class="go" data-phdy>지우기</button><button type="button" class="plain sm" data-phdn>취소</button>`; b.parentElement.replaceWith(q); return; }
     if (b.hasAttribute('data-phdy')) { if (await phDel([id])) phSay('사진을 지웠어요.'); return; }
@@ -8680,10 +8733,12 @@ async function phImportRead(file){
   list.sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : (a.o - b.o)); const ks = [...new Set(list.map(p => p.k))];
   ks.forEach(k => list.filter(p => p.k === k).forEach((p, o) => { p.o = o; }));
   const os = ownedSlots(), rep = ks.filter(k => phList(k).length).length, orp = ks.filter(k => !os.has(k)).length;
+  // v68(검토 v68 A2): 바뀌는 칸에서 실제로 지워지는 지금 사진 수 · 그 칸에 들어오는 파일 사진 수(넣기 동작은 그대로)
+  const repK = ks.filter(k => phList(k).length), delN = repK.reduce((n, k) => n + phList(k).length, 0), inN = list.filter(p => repK.includes(p.k)).length;
   const unkN = list.filter(p => os.has(p.k) && phVi(p.k, p) === null).length; // 넣은 뒤 어느 벌 사진인지 정하지 않은 사진으로 남는 수
   PHMSG = null;
   PHIMP = {list, html: `<div class="clrq ph49imp" role="alertdialog"><p><b>사진 파일에서 사진 ${list.length}장(${ks.length}칸)을 읽었어요${isD(L.t) ? ` (${esc(dLab(L.t))}에 만든 파일)` : ''}.</b> 아직 아무것도 안 바꿨어요.</p>`
-    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
+    + `<p class="cn">${[rep ? `지금 사진이 있는 ${rep}칸은 파일 사진으로 바뀌어요. 그 칸의 지금 사진 ${delN}장이 지워지고 파일 사진 ${inN}장이 들어와요.` : '', orp ? `지금 옷장에 '있음'으로 적히지 않은 ${orp}칸 사진도 넣어 두고, 그 옷을 '있음'으로 적으면 보여요.` : '', unkN ? `어느 벌 사진인지 정하지 않은 사진 ${unkN}장은 '내 옷장' 창에서 사진을 보고 벌을 정할 수 있어요.` : '', skip ? `읽지 못한 사진 ${skip}장은 뺐어요.` : '', '파일에 없는 칸 사진은 그대로 둬요.'].filter(Boolean).join(' ')}</p>`
     + `<button type="button" class="go" data-phimy>넣기</button> <button type="button" class="plain" data-phimn>그만두기</button></div>`};
   phRefFile(); return true;
 }
@@ -8703,7 +8758,9 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   if (b.hasAttribute('data-phimn')) { PHIMP = null; PHMSG = null; phRefFile(); return; }
   if (b.hasAttribute('data-phorph')) { const os = ownedSlots(), n = phN([...PH.map.keys()].filter(k => !os.has(k)));
     b.outerHTML = `<span class="ph49q" role="alertdialog"><span>사진 ${n}장을 지울까요? 되돌릴 수 없어요.</span> <button type="button" class="go" data-phory>지우기</button><button type="button" class="plain sm" data-phorn>취소</button></span>`; return; }
-  if (b.hasAttribute('data-phory')) { const os = ownedSlots(); phDel([...PH.map.keys()].filter(k => !os.has(k)).flatMap(k => phList(k).map(p => p.id))).then(ok => { PHMSG = ok ? {t: '옷장에 없는 칸 사진을 지웠어요.'} : null; phRefFile(); }); return; }
+  if (b.hasAttribute('data-phory')) { // v68(검토 v68 A1): 옷장 기록 저장이 멈춘 동안(깨진 기록을 고르기 전 · 다른 탭과 맞추는 중 · 저장 공간 부족)엔 아무것도 지우지 않음(칸 지우기 · 벌 빼기와 같은 검사)
+    const why = okSave60(); if (why) { PHMSG = {t: saveWhy60(why, '사진을 지우지 않았어요. 사진은 그대로예요.'), bad: 1}; phRefFile(); return; }
+    const os = ownedSlots(); phDel([...PH.map.keys()].filter(k => !os.has(k)).flatMap(k => phList(k).map(p => p.id))).then(ok => { PHMSG = ok ? {t: '옷장에 없는 칸 사진을 지웠어요.'} : null; phRefFile(); }); return; }
   if (b.hasAttribute('data-phorn')) { phRefFile(); return; } }, true);
 document.addEventListener('change', e => { const t = e.target; if (!t.classList || !t.classList.contains('ph49fj') || !t.files || !t.files[0]) return;
   const f = t.files[0]; PHMSG = {t: '사진 파일을 읽는 중이에요…'}; phRefFile(); phImportRead(f); }, true);
