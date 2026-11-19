@@ -2627,6 +2627,16 @@ const KEY = 'outfit-guide-v1';
 //      따로 남기지 못하면(저장 공간 부족 등) 그 키는 계속 저장하지 않고 '다시 남겨 보기'만 보여 줌. 키 이름 · 기록 모양은 그대로
 const io57 = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const BRK57 = {}; // 키 → {raw: 원래 글자, bad: 읽지 못한 부분, bk: 따로 남긴 이름(못 남겼으면 null), ok: 사용자가 계속 쓰기를 누름}
+// v72(검토 v72 A1): 탭끼리 맞추는 네 기록(설정 · 옷장 · 취향 · 일주일)마다 이 탭이 마지막으로 읽었거나 쓴 글자(메모리에만 · 저장소에 새 키 없음)
+//   RAW72[키] = 그 글자(없던 기록은 null · 읽다가 예외면 키 없음 = 견주지 않음) · 이 탭이 쓴 까닭(user 누름 · auto 저절로 · irr 되돌릴 수 없는 동작 앞뒤)은 OWN72에
+//   UNS72 = 다른 탭과 부딪혀 저장하지 못한 이 탭의 변경(두 갈래 상자에서 '아직 저장되지 않음') · OVR72 = 이 탭의 쓰기가 다른 탭의 쓰기를 앞질러서 그 탭의 기록을 다시 써 둔 키
+//   AUTO72 · IRR72 = 지금 하는 쓰기가 저절로인지 · 되돌릴 수 없는 동작인지(쓰는 곳에서 잠깐 켬)
+//   RCV72[키] = 다른 탭(또는 다른 곳)의 기록을 받은 횟수(받는 길 inK72 · 놓친 변경 pre72 · 앞지름 over72에서만 늘림 · 이 탭의 쓰기로는 안 늘어남). 묻는 창 · 기다림의 '그새 다른 탭 기록이 왔나'는 이것으로 봄
+//   OWN72[키] = 그 기록을 마지막으로 읽어 들인 뒤 이 탭이 쓴 것들(검토 P1 · P2): {why: user · auto · irr, base: 쓰기 전 글자(RAW72), t: 쓴 때, h: 그때까지 탭이 숨겨진 횟수(HID72), wb: 앞지른 뒤 그 탭 기록을 되돌려 쓴 것}
+//     저장소에서 읽어 들이면(syncRead · hold · live68 · '이 탭 기록 저장' 앞) 비움. 늦은 알림이 이 탭이 쓴 것을 앞지른 것인지 · 무엇을 앞질렀는지(누른 · 되돌릴 수 없는 · 저절로) 가림
+const RAW72 = {}, OWN72 = {}, UNS72 = new Set(), OVR72 = new Set(), OVV72 = {}, RCV72 = {}; let AUTO72 = 0, IRR72 = 0, HID72 = 0, SRC72 = null, PHS72 = null; const rcv72 = k => RCV72[k] | 0; // SRC72: 저장소 대신 이 글자로 화면에 불러올 때(검토 P3)
+const why72 = () => AUTO72 ? 'auto' : IRR72 ? 'irr' : 'user', push72 = (k, why, base, wb) => { const L = OWN72[k] = OWN72[k] || []; L.push({why, base, t: performance.now(), h: HID72, wb: !!wb}); if (L.length > 50) L.shift(); if (k === OKEY) PHS72 = null; }; // PHS72(069 · 사진 단계가 이미 돌았음): 이 탭이 옷장 기록을 다른 까닭으로 다시 쓰면 지움(검토 N3) // OVV72: 앞지른 뒤 그 탭 기록을 다시 쓰지 못했을 때(저장 공간) 그 기록을 메모리에 둠('다른 탭 기록 불러오기'에서 씀)
+const SY72 = ['', '-own', '-taste', '-week'], sy72 = k => typeof k === 'string' && k.startsWith(KEY) && SY72.includes(k.slice(KEY.length));
 const BRKN57 = {'': '설정', '-own': '옷장 기록', '-taste': '취향 기록', '-week': '일주일 기록', '-wx': '받아 둔 예보'};
 const HOW57 = {
   '': '지역 · 외출 시간 · 체질 보정 · 꾸밈 단계는 다시 고르면 돼요. 몸 치수는 \'몸 치수 포함\'으로 만든 옷장 백업 링크가 있으면 그 링크로 되살릴 수 있어요. 그 밖의 설정은 백업 링크에 담기지 않아요.',
@@ -2666,6 +2676,7 @@ function keep57(k, raw, bad){ const e = BRK57[k] = BRK57[k] || {raw, bad: [], bk
   if (!e.bk) e.bk = bk57(k, raw); setTimeout(draw57, 0); }
 // 읽기: 멀쩡하면 v56과 같은 값(JSON 그대로 · 없으면 {}), 깨졌으면 남긴 뒤 읽을 수 있는 부분. 예보(-wx)는 없거나 깨졌으면 null
 function rd57(k){ const wxK = k === KEY + '-wx'; let raw = null; try { raw = localStorage.getItem(k); } catch(e){ return wxK ? null : {}; }
+  if (sy72(k)) RAW72[k] = raw; // v72: 시작할 때 읽은 글자(깨진 글자 · 없음(null)도 그대로)
   if (raw == null) return wxK ? null : {};
   let v; try { v = JSON.parse(raw); } catch(e){ keep57(k, raw, ['글자가 잘렸거나 읽을 수 없는 모양']); return wxK ? null : {}; }
   const r = chk57(k, v); if (!r.bad.length) return v;
@@ -2712,9 +2723,12 @@ function svNote(){ let n = document.getElementById('svFail');
   if (!SVF.size) { if (n) n.remove(); return; }
   if (!n) { n = document.createElement('p'); n.id = 'svFail'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
   n.textContent = '방금 바꾼 기록이 저장되지 않았어요. 이 기기의 저장 공간이 꽉 찼을 수 있어요. 새로고침하면 이번 변경은 사라져요'; }
-function put(k, v){ if (HELD.has(k)) return false;
+function put(k, v){ if (HELD.has(k)) { if (sy72(k) && !AUTO72 && !UNS72.has(k)) { UNS72.add(k); mark72(); } return false; } // v72: 두 갈래 상자가 떠 있는 동안 사용자가 바꾼 것도 '아직 저장되지 않음'으로 보임(표시 줄만 더함 · 버튼은 그대로 · 검토 P5) · 저절로 하는 저장은 표시 안 함(검토 F3)
   if (held57(k)) { if (BRK57[k].live) BRK57[k].dirty = true; return false; } // v57: 깨진 기록은 사용자가 고르기 전엔 저장 안 함(원래 기록 그대로) · v68: 다른 탭 기록을 못 읽어 붙잡은 동안 저장하려던 게 있으면 표시(나중에 읽을 수 있는 값이 오면 '저장 안 된 입력'으로 봄)
-  try { localStorage.setItem(k, v); SVF.delete(k); svNote(); return true; } catch(e){ SVF.add(k); svNote(); return false; } }
+  // v72(검토 v72 A1): 쓰기 전에 저장소 글자가 이 탭이 기억한 것과 같은지 봄. 다르면(알림을 놓쳤거나 아직 안 받음) 쓰지 않고 다른 탭 길로(pre72 · 069)
+  if (sy72(k) && !pre72(k)) return false;
+  const b72 = RAW72[k];
+  try { localStorage.setItem(k, v); if (sy72(k)) { RAW72[k] = v; push72(k, why72(), b72); UNS72.delete(k); delete OVV72[k]; /* 검토 F2 · P3: 저장됐으면 '아직 저장되지 않음' 아님 · 되돌려 쓰지 못한 그 탭 기록도 이제 저장됨 */ } SVF.delete(k); svNote(); return true; } catch(e){ SVF.add(k); svNote(); return false; } }
 const SESS = ['shuffle', 'peek', 'lookN', 'show', 'grid', 'how', 'buy'];
 const save = () => { const {shuffle, peek, lookN, show, grid, how, buy, ...rest} = st; put(KEY, JSON.stringify(rest)); };
 
@@ -3047,7 +3061,7 @@ function dayReset53(){
   const same = typeof st.dayD === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(st.dayD) && addDays(st.dayD, st.day) === t;
   st.day = 0; delete st.dayD;
   if (!same) { st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; }
-  save(); return same ? 1 : 2; }
+  AUTO72++; try { save(); } finally { AUTO72--; } /* v72: 누르지 않아도 하는 저장(날짜 되돌리기) */ return same ? 1 : 2; }
 function dayBack53(){ if (!dayReset53()) return;
   syncSeg('day', 0); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); if (wx && st.mode !== 'week') render(); }
 
@@ -3786,7 +3800,7 @@ function seenPen(L){
 }
 function markSeen(L){
   const d = today(), a = TS.seen[L.key] || [];
-  if (a[a.length - 1] !== d) { a.push(d); TS.seen[L.key] = a.slice(-5); saveT(); }
+  if (a[a.length - 1] !== d) { a.push(d); TS.seen[L.key] = a.slice(-5); AUTO72++; try { saveT(); } finally { AUTO72--; } } /* v72: 누르지 않아도 하는 저장(본 사진 표시) */
 }
 // 살 수 있는지: 겉옷·바지가 품절이거나 10만원 넘으면(대체 없으면 더) 뒤로
 function buyPen(L){
@@ -4337,11 +4351,18 @@ const BKW69 = {tab: k => `다른 탭과 ${SYNC[k]} 기록을 맞추는 중이라
   brk: k => BRK57[k] && BRK57[k].live ? `다른 탭이 저장한 ${SYNC[k]} 기록을 읽지 못했고 따로 남기지도 못해서` : `깨진 ${SYNC[k]} 기록을 아직 고르지 않았고 원래 기록을 따로 남기지 못해서`}; // build 2(검토 5): 다른 탭 기록을 못 읽어 붙잡은 경우는 그 말로
 // build 2(검토 1): 되돌릴 때는 다시 만든 글이 아니라 누르기 전에 저장돼 있던 글 그대로 씀(없던 키는 지움). 저장 안 된 입력 표시(SVF)도 누르기 전으로
 const rawOf69 = k => { try { return localStorage.getItem(k); } catch(e){ return undefined; } };
-function bkBack69(raw, svf){ let back = true;
-  [OKEY, KEY].forEach(k => { const r = raw[k]; if (r === undefined || rawOf69(k) === r) return; try { if (r === null) localStorage.removeItem(k); else localStorage.setItem(k, r); } catch(e){ back = false; } });
-  SVF.clear(); svf.forEach(k => SVF.add(k)); svNote(); return back; }
+// v72(검토 v72 A1): 되돌리기 전에 저장소가 이 탭이 마지막으로 쓴 글자(RAW72) 그대로인지 봄. 그새 다른 탭이 바꿨으면 그 키는 되돌리지 않고(덮지 않음) 다른 탭 기록을 받은 뒤 알림
+function bkBack69(raw, svf){ let back = true; const skip = [];
+  [OKEY, KEY].forEach(k => { const r = raw[k], cur = rawOf69(k); if (r === undefined || cur === r) return; if (k in RAW72 && cur !== RAW72[k]) { skip.push(k); return; }
+    const b72 = RAW72[k]; try { if (r === null) localStorage.removeItem(k); else localStorage.setItem(k, r); RAW72[k] = r; push72(k, 'user', b72); } catch(e){ back = false; } });
+  SVF.clear(); svf.forEach(k => SVF.add(k)); svNote();
+  if (skip.length) { inK72(skip, false); say60('다른 탭에서 기록이 바뀌어서 되돌리지 않았어요. 바뀐 기록을 불러왔어요.'); }
+  return back; }
 function bkDo69(o, b, mode){ const rep = mode === 'rep', raw = {[OKEY]: rawOf69(OKEY), [KEY]: rawOf69(KEY)}, svf = new Set(SVF), w = bkWhy69(b, mode);
   if (w) { bkBack69(raw, svf); return {msg: `${SYNC[w.k]} 기록 저장이 멈춰 있어서 ${rep ? '링크 내용으로 바꾸지' : '링크에서 없는 칸을 더하지'} 않았어요. 지금 기록은 그대로예요. ${BKW69[w.why](w.k)} 지금은 저장할 수 없어요.`}; }
+  // v72(검토 v72 A1): 링크를 적용하기 전에 저장소가 그새 바뀌었는지 봄(바뀌었으면 아무것도 바꾸지 않고 다른 탭 기록을 받음)
+  const ch72 = [OKEY].concat(bkBodyCh69(b, mode) ? [KEY] : []).filter(k => chg72(k));
+  if (ch72.length) return {msg: ch72.includes(OKEY) ? msg72() : '다른 탭에서 설정 기록이 바뀌어서 아무것도 바꾸지 않았어요. 바뀐 기록을 불러왔어요. 다시 확인해 주세요.'};
   const own0 = JSON.stringify(OWN), body0 = {}, lk0 = st.lookN, ok0 = {}; BODYK.forEach(k => { body0[k] = st[k]; }); [OKEY, KEY].forEach(k => { if (BRK57[k]) ok0[k] = BRK57[k].ok; });
   const nb = bkApply(o, b, mode), okO = saved60(), okB = !nb || rawOf69(KEY) === stJSON69();
   if (okO && okB) return {nb};
@@ -6489,13 +6510,17 @@ function showOwnEdit(focus){
       // v50 검토 반영: 사진은 지우지 않고 '벌을 정하지 않은 사진'으로 남김. 첫 벌을 빼면 사진 표시를 먼저 저장하고 된 뒤에 벌을 뺌
       // v60(검토 v60 A2): 첫 벌 사진 표시를 바꾸기 전에 옷장 기록을 저장할 수 있는지 먼저 봄. 못 하면 사진 · 벌 모두 그대로 두고 그 자리에서 알림
       const n = phListV(k, its[i].id).length, go = async el => { if (VDEL68.busy.has(k)) return; VDEL68.busy.add(k); let done = false; try { const r60 = delPh50(k, i);
-        if (r60) { const why = okSave60(); if (why) { const m = saveWhy60(why, '벌을 빼지 않았어요. 벌과 사진은 그대로예요.'); if (el && el.isConnected) note60el(el, m); else say60(m); return; } }
-        if (!(await phApply50(r60))) return; if (delItem50(k, i)) { done = true; live(); drawHead(); if (r60 && !saved60()) say60('벌은 뺐지만 옷장 기록이 저장되지 않았어요. 사진 표시는 이미 바꿔서, 새로고침하기 전에 저장 공간을 비우고 아무 기록이나 한 번 다시 저장해 주세요.'); } } finally { VDEL68.busy.delete(k); if (done) VDEL68.at[k] = Date.now(); } }; // 못 뺐으면(저장 실패 등) 다시 누를 수 있게 시간을 안 남김
-      if (!n) { go(b); return; }
+        if (r60) { let why = ''; IRR72++; try { why = okSave60(); } finally { IRR72--; } if (why) { const m = saveWhy60(why, '벌을 빼지 않았어요. 벌과 사진은 그대로예요.'); if (el && el.isConnected) note60el(el, m); else say60(m); return; }
+          // v72(검토 v72 결정 4): 사진 표시를 바꾸기 전에 앞지른 쓰기를 알아챌 시간을 기다림. 그새 옷장 기록이 바뀌었으면(앞지름 · 다른 탭 기록을 불러옴 · 고르는 중) 아무것도 바꾸지 않음
+          const w = rcv72(OKEY); if (!(await settle72())) return; if (rcv72(OKEY) !== w || HELD.has(OKEY)) { /* 검토 F1: 다른 탭 기록을 받았을 때만(이 탭의 저장으로는 안 늘어남) */ const m = msg72(); if (el && el.isConnected) note60el(el, m); else say60(m); return; } }
+        let ab = ABT72; if (r60) PHS72 = {raw: RAW72[OKEY], t: 'mark'}; /* v72(검토 A): 사진 표시 바꾸기를 시작함 */
+        if (!(await phApply50(r60))) { if (r60) PHS72 = null; return; } if (r60 && ABT72 !== ab) return; /* v72(검토 A): 표시를 바꾸는 사이 앞지른 것을 알아챔(over72가 그 탭 기록을 불러오고 S72M) → 벌은 빼지 않음 */
+        let del = false; if (r60) IRR72++; try { del = delItem50(k, i); if (del) { done = true; live(); drawHead(); } } finally { if (r60) IRR72--; } /* v72: 사진 표시를 바꾼 뒤의 저장도 되돌릴 수 없는 동작(irr) */ if (r60 && del) PHS72 = {raw: RAW72[OKEY], t: 'mark'}; /* 검토 N3: 벌을 뺀 저장(push72)이 PHS72를 지우므로 그 저장 글자로 다시 둠 */ if (del) { if (r60 && !saved60()) say60('벌은 뺐지만 옷장 기록이 저장되지 않았어요. 사진 표시는 이미 바꿔서, 새로고침하기 전에 저장 공간을 비우고 아무 기록이나 한 번 다시 저장해 주세요.'); } } finally { VDEL68.busy.delete(k); if (done) VDEL68.at[k] = Date.now(); } }; // 못 뺐으면(저장 실패 등) 다시 누를 수 있게 시간을 안 남김
+      if (!n) { b.disabled = true; go(b).finally(() => { if (b.isConnected) b.disabled = false; }); return; } /* v72(검토 F1): 기다리는 동안 누름을 막음 */
       const q = document.createElement('span'); q.className = 'ph49q'; q.setAttribute('role', 'alertdialog');
       q.innerHTML = `<span>이 벌 사진 ${n}장은 지우지 않고 '어느 벌 사진인지 정하지 않은 사진'으로 남겨요.</span> <button type="button" class="go">빼기</button><button type="button" class="plain sm">그대로 두기</button>`;
       b.replaceWith(q); const [by, bn] = q.querySelectorAll('button');
-      by.addEventListener('click', ev => { ev.stopPropagation(); go(q); }); bn.addEventListener('click', ev => { ev.stopPropagation(); q.replaceWith(b); }); return; }
+      by.addEventListener('click', ev => { ev.stopPropagation(); lock72(q, true); go(q).finally(() => lock72(q, false)); }); /* v72(검토 F1): 기다리는 동안 이 물음의 버튼을 막음 */ bn.addEventListener('click', ev => { ev.stopPropagation(); q.replaceWith(b); }); return; }
     if (b.dataset.ownf) { const k = b.dataset.ownf, f = b.dataset.f, v = b.dataset.v; OWN.f[k] = OWN.f[k] || {}; if (v === '모름') delete OWN.f[k][f]; else OWN.f[k][f] = v; live(); return; }
     if (b.dataset.ownall) { const f = b.dataset.ownall, v = b.dataset.v;
       [...ownedSlots()].filter(k => roleOfSlot(k) === 'pants').forEach(k => { ownItems(k).forEach(it => setItem50(k, it.i, f, v === '모름' ? '' : v)); }); live(); drawHead(); return; }
@@ -7381,6 +7406,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#sheet
 const WKEY = KEY + '-week';
 const WK = (() => { let w = rd57(WKEY); /* v57: 저장 값 검사 */ return Object.assign({start: null, days: {}, gap: 1, budget: null, sel: null, thrift: false, vary: false},w); })();
 const saveW = () => { put(WKEY, JSON.stringify(WK)); };
+const saveWa72 = () => { AUTO72++; try { saveW(); } finally { AUTO72--; } }; // v72: 일주일 계획을 짜며 저절로 하는 저장(누른 저장은 saveW 그대로)
 const dLab = d => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}/${x.getDate()}(${DOW[x.getDay()]})`; };
 function weekDates(){
   const t = localNow(wx).date, s = WK.start && WK.start > t ? WK.start : t;
@@ -7523,8 +7549,8 @@ function planWeek(force){
   const d0 = JSON.stringify(WK.days), b = planWeekOwn(true), sb = weekBuy(b), d1 = JSON.stringify(WK.days);
   WK.days = JSON.parse(d0); WK.thrift = false; planWeek.th = true; let a, sa;
   try { a = planWeekOwn(true); sa = weekBuy(a); } finally { WK.thrift = true; planWeek.th = false; }
-  if (sa.sumTodo < sb.sumTodo) { saveW(); a.thriftKept = sb.sumTodo - sa.sumTodo; return a; }
-  WK.days = JSON.parse(d1); saveW(); return b;
+  if (sa.sumTodo < sb.sumTodo) { saveWa72(); a.thriftKept = sb.sumTodo - sa.sumTodo; return a; }
+  WK.days = JSON.parse(d1); saveWa72(); return b;
 }
 // v50: 두께·프린트 알림 때문에 코디를 바꾼 날이 있으면, 알림을 안 본 계획(v49와 같음)도 짜서 살 옷 수·금액·사진 없는 날이 하나라도 늘었으면 그쪽을 씀
 //      (하루씩만 막으면 바꾼 날 뒤로 같은 코디 감점이 달라져 겨울 꾸꾸꾸 한 주에 살 옷이 5개 → 6개로 늘었음)
@@ -7532,8 +7558,8 @@ function planWeekOwn(force){
   const d0 = JSON.stringify(WK.days); planWeekCore.fsw = 0; const b = planWeekOwn0(force); if (!planWeekCore.fsw) return b;
   const d1 = JSON.stringify(WK.days), sb = weekBuy(b); WK.days = JSON.parse(d0); planWeekCore.nofl = true; let a, sa;
   try { a = planWeekOwn0(force); sa = weekBuy(a); } finally { planWeekCore.nofl = false; }
-  if (sb.todo.length <= sa.todo.length && sb.sumTodo <= sa.sumTodo && sb.none.length <= sa.none.length) { WK.days = JSON.parse(d1); saveW(); return b; }
-  saveW(); a.flKept = true; return a;
+  if (sb.todo.length <= sa.todo.length && sb.sumTodo <= sa.sumTodo && sb.none.length <= sa.none.length) { WK.days = JSON.parse(d1); saveWa72(); return b; }
+  saveWa72(); a.flKept = true; return a;
 }
 function planWeekOwn0(force){
   if ((WK.vary && !WK.thrift) || !(PW.ownTop || PW.ownRep2)) return planWeekCore(force, false);
@@ -7541,7 +7567,7 @@ function planWeekOwn0(force){
   planWeekCore.sw = 0; const b = planWeekCore(force, true); if (!planWeekCore.sw) return b;
   const d1 = JSON.stringify(WK.days), sb = weekBuy(b);
   WK.days = JSON.parse(d0); const a = planWeekCore(force, false), sa = weekBuy(a);
-  if (sb.sumTodo < sa.sumTodo || (sb.sumTodo === sa.sumTodo && sb.none.length < sa.none.length)) { WK.days = JSON.parse(d1); saveW(); b.ownKept = sa.sumTodo - sb.sumTodo; return b; }
+  if (sb.sumTodo < sa.sumTodo || (sb.sumTodo === sa.sumTodo && sb.none.length < sa.none.length)) { WK.days = JSON.parse(d1); saveWa72(); b.ownKept = sa.sumTodo - sb.sumTodo; return b; }
   a.ownTried = sb.sumTodo - sa.sumTodo; return a;
 }
 function planWeekCore(force, own){
@@ -7713,7 +7739,7 @@ function planWeekCore(force, own){
     const nb = [...new Set([i ? out[i - 1].topK : null, out[i + 1] ? out[i + 1].topK : null].filter(Boolean))];
     if (nb.length) x.ds = Object.assign({}, x.ds, {t: `${x.what} · 앞뒤 날 입는 ${nb.map(slotName).join('·')} 말고 가진 다른 상의로. 있으면 '있음'을 눌러 주세요`}); });
   out.pool = POOL;
-  saveW();
+  saveWa72();
   // v15: 같은 코디가 이틀 연달아 나오면 이번 주에 고른 코디끼리 날짜만 바꿔서 떼어 놓음(검토 v14 지시 1).
   //      날마다 앞에서부터 고르다 보니 새로 사야 하는 코디를 하루 미뤄서 A-A-B-B가 됐음. 고른 코디 묶음은 그대로라 살 옷은 안 늘어남.
   //      바꾼 날짜에도 날씨·단계가 맞는 코디(그날 후보, 체감 ±2°)만 옮기고, 고정한 날은 안 건드림. 바꾼 뒤 한 번 더 짜서 그날 칸·살 옷 날짜를 다시 셈
@@ -7746,7 +7772,7 @@ function spreadWeek(out){
   rec(0, 0, 0);
   if (!best || bD >= d0) return false;
   out.forEach((p, i) => { if (p.L && best[i] !== p.L) { const D = WK.days[p.d]; D.key = best[i].key; D.lvAt = p.lv; delete D.why; } });
-  saveW();
+  saveWa72();
   return true;
 }
 // v12: 사진 속 제품도, 같은 종류·색 대체품도 못 살 때는 그 코디에 골라 둔 대안(같은 느낌 → 일부 특징만 확인 → 분위기 바꾸기 순)에서 살 수 있는 걸 씀.
@@ -8406,10 +8432,12 @@ function typed(){ const ks = [...PEND].filter(k => !HELD.has(k)); PEND.clear(); 
 document.addEventListener('input', e => { if (INK(e.target)) typing = e.target; }, true);
 document.addEventListener('change', e => { if (e.target === typing) { typing = null; setTimeout(typed, 0); } }, true);
 document.addEventListener('focusout', e => { const x = e.target; if (x === typing) setTimeout(() => { if (typing === x && document.activeElement !== x) { typing = null; typed(); } }, 0); }, true);
-const unsaved = k => SVF.has(k) || HELD.has(k) || (!!typing && INK(typing) === k);
+const unsaved = k => SVF.has(k) || HELD.has(k) || UNS72.has(k) || (!!typing && INK(typing) === k); // v72: 부딪혀 저장하지 못한 변경(UNS72)도 저장 안 된 입력
 const SAVER = {[KEY]: () => save(), [OKEY]: () => saveO(), [TKEY]: () => saveT(), [WKEY]: () => saveW()};
 // v57: 다른 탭이 쓴 값이 깨져 있으면 이 탭은 그 키를 안 불러옴(null). 지워졌으면 v56과 같이 {}
-function syncRead(k){ let raw = null; try { raw = localStorage.getItem(k); } catch(e){} if (raw == null) return {};
+function syncRead(k){ let raw = null;
+  if (SRC72 && k in SRC72) raw = SRC72[k]; /* v72(검토 P3): 저장소에 넣지 못한 그 탭 기록을 화면에만 불러옴(저장소에는 아직 이 탭 기록 · RAW72 · OWN72 그대로) */
+  else { try { raw = localStorage.getItem(k); } catch(e){ return {}; } RAW72[k] = raw; delete OWN72[k]; if (k === OKEY) PHS72 = null; } /* v72: 불러온 글자를 기억 · 이 탭이 쓴 것 목록은 비움(검토 P1) */ if (raw == null) return {};
   let v = null; try { v = JSON.parse(raw); } catch(e){ return null; } return isObj(v) && !chk57(k, v).bad.length ? v : null; }
 // v68(검토 v68 B-1): 다른 탭이 쓴 값을 못 읽으면 그 키는 불러오지 않고, 시작할 때(v57)와 같이 원래 글자를 '키.broken.날짜' 이름으로 따로 남긴 뒤(bk57 · 다시 읽어 확인)
 //   그 키를 붙잡음(held57 → put이 자동 · 수동 저장을 모두 거절). 이 탭에 저장 안 된 입력이 있어도 두 갈래 상자로 보내지 않음.
@@ -8417,7 +8445,7 @@ function syncRead(k){ let raw = null; try { raw = localStorage.getItem(k); } cat
 function raw68(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
 function bad68(k, raw){ let v; try { v = JSON.parse(raw); } catch(e){ return ['글자가 잘렸거나 읽을 수 없는 모양']; } return chk57(k, v).bad; }
 function syncBox68(){ if (HELD.size) { hold([], syncGone); return; } syncGone = false; const b = document.getElementById('syncB'); if (b) b.remove(); }
-function live68(k){ const raw = raw68(k); if (raw == null) return false; const bad = bad68(k, raw); if (!bad.length) return false;
+function live68(k){ const raw = raw68(k); if (raw == null) return false; const bad = bad68(k, raw); if (!bad.length) return false; RAW72[k] = raw; delete OWN72[k]; if (k === OKEY) PHS72 = null; // v72: 붙잡은 깨진 글자를 기억(이 탭이 그 위에 쓰면 '이 탭 기록으로 계속 쓰기'에서만) · 읽어 들였으니 이 탭이 쓴 것 목록은 비움(검토 P1)
   // build 3(검토 2): '저장 안 된 입력' 표시를 이어 감 = 앞 항목에 있던 표시(아직 고르기 전) 또는 두 갈래 상자로 붙잡혀 있던 키(그동안의 저장 거절은 표시가 안 남음)
   const o = BRK57[k], dirty = !!(o && o.live && !o.ok && o.dirty) || HELD.has(k);
   let e = o; if (!e || e.raw !== raw) e = BRK57[k] = {raw, bad: [...new Set(bad)], bk: null, ok: false, live: true}; else e.ok = false;
@@ -8446,31 +8474,47 @@ function adopt(keys){
 }
 function syncNote(m){ let n = document.getElementById('syncN'); if (!n) { n = document.createElement('p'); n.id = 'syncN'; n.setAttribute('role', 'status'); document.body.appendChild(n); }
   n.textContent = m; clearTimeout(syncNote.t); syncNote.t = setTimeout(() => { const x = document.getElementById('syncN'); if (x) x.remove(); }, 4000); }
+// v72(검토 v72 A1 · 결정 2): 두 갈래 상자. 이 탭의 변경이 다른 탭과 부딪혀 저장되지 않았으면(UNS72) '아직 저장되지 않음'을 분명히,
+//   이 탭의 쓰기가 다른 탭의 쓰기를 앞질러 그 탭의 기록을 다시 써 둔 경우(OVR72)는 그 사실을 적음. 붙잡을 때 지금 저장소 글자를 기억(RAW72) → '이 탭 기록 저장'은 지금 저장된 것을 일부러 덮음(지금과 같음)
 function hold(keys, gone){
-  keys.forEach(k => HELD.add(k)); syncGone = syncGone || gone;
+  keys.forEach(k => { HELD.add(k); const r = raw68(k); if (sy72(k)) { RAW72[k] = r; delete OWN72[k]; if (k === OKEY) PHS72 = null; } }); syncGone = syncGone || gone; // v72(검토 P1): 저장소 글자를 읽어 들였으니 이 탭이 쓴 것 목록은 비움
   let b = document.getElementById('syncB');
   if (!b) { b = document.createElement('div'); b.id = 'syncB'; b.setAttribute('role', 'alertdialog'); document.body.appendChild(b);
     b.addEventListener('click', e => { const x = e.target.closest('[data-sync]'); if (x) syncPick(x.dataset.sync); }); }
-  const nm = [...HELD].map(k => SYNC[k]).join('·');
+  const nm = [...HELD].map(k => SYNC[k]).join('·'), ov = [...HELD].some(k => OVR72.has(k)), un = [...HELD].some(k => UNS72.has(k)), ovNo = [...HELD].some(k => k in OVV72); // 검토 F5: 그 탭 기록을 다시 쓰지 못했으면(OVV72) '다시 넣어 두었어요'를 쓰지 않음
   const why = [...new Set([...HELD].map(k => SVF.has(k) ? '저장 실패한 변경' : typing && INK(typing) === k ? '치는 중인 칸' : '').filter(Boolean))].join(', ');
+  const uns = un ? '<p class="uns72"><b>이 탭에서 바꾼 내용 · 아직 저장되지 않음</b></p>' : '';
   b.innerHTML = syncGone
-    ? `<p><b>다른 탭(또는 다른 곳)에서 ${nm} 기록이 지워졌어요.</b> 이 탭 화면에는 아직 남아 있어요. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아요</p><button type="button" class="go" data-sync="mine">이 탭 기록 다시 저장</button><button type="button" class="plain" data-sync="theirs">지워진 상태 따르기</button>`
-    : `<p><b>다른 탭에서 ${nm} 기록이 바뀌었어요.</b> 이 탭에 아직 저장 안 된 입력(${why || '바꾼 내용'})이 있어서 바로 덮지 않았어요. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아요</p><button type="button" class="go" data-sync="theirs">다른 탭 기록 불러오기 (이 탭 입력 버림)</button><button type="button" class="plain" data-sync="mine">이 탭 기록 저장 (다른 탭 기록 덮음)</button>`;
+    ? `<p><b>다른 탭(또는 다른 곳)에서 ${nm} 기록이 지워졌어요.</b> 이 탭 화면에는 아직 남아 있어요. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아요</p>${uns}<button type="button" class="go" data-sync="mine">이 탭 기록 다시 저장</button><button type="button" class="plain" data-sync="theirs">지워진 상태 따르기</button>`
+    : (ov ? `<p><b>다른 탭에서 거의 같은 때 ${nm} 기록을 바꿨어요.</b> ${ovNo ? '' : '그 탭에서 바꾼 것이 사라지지 않게 저장소에는 그 탭의 기록을 다시 넣어 두었어요. '}고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아요</p>`
+      : `<p><b>다른 탭에서 ${nm} 기록이 바뀌었어요.</b> 이 탭에 아직 저장 안 된 입력(${why || '바꾼 내용'})이 있어서 바로 덮지 않았어요. 고를 때까지 이 탭은 ${nm} 기록을 저장하지 않아요</p>`)
+      + `${uns}<button type="button" class="go" data-sync="theirs">다른 탭 기록 불러오기 (이 탭 입력 버림)</button><button type="button" class="plain" data-sync="mine">이 탭 기록 저장 (다른 탭 기록 덮음)</button>`;
 }
+// v72(검토 P5): 상자가 떠 있을 때 '아직 저장되지 않음' 줄만 더하거나 뺌(버튼과 문장은 그대로 · 상자를 새로 만들거나 다시 그리지 않음 → 누르는 중에 버튼이 바뀌지 않음)
+function mark72(){ const b = document.getElementById('syncB'); if (!b) return; const un = [...HELD].some(k => UNS72.has(k)); let p = b.querySelector('.uns72');
+  if (un && !p) { p = document.createElement('p'); p.className = 'uns72'; p.innerHTML = '<b>이 탭에서 바꾼 내용 · 아직 저장되지 않음</b>'; p.style.margin = '8px 0 0'; b.appendChild(p); } else if (!un && p) p.remove(); } // 버튼 뒤에 붙임: 상자는 위에 고정이라 버튼이 밀리지 않음(누르는 중에 생겨도 같은 자리)
+// v72(검토 P3): 그 탭 기록을 화면에는 불러왔지만 저장소에는 넣지 못했을 때(원인은 단정하지 않음)
+const S72Q = ks => `다른 탭에서 바뀐 ${ks.map(k => SYNC[k]).join('·')} 기록을 화면에 불러왔지만 저장소에는 아직 넣지 못했어요. 이 기기의 저장 공간이 꽉 찼을 수 있어요.`;
 function syncPick(v){
   const keys = [...HELD], b = document.getElementById('syncB'); if (b) b.remove();
-  if (v === 'theirs') { if (typing) { const x = typing; typing = null; x.blur(); }
-    const g = syncGone; HELD.clear(); syncGone = false; keys.forEach(k => SVF.delete(k)); svNote(); const all = [...new Set(keys.concat([...PEND]))]; PEND.clear(); note68(adopt(all), g ? '지워진 상태를 따랐어요' : '다른 탭 기록을 불러왔어요'); }
-  else { HELD.clear(); syncGone = false; if (typing && keys.includes(INK(typing))) typing.dispatchEvent(new Event('change', {bubbles: true}));
+  keys.forEach(k => { UNS72.delete(k); OVR72.delete(k); }); // v72
+  if (v === 'theirs') { if (typing) { const x = typing; typing = null; x.blur(); } keys.forEach(k => UNS72.delete(k)); // 검토 P5: 치던 칸을 놓을 때의 저장(아직 붙잡혀 거절됨)이 남긴 표시를 지움(상자는 mark72라 새로 생기지 않음)
+    // v72(검토 P3): 앞지른 뒤 그 탭 기록을 다시 쓰지 못했으면(OVV72) 한 번 더 써 봄. 또 안 되면 그 탭 기록을 화면에만 불러오고(SRC72) 저장 실패 표시와 OVV72를 남김(다음에 저장되면 put이 지움)
+    const src = {}, fail = [], wrote = {};
+    keys.forEach(k => { if (k in OVV72) { const x = OVV72[k], b0 = RAW72[k]; try { if (x == null) localStorage.removeItem(k); else localStorage.setItem(k, x); RAW72[k] = x; delete OVV72[k]; wrote[k] = b0; } catch(e){ src[k] = x; fail.push(k); } } });
+    const g = syncGone; HELD.clear(); syncGone = false; keys.forEach(k => { if (fail.includes(k)) SVF.add(k); else SVF.delete(k); }); svNote(); const all = [...new Set(keys.concat([...PEND]))]; PEND.clear();
+    SRC72 = fail.length ? src : null; let r; try { r = adopt(all); } finally { SRC72 = null; }
+    Object.keys(wrote).forEach(k => push72(k, 'auto', wrote[k], true)); // 되돌려 쓴 것도 이 탭이 쓴 것(그 탭의 더 나중 쓰기가 늦게 와도 앞지른 것으로 알아챔)
+    note68(r, fail.length ? S72Q(fail) : g ? '지워진 상태를 따랐어요' : '다른 탭 기록을 불러왔어요'); }
+  else { keys.forEach(k => { delete OVV72[k]; }); HELD.clear(); syncGone = false; if (typing && keys.includes(INK(typing))) typing.dispatchEvent(new Event('change', {bubbles: true}));
+    keys.forEach(k => { if (sy72(k)) { RAW72[k] = raw68(k); delete OWN72[k]; if (k === OKEY) PHS72 = null; } }); // v72: 일부러 덮기 = 지금 저장소에 있는 것을 덮음(지금과 같음) · 읽어 들였으니 이 탭이 쓴 것 목록은 비움(검토 P1)
     keys.forEach(k => SAVER[k]());
     // v68(검토 v68 B-2): 실제로 저장됐을 때만 '저장했어요'. 저장 공간이 꽉 찼거나(SVF) 깨진 기록을 고르기 전(held57)이면 안 됐다고 알림
     const fail = keys.filter(k => SVF.has(k) || held57(k));
     syncNote(!fail.length ? '이 탭 기록을 저장했어요' : `${fail.map(k => SYNC[k]).join('·')} 기록을 저장하지 못했어요. ${fail.some(k => held57(k)) ? '읽지 못한 기록을 아직 고르지 않아서 저장하지 않았어요(위 안내를 봐 주세요)' : '이 기기의 저장 공간이 꽉 찼을 수 있어요'}`); }
 }
-addEventListener('storage', e => {
-  if (e.storageArea && e.storageArea !== localStorage) return;
-  const ks = e.key == null ? Object.keys(SYNC) : SYNC[e.key] ? [e.key] : []; if (!ks.length) return;
-  const gone = e.key == null || e.newValue == null;
+// 다른 탭이 바꾼 키들을 받는 길(v68까지 'storage' 알림 안에 있던 것 그대로 · v72에서 함수로 빼서 놓친 알림 · 다시 읽기에서도 씀)
+function inK72(ks, gone){ ks.forEach(k => { RCV72[k] = rcv72(k) + 1; }); // v72(검토 F1): 다른 탭 기록을 받은 횟수
   // v68(검토 v68 B-1): 못 읽는 값은 저장 안 된 입력이 있어도 붙잡기만(두 갈래 상자로 안 감) · 읽을 수 있는 값이 오면 붙잡은 것을 놓고 보통 길로
   const bad = [], rel = {};
   if (!gone) ks.forEach(k => { const raw = raw68(k); if (raw != null && bad68(k, raw).length) { if (live68(k)) bad.push(k); } else { const r = release68(k); if (r.dirty) rel[k] = 1; } });
@@ -8480,6 +8524,71 @@ addEventListener('storage', e => {
   const ok = typing ? [] : rest;
   if (ok.length) { const r = adopt(ok); note68({got: r.got, bad: r.bad.concat(bad)}); } else if (bad.length) note68({got: [], bad});
   if (hk.length) hold(hk, gone);
+}
+// v72: 지금 저장소 글자가 기억한 것과 다를 때만 받음(이미 받은 값이면 아무것도 안 하고 아무 말도 안 띄움)
+function in72(k){ if (!(k in RAW72)) return; const cur = raw68(k); if (cur !== RAW72[k]) inK72([k], cur == null); }
+// v72(검토 v72 A2): 알림을 놓쳤을 때 다시 읽기 — 뒤로 가기로 되살아난 화면 · 탭으로 돌아옴 · 창에 초점이 옴
+function reread72(){ Object.keys(SYNC).forEach(in72); }
+addEventListener('pageshow', e => { if (e.persisted) reread72(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reread72(); });
+addEventListener('focus', reread72);
+// v72(검토 v72 A1): 쓰기 전 견주기(put). 저장소가 기억과 다르면 쓰지 않음.
+//   저절로 하는 저장(AUTO72): 다른 탭 기록을 불러오면(다음 차례) 그 저장은 다시 그리며 저절로 다시 됨 · 누른 저장: 이 탭의 변경을 '아직 저장되지 않음'으로 두고 두 갈래 상자(못 읽는 값이면 깨진 기록 길)
+//   읽다가 예외 · 아직 기억이 없음(키 없음) → 견주지 않음(지금 동작 그대로)
+function pre72(k){ let cur; try { cur = localStorage.getItem(k); } catch(e){ return true; }
+  if (!(k in RAW72) || cur === RAW72[k]) return true;
+  if (AUTO72) { setTimeout(() => { in72(k); if (k === KEY) dayBack53(); }, 0); return false; } // 결정 3: 불러온 뒤 저절로 하는 일을 다시(날짜 되돌리기 · 본 사진 표시와 계획은 다시 그리며)
+  UNS72.add(k); RCV72[k] = rcv72(k) + 1;
+  if (cur != null && bad68(k, cur).length) { if (live68(k) && BRK57[k]) BRK57[k].dirty = true; return false; }
+  hold([k], cur == null); return false; }
+// v72: 되돌릴 수 없는 동작(칸 '없음' · ✕ · 사진 지우기 · 벌 빼기 · 옷장에 없는 칸 사진 지우기) 전 견주기(okSave60). 다르면 아무것도 바꾸지 않고 다른 탭 기록을 받음
+const S72 = '다른 탭에서 옷장 기록이 바뀌어서 아무것도 바꾸거나 지우지 않았어요. 바뀐 기록을 불러왔어요. 다시 확인해 주세요.';
+const S72H = '다른 탭에서 옷장 기록이 바뀌어서 아무것도 바꾸거나 지우지 않았어요. 위 안내에서 고른 뒤 다시 해 주세요.';
+const msg72 = () => HELD.has(OKEY) || held57(OKEY) ? S72H : S72;
+function chg72(k){ let cur; try { cur = localStorage.getItem(k); } catch(e){ return false; } if (!(k in RAW72) || cur === RAW72[k]) return false; inK72([k], cur == null); return true; }
+// v72(검토 v72 결정 1~4): 늦게 온 알림으로 '이 탭의 쓰기가 다른 탭의 쓰기를 앞질렀음'을 알아챔(이 탭이 읽는 글자 = 이 탭이 마지막으로 쓴 글자인데 알림의 새 값은 다름).
+//   그 탭의 기록(알림의 새 값)을 곧바로 다시 써서 저장소가 실제로 어느 탭이 쓴 기록이 되게 함(지워진 것이면 다시 지움 · 못 읽는 글자도 그대로 되돌리고 깨진 기록 길로).
+//   누른 쓰기: 이 탭의 기록은 메모리에 '아직 저장되지 않음'으로 두고 두 갈래 상자 · 저절로 한 쓰기: 상자 없이 불러온 뒤 다시(그리면서) · 되돌릴 수 없는 동작: 불러오고 S72(사진 지우기는 기다리다 멈춤 · ABT72)
+let ABT72 = 0; const WAIT72 = 1500; // 앞지른 쓰기를 알아챌 시간(두 탭 시험 86번에서 잰 늦은 알림 최대 0.94초 · 사진 지우기 · 사진 표시 바꾸기 전에만 기다림 · 끝나면 한 차례 더 양보)
+// v72(검토 A): 되돌릴 수 없는 동작이 기다림을 지나 사진 단계(지우기 · 벌 사진 표시 바꾸기)를 시작한 뒤에 앞지른 것을 알아챈 경우 → 그 사실을 그대로 알림
+//   PHS72 = 사진 단계를 시작할 때 이 탭이 마지막으로 쓴 옷장 기록 글자(raw)와 단계(t: del 지우기 · mark 표시 바꾸기). 앞지른 쓰기가 바로 그 기록이면 사진 단계가 이미 진행됨
+const S72P = '다른 탭에서 거의 같은 때 옷장 기록을 바꿔서 그 탭의 기록을 다시 불러왔어요. 사진은 이미 지워서 되돌릴 수 없어요.';
+const S72M = '다른 탭에서 거의 같은 때 옷장 기록을 바꿔서 그 탭의 기록을 다시 불러왔어요. 사진이 어느 벌 것인지 표시는 이미 바뀌었어요. 사진을 다시 확인해 주세요.';
+// v72(검토 P1 · P2): 앞지른 쓰기의 까닭 = 그 기록을 읽어 들인 뒤 이 탭이 쓴 것들(OWN72) 가운데 가장 센 것. 누른 것(user)이 하나라도 아직 살아 있거나
+//   이 탭에 저장 안 된 입력(unsaved · 치는 중)이 있으면 상자, 아니면 되돌릴 수 없는 것(irr), 아니면 저절로(auto) → 저절로 한 저장이 앞선 누른 저장을 낮추지 않음.
+//   살아 있음 = 쓴 지 10초가 안 됐거나, 쓴 뒤 탭이 숨겨지거나 멈추거나 bfcache에 들어갔음(HID72가 달라짐). 10초는 잰 가장 큰 늦은 알림(0.94초)의 약 10배이고 증명된 한계는 아님
+const LIVE72 = 10000;
+function why72k(k){ const L = OWN72[k] || [], now = performance.now(), live = x => x.h !== HID72 || now - x.t < LIVE72;
+  const user = L.some(x => x.why === 'user' && live(x)) || unsaved(k), irr = L.some(x => x.why === 'irr' && live(x));
+  return {who: user ? 'user' : irr ? 'irr' : 'auto', irr}; }
+// 알림이 이 탭이 쓴 것을 앞지른 것인지(검토 P1 · N1): 읽어 들인 뒤 이 탭이 쓴 것이 있어야 함. 다만 '이 탭이 읽어 들인 값'에 대한 늦은 알림(묵은 알림)은 무시:
+//   새 값 = 첫 쓰기의 바탕 글자(읽어 들인 값)이고, 옛 값이 이 탭이 그 뒤에 쓴 글자(둘째 이후 쓰기의 바탕 · 지금 글자)가 아닐 때만 묵은 알림.
+//   옛 값이 이 탭이 쓴 글자면 다른 탭이 이 탭의 기록을 받은 뒤 일부러 예전 값으로 되돌린 것(되돌리기 · 다시 누르기)이라 앞지른 것으로 봄
+const ov72 = (k, nv, ov) => { const L = OWN72[k] || []; if (!L.length) return false; const stale = nv === L[0].base && !(ov === RAW72[k] || L.slice(1).some(x => x.base === ov)); return !stale; };
+const PHT72 = {del: ' 사진은 이미 지워서 되돌릴 수 없어요.', mark: ' 사진이 어느 벌 것인지 표시는 이미 바뀌었어요. 사진을 다시 확인해 주세요.'};
+function over72(k, theirs){ const w = why72k(k), who = w.who, mine = RAW72[k], ps = PHS72 && k === OKEY && PHS72.raw === mine ? PHS72 : null; RCV72[k] = rcv72(k) + 1;
+  let okWB = true; try { if (theirs == null) localStorage.removeItem(k); else localStorage.setItem(k, theirs); RAW72[k] = theirs; delete OVV72[k]; } catch(e){ okWB = false; OVV72[k] = theirs; SVF.add(k); svNote(); }
+  const brk = theirs != null && bad68(k, theirs).length;
+  const keep = () => push72(k, who, mine, true); // 되돌려 쓴 것도 이 탭이 쓴 것으로 남김(읽어 들인 뒤에) → 그 탭의 더 나중 쓰기 알림도 앞지른 것으로 알아챔(사슬)
+  const adoptT = () => { if (okWB) return adopt([k]); SRC72 = {[k]: theirs}; try { return adopt([k]); } finally { SRC72 = null; } }; // 검토 P3: 되돌려 쓰지 못했으면 그 탭 기록을 화면에만
+  if (w.irr) ABT72++; // 되돌릴 수 없는 동작이 살아 있으면 사진 단계를 멈춤(누른 것과 함께여도)
+  if (ps) PHS72 = null;
+  if (who === 'irr') { if (brk) live68(k); else { const r = adoptT(); if (r.bad.length) note68({got: [], bad: r.bad}); } keep();
+    say60(!okWB ? S72Q([k]) + (ps ? PHT72[ps.t] : '') : ps ? (ps.t === 'mark' ? S72M : S72P) : brk || HELD.has(k) ? S72H : S72); return; }
+  if (who === 'auto') { if (brk) { if (live68(k)) note68({got: [], bad: [k]}); keep(); return; } const r = adoptT(); if (okWB) note68(r); else syncNote(S72Q([k])); keep(); if (k === KEY) dayBack53(); return; }
+  UNS72.add(k); if (brk) { if (live68(k) && BRK57[k]) BRK57[k].dirty = true; keep(); if (ps) say60(PHT72[ps.t].trim()); return; }
+  OVR72.add(k); hold([k], theirs == null); keep(); if (ps) say60(PHT72[ps.t].trim()); } // 검토 N2: 사진 단계가 이미 돌았는데 상자로 가면(누른 변경이 있음) 사진 사실을 알림(그 탭 기록을 불러왔다고는 하지 않음)
+// v72(검토 P1 2): 탭이 숨겨지거나 멈추거나 bfcache에 들어가면 셈(그 뒤의 늦은 알림은 정말 늦게 올 수 있어서 이 탭이 쓴 것을 시간으로 낮추지 않음)
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') HID72++; });
+addEventListener('pagehide', () => { HID72++; }); document.addEventListener('freeze', () => { HID72++; });
+addEventListener('storage', e => {
+  if (e.storageArea && e.storageArea !== localStorage) return;
+  if (e.key == null) { inK72(Object.keys(SYNC), true); return; }
+  if (!SYNC[e.key]) return;
+  const k = e.key, cur = raw68(k);
+  // v72(A3): 이미 받은 값(지금 읽는 글자 = 기억한 글자)이면 아무것도 안 함 · 그런데 알림의 새 값이 다르고 기억이 이 탭이 쓴 것이면 앞지른 것
+  if (k in RAW72 && cur === RAW72[k]) { if (e.newValue !== cur && ov72(k, e.newValue, e.oldValue)) over72(k, e.newValue); return; } // v72(검토 P1): 이 탭이 쓴 것을 앞지른 알림만
+  inK72([k], e.newValue == null);
 });
 
 /* ---------- v49: 내 옷 사진 ----------
@@ -8511,7 +8620,7 @@ async function phTx(mode, fn){
   const db = await phOpen(); if (!db) throw Object.assign(new Error('no db'), {name: 'NoDB'});
   return new Promise((res, rej) => { let t, out;
     try { t = db.transaction('ph', mode); out = fn(t.objectStore('ph')); } catch(e){ try { if (t) t.abort(); } catch(_){} rej(e); return; }
-    t.oncomplete = () => res(out); t.onabort = () => rej(t.error || Object.assign(new Error('abort'), {name: 'AbortError'})); });
+    t.oncomplete = () => res(out); t.onabort = () => rej(t.err72 || t.error || Object.assign(new Error('abort'), {name: 'AbortError'})); }); // v72: 요청 콜백 안에서 난 예외(phDel72)는 그 오류 이름 그대로(v71처럼 phFail 문장이 같게)
 }
 async function phLoad(){
   let all;
@@ -8643,15 +8752,39 @@ function phLost(ks, mut){ const keep = {s: OWN.s, p: OWN.p, d: OWN.d, f: OWN.f, 
 //   사진 쪽이 실패하면 사진은 그대로 남기고, 방금 바꾼 칸 기록도 바꾸기 전으로 되돌려 저장한 뒤 알림 → 칸 기록과 사진이 어긋난 채로 남지 않음
 //   (되돌린 기록마저 저장이 안 되면 그 사실을 알림: 사진은 그대로, 칸 기록은 지운 채)
 const WHY60 = {tab: '다른 탭과 옷장 기록을 맞추는 중이라', brk: '깨진 옷장 기록을 아직 고르지 않아서', full: '이 기기의 저장 공간이 부족해서'};
-function okSave60(){ if (HELD.has(OKEY)) return 'tab'; if (held57(OKEY)) return 'brk';
-  try { localStorage.setItem(OKEY, JSON.stringify(OWN)); SVF.delete(OKEY); svNote(); return ''; } catch(e){ return 'full'; } }
+// v72(검토 v72 A1): 다시 쓰기 전에 저장소가 그새 바뀌었는지 봄(chg72 · 069). 바뀌었으면 아무것도 바꾸지 않고 다른 탭 기록을 받음('chg') · 쓰면 기억(RAW72)과 까닭(irr)을 남김
+function okSave60(){ if (HELD.has(OKEY)) return 'tab'; if (held57(OKEY)) return 'brk'; if (chg72(OKEY)) return 'chg';
+  const b72 = RAW72[OKEY]; try { const v = JSON.stringify(OWN); localStorage.setItem(OKEY, v); RAW72[OKEY] = v; push72(OKEY, 'irr', b72); UNS72.delete(OKEY); delete OVV72[OKEY]; SVF.delete(OKEY); svNote(); return ''; } catch(e){ return 'full'; } }
 const saved60 = () => { try { return localStorage.getItem(OKEY) === JSON.stringify(OWN); } catch(e){ return false; } };
-const saveWhy60 = (why, rest) => `${WHY60[why] || ''} 지금은 옷장 기록을 저장할 수 없어요. ${rest}`;
+const saveWhy60 = (why, rest) => why === 'chg' ? msg72() : `${WHY60[why] || ''} 지금은 옷장 기록을 저장할 수 없어요. ${rest}`; // v72: 'chg' = 다른 탭에서 바뀜(S72 · S72H)
+// v72(검토 v72 결정 4): 사진 지우기 · 사진 표시 바꾸기는 앞지른 쓰기를 알아챌 시간이 지나도록 아무 일이 없을 때만. ABT72가 늘었으면(앞질러서 되돌려 씀) false
+//   검토 F6: 시간이 끝난 뒤 한 차례 더 양보(긴 작업 뒤에 줄 선 늦은 알림을 먼저 처리)한 다음 ABT72를 봄
+async function settle72(){ const a = ABT72; await new Promise(r => setTimeout(r, WAIT72)); await new Promise(r => setTimeout(r, 0)); return ABT72 === a; }
+// v72(검토 F1): 기다리는 동안 같은 물음의 버튼을 막음(두 번 눌러도 아무 일 없음 · 열린 채로 보이지 않게). 끝났는데 물음이 남아 있으면 다시 누를 수 있게 품
+const lock72 = (q, on) => { if (q && q.isConnected) q.querySelectorAll('button').forEach(x => { x.disabled = on; }); };
+let ORPH72 = null; // v72: '옷장에 없는 칸 사진 지우기' 물음을 띄운 때 다른 탭 기록을 받은 횟수(rcv)와 사진(kOf: id → 칸)
+// v72: 물은 칸(kOf[id])에 아직 있는 사진만 지움(같은 쓰기 묶음 안에서 다시 읽음). 칸이 다시 '있음'이 됐거나 다른 칸으로 갔거나 이미 없는 사진, 물은 뒤에 그 칸에 더해진 사진은 안 지움 → skip
+async function phDel72(ids, kOf){ const os = ownedSlots(), want = new Set(ids), ks = new Set(Object.values(kOf)); let skip = 0, del = 0;
+  if (!ids.length) return {ok: true, skip: 0, del: 0};
+  const ok = await phWrite('사진을 지우지', s => { const g = s.getAll(); g.onsuccess = () => { const all = g.result || [];
+    try { ids.forEach(id => { const r = all.find(x => x.id === id); if (r && r.k === kOf[id] && !os.has(r.k)) { s.delete(id); del++; } else if (r) skip++; }); } catch(e){ s.transaction.err72 = e; throw e; }
+    all.forEach(x => { if (ks.has(x.k) && !want.has(x.id)) skip++; }); }; });
+  return {ok, skip, del}; }
 function say60(m){ let n = document.getElementById('phN'); if (!n) { n = document.createElement('div'); n.id = 'phN'; n.setAttribute('role', 'alert'); document.body.appendChild(n); }
   n.innerHTML = `<p>${esc(m)}</p><button type="button" class="plain sm">닫기</button>`; n.querySelector('button').addEventListener('click', () => n.remove()); }
 // v60: 사진을 못 지웠을 때 칸 기록을 바꾸기 전(old = JSON 글)으로 되돌림. phFail 알림 뒤에 한 문장을 덧붙임
-function back60(old){ const o = JSON.parse(old); Object.keys(OWN).forEach(z => { delete OWN[z]; }); Object.assign(OWN, o); saveO();
-  const m = saved60() ? '칸 기록도 지우기 전으로 되돌렸어요.' : '칸 기록은 지운 채로 남았어요. 새로고침하면 지우기 전 칸 기록이 돌아올 수 있어요.', p = document.querySelector('#phN p');
+// v72(검토 1ff17554 b): 누른 동작(run)이 바꾼 기록 자리만 되돌림(mid = run 바로 뒤). 기록의 묶음(p · s · f · d · w · x · v)마다 항목 단위로 old와 mid를 견주고,
+//   지금 값이 아직 mid와 같은 자리만 old로(기다리는 동안 이 탭 · 다른 탭이 바꾼 자리와 다른 칸은 그대로). 하나라도 그대로 둔 자리가 있으면 '되돌렸어요'라고 하지 않음
+function back60(old, mid){ const o = JSON.parse(old), J = x => JSON.stringify(x), map = x => !!x && typeof x === 'object' && !Array.isArray(x); let left = 0;
+  if (mid == null) { Object.keys(OWN).forEach(z => { delete OWN[z]; }); Object.assign(OWN, o); }
+  else { const m = JSON.parse(mid);
+    new Set([...Object.keys(o), ...Object.keys(m)]).forEach(z => { const a = o[z], b = m[z];
+      if (map(a) || map(b)) { const A = map(a) ? a : {}, B = map(b) ? b : {};
+        new Set([...Object.keys(A), ...Object.keys(B)]).forEach(e => { if (J(A[e]) === J(B[e])) return; const C = map(OWN[z]) ? OWN[z] : {};
+          if (J(C[e]) !== J(B[e])) { left++; return; } if (!map(OWN[z])) OWN[z] = {}; if (e in A) OWN[z][e] = A[e]; else delete OWN[z][e]; }); return; }
+      if (J(a) === J(b)) return; if (J(OWN[z]) !== J(b)) { left++; return; } if (z in o) OWN[z] = a; else delete OWN[z]; }); }
+  saveO();
+  const m = !saved60() ? '칸 기록은 지운 채로 남았어요. 새로고침하면 지우기 전 칸 기록이 돌아올 수 있어요.' : left ? '그새 바뀐 칸 기록은 그대로 뒀어요.' : '칸 기록도 지우기 전으로 되돌렸어요.', p = document.querySelector('#phN p');
   if (p) p.textContent += ' ' + m; else say60(m); }
 // v70(C1): rec = {t: 같이 지워지는 기록 문장, keep: 남는 사진 문장}. rec가 있으면 지울 사진이 없어도 먼저 물음(누른 뒤 저장 확인 · 되돌리기는 사진 때와 같은 길). rec가 없으면 v69 그대로
 function phGuard(el, ks, mut, what, yes, after, rec){
@@ -8664,10 +8797,20 @@ function phGuard(el, ks, mut, what, yes, after, rec){
   const [by, bn] = q.querySelectorAll('button');
   // v71(A1): 지울 사진이 없는 물음(기록만)에서는 사진 말을 빼고 확인된 것만 적음. 사진이 있는 물음의 문장 · 동작은 v70 그대로.
   //   바꾼 뒤 저장이 예외로 실패(SVF)했으면 저장소에는 okSave60이 막 쓴 누르기 전 기록이 있어서 새로고침하면 그것이 돌아옴(시험으로 확인). 까닭을 모르면 단정하지 않음
-  by.addEventListener('click', async e => { e.stopPropagation();
-    const why = okSave60(); if (why) { note60el(q, saveWhy60(why, ids.length ? '아무것도 지우지 않았어요. 칸과 사진은 그대로예요.' : '아무것도 바꾸지 않았어요. 칸과 기록은 그대로예요.')); return; } // v60
-    const old = JSON.stringify(OWN); run(); if (!saved60()) { say60(ids.length ? '옷장 기록이 저장되지 않아서 사진은 지우지 않았어요. 새로고침하면 칸과 사진이 그대로 돌아와요.' : SVF.has(OKEY) ? '옷장 기록이 저장되지 않았어요. 새로고침하면 바꾸기 전 칸과 기록이 그대로 돌아와요.' : '바꾼 내용이 저장되지 않았어요. 기록을 다시 확인해 주세요.'); return; }
-    if (!(await phDel(ids))) { back60(old); after(); } });
+  // v72(검토 v72 A1 · F1): 묻는 창을 띄운 때까지 다른 탭 기록을 받은 횟수. 누를 때 늘었으면(그새 다른 탭 기록을 불러옴) 물음의 벌 · 사진 수가 옛것이라 진행하지 않음(이 탭의 저장으로는 안 늘어남)
+  const ask72 = rcv72(OKEY), kOf = {}; lost.forEach(k => phList(k).forEach(p => { kOf[p.id] = k; }));
+  by.addEventListener('click', async e => { e.stopPropagation(); lock72(q, true); try {
+    if (!HELD.has(OKEY) && !held57(OKEY) && rcv72(OKEY) !== ask72) { note60el(q, msg72()); return; } /* v72: 고르는 중 · 깨진 기록이면 아래 okSave60이 v60 문장(tab · brk)으로 멈춤 */
+    let why = '', old = '', mid = ''; IRR72++; try { why = okSave60(); if (!why) { old = JSON.stringify(OWN); run(); mid = JSON.stringify(OWN); } } finally { IRR72--; } // v72: 이 쓰기들은 되돌릴 수 없는 동작(irr) · mid = 누른 동작 바로 뒤 기록(되돌릴 자리를 가림)
+    if (why) { const m = saveWhy60(why, ids.length ? '아무것도 지우지 않았어요. 칸과 사진은 그대로예요.' : '아무것도 바꾸지 않았어요. 칸과 기록은 그대로예요.'); if (q.isConnected) note60el(q, m); else say60(m); return; } // v60
+    if (!saved60()) { say60(ids.length ? '옷장 기록이 저장되지 않아서 사진은 지우지 않았어요. 새로고침하면 칸과 사진이 그대로 돌아와요.' : SVF.has(OKEY) ? '옷장 기록이 저장되지 않았어요. 새로고침하면 바꾸기 전 칸과 기록이 그대로 돌아와요.' : '바꾼 내용이 저장되지 않았어요. 기록을 다시 확인해 주세요.'); return; }
+    if (!ids.length) return;
+    // v72(검토 v72 결정 4): 앞지른 쓰기를 알아챌 시간(WAIT72)을 기다린 뒤에만 사진을 지움. 그새 앞지른 것을 알아챘으면(over72가 그 탭 기록을 되돌려 쓰고 S72) 아무것도 안 지움
+    if (!(await settle72())) return;
+    if (HELD.has(OKEY)) { say60('다른 탭에서 옷장 기록이 바뀌어서 사진은 지우지 않았어요. 위 안내에서 고른 뒤 다시 확인해 주세요.'); return; }
+    PHS72 = {raw: RAW72[OKEY], t: 'del'}; /* v72(검토 A): 사진 지우기를 시작함 → 이 뒤에 앞지른 것을 알아채면 사진이 이미 지워진 것으로 알림 */
+    const r = await phDel72(ids, kOf); if (!r.ok) { PHS72 = null; back60(old, mid); after(); return; } if (!r.del) PHS72 = null;
+    if (r.skip) say60(`그새 바뀐 사진 ${r.skip}장은 지우지 않았어요.`); } finally { lock72(q, false); } });
   bn.addEventListener('click', e => { e.stopPropagation(); q.replaceWith(el); });
 }
 /* 칸 하나의 사진 창: 올리기 · 이름 · 앞으로/뒤로(첫 장이 대표) · 바꾸기 · 지우기 */
@@ -8940,10 +9083,18 @@ document.addEventListener('click', e => { const b = e.target.closest && e.target
   if (b.hasAttribute('data-phimy')) { phImportApply(); return; }
   if (b.hasAttribute('data-phimn')) { PHIMP = null; PHMSG = null; phRefFile(); return; }
   if (b.hasAttribute('data-phorph')) { const os = ownedSlots(), n = phN([...PH.map.keys()].filter(k => !os.has(k)));
+    ORPH72 = {rcv: rcv72(OKEY), kOf: {}}; [...PH.map.keys()].filter(k => !os.has(k)).forEach(k => phList(k).forEach(p => { ORPH72.kOf[p.id] = k; })); // v72: 물은 때의 사진 · 옷장 기록
     b.outerHTML = `<span class="ph49q" role="alertdialog"><span>사진 ${n}장을 지울까요? 되돌릴 수 없어요.</span> <button type="button" class="go" data-phory>지우기</button><button type="button" class="plain sm" data-phorn>취소</button></span>`; return; }
   if (b.hasAttribute('data-phory')) { // v68(검토 v68 A1): 옷장 기록 저장이 멈춘 동안(깨진 기록을 고르기 전 · 다른 탭과 맞추는 중 · 저장 공간 부족)엔 아무것도 지우지 않음(칸 지우기 · 벌 빼기와 같은 검사)
-    const why = okSave60(); if (why) { PHMSG = {t: saveWhy60(why, '사진을 지우지 않았어요. 사진은 그대로예요.'), bad: 1}; phRefFile(); return; }
-    const os = ownedSlots(); phDel([...PH.map.keys()].filter(k => !os.has(k)).flatMap(k => phList(k).map(p => p.id))).then(ok => { PHMSG = ok ? {t: '옷장에 없는 칸 사진을 지웠어요.'} : null; phRefFile(); }); return; }
+    lock72(b.closest('.ph49q'), true); /* v72(검토 F1): 기다리는 동안 이 물음의 버튼을 막음 */
+    const A = ORPH72; ORPH72 = null; if (!A) { phRefFile(); return; } /* 물음 없이 눌림(이미 처리됨): 아무것도 안 함 */
+    if (!HELD.has(OKEY) && !held57(OKEY) && A.rcv !== rcv72(OKEY)) { PHMSG = {t: msg72(), bad: 1}; phRefFile(); return; } // v72: 물은 뒤 다른 탭 기록을 불러왔으면 물음의 사진 수가 옛것(이 탭의 저장으로는 안 늘어남)
+    let why = ''; IRR72++; try { why = okSave60(); } finally { IRR72--; }
+    if (why) { PHMSG = {t: saveWhy60(why, '사진을 지우지 않았어요. 사진은 그대로예요.'), bad: 1}; phRefFile(); return; }
+    // v72(검토 v72 결정 4): 앞지른 쓰기를 알아챌 시간을 기다린 뒤, 물은 사진 중 지금도 옷장에 없는 칸에 있는 것만 지움
+    (async () => { if (!(await settle72())) { PHMSG = {t: S72, bad: 1}; phRefFile(); return; }
+      if (HELD.has(OKEY)) { PHMSG = {t: '다른 탭에서 옷장 기록이 바뀌어서 사진은 지우지 않았어요. 위 안내에서 고른 뒤 다시 확인해 주세요.', bad: 1}; phRefFile(); return; }
+      PHS72 = {raw: RAW72[OKEY], t: 'del'}; /* v72(검토 A) */ const r = await phDel72(Object.keys(A.kOf), A.kOf); if (!r.ok || !r.del) PHS72 = null; PHMSG = r.ok ? {t: '옷장에 없는 칸 사진을 지웠어요.' + (r.skip ? ` 그새 바뀐 사진 ${r.skip}장은 지우지 않았어요.` : '')} : null; phRefFile(); })(); return; }
   if (b.hasAttribute('data-phorn')) { phRefFile(); return; } }, true);
 document.addEventListener('change', e => { const t = e.target; if (!t.classList || !t.classList.contains('ph49fj') || !t.files || !t.files[0]) return;
   const f = t.files[0]; PHMSG = {t: '사진 파일을 읽는 중이에요…'}; phRefFile(); phImportRead(f); }, true);
