@@ -4635,7 +4635,8 @@ function reasonsOf(o){
 function sizeLine(p){
   // v12: 바지는 허리단면·총장을 넣었으면 제품 카드와 같은 판정(pantsPick)을 씀(제품 카드 29, 7일 준비 28처럼 다르게 말하던 문제)
   // v70(C4): 가까운 후기 1개로 고른 사이즈는 '참고 · 후기 1개 기준'을 붙임(고르는 값 · 품절 판단은 그대로)
-  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k], nt = [q.ref ? '허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음' : '', q.one ? '후기 1개 기준' : ''].filter(Boolean).join(' · ');
+  // v71(A2): 참고 까닭은 고른 방법대로. 허리단면으로 고른 고무줄 허리(by 'w')만 허리 문장, 후기로 짐작한 사이즈(by 'r')는 후기 문장(고르는 값은 그대로)
+  if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q && q.row) { const t = q.S[q.k], nt = [q.ref ? (q.by === 'w' ? '허리 실측으로 고른 사이즈라 고무줄 허리는 다를 수 있음' : '체형이 좀 먼 후기로 짐작한 사이즈') : '', q.one ? '후기 1개 기준' : ''].filter(Boolean).join(' · ');
     return `<span class="sz${q.ref || q.one ? ' ref' : ''}">${esc(szPlain(p, t, q, 1))}</span>` + (nt ? ` <span class="cn">참고 · ${nt}</span>` : '') + (p.out && p.out.includes(t) ? ' <span class="warn">(이 사이즈 품절)</span>' : ''); } }
   const z = sizeOf(p), sh = isShoe(p);
   const needs = sh ? !st.bf : (!st.bh || !st.bw);
@@ -6744,8 +6745,19 @@ function over66(slot){ if (!slot) return null;
 // v70(A2): 고른 제품보다 싼 예산 초과 제품이 내 사이즈 품절(전 사이즈 품절 포함)로 빠졌으면 그대로 말함. 고르는 방식(over66)은 그대로
 const cut70 = (slot, q) => PRODUCTS.some(p => p.id !== q.id && roleOf(p) && inSlot57(p, slot) && over(p) && userSizeOut(p) && p.price < q.price);
 // v70(A4): 칸(종류)이 정해지지 않은 줄('○○ 상의(겉옷 안에 입는 것)')은 대표 제품을 찾지 않으므로 '없음'이라 하지 않음
+// v71(A3): 대표 제품이 없는 까닭을 앱 자료 안에서 사실대로 나눔. 고르는 방식(repOf · over66) · 합계 · 순서는 그대로.
+//   예산 안(IN) · 예산을 넘는(OV) 같은 칸 제품을 따로 봄. 빠진 제품이 모두 '내 사이즈 품절'(userSizeOut)일 때만 품절이라고 쓰고, 아니면 고를 수 있는 제품을 확인하지 못했다고만 씀.
+//   참고로 고른 사이즈(먼 체형 후기 짐작 · 후기 1개 · 바지 참고)로 품절이 된 제품이 섞이면 품절로 단정하지 않음. 날짜 = 그 제품들 중 가장 이른 확인 날짜(031 사진 속 제품 가격 줄과 같은 규칙)
+const est71 = p => { if (p.soldAll) return false; if (roleOf(p) === 'pants') { const q = pantsPick(p); if (q) return !!(q.ref || q.one); } const z = sizeOf(p); return !!(z.ref || z.one); };
+function why71(slot){ const all = PRODUCTS.filter((p, i, a) => a.findIndex(q => q.id === p.id) === i && roleOf(p) && inSlot57(p, slot)), IN = all.filter(p => !over(p)), OV = all.filter(p => over(p));
+  if (!all.length) return '앱 자료에 이 칸 제품이 없어요';
+  const xs = IN.length ? IN : OV; if (xs.some(p => !userSizeOut(p))) return '예산 안에서 고를 수 있는 제품을 확인하지 못했어요';
+  const es = xs.filter(est71), d = md([...new Set((es.length ? es : xs).map(p => p.checked))].sort()[0]);
+  if (es.length) { const r = `사이즈나 재고 확인이 필요해요(참고로 고른 사이즈는 ${d} 확인 때 품절)`; return IN.length ? (OV.length ? `예산 안에서 주문할 수 있는 제품을 확인하지 못했어요. ${r}` : r) : `앱 자료 안에는 예산을 넘는 제품만 있어요. ${r}`; }
+  return IN.length ? (OV.length ? `예산 안에서 주문할 수 있는 제품을 확인하지 못했어요(예산 안 ${IN.length}개 모두 ${d} 확인 때 내 사이즈 품절)` : `앱 자료 안에서 내 사이즈가 남은 제품이 없어요(예산 안 ${IN.length}개 모두 ${d} 확인 때 내 사이즈 품절)`)
+    : `앱 자료 안에는 예산을 넘는 제품만 있고 모두 내 사이즈 품절이에요(${d} 확인)`; }
 function np66(c){ if (!c.rs) return '종류를 정하지 않은 줄이라 대표 제품은 고르지 않아요';
-  const q = over66(c.rs); if (!q) return '대표 제품 없음';
+  const q = over66(c.rs); if (!q) return esc(why71(c.rs));
   return `예산 안에서 확인된 대표 제품이 없어요<details class="ov66"><summary>예산 초과 제품 보기</summary><span>${cut70(c.rs, q) ? '앱 자료 안에서 내 사이즈가 남은 제품 중 가장 싼 것' : '앱 자료 안에서 확인된 제품 중 가장 싼 것'} · ${esc(shortName(q.name))} · ${won(q.price)} · ${md(q.checked)} 확인 가격. 예산(10만원)을 넘어서 구매 추천 · 합계에는 넣지 않아요</span></details>`; }
 /* ---------- v66(검토 v66 C · 시험본 나만): 필요한 옷 칸 대표 제품의 '설정에 넣은 치수 기준' 사이즈 ----------
    계산은 '내 사이즈 품절'(userSizeOut)이 쓰는 것 그대로(새 계산 없음):
@@ -8650,9 +8662,11 @@ function phGuard(el, ks, mut, what, yes, after, rec){
   q.innerHTML = `<span>${esc(rec ? `${what} ${rec.t}${lost.length ? ` 이 칸 사진 ${n}장도 같이 지워져요.` : rec.keep ? ` ${rec.keep}` : ''} 되돌릴 수 없어요.` : `${what} 이 칸 사진 ${n}장도 같이 지워져요.`)}</span> <button type="button" class="go">${esc(yes)}</button><button type="button" class="plain sm">그대로 두기</button>`;
   el.replaceWith(q);
   const [by, bn] = q.querySelectorAll('button');
+  // v71(A1): 지울 사진이 없는 물음(기록만)에서는 사진 말을 빼고 확인된 것만 적음. 사진이 있는 물음의 문장 · 동작은 v70 그대로.
+  //   바꾼 뒤 저장이 예외로 실패(SVF)했으면 저장소에는 okSave60이 막 쓴 누르기 전 기록이 있어서 새로고침하면 그것이 돌아옴(시험으로 확인). 까닭을 모르면 단정하지 않음
   by.addEventListener('click', async e => { e.stopPropagation();
-    const why = okSave60(); if (why) { note60el(q, saveWhy60(why, '아무것도 지우지 않았어요. 칸과 사진은 그대로예요.')); return; } // v60
-    const old = JSON.stringify(OWN); run(); if (!saved60()) { say60('옷장 기록이 저장되지 않아서 사진은 지우지 않았어요. 새로고침하면 칸과 사진이 그대로 돌아와요.'); return; }
+    const why = okSave60(); if (why) { note60el(q, saveWhy60(why, ids.length ? '아무것도 지우지 않았어요. 칸과 사진은 그대로예요.' : '아무것도 바꾸지 않았어요. 칸과 기록은 그대로예요.')); return; } // v60
+    const old = JSON.stringify(OWN); run(); if (!saved60()) { say60(ids.length ? '옷장 기록이 저장되지 않아서 사진은 지우지 않았어요. 새로고침하면 칸과 사진이 그대로 돌아와요.' : SVF.has(OKEY) ? '옷장 기록이 저장되지 않았어요. 새로고침하면 바꾸기 전 칸과 기록이 그대로 돌아와요.' : '바꾼 내용이 저장되지 않았어요. 기록을 다시 확인해 주세요.'); return; }
     if (!(await phDel(ids))) { back60(old); after(); } });
   bn.addEventListener('click', e => { e.stopPropagation(); q.replaceWith(el); });
 }
