@@ -8210,7 +8210,8 @@ let wsetOpen = false;
    바꾸는 조건: 고른 사진의 겉옷 칸(가진 겉옷이면 입는 내 칸, 살 겉옷이면 그 칸)이 바로 앞 날과 같을 때, 가진 옷만으로 되는 다른 후보(칸마다 됨 · 핏 확인 · 배송) 중
    겉옷 칸이 다르고 · 날씨 차이(dd)가 고른 사진보다 크지 않고 · 확인할 칸(핏 · 기장 · 배송 · 보유 확인) 수가 늘지 않고 · 두께 · 프린트 알림이 새로 생기지 않고 · 같은 단계/옆 단계가 같은 사진이 있으면 그중 점수가 가장 높은 것.
    고른 사진에 살 옷이 있어도 바꿀 수 있음(가진 옷만으로 되는 사진으로만 바꾸니 그날 살 옷은 늘지 않음). 새 숫자(감점) 없음.
-   고정한 날 · 건너뛴 날 · 전에 골라 둔 날(다시 짜기 전)은 이 코드까지 오지 않음 */
+   고정한 날 · 건너뛴 날 · 전에 골라 둔 날(다시 짜기 전)은 이 코드까지 오지 않음
+   v74(사용자 지시 A1): 바꿔 넣는 사진은 확인할 칸(아래 chk: 핏 · 기장 · 배송 · 보유 확인)이 0개이고 겉옷이 있는 사진만. 그런 사진이 없으면 바꾸지 않고 원래 고른 사진을 둠(새 문장 없음) */
 const outS65 = (x, s) => !x ? '' : s.code === 'ok' || s.code === 'soft' ? (wMk44(Object.assign({}, x, {ds: s})) || x.slot) : (x.slot || x.buy || '?');
 function rot65(pick, RW, out, d, os){
   const lg = window.__ROT65, log = (why, x) => { if (lg) lg.push(Object.assign({d, k: pick.L.key, why}, x || {})); return null; };
@@ -8221,7 +8222,7 @@ function rot65(pick, RW, out, d, os){
   const wr = o => o.dd <= 2 && !TS.nope[o.L.key] && codes(o).every(c => ['ok', 'soft', 'eta'].includes(c)), chk = o => codes(o).filter(c => ['soft', 'eta', 'info'].includes(c)).length;
   const alts = RW.filter(r => r.o !== pick && wr(r.o)).map(r => Object.assign({k: outK64(r.o, d, os), c: chk(r.o)}, r)).filter(r => r.k !== null && r.k !== pk);
   if (!alts.length) return log('다른 겉옷 후보 없음', {buy: !wr(pick)});
-  const c0 = chk(pick), bad = r => [r.o.dd > pick.dd ? '날씨' : '', r.c > c0 ? '확인' : '', r.o.fl && !pick.fl ? '알림' : '', !!r.o.adj !== !!pick.adj ? '단계' : ''].filter(Boolean);
+  const c0 = chk(pick), bad = r => [r.o.dd > pick.dd ? '날씨' : '', r.c > c0 ? '확인' : '', r.o.fl && !pick.fl ? '알림' : '', !!r.o.adj !== !!pick.adj ? '단계' : '', r.c > 0 ? '준비 안 됨' : '', r.k === '' ? '겉옷 없음' : ''].filter(Boolean);
   const ok = alts.filter(r => !bad(r).length).sort((a, b) => b.v - a.v);
   if (!ok.length) return log('다른 겉옷 후보가 모두 더 나쁨', {alts: alts.map(r => r.o.L.key + ':' + bad(r).join('·')), buy: !wr(pick)});
   log('바꿈', {to: ok[0].o.L.key, from: pk, toK: ok[0].k, alts: alts.length, ready: ok[0].c === 0, buy: !wr(pick)}); return ok[0]; }
