@@ -2915,14 +2915,14 @@ async function load(force){
     if (!held57(KEY + '-wx')) try { localStorage.setItem(KEY + '-wx', JSON.stringify(rec)); } catch(_){} // v57: 받아 둔 예보가 깨져 있으면 고르기 전엔 안 덮음
     wxFail = null;
     if (wx && wxSrc !== 'live') { pendWx = rec; drawArr(); drawWxSt(); }
-    else { wx = j; wxAt = {lat: R.lat, lon: R.lon}; wxSrc = 'live'; wxWhy = ''; lastFetch = j.got; wxNote = ''; pendWx = null; render(); }
+    else { wx = j; wxAt = {lat: R.lat, lon: R.lon}; wxSrc = 'live'; wxWhy = ''; lastFetch = j.got; wxNote = ''; pendWx = null; autoRender76(); } /* v76(A1): 예보를 받은 뒤의 다시 그리기는 묻는 창이 열려 있으면 미룸(070) */
   } catch(e) {
     if (wxReq !== R) return;
     wxFail = {lat: R.lat, lon: R.lon, t: Date.now()}; // v47: 지금 지역 요청이 실제로 실패(60초 끊기 포함). 옛 지역·끊은 요청은 위에서 걸러짐
     // 실패하면 v45처럼 대비 순서(받아 둔 예보 → 참고 기온)를 그때 다시 따짐. 대비 날씨를 이미 보여 주는 중이면 고른 날씨가 달라졌을 때만 다시 그림
     //   (예: 참고 기온을 보던 중 다른 탭이 이 지역 예보를 저장해 두었으면 그 예보로. '예보 적용'을 기다리는 예보와 그보다 나중 것은 fallback에서 뺌)
-    if (!wx || wxSrc === 'live') { fallback('fail'); render(); }
-    else { const was = wxSrc === 'cache' ? 'c' + wx.got : wxSrc; fallback('fail'); if ((wxSrc === 'cache' ? 'c' + wx.got : wxSrc) !== was) render(); }
+    if (!wx || wxSrc === 'live') { fallback('fail'); autoRender76(); }
+    else { const was = wxSrc === 'cache' ? 'c' + wx.got : wxSrc; fallback('fail'); if ((wxSrc === 'cache' ? 'c' + wx.got : wxSrc) !== was) autoRender76(); }
   } finally { clearTimeout(R.tm); clearTimeout(R.hard);
     if (wxReq === R) { wxReq = null; const rb = $('#retry'); if (rb && rb.disabled) { rb.disabled = false; rb.textContent = '다시 받기'; } drawWxSt(); } }
 }
@@ -3066,7 +3066,7 @@ function dayReset53(){
   if (!same) { st.shuffle = 0; PV = null; st.lookN = 0; st.grid = undefined; }
   AUTO72++; try { save(); } finally { AUTO72--; } /* v72: 누르지 않아도 하는 저장(날짜 되돌리기) */ return same ? 1 : 2; }
 function dayBack53(){ if (!dayReset53()) return;
-  syncSeg('day', 0); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); if (wx && st.mode !== 'week') render(); }
+  syncSeg('day', 0); if (wx && (wxSrc === 'cache' || wxSrc === 'est')) fallback(); if (wx && st.mode !== 'week') autoRender76(); } /* v76(A1) */
 
 /* ---------- 계산 ---------- */
 const DOW = ['일','월','화','수','목','금','토'];
@@ -6465,7 +6465,7 @@ function delPh50(k, i){ const its = ownItems(k); if (i !== 0 || its.length < 2) 
   const q = phListV(k, '').map(p => p.id), z = phListV(k, its[1].id).map(p => p.id); return q.length || z.length ? {q, z, k, gone: its[1].id, n: its.length, g: [{id: '', n: its[0].n}, {id: its[1].id, n: its[1].n}]} : null; } /* v73: 칸 · 둘째 벌 번호 · 빼기 전 벌 수 · 두 벌(id · 이름) = 다시 확인할 때 벌이 돌아왔는지 봄 */
 // v73(검토 v73 A1 · M2): 새 벌 표시는 바로 쓰고(화면은 새 표시), 옛 표시는 dq72(item)에 남김 → 다시 확인(chk73 · 070)할 때 저장소에서 벌이 돌아왔으면 옛 표시로, 빠진 그대로면 표시만 지움
 //   r.mk = 표시({t, m} · 049가 정함) · nv73 = 이 단계가 쓴 새 표시(앞지름을 알아챘을 때 이미 굳었는지 가림 · phBack73)
-const phApply50 = r => !r ? Promise.resolve(true) : phWrite('벌을 빼지', s => { const mk = r.mk || mk73(), t = mk.t; [[r.q, PVQ, r.g[0]], [r.z, PV1, r.g[1]]].forEach(([ids, vi, g]) => ids.forEach(id => { const x = s.get(id); x.onsuccess = () => { if (x.result) { const old = isPvi(x.result.vi) ? x.result.vi : ''; s.put(Object.assign(x.result, {vi, t, dq72: {t, m: mk.m, why: 'item', k: r.k, vi: old, g, gone: r.gone, n: r.n}})); } }; })); });
+const phApply50 = r => !r ? Promise.resolve(true) : phWrite('벌을 빼지', s => { const mk = r.mk || mk73(), t = mk.t; [[r.q, PVQ, r.g[0]], [r.z, PV1, r.g[1]]].forEach(([ids, vi, g]) => ids.forEach(id => { const x = s.get(id); x.onsuccess = () => { if (x.result) { const old = isPvi(x.result.vi) ? x.result.vi : ''; s.put(Object.assign(x.result, {vi, t, dq72: {t, m: mk.m, why: 'item', k: r.k, vi: old, g, gone: r.gone, n: r.n}})); } }; })); }, true); /* v76(A1): 기다린 뒤 하는 사진 단계 = 이 탭이 스스로 하는 다시 그리기 */
 const ps50 = r => ({raw: RAW72[OKEY], t: 'mark', ids: r.q.concat(r.z), mt: r.mk.m, nv: Object.assign({}, ...r.q.map(id => ({[id]: PVQ})), ...r.z.map(id => ({[id]: PV1})))}); /* v73: 사진 단계(PHS72) = 표시한 사진 · 때 · 새 표시 */
 function oeSlot50(k){
   const its = ownItems(k), m = its.length > 1, ff = FFOF(k), sn = slotName(k);
@@ -8671,13 +8671,43 @@ const phAllN = () => [...PH.map.values()].reduce((n, a) => n + a.length, 0);
 const phId = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 // 다른 탭에 알림(사진은 안 보냄, 바뀌었다는 신호만). 받은 탭은 자기 저장소에서 다시 읽음
 try { PH.bc = new BroadcastChannel(PHDB); PH.bc.onmessage = () => { phLoad().then(() => { phExpOff69(); phRedraw(true); }); }; /* v69 build 2: 나눈 파일도 버림 */ } catch(e){}
-function phRedraw(other){
-  const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref();
+function phRedraw(other, auto){
+  const dl = document.getElementById('ownImp'); if (dl && dl._ref && !hold76('own', auto)) dl._ref();
   const pd = document.getElementById('phDlg'), ae = document.activeElement;
-  if (pd && pd._ref && !(other && ae && pd.contains(ae) && ae.tagName === 'INPUT')) pd._ref();
-  if (typeof wx !== 'undefined' && wx) render();
+  if (pd && pd._ref && !(other && ae && pd.contains(ae) && ae.tagName === 'INPUT') && !hold76('ph', auto)) pd._ref();
+  if (typeof wx !== 'undefined' && wx && !hold76('main', auto)) render();
 }
-const phChanged = () => { try { if (PH.bc) PH.bc.postMessage('ch'); } catch(e){} phRedraw(); };
+const phChanged = auto => { try { if (PH.bc) PH.bc.postMessage('ch'); } catch(e){} phRedraw(false, auto); };
+/* v76(A1): 묻는 창('.ph49q')이 열려 있는 동안, 이 탭이 스스로 하는 다시 그리기(auto = 사진 뒷정리 1 · 2단계, 예보 받기, 날짜 되돌리기)는 그 창이 든 곳만 미룸.
+   곳 = own(#ownImp) · ph(#phDlg) · main(그 밖 · render). 그 창의 버튼을 누르거나 같은 곳의 다른 것을 누르고 · 고르고 · 적으면 그 창은 더 지키지 않음(그 동작의 다시 그리기는 지금처럼 바로).
+   다른 탭에서 온 다시 그리기 · 되돌리기(phBack73) · 사용자 동작의 다시 그리기는 미루지 않음(검수 결정). 미룬 곳은 그곳에 지킬 창이 없어지면(닫힘 · 다른 다시 그리기로 사라짐 · 창 닫음) 한 번만 그림
+   검수(v76 diff): 눌렀는데 막힌 까닭 알림('.own60n' · note60el · note60)도 창처럼 지킴 → 그곳에서 사용자가 다음 동작을 할 때까지 남음.
+   창 안의 버튼을 누르면 그 창만 더 지키지 않고 바로 그리지는 않음(그 버튼이 창을 바꾸면 지켜보기가 그때 그림 · 이 벌 빼기 · 옷장에 없는 칸 사진 지우기처럼 창을 잠근 채 기다리는 동안의 사진 단계는 v75처럼 바로 그림) */
+/* 검수(v76 build 2): 미루기에 끝을 둠 — ① 탭으로 돌아오면(보이게 됨 · bfcache에서 되살아남) 날짜 · 예보 · 사진 다시 확인보다 먼저 모든 창 · 알림을 더 지키지 않고 미룬 것을 그림(v75처럼 그때 바로 그림)
+   ② 한 곳을 처음 미룬 지 HOLD76_MS가 지나면 그곳의 창 · 알림을 더 지키지 않고 한 번 그림(아무도 답하지 않은 창은 v75처럼 닫힐 수 있음) */
+const HOLD76_MS = 120000; /* 미루는 가장 긴 때(2분) */
+/* 검수(v76 build 3): ③ 숨은 창 · 알림(접힌 목록 안 · 숨긴 화면 · 레이아웃이 없는 것)은 지키지 않음 ④ 그곳을 지키는 창 · 알림이 새것으로 바뀌면(앞 창을 두고 새 창을 엶 · 새 까닭 알림) 그때부터 한도를 다시 셈(새 창이 앞 창의 남은 시간에 닫히지 않게) */
+const PEND76 = new Set(), REL76 = new WeakSet(), V76 = {mo: null, n: 0, lim: HOLD76_MS, tm: {}, seen: {}}, SEL76 = '.ph49q, .own60n';
+const where76 = el => el.closest('#ownImp') ? 'own' : el.closest('#phDlg') ? 'ph' : 'main';
+const held76 = p => [...document.querySelectorAll(SEL76)].filter(q => !REL76.has(q) && where76(q) === p && (q.checkVisibility ? q.checkVisibility() : q.getClientRects().length > 0)); /* 검수(v76 build 4 F76 G-3): 접힌 details 안은 레이아웃 상자가 남아 있어 checkVisibility로 봄 */
+const ask76 = p => held76(p).length > 0;
+const rel76 = p => { document.querySelectorAll(SEL76).forEach(x => { if (!p || where76(x) === p) REL76.add(x); }); };
+const lim76 = p => { clearTimeout(V76.tm[p]); V76.seen[p] = new WeakSet(held76(p)); V76.tm[p] = setTimeout(() => { rel76(p); flush76(); }, V76.lim); };
+function hold76(p, auto){ if (!auto || !ask76(p)) return false; if (!PEND76.has(p)) { PEND76.add(p); lim76(p); }
+  if (!V76.mo) { V76.mo = new MutationObserver(flush76); V76.mo.observe(document.body, {childList: true, subtree: true}); } return true; }
+function flush76(){ [...PEND76].forEach(p => { const hs = held76(p); if (hs.length) { if (hs.some(q => !(V76.seen[p] && V76.seen[p].has(q)))) lim76(p); return; } PEND76.delete(p); clearTimeout(V76.tm[p]); delete V76.tm[p]; delete V76.seen[p]; V76.n++;
+    if (p === 'own') { const dl = document.getElementById('ownImp'); if (dl && dl._ref) dl._ref(); }
+    else if (p === 'ph') { const pd = document.getElementById('phDlg'); if (pd && pd._ref) pd._ref(); }
+    else if (typeof wx !== 'undefined' && wx) render(); });
+  if (!PEND76.size && V76.mo) { V76.mo.disconnect(); V76.mo = null; } }
+/* 검수(v76 build 3): 글칸 · 고르기(input · textarea · select · label)를 누르거나 적는 것은 놓지도 그리지도 않음(적는 중에 칸을 다시 그려 첫 글자 · 초점을 잃지 않게 · v75처럼). 값이 바뀌면(change) 놓음 */
+['click', 'change', 'input'].forEach(n => document.addEventListener(n, e => { const t = e.target; if (!(t instanceof Element) || !document.querySelector(SEL76)) return; if (n !== 'change' && t.closest('input, textarea, select, label')) return; const q = t.closest('.ph49q');
+  if (q) { REL76.add(q); return; } const p = where76(t); document.querySelectorAll(SEL76).forEach(x => { if (where76(x) === p) REL76.add(x); });
+  if (PEND76.size) setTimeout(flush76, 0); }, true));
+const autoRender76 = () => { if (!hold76('main', true)) render(); };
+/* ① 탭으로 돌아옴: window의 capture 단계라 document · window에 붙은 다른 처리(016 dayBack53 · load, 069 reread72, 070 vis73)보다 먼저 돎 */
+const back76 = () => { if (!document.querySelector(SEL76) && !PEND76.size) return; rel76(); flush76(); };
+window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') back76(); }, true); window.addEventListener('pageshow', e => { if (e.persisted) back76(); }, true);
 function phFail(e, what){
   const m = `${what} 못했어요. ` + (e && e.name === 'QuotaExceededError' ? '이 브라우저의 저장 공간이 부족해요. 다른 사진을 지우고 다시 해 주세요.'
     : e && e.name === 'NoDB' ? '이 브라우저에서 사진 저장소를 열 수 없어요(시크릿 창에선 저장이 안 될 수 있어요).' : '잠시 뒤 다시 해 주세요. 그래도 안 되면 사진 파일로 내려받아 두세요.') + ' 사진은 그대로예요.';
@@ -8688,9 +8718,9 @@ function phFail(e, what){
   if (e && e.name === 'QuotaExceededError' && PH.dq.length) phChk73('full'); /* v73(검토 v73 A1): 저장 공간이 모자라면 지울 사진 표시를 바로 다시 확인(같은 조건 · 10초 지난 표시만) · 문장은 그대로 */
 }
 function phSay(m, bad){ const s = document.querySelector('#phDlg .phst'); if (s) { s.textContent = m; s.classList.toggle('bad', !!bad); } }
-async function phWrite(what, fn){
+async function phWrite(what, fn, auto){
   try { await phTx('readwrite', fn); } catch(e){ phFail(e, what); return false; }
-  await phLoad(); phExpOff69(); phChanged(); return true;
+  await phLoad(); phExpOff69(); phChanged(auto); return true; /* v76(A1): auto = 이 탭이 스스로 하는 다시 그리기(묻는 창이 열려 있으면 그곳만 미룸) */
 }
 // v69 build 2(검토 2): 나눠 내려받기 중에 사진이 바뀌면(이 탭에서 씀 · 다른 탭 알림) 나눈 파일을 버리고 다시 누르게 함
 const PHX69 = '파일을 나눈 뒤에 사진이 바뀌어서 나눈 파일 버튼을 지웠어요. 내려받기를 다시 눌러 주세요.';
@@ -8790,7 +8820,7 @@ async function phDel72(ids, kOf, why, gOf, mk){ const os = ownedSlots(), want = 
   if (!ids.length) return {ok: true, skip: 0, del: 0};
   const ok = await phWrite('사진을 지우지', s => { const g = s.getAll(); g.onsuccess = () => { const all = g.result || [];
     try { ids.forEach(id => { const r = all.find(x => x.id === id); if (r && hid73(r)) return; if (r && r.k === kOf[id] && !os.has(r.k)) { s.put(Object.assign(r, {dq72: {t: mk.t, m: mk.m, why: why || 'slot', k: r.k, vi: isPvi(r.vi) ? r.vi : '', g: (gOf && gOf[id]) || null}})); MINE73.set(id, mk.m); del++; } else if (r) skip++; }); } catch(e){ s.transaction.err72 = e; throw e; }
-    all.forEach(x => { if (ks.has(x.k) && !want.has(x.id) && !hid73(x)) skip++; }); }; });
+    all.forEach(x => { if (ks.has(x.k) && !want.has(x.id) && !hid73(x)) skip++; }); }; }, true); /* v76(A1): 이 탭이 스스로 하는 다시 그리기(사진 뒷정리 1단계) */
   if (ok && del) phChk73('own'); /* 검토 F1: 표시하는 사이에 받은 기록(그때는 PH.dq가 비어 있어 넘어감)을 한 번 더 봄 */
   return {ok, skip, del}; }
 /* ----- v73(검토 v73 A1 · Q1~Q5 · M1~M6): 지울 사진 표시(dq72)를 다시 확인하고 지움 -----
@@ -8855,7 +8885,7 @@ async function chk73(mode, o3){ const own = mode === 'own'; let ch = 0;
         if (!os.has(r.k)) { if (own || age < DQ73) return; s.delete(r.id); DONE73.add(r.id); ch++; return; }
         if (reown && reown.has(r.k) && q.m && MINE73.get(r.id) === q.m) { if (m3 && same && age >= DQ73) { s.delete(r.id); DONE73.add(r.id); ch++; return; } delete r.dq72; if (q.why !== 'orph') r.vi = PVQ; put(); return; }
         if (q.why !== 'orph' && !hasG73(o, r.k, q.g)) r.vi = PVQ; delete r.dq72; put(); }); }; }); } catch(e){ ch = 0; } } /* 검토 F5: 옷장에 없는 칸 사진(orph) 표시를 풀 때는 벌 표시 그대로(v72처럼) */
-  if (ch) { await phLoad(); phExpOff69(); phChanged(); } else if (document.visibilityState === 'visible') tick73(false); }
+  if (ch) { await phLoad(); phExpOff69(); phChanged(!own); /* v76(A1): 'full'(10초 뒤 다시 확인하고 지움 · 탭으로 돌아온 뒤) = 이 탭이 스스로 하는 다시 그리기 */ } else if (document.visibilityState === 'visible') tick73(false); }
 // over72(069)가 이 탭의 사진 단계가 앞질렸음을 알아채면: 그 단계의 표시(t가 같은 것)를 그대로 되돌림(벌 표시도 단계 전으로) → 문장을 고를 결과
 //   '' = 모두 돌아옴(S72 그대로) · {s 짧은 · l 긴 문장} = 이미 지워졌거나(del) 표시가 굳음(mark). 저장소 오류면 RST73에 두고 다음 확인에서 다시(문장은 S72 그대로 · LEFT OPEN)
 async function phBack73(ps){ const ids = ps.ids || []; if (!ids.length) return ''; let gone = 0; PB73.push(ps); /* 검토 F7: 되돌리는 동안 다른 확인이 이 사진을 건드리지 않음(순서와 상관없이 그대로 되돌림) */
