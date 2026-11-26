@@ -5523,7 +5523,7 @@ function rowHTML42(w, i, lay, key){
   const id = 'rp' + i, op = OPEN42.has(key + '|' + i);
   return `<li class="r42 ${w.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw"${exH ? ` data-tg="${id}" data-ok="${esc(key + '|' + i)}"` : ''}>`
     + `<span class="tile${lay ? ' two' : ''}"${lay ? ` title="${lay === '겉' ? '겉에 입는 상의' : '안에 입는 상의'}"` : ''}>${w.r}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(w.t)}</p>${d || act ? `<p class="rd">${d}${act}</p>` : ''}${hidMoreHTML(HM81.get(w), 'rd')}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${mk.map(k => `<p class="rd mst">${vis[k]}</p>`).join('')}${ovf ? `<p class="rd ovs">${esc(ovf.fold)}</p>` : ''}${j51Chip(j5, w.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${nw ? `<span class="wk42">확인할 점 ${nw}</span>` : ''}${nr ? `<span class="wk42 ref">참고할 점 ${nr}</span>` : ''}</div>`
     + (exH ? `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(w.r + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button>` : '<span class="rx0"></span>') + `</div>`
     + (exH ? `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div>` : '') + `</li>`;
@@ -6158,7 +6158,7 @@ function recipeOf(L, os){
       const lv = x.state.lv, ph = photoNm(x), inT = !x.anyTop && !x.info && (r !== 'top' || !s.req.some(y => y.role === 'outer'));
       const tgN = x.anyTop && tg ? `태그엔 ${CN[tg.col] || tg.col} ${kindOf(tg.p)}${jongOf(kindOf(tg.p)) ? '이' : '가'} 있지만 사진에선 겉옷에 가려 안 보임` : '';
       // bd: 칸 상태 배지 · n: 둘째 줄부터(한 줄에 하나씩) · shIn: 사진 속 색을 첫 줄에 붙임 · act: 줄 끝 버튼(fit·len 고르기, 가진 옷 적기)
-      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0, k49 = null, v50 = ''; // v49: k49 = 이 줄 '내 ○○'의 칸 키(사진 보여 주기만) · v50: v50 = 그 칸에서 입는 벌
+      let c, t, n = [], nm = ph, alt = [], bd = '', shIn = false, act = '', pil = 0, k49 = null, v50 = '', hm = []; // v49: k49 = 이 줄 '내 ○○'의 칸 키(사진 보여 주기만) · v50: v50 = 그 칸에서 입는 벌
       if (!own) { c = 'ph'; t = x.info ? '사진에서 신발 종류·색 확인 못 함' : x.anyTop ? '안에 입을 상의' : ph; if (x.anyTop) n.push('겉옷에 가려 거의 안 보임'); if (tgN) n.push(tgN); }
       else if (lv === -1) { c = 'info'; t = '가진 신발 중 골라 신기'; bd = '신발 확인'; n.push('사진에서 신발 종류·색을 못 봐서 사지 않고 가진 신발 중 골라 신음'); }
       else if (lv >= 2) { const w = wearOf(x, os); nm = w ? w.nm : ph; alt = altsOf(x, os, w, L); k49 = w && w.k ? w.k : null; v50 = w && w.vid ? w.vid : '';
@@ -6175,7 +6175,7 @@ function recipeOf(L, os){
           else if (lv === 3 && /주요 특징 같음/.test(x.state.t)) n.push('산 옷이 사진과 주요 특징 일치');
           else if (lv === 3 && /확정 못 해서/.test(x.state.t)) n.push(r === 'shoes' ? '사진 속 가죽 신발 모양(더비·로퍼)은 확정 못 해서 같은 색 가죽 신발이면 됨으로 봄'
             : `사진 속 ${x.nm || ph}${jongOf(x.nm || ph) ? '은' : '는'} 종류를 확정 못 해서 같은 색이면 됨으로 봄`);
-          if (x.anyTop) n.push('겉옷에 가려 거의 안 보이는 칸');
+          if (x.anyTop) { n.push('겉옷에 가려 거의 안 보이는 칸'); if (k49 && s.req.some(y => y.role === 'outer') && s.req.filter(y => y.role === 'top').length === 1) hm = hidMore(k49, v50, L, os, ctxT()); }
           if (tgN) n.push(tgN); } }
       else { const q = repOf(x.slot || x.buy || '', [L]).p;
         // v34: 살 제품이 사진에 태그된 제품인지 · 다른 제품(대안)인지 · 태그가 없는 칸인지 나눔(검토 v34 Part 1-1·1-5). 사진 속 제품을 안 고른 이유(예산·사이즈)도
@@ -6190,7 +6190,7 @@ function recipeOf(L, os){
       if (r === 'shoes' && tasNm(x)) n.push(...tasLines(x, c === 'buy' || c === 'unl' ? repOf(x.slot, [L]).p : null, c === 'own' || c === 'chk'));
       // v37: 내 옷으로 됨·확인 필요 칸이어도 사진과 같다고 확정 못 하는 점(STY rchk, 검토 v37 1: 집업 기장·데님 색·워싱)
       { const rc = own && (c === 'own' || c === 'chk') && ((STY[L.key] || {}).rchk || []).find(y => y.role === r && (!y.slot || y.slot === x.slot)); if (rc) n.push(rc.t); }
-      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); if (own && c === 'sub' && x.state.sub) { const g = in59(x, x.state.sub, L); if (g) IN59.set(row, g); } { const tk = tk59(x, L); if (tk) TK59.set(row, tk); } /* v59 */ PART67.set(row, x); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
+      { const row = Object.assign({r: RN[r], c, t, n, bd, sh: shadeOf(x, L), shIn, act, alt, pil}, x.anyKind ? {ak: 1} : {}, own && x.state.k51 ? {k51: 1} : {}); /* v51: k51 = 사진에 더 가까운 다른 색 내 옷 */ if (k49 && /^내 /.test(t)) { PHK49.set(row, k49); if (hm.length) HM81.set(row, hm); if (v50) PHV50.set(row, v50); } if (own && x.fl50) FL50.set(row, x.fl50); if (own && x.j51) J51.set(row, x.j51); if (own && c === 'sub' && x.state.sub) { const g = in59(x, x.state.sub, L); if (g) IN59.set(row, g); } { const tk = tk59(x, L); if (tk) TK59.set(row, tk); } /* v59 */ PART67.set(row, x); rows.push(row); } // v46: ak = 모양이 안 보이는 신발 칸(표시만) · v50: 벌·두께·프린트 알림은 WeakMap에만(줄 객체는 그대로)
       if (inT) tt.push(nm);
     });
   });
@@ -6326,6 +6326,21 @@ function mirHTML(L, os){
 //      긴 설명은 접어도 지우지 않음. 확인할 것은 접어도 '확인' 표시와 무엇을 확인할지가 늘 보임.
 //      가린 상의 태그·확정 못 한 점·핏 고르기·살 옷 가격·10만원 넘는 겨울 옷 접기는 v40처럼 둘째 줄 아래에 보임
 const HIDN = '겉옷에 가려 거의 안 보이는 칸';
+// 가린 상의 칸에 내 옷 한 벌을 골라 넣었을 때, 비교해 볼 다른 가진 상의를 한 줄로 보여 주기만 함(고른 옷 · 상태 · 순서는 그대로, 값에 쓰지 않음).
+//   후보 = 031 hidOk에서 같은 색 조건만 뺀 것(HID_NO 그대로) · 반팔티 · 긴팔티 · '상의' 칸 빼고 · 두께 적힌 옷만(벌이 여럿이면 첫 벌, 027 lookFlags와 같게)
+//   (가) 고른 옷보다 얇지 않음(thv51) · (나) 027 lookFlags 옷 한 벌 '더울 수 있어요' 판정에 안 걸림(사진 쪽은 photoTh 보통, 겉옷 안 상의 TSH.topIn). 순서는 HID_RK, 같으면 옷장 순서, 세 벌까지
+const HM81 = new WeakMap(), HMT = '목이나 앞섶으로 색이 보일 수 있어요.';
+function hidMore(pk, pv, L, os, T){
+  if (!has50() || !pk || !L) return [];
+  const pi = (its => (pv && its.find(it => it.id === pv)) || its[0])(ownItems(pk));
+  if (!pi || !pi.th) return [];
+  const xx = {role: 'top', ou: 1, lo: L.lo, hi: L.hi}, tp = photoTh(xx), w = shOf(xx), seen = new Set([slotName(pk)]);
+  return [...os].map((k, i) => ({k, i, kd: k.split('|')[0]})).filter(o => roleOfSlot(o.k) === 'top' && o.k !== pk && !HID_NO.test(o.kd) && !/^(반팔티|긴팔티|상의)$/.test(o.kd))
+    .map(o => Object.assign(o, {it: ownItems(o.k)[0]})).filter(o => o.it && o.it.th && thv51(o.it) >= thv51(pi))
+    .filter(o => { const d = thv51(o.it) - tp; return !(T != null && w && d > 0 && T > xx.hi - capOf(xx, w * d)); })
+    .sort((a, b) => HID_RK(a.k) - HID_RK(b.k) || a.i - b.i)
+    .filter(o => { const n = slotName(o.k); if (seen.has(n)) return false; seen.add(n); return true; }).slice(0, 3).map(o => slotName(o.k)); }
+const hidMoreHTML = (ns, cls) => ns && ns.length ? `<p class="${cls} hm81" data-hm81="1">비교해 볼 내 옷: ${esc(ns.join(' · '))}. ${HMT}</p>` : '';
 // v46: 밑단에 가려 모양이 안 보이는 신발 칸(같은 색 가진 신발이면 됨으로 보는 판정은 그대로). 종류까지 같다고 읽히지 않게 접힌 줄·펼친 줄 문구만
 const AKN46 = '같은 색 내 신발 · 사진에선 종류가 안 보임', AKR46 = '사진 속 옷과 같은 색 · 신발 종류는 사진에서 확인 못 함';
 function rowHTML(w){
@@ -8018,10 +8033,11 @@ function partRow(x, p, os, i, lay){
   const g59 = ST.c === 'sub' && s.sub ? in59(x, s.sub, p.L, p.d) : null, tk = tk59(x, p.L); // v62: 그날 세탁 중인 옷은 먼저 고르지 않음 // v59: 받쳐 입을 옷 안내 · 이름에 턱이 든 데님(오늘의 코디 칸 줄과 같게)
   const exH = ph49 + (insd ? `<p class="rl">${esc(insd)}</p>` : '') + `<p>${esc(s.t)}</p>` + prod + (rc ? `<p class="fd r"><span class="lb">참고</span> ${esc(rc.t)}</p>` : '') + fl50.map(f => `<p class="fd w f50d"><span class="lb">${esc(f.c === 'pr' ? '프린트' : '두께')}</span> ${esc(f.t)}</p>`).join('') + j51Det(j5, ST.c === 'sub') + (tk && tk.o ? `<p class="fd tk59o"><span class="lb">사진에서 본 것</span> ${esc(tk.o)}</p>` : '') + (act ? `<p class="ra44">${act}</p>` : '');
   const stH = ST.c === 'own' ? `<span class="ok42"><i class="ck" aria-hidden="true"></i>${esc(ST.t)}</span>` : ST.t ? `<span class="cp ${ST.c}">${esc(ST.t)}</span>` : '';
+  const hm81 = wHid45(x) && !lay && s.code === 'ok' && pk49 && p && p.L && p.status && p.status.req.some(y => y.role === 'outer') && p.status.req.filter(y => y.role === 'top').length === 1 ? hidMore(pk49, pv50, p.L, os, p.A ? p.A.tOuter : ctxT()) : [];
   const key = `${p.d}|${p.L.key}|${i}`, op = OPEN44.has(key), id = 'wrp' + i;
   return `<li class="r42 ${ST.c}${op ? ' open' : ''}${ph49 ? ' ph49r' : ''}"><div class="rw" data-tg="${id}" data-ok="${esc(key)}">`
     + `<span class="tile${lay ? ' two' : ''}">${RN[x.role]}${lay ? `<small>${lay}</small>` : ''}</span>`
-    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
+    + (ph49 ? phT(pk49, 'ph49s', pv50) : '') + `<div class="rm"><p class="rn">${esc(title)}</p>${one ? `<p class="rd">${esc(one)}</p>` : ''}${hidMoreHTML(hm81, 'rd')}${g59 ? in59H64(g59) : ''}${tk ? `<p class="rd tk59">${esc(tk.t)}</p>` : ''}${j51Chip(j5, ST.c === 'sub')}${fl50.map(f => `<p class="rd f50"><b>${esc(f.lab)}</b> · ${esc(f.s)}</p>`).join('')}</div>`
     + `<div class="rs">${stH}${rc ? '<span class="wk42 ref">참고할 점 1</span>' : ''}</div>`
     + `<button type="button" class="rx" aria-expanded="${op}" aria-controls="${id}" aria-label="${esc(RN[x.role] + (lay ? '(' + lay + ')' : ''))} 자세히 보기"></button></div>`
     + `<div class="rp" id="${id}"${op ? '' : ' hidden'}>${exH}</div></li>`;
