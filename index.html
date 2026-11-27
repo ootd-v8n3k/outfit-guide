@@ -7753,10 +7753,15 @@ function planWeekCore(force, own){
   }
   // 겉옷 안 상의(가진 옷 중에서 고름)는 앞뒤 날 상의와 겹치지 않게 한 번 더 고름
   if (WK.gap) out.forEach((p, i) => { const at = p.status && p.status.req.find(x => x.role === 'top' && x.ds.free); if (!at) return;
-    const pv = i ? out[i - 1].topK : null, nx = out[i + 1] ? out[i + 1].topK : null, F = at.ds.free;
+    /* 그날 체감(tOuter, 반올림)이 7° 이하이고 겉옷이 있으면, 얇은 상의(반팔티 · 긴팔티 · 셔츠 · 체크 셔츠 · 카라티 · 민소매)가 아닌 후보가 있을 때 그 안에서만 고름. 후보와 순위는 그대로 */
+    const thin = k => /^(반팔티|긴팔티|셔츠|체크 셔츠|카라티|민소매)$/.test(k.split('|')[0]), cold = p.A && Math.round(p.A.tOuter) <= 7 && (p.status.req.some(x => x.role === 'outer') || (p.o && p.o.ao));
+    const pv = i ? out[i - 1].topK : null, nx = out[i + 1] ? out[i + 1].topK : null, F = cold && at.ds.free.some(k => !thin(k)) ? at.ds.free.filter(k => !thin(k)) : at.ds.free;
     const k = F.find(k => k !== pv && k !== nx) || F.find(k => k !== pv) || F[0];
     p.rot = (!!pv && k !== pv && F.includes(pv)) || (!!nx && k !== nx && F.includes(nx));
-    at.ds.pick = k; at.ds.t = `가진 ${wro(slotName(k))} 됨${p.rot ? ' · 앞뒤 날과 다른 상의로 고름' : ''}`; p.topK = k; });
+    at.ds.pick = k; at.ds.t = `가진 ${wro(slotName(k))} 됨`; p.topK = k; });
+  /* 모든 날을 고른 뒤: 그날 마지막 상의가 앞뒤 날 마지막 상의와 다를 때만 '앞뒤 날과 다른 상의로 고름' */
+  if (WK.gap) out.forEach((p, i) => { const at = p.status && p.status.req.find(x => x.role === 'top' && x.ds.free); if (!at) return;
+    p.rot = !!p.rot && p.topK !== (i ? out[i - 1].topK : null) && p.topK !== (out[i + 1] ? out[i + 1].topK : null); if (p.rot) at.ds.t += ' · 앞뒤 날과 다른 상의로 고름'; });
   // v17: 가린 상의를 이번 주 산 상의와 못 이은 날(앞뒤 날 상의와 같아서)은 그 상의 말고 가진 다른 상의로 입으라고 적음
   if (WK.gap) out.forEach((p, i) => { const x = p.status && p.status.req.find(x => x.anyTop && !x.ds.link && !x.ds.free && x.ds.code === 'info'); if (!x) return;
     const nb = [...new Set([i ? out[i - 1].topK : null, out[i + 1] ? out[i + 1].topK : null].filter(Boolean))];
@@ -7768,7 +7773,7 @@ function planWeekCore(force, own){
   //      바꾼 날짜에도 날씨·단계가 맞는 코디(그날 후보, 체감 ±2°)만 옮기고, 고정한 날은 안 건드림. 바꾼 뒤 한 번 더 짜서 그날 칸·살 옷 날짜를 다시 셈
   if (!planWeekCore.re && spreadWeek(out)) { planWeekCore.re = true; try { return planWeekCore(false, own); } finally { planWeekCore.re = false; } }
   // v17: '같은 상의 이틀 연달아 피하기'인데도 못 피한 날은 숨기지 않고 표시
-  out.forEach((p, i) => { p.sameTop = !!(WK.gap && i && p.topK && out[i - 1].topK === p.topK && !p.same); });
+  out.forEach((p, i) => { p.sameTop = !!(WK.gap && i && p.topK && out[i - 1].topK === p.topK && !p.same); p.topCh = !!(p.same && i && p.topK && out[i - 1].topK && out[i - 1].topK !== p.topK); });
   return out;
 }
 function spreadWeek(out){
@@ -8097,7 +8102,7 @@ function showWeek(){
   h += '<div class="wk44" role="group" aria-label="이번 주 7일">' + plan.map((p, i) => {
     const pl = wPill44(p), on = p.d === WK.sel, td = p.d === t0, D = WK.days[p.d] || {};
     const sm = [p.skip ? '' : esc(LEVELS[p.lv].name) + (p.L && p.L.level !== p.lv ? ` · ${esc(LEVELS[p.L.level].name)} 사진` : ''), (b => b ? esc(b) : '')(dayBase(p.d, p.A)),
-      p.L && p.status.code === 'ready' && !p.A.fc ? '날씨 미확정' : '', p.L && p.o && p.o.ao ? '내 겉옷 더함' : '', p.same ? (p.rot ? '전날과 같은 옷, 상의만 바꿈' : '전날과 같은 코디') : p.sameTop ? '전날과 같은 상의' : ''].filter(Boolean);
+      p.L && p.status.code === 'ready' && !p.A.fc ? '날씨 미확정' : '', p.L && p.o && p.o.ao ? '내 겉옷 더함' : '', p.same ? (p.topCh ? '전날과 같은 옷, 상의만 바꿈' : '전날과 같은 코디') : p.sameTop ? '전날과 같은 상의' : ''].filter(Boolean);
     return `<button type="button" class="wc44${on ? ' on' : ''}${td ? ' td' : ''}" data-day="${p.d}" data-off="${Math.abs(i - si)}" aria-pressed="${on}" aria-label="${esc(dLab(p.d))}${td ? ' 오늘' : ''} 코디 보기">`
       + `<span class="wph44">${p.L ? wImg44(p.L, .62) : `<span class="wno44"><b>${p.skip ? '코디 불필요' : '사진 없음'}</b>${p.skip ? '<span>이날은 안 짬</span>' : ''}</span>`}`
       + (td ? '<span class="wtd44">오늘</span>' : '') + (D.pin ? '<span class="wpn44">고정</span>' : '') + (pl ? `<span class="gp ${pl.c}">${esc(pl.t)}</span>` : '') + `</span>`
@@ -8162,7 +8167,7 @@ function dayDetail(p, os){
   // 그날 고른 이유 메모(v43 글 그대로)
   const memo = (p.why ? `<p class="reft"><b>바뀜</b>${esc(p.why)}</p>` : '')
     + (p.L.level !== p.lv ? `<p class="reft"><b>${esc(LEVELS[p.L.level].name)} 사진</b>${D.pin ? `직접 고른 ${esc(LEVELS[p.L.level].name)} 사진이에요` : `이날 날씨에 맞는 ${esc(LEVELS[p.lv].name)} 사진은 전부 새 옷이 있어야 해서, 가진 옷만으로 되는 옆 단계 사진을 골랐어요`}. ${esc(LEVELS[p.lv].name)} 사진으로 보려면 '다른 코디로', 늘 ${esc(LEVELS[p.lv].name)} 사진만 쓰려면 위 '옆 단계 코디 · 안 쓰기'</p>` : '')
-    + (p.same ? `<p class="reft"><b>전날과 같은 코디</b>새로 살 옷을 늘리지 않으려고 이어서 골랐어요${p.rot ? '. 안에 입는 상의만 다른 걸로 골랐어요' : ''}. 다른 사진으로 바꾸려면 '다른 코디로'</p>` : '')
+    + (p.same ? `<p class="reft"><b>전날과 같은 코디</b>새로 살 옷을 늘리지 않으려고 이어서 골랐어요${p.topCh ? '. 안에 입는 상의만 다른 걸로 골랐어요' : ''}. 다른 사진으로 바꾸려면 '다른 코디로'</p>` : '')
     + (p.sameTop ? `<p class="reft"><b>전날과 같은 상의</b>이틀 이어서 ${esc(slotName(p.topK))}. ${p.ko ? '상의가 다른 코디는 이날 새 옷을 사야 해서, 가진 옷만으로 되는 이 코디를 골랐어요' : '이 날씨·단계에 상의가 다른 코디가 적어서 그래요'}. 다른 상의를 가졌으면 그걸로 입거나 '다른 코디로'</p>` : '');
   if (memo) r += `<div class="card44 wmemo44"><p class="ch44">이날 코디를 고른 이유</p>${memo}</div>`;
   if (alts) {
